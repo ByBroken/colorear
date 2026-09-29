@@ -1,0 +1,21 @@
+{
+  "name": "Colorear – Crea y colorea dibujos",
+  "short_name": "Colorear",
+  "description": "Crea tus propios dibujos para colorear y coloréalos con el dedo. Funciona sin internet.",
+  "lang": "es",
+  "dir": "ltr",
+  "id": ".",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#FFF6EC",
+  "theme_color": "#FF6F61",
+  "categories": ["kids", "entertainment", "education"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }
+  ]
+}
