@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Colorear</title>
-<meta name="description" content="Crea dibujos para colorear, sube fotos de tus libros y coloréalos. Funciona sin internet.">
+<meta name="description" content="Crea dibujos para colorear, sube fotos de tus libros y coloréalos con crayón, marcadores (acrílico, acuarela, alcohol), degradados y difuminado. Funciona sin internet.">
 <meta name="theme-color" content="#FF6F61">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -75,7 +75,8 @@ header.top{
 }
 #paper canvas{position:absolute;left:0;top:0;width:100%;height:100%;touch-action:none}
 #paper.c-pen,#paper.c-line,#paper.c-ellipse,#paper.c-rect,#paper.c-star,#paper.c-heart{cursor:crosshair}
-#paper.c-fill{cursor:cell}
+#paper.c-fill,#paper.c-grad{cursor:cell}
+#paper.c-crayon,#paper.c-acrylic,#paper.c-water,#paper.c-alcohol,#paper.c-cerase,#paper.c-blend{cursor:crosshair}
 #paper.c-obj{cursor:move}
 #stage.pan-tool #paper,#stage.panning #paper{cursor:inherit}
 /* botones flotantes sobre la hoja */
@@ -124,6 +125,55 @@ footer.tools{
 .lbl{align-self:center;font-size:12px;font-weight:700;color:var(--muted);padding:0 4px;white-space:nowrap}
 .spacer{flex:1 1 auto}
 .tool.danger svg{color:#d93a2f}
+/* botones con submenú (marcadores, grosor, degradado) */
+.tool.has-pop::after{content:"";position:absolute;right:5px;bottom:5px;border:4px solid transparent;border-right-color:currentColor;border-bottom-color:currentColor;border-radius:1px;opacity:.55}
+.tool .dotbox{width:28px;height:28px;display:flex;align-items:center;justify-content:center}
+.tool .dotbox i{display:block;border-radius:50%;background:var(--ink)}
+.gswatch{width:28px;height:26px;border-radius:8px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18);background:linear-gradient(135deg,#FF3B30,#FFE66D)}
+.gswatch.radial{border-radius:50%}
+.tool.on .gswatch{box-shadow:inset 0 0 0 1px rgba(0,0,0,.18),0 0 0 2px #fff}
+.pop{position:fixed;z-index:25;background:#fff;border-radius:18px;padding:8px;box-shadow:0 6px 28px rgba(50,25,90,.3);display:none;
+  max-width:calc(100vw - 16px);touch-action:manipulation}
+.pop.show{display:block;animation:popin .14s ease-out}
+@keyframes popin{from{transform:translateY(8px);opacity:.3}to{transform:none;opacity:1}}
+.pop h4{margin:2px 4px 6px;font-size:13px;color:var(--muted);font-weight:700}
+.pop .pgrid{display:grid;gap:6px}
+.pop .pbtn{border:0;border-radius:14px;background:#faf6f1;min-height:52px;padding:6px 10px;display:flex;align-items:center;gap:10px;
+  font-size:15px;font-weight:700;text-align:left;color:var(--ink)}
+.pop .pbtn svg{width:28px;height:28px;flex:0 0 auto}
+.pop .pbtn small{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-top:1px}
+.pop .pbtn.on{background:var(--sel);color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent)}
+.pop .pbtn .dotbox{width:30px;height:30px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.pop .pbtn .dotbox i{display:block;border-radius:50%;background:var(--ink)}
+.pop .chips button{min-height:44px;font-size:14px}
+.pop #gDir button{font-size:22px;font-weight:800}
+.pop #gDir button:disabled{opacity:.35}
+.pop .gpal{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px}
+.pop .gpal .sw{min-height:28px}
+.pop .grow{display:flex;gap:8px;align-items:center;margin-top:8px}
+.pop .gcol{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--muted)}
+.pop .gcol i{width:26px;height:26px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)}
+.pop .gprev{flex:1;height:26px;border-radius:13px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+.pop .gswap{border:0;border-radius:12px;background:#f1eaf7;min-height:40px;padding:0 10px;font-weight:700}
+.pop .ptip{font-size:12.5px;color:var(--muted);margin:8px 4px 2px;line-height:1.35}
+#sizePop .pgrid{grid-template-columns:1fr 1fr}
+@media (max-width:479px){
+  #colorTools,#drawTools{gap:3px}
+  #colorTools .tool,#drawTools .tool{font-size:10.5px;letter-spacing:-.3px;padding:0}
+}
+@media (max-width:399px){
+  .only-draw .lbl{display:none}
+  #colorTools .tool{flex:1 0 42px;min-width:42px;font-size:10px;letter-spacing:-.35px}
+  #colorTools #gradBtn,#colorTools [data-ctool="blend"]{flex-basis:51px;min-width:51px}
+  #drawTools .tool{flex:1 0 44px;min-width:44px;font-size:10px}
+  #colorTools .tool svg,#drawTools .tool svg{width:24px;height:24px}
+}
+@media (max-width:340px){
+  #colorTools .tool{flex-basis:38px;min-width:38px;font-size:9.5px}
+  #colorTools #gradBtn,#colorTools [data-ctool="blend"]{flex-basis:46px;min-width:46px}
+  #drawTools .tool{flex-basis:40px;min-width:40px;font-size:9.5px}
+  #drawSizes .size{flex-basis:46px;width:46px}
+}
 #customWrap{overflow:hidden}
 #customWrap .rainbow{width:28px;height:28px;border-radius:50%;
   background:conic-gradient(#ff3b30,#ffcc00,#34c759,#00c7be,#007aff,#af52de,#ff2d92,#ff3b30);
@@ -173,6 +223,8 @@ body.mode-color .only-draw{display:none!important}
 .card button.primary{background:var(--accent);color:#fff;box-shadow:none}
 .card button.del{color:#c0392b}
 .tpl{border:0;padding:8px;cursor:pointer}
+.tplcat{grid-column:1 / -1;margin:8px 2px 0;font-size:16px;color:var(--accent2)}
+@media (max-width:479px){ #tplGrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px} #tplGrid .card{padding:6px;border-radius:14px} #tplGrid .card .name{font-size:12.5px} .tplPhoto .ph svg{width:36px;height:36px} .tplPhoto .ph span{font-size:11px;padding:0 4px} }
 .tpl:active{transform:scale(.97)}
 .tplPhoto .ph{width:100%;aspect-ratio:3/4;border-radius:10px;background:linear-gradient(160deg,#efeaff,#ffe9e4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--accent2);box-shadow:0 0 0 1px var(--line)}
 .tplPhoto .ph svg{width:54px;height:54px}
@@ -306,6 +358,10 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
     <symbol id="i-eraser" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 19l-4-4L14 5l6 6-8 8z"/><path d="M9 10l6 6"/><path d="M8 19h12"/></symbol>
     <symbol id="i-fill" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M4.5 11.5L11 5l7 7-6.5 6.5a2 2 0 01-2.8 0L4.5 14.3a2 2 0 010-2.8z"/><path d="M8.5 3.5L11 6"/><path d="M4.6 12h13.3"/><path d="M20 14.5s1.8 2.1 1.8 3.3a1.8 1.8 0 01-3.6 0c0-1.2 1.8-3.3 1.8-3.3z" fill="currentColor"/></symbol>
     <symbol id="i-crayon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M3.5 20.5l1.5-5 9.5-9.5 3.5 3.5-9.5 9.5z"/><path d="M14.5 6l2-2 3.5 3.5-2 2"/><path d="M5 15.5l3.5 3.5"/></symbol>
+    <symbol id="i-acrylic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M9.5 14.5l-2-2L16 4l4 4-8.5 8.5z"/><path d="M7.5 12.5l-3 1-1 4 3 3 4-1 1-3" fill="currentColor"/></symbol>
+    <symbol id="i-water" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M20.5 3.5L12 12"/><path d="M11 11c-2.2 0-3.6 1.4-3.6 3.4 0 1.3-.8 2.1-1.8 2.4.9.7 2.3 1.3 3.8 1.3 2.6 0 4.2-1.6 4.2-4z"/><path d="M5 3.5s2.2 2.6 2.2 4a2.2 2.2 0 01-4.4 0c0-1.4 2.2-4 2.2-4z" fill="currentColor" fill-opacity=".35"/></symbol>
+    <symbol id="i-alcohol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M8 16l-3 3.5M11 13l7.5-7.5 2 2L13 15z"/><path d="M11 13l-2 1-1 2 2 0 1-1 2-2" fill="currentColor"/><circle cx="7" cy="7" r="4" fill="currentColor" fill-opacity=".25"/><circle cx="11" cy="8.5" r="3.2" fill="currentColor" fill-opacity=".25"/></symbol>
+    <symbol id="i-blend" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M13 21c-3 0-5.5-2.3-5.5-5.3V9.5a1.6 1.6 0 013.2 0V13l.1-6.7a1.6 1.6 0 013.2 0V12"/><path d="M14 12V8a1.6 1.6 0 013.2 0v7c0 3.4-1.6 6-4.2 6"/><path d="M2.5 6.5c1.2-1 2.3-1 3.5 0M2.5 10.5c1.2-1 2.3-1 3.5 0M18.5 3.5c1.2-1 2.3-1 3.5 0"/></symbol>
     <symbol id="i-undo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 010 11H11"/></symbol>
     <symbol id="i-redo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14l5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 000 11H13"/></symbol>
     <symbol id="i-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M5 4h11l3 3v12a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1z"/><path d="M8 4v5h7V4"/><rect x="7.5" y="13" width="9" height="7"/></symbol>
@@ -388,9 +444,10 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
   <div class="row only-draw">
     <span class="lbl">Grosor</span>
     <div class="sizes" id="drawSizes">
-      <button class="tool size" data-size="0" aria-label="Fino"><i style="width:6px;height:6px"></i>Fino</button>
-      <button class="tool size on" data-size="1" aria-label="Medio"><i style="width:11px;height:11px"></i>Medio</button>
-      <button class="tool size" data-size="2" aria-label="Grueso"><i style="width:18px;height:18px"></i>Grueso</button>
+      <button class="tool size" data-size="xs" aria-label="Súper fina"><i style="width:3px;height:3px"></i>Súper fina</button>
+      <button class="tool size" data-size="0" aria-label="Fina"><i style="width:6px;height:6px"></i>Fina</button>
+      <button class="tool size on" data-size="1" aria-label="Mediana"><i style="width:11px;height:11px"></i>Mediana</button>
+      <button class="tool size" data-size="2" aria-label="Gruesa"><i style="width:18px;height:18px"></i>Gruesa</button>
     </div>
     <span class="spacer"></span>
     <button class="tool danger" id="btnClear" style="flex:0 0 76px"><svg><use href="#i-trash"/></svg>Limpiar</button>
@@ -398,17 +455,50 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
 
   <div class="row only-color" id="colorTools">
     <button class="tool on" data-ctool="fill"><svg><use href="#i-fill"/></svg>Bote</button>
-    <button class="tool" data-ctool="crayon"><svg><use href="#i-crayon"/></svg>Crayón</button>
+    <button class="tool has-pop" id="brushBtn" data-ctool="crayon" data-pop="brushPop" aria-label="Crayón y marcadores"><svg><use href="#i-crayon"/></svg><span class="bl">Crayón</span></button>
+    <button class="tool has-pop" id="gradBtn" data-ctool="grad" data-pop="gradPop" aria-label="Degradado"><span class="gswatch"></span>Degradado</button>
+    <button class="tool" data-ctool="blend" aria-label="Difuminar"><svg><use href="#i-blend"/></svg>Difuminar</button>
     <button class="tool" data-ctool="cerase"><svg><use href="#i-eraser"/></svg>Borrar</button>
-    <div class="sizes" id="colorSizes">
-      <button class="tool size" data-size="0" aria-label="Fino"><i style="width:7px;height:7px"></i>Fino</button>
-      <button class="tool size on" data-size="1" aria-label="Medio"><i style="width:13px;height:13px"></i>Medio</button>
-      <button class="tool size" data-size="2" aria-label="Grueso"><i style="width:21px;height:21px"></i>Grueso</button>
-    </div>
+    <button class="tool has-pop" id="sizeBtn" data-pop="sizePop" aria-label="Grosor de la punta"><span class="dotbox"><i style="width:13px;height:13px"></i></span><span class="sl">Mediana</span></button>
     <label class="tool" id="customWrap" title="Elegir otro color"><span class="rainbow"></span>Otro<input type="color" id="customColor" value="#ff6f61" aria-label="Elegir otro color"></label>
   </div>
   <div class="palette only-color" id="palette"></div>
 </footer>
+
+<div class="pop" id="brushPop" role="menu" aria-label="Crayón y marcadores">
+  <h4>Pinta con…</h4>
+  <div class="pgrid">
+    <button class="pbtn" data-brush="crayon"><svg><use href="#i-crayon"/></svg><div>Crayón<small>Color liso</small></div></button>
+    <button class="pbtn" data-brush="acrylic"><svg><use href="#i-acrylic"/></svg><div>Marcador acrílico<small>Tapa todo, color fuerte y mate</small></div></button>
+    <button class="pbtn" data-brush="water"><svg><use href="#i-water"/></svg><div>Marcador de agua<small>Acuarela suave: se nota más al repasar</small></div></button>
+    <button class="pbtn" data-brush="alcohol"><svg><use href="#i-alcohol"/></svg><div>Marcador de alcohol<small>Transparente y parejo; se oscurece al repasar</small></div></button>
+  </div>
+</div>
+<div class="pop" id="sizePop" role="menu" aria-label="Grosor de la punta">
+  <h4>Grosor de la punta</h4>
+  <div class="pgrid" id="colorSizes">
+    <button class="pbtn size" data-size="xs" aria-label="Súper fina"><span class="dotbox"><i style="width:4px;height:4px"></i></span>Súper fina</button>
+    <button class="pbtn size" data-size="0" aria-label="Fina"><span class="dotbox"><i style="width:7px;height:7px"></i></span>Fina</button>
+    <button class="pbtn size on" data-size="1" aria-label="Mediana"><span class="dotbox"><i style="width:13px;height:13px"></i></span>Mediana</button>
+    <button class="pbtn size" data-size="2" aria-label="Gruesa"><span class="dotbox"><i style="width:22px;height:22px"></i></span>Gruesa</button>
+  </div>
+</div>
+<div class="pop" id="gradPop" role="dialog" aria-label="Opciones de degradado">
+  <h4>Degradado</h4>
+  <div class="grow">
+    <span class="gcol"><i id="gC1"></i></span><span class="gprev" id="gPrev"></span><span class="gcol"><i id="gC2"></i></span>
+    <button class="gswap" id="gSwap" aria-label="Intercambiar colores">⇄</button>
+  </div>
+  <div class="ptip" style="margin-top:6px">Segundo color:</div>
+  <div class="gpal" id="gPal"></div>
+  <div class="chips" id="gType" style="margin-top:8px">
+    <button data-gt="linear" class="on">Lineal</button><button data-gt="radial">Circular</button>
+  </div>
+  <div class="chips" id="gDir" style="margin-top:6px">
+    <button data-gd="down" class="on" aria-label="De arriba a abajo">↓</button><button data-gd="right" aria-label="De izquierda a derecha">→</button><button data-gd="diag" aria-label="En diagonal hacia abajo">↘</button><button data-gd="up" aria-label="En diagonal hacia arriba">↗</button>
+  </div>
+  <p class="ptip">Toca una zona para rellenarla con el degradado, o <b>arrastra</b> dentro de ella para elegir la dirección (empieza con el primer color y termina con el segundo).</p>
+</div>
 
 <div class="overlay" id="menuSheet">
   <div class="sheet">
@@ -425,9 +515,10 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
         <button class="mbtn" id="mPrint"><svg><use href="#i-print"/></svg>Imprimir para colorear</button>
         <button class="mbtn" id="mClear"><svg><use href="#i-trash"/></svg>Limpiar hoja</button>
         <button class="mbtn" id="mInstall"><svg><use href="#i-phone"/></svg>Instalar en el teléfono</button>
+        <button class="mbtn" id="mNews"><svg><use href="#i-sticker"/></svg>Novedades y ayuda</button>
       </div>
       <div class="menu-foot">
-        <span id="versionText">Colorear · Versión 2</span>
+        <span id="versionText">Colorear · Versión 3</span>
         <a href="privacidad.html" target="_blank" rel="noopener" id="mPrivacy">Política de privacidad</a>
       </div>
     </div>
@@ -437,6 +528,7 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
 <div class="overlay" id="tplSheet">
   <div class="sheet">
     <div class="sheet-head"><h2>Plantillas</h2><button class="ib close" aria-label="Cerrar"><svg><use href="#i-close"/></svg></button></div>
+    <div class="tabs" id="tplTabs" role="tablist"></div>
     <div class="scroll"><div class="grid" id="tplGrid"></div></div>
   </div>
 </div>
@@ -544,7 +636,7 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
 </div>
 
 <div id="hint" role="dialog" aria-live="polite">
-  <h3><svg width="22" height="22" style="color:var(--accent)"><use href="#i-phone"/></svg>Instala la app en tu teléfono</h3>
+  <h3><svg width="22" height="22" style="color:var(--accent)"><use href="#i-phone" id="hintIcon"/></svg><span id="hintTitle">Instala la app en tu teléfono</span></h3>
   <div id="hintBody"></div>
   <div class="btns">
     <button id="hintInstall" class="ok" style="display:none">Instalar</button>
@@ -557,12 +649,16 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
 <div id="printArea"><img id="printImg" alt="Dibujo para colorear"></div>
 <script>
 'use strict';
-/* Colorear v2: crea dibujos para colorear, sube fotos de tus libros y coloréalos */
-const APP_VERSION = '2';
+/* Colorear v3: crea dibujos para colorear, sube fotos de tus libros y coloréalos
+   (crayón, marcadores acrílico / de agua / de alcohol, degradados y difuminar) */
+const APP_VERSION = '3';
 const PORTRAIT = [1200, 1600], LANDSCAPE = [1600, 1200];
 let W = 1200, H = 1600;                       // tamaño de la hoja (px internos); vertical u horizontal
-const DRAW_SIZES = [6, 12, 22];               // grosor de línea (Dibujar)
-const COLOR_SIZES = [18, 40, 80];             // grosor de crayón (Colorear)
+const DRAW_SIZES = { xs: 3, 0: 6, 1: 12, 2: 22 };      // grosor de línea (Dibujar): súper fina, fina, mediana, gruesa
+const COLOR_SIZES = { xs: 7, 0: 18, 1: 40, 2: 80 };     // grosor de la punta (Colorear)
+const SIZE_NAMES = { xs: 'Súper fina', 0: 'Fina', 1: 'Mediana', 2: 'Gruesa' };
+const BRUSHES = { crayon: 'Crayón', acrylic: 'Acrílico', water: 'Acuarela', alcohol: 'Alcohol' };
+const BRUSH_ICONS = { crayon: 'i-crayon', acrylic: 'i-acrylic', water: 'i-water', alcohol: 'i-alcohol' };
 const ZMIN = 1, ZMAX = 6;
 const PALETTE = ['#FF3B30','#FF6F61','#FF9500','#FFCC00','#FFE66D','#A8E063','#34C759','#0B8F3C',
   '#00C7BE','#5AC8FA','#007AFF','#1E3A8A','#5856D6','#AF52DE','#D291FF','#FF2D92',
@@ -606,7 +702,8 @@ function sizeForImage(w, h) { return w > h ? LANDSCAPE : PORTRAIT; }
 /* ---------- estado ---------- */
 const state = {
   mode: 'draw', drawTool: 'pen', colorTool: 'fill',
-  drawSize: 1, colorSize: 1, color: '#FF3B30',
+  drawSize: '1', colorSize: '1', color: '#FF3B30', brush: 'crayon',
+  color2: '#FFE66D', gradType: 'linear', gradDir: 'down',
   currentId: null, dirty: false, panTool: false,
 };
 
@@ -800,6 +897,10 @@ function strokeStyleFor(tool) {
   if (tool === 'pen') return { layer: 'line', color: '#000', comp: 'source-over', lw: DRAW_SIZES[state.drawSize] };
   if (tool === 'erase') return { layer: 'line', color: '#000', comp: 'destination-out', lw: DRAW_SIZES[state.drawSize] * 3 };
   if (tool === 'crayon') return { layer: 'color', color: state.color, comp: 'source-over', lw: COLOR_SIZES[state.colorSize] };
+  if (tool === 'acrylic') return { layer: 'color', color: state.color, comp: 'source-over', lw: COLOR_SIZES[state.colorSize] * 1.1, fx: 'acrylic' };
+  // marcadores translúcidos: el trazo se pinta en una capa aparte y se mezcla con lo de abajo
+  if (tool === 'water') return { layer: 'color', color: state.color, comp: 'source-over', lw: COLOR_SIZES[state.colorSize] * 1.15, buf: 'water', alpha: 0.34 };
+  if (tool === 'alcohol') return { layer: 'color', color: state.color, comp: 'source-over', lw: COLOR_SIZES[state.colorSize], buf: 'alcohol', alpha: 0.58 };
   if (tool === 'cerase') return { layer: 'color', color: '#FFFFFF', comp: 'source-over', lw: COLOR_SIZES[state.colorSize] };
   return null;
 }
@@ -839,11 +940,18 @@ function startSingle(e) {
   if (objMode) { g = objDown(base, p); return; }
   const tool = currentTool();
   if (tool === 'fill') { g = Object.assign(base, { kind: 'fill' }); return; }
+  if (tool === 'grad') { g = Object.assign(base, { kind: 'grad' }); return; }
+  if (tool === 'blend') {
+    g = Object.assign(base, { kind: 'blend', lw: COLOR_SIZES[state.colorSize] * 1.2, box: { x1: Infinity, y1: Infinity, x2: -Infinity, y2: -Infinity } });
+    blendStart(g, p);
+    return;
+  }
   const st = strokeStyleFor(tool);
   if (st) {
     g = Object.assign(base, { kind: 'stroke', st, box: { x1: Infinity, y1: Infinity, x2: -Infinity, y2: -Infinity } });
     bboxAdd(g.box, p.x, p.y, st.lw);
-    dot(layers[st.layer].ctx, st, p);
+    if (st.buf) { bufBegin(); dot(bufCtx, st, p); bufShow(st, p.x - st.lw, p.y - st.lw, p.x + st.lw, p.y + st.lw); }
+    else dot(layers[st.layer].ctx, st, p);
     return;
   }
   g = Object.assign(base, { kind: 'shape', tool });
@@ -861,6 +969,12 @@ function onMove(e) {
   }
   if (g.kind === 'obj') { objMove(g, e); return; }
   if (g.kind === 'fill') return;
+  if (g.kind === 'grad') {
+    g.last = toDoc(e);
+    pctx.clearRect(0, 0, W, H);
+    if (g.travel >= 14) drawGradArrow(pctx, g.start, g.last);
+    return;
+  }
   const co = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
   const evs = co && co.length ? co : [e];
   for (const ev of evs) {
@@ -868,9 +982,11 @@ function onMove(e) {
     if (g.kind === 'stroke') {
       if (Math.hypot(p.x - g.last.x, p.y - g.last.y) < 1.5) continue;
       const mid = { x: (g.last.x + p.x) / 2, y: (g.last.y + p.y) / 2 };
-      segment(layers[g.st.layer].ctx, g.st, g.mid, g.last, mid);
+      strokeSeg(g, g.mid, g.last, mid);
       bboxAdd(g.box, p.x, p.y, g.st.lw);
       g.mid = mid; g.last = p;
+    } else if (g.kind === 'blend') {
+      blendTo(g, p);
     } else {
       g.last = p;
     }
@@ -897,8 +1013,14 @@ function endSingle(cancelled) {
   if (!cur) return;
   if (cur.kind === 'fill') {
     if (!cancelled && cur.travel < 14) floodFill(cur.start.x, cur.start.y, state.color);
+  } else if (cur.kind === 'grad') {
+    pctx.clearRect(0, 0, W, H);
+    if (!cancelled) gradientFill(cur.start, cur.travel >= 14 ? cur.last : null);
+  } else if (cur.kind === 'blend') {
+    commit([capturePart('color', rectOf(cur.box))]);
   } else if (cur.kind === 'stroke') {
-    segment(layers[cur.st.layer].ctx, cur.st, cur.mid, cur.last, cur.last);
+    strokeSeg(cur, cur.mid, cur.last, cur.last);
+    strokeFinish(cur);
     commit([capturePart(cur.st.layer, rectOf(cur.box))]);
   } else if (cur.kind === 'shape') {
     pctx.clearRect(0, 0, W, H);
@@ -920,16 +1042,17 @@ function abortSingle() {
   const cur = g; g = null;
   stage.classList.remove('panning');
   if (!cur) return;
-  if (cur.kind === 'stroke') {
+  if (cur.kind === 'stroke' || cur.kind === 'blend') {
     const young = performance.now() - cur.t0 < 450 || cur.travel < 45;
+    const layer = cur.kind === 'blend' ? 'color' : cur.st.layer;
     if (young) {
       const r = clampRect(rectOf(cur.box));
-      if (r) { const L = layers[cur.st.layer]; L.ctx.putImageData(L.bctx.getImageData(r.x, r.y, r.w, r.h), r.x, r.y); }
+      if (r) { const L = layers[layer]; L.ctx.putImageData(L.bctx.getImageData(r.x, r.y, r.w, r.h), r.x, r.y); }
     } else {
-      segment(layers[cur.st.layer].ctx, cur.st, cur.mid, cur.last, cur.last);
-      commit([capturePart(cur.st.layer, rectOf(cur.box))]);
+      if (cur.kind === 'stroke') { strokeSeg(cur, cur.mid, cur.last, cur.last); strokeFinish(cur); }
+      commit([capturePart(layer, rectOf(cur.box))]);
     }
-  } else if (cur.kind === 'shape') {
+  } else if (cur.kind === 'shape' || cur.kind === 'grad') {
     pctx.clearRect(0, 0, W, H);
   } else if (cur.kind === 'obj') {
     if (cur.action !== 'move' && cur.action !== 'scale') objUp(cur, true);
@@ -1009,13 +1132,164 @@ function setPanTool(on) {
 }
 $('#toolPan').onclick = () => setPanTool(!state.panTool);
 
+/* ---------- marcadores: acrílico (opaco y mate), de agua (acuarela) y de alcohol (translúcido) ---------- */
+let bufCv = null, bufCtx = null;            // capa temporal del trazo actual (marcadores translúcidos)
+let grainCv = null;                          // textura de papel (acuarela y acrílico mate)
+const hasCtxFilter = (() => { try { const c = document.createElement('canvas').getContext('2d'); c.filter = 'blur(2px)'; return c.filter === 'blur(2px)'; } catch (_) { return false; } })();
+function bufBegin() {
+  if (!bufCv || bufCv.width !== W || bufCv.height !== H) { bufCv = mkCanvas(); bufCtx = bufCv.getContext('2d'); }
+  bufCtx.clearRect(0, 0, W, H);
+}
+function grain() {
+  if (grainCv) return grainCv;
+  grainCv = mkCanvas(128, 128);
+  const c = grainCv.getContext('2d'), im = c.createImageData(128, 128), d = im.data;
+  let seed = 7;
+  const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  // ruido suave (suma de ruido fino y grueso) para que parezca papel
+  const coarse = new Float32Array(33 * 33).map(rnd);
+  for (let y = 0; y < 128; y++) for (let x = 0; x < 128; x++) {
+    const cx = x / 4, cy = y / 4, ix = cx | 0, iy = cy | 0, fx = cx - ix, fy = cy - iy;
+    const a = coarse[iy * 33 + ix], b = coarse[iy * 33 + ix + 1], c2 = coarse[(iy + 1) * 33 + ix], e = coarse[(iy + 1) * 33 + ix + 1];
+    const v = 0.6 * ((a * (1 - fx) + b * fx) * (1 - fy) + (c2 * (1 - fx) + e * fx) * fy) + 0.4 * rnd();
+    const k = (y * 128 + x) * 4; d[k] = d[k + 1] = d[k + 2] = 0; d[k + 3] = Math.round(v * 255);
+  }
+  c.putImageData(im, 0, 0);
+  return grainCv;
+}
+function strokeSeg(gg, p0, p1, p2) {
+  const st = gg.st;
+  if (!st.buf) { segment(layers[st.layer].ctx, st, p0, p1, p2); return; }
+  segment(bufCtx, st, p0, p1, p2);
+  const pad = st.lw;
+  bufShow(st, Math.min(p0.x, p1.x, p2.x) - pad, Math.min(p0.y, p1.y, p2.y) - pad, Math.max(p0.x, p1.x, p2.x) + pad, Math.max(p0.y, p1.y, p2.y) + pad);
+}
+// Vista previa mientras se pinta: lo que había antes + el trazo translúcido encima (sin acumularse dentro del mismo trazo)
+function bufShow(st, x1, y1, x2, y2) {
+  const blur = st.buf === 'water' ? Math.max(1, st.lw * 0.08) : 0;
+  const r = clampRect({ x: x1 - blur * 2, y: y1 - blur * 2, w: x2 - x1 + blur * 4, h: y2 - y1 + blur * 4 }); if (!r) return;
+  const L = layers.color, c = L.ctx;
+  c.save();
+  c.beginPath(); c.rect(r.x, r.y, r.w, r.h); c.clip();
+  c.globalCompositeOperation = 'copy'; c.drawImage(L.bak, r.x, r.y, r.w, r.h, r.x, r.y, r.w, r.h);
+  c.globalCompositeOperation = st.buf === 'alcohol' ? 'multiply' : 'source-over';
+  c.globalAlpha = st.alpha;
+  if (blur && hasCtxFilter) c.filter = `blur(${blur.toFixed(1)}px)`;
+  const m = Math.ceil(blur * 3);
+  const sx = Math.max(0, r.x - m), sy = Math.max(0, r.y - m), sw = Math.min(W, r.x + r.w + m) - sx, sh = Math.min(H, r.y + r.h + m) - sy;
+  c.drawImage(bufCv, sx, sy, sw, sh, sx, sy, sw, sh);
+  c.restore();
+}
+// Al soltar: efecto final (acuarela: bordes más oscuros, textura y un poco de "corrido"; acrílico: acabado mate)
+function strokeFinish(gg) {
+  const st = gg.st;
+  const r = clampRect(rectOf(gg.box)); if (!r) return;
+  if (st.fx === 'acrylic') {
+    const c = layers.color.ctx, t = mkCanvas(r.w, r.h), tc = t.getContext('2d');
+    // máscara del trazo = diferencia con lo de antes; se le da un grano mate muy sutil
+    tc.fillStyle = tc.createPattern(grain(), 'repeat'); tc.translate(-r.x % 128, -r.y % 128); tc.fillRect(r.x % 128, r.y % 128, r.w, r.h); tc.setTransform(1, 0, 0, 1, 0, 0);
+    const cur = c.getImageData(r.x, r.y, r.w, r.h), old = layers.color.bctx.getImageData(r.x, r.y, r.w, r.h), gr = tc.getImageData(0, 0, r.w, r.h).data;
+    const [cr, cg, cb] = hexToRgb(st.color), d = cur.data, o = old.data;
+    for (let i = 0; i < d.length; i += 4) {
+      if (d[i] === o[i] && d[i + 1] === o[i + 1] && d[i + 2] === o[i + 2]) continue;
+      if (Math.abs(d[i] - cr) > 3 || Math.abs(d[i + 1] - cg) > 3 || Math.abs(d[i + 2] - cb) > 3) continue;  // bordes suavizados: se dejan
+      const k = 1 + (gr[i + 3] / 255 - 0.5) * 0.06;      // ±3 % de luz: mate, sin brillo
+      d[i] = clamp(Math.round(cr * k), 0, 255); d[i + 1] = clamp(Math.round(cg * k), 0, 255); d[i + 2] = clamp(Math.round(cb * k), 0, 255);
+    }
+    c.putImageData(cur, r.x, r.y);
+    return;
+  }
+  if (st.buf !== 'water') return;   // alcohol: la vista previa ya es el resultado final (liso y parejo)
+  const pad = Math.ceil(st.lw * 0.35) + 4;
+  const R = clampRect({ x: r.x - pad, y: r.y - pad, w: r.w + 2 * pad, h: r.h + 2 * pad }); if (!R) return;
+  bboxAdd(gg.box, R.x, R.y, 0); bboxAdd(gg.box, R.x + R.w, R.y + R.h, 0);
+  const body = mkCanvas(R.w, R.h), bc = body.getContext('2d');
+  const soft = Math.max(1, st.lw * 0.08), bleed = Math.max(1.5, st.lw * 0.14);
+  // cuerpo: trazo con bordes suaves y un poco corrido
+  if (hasCtxFilter) bc.filter = `blur(${soft.toFixed(1)}px)`;
+  bc.drawImage(bufCv, R.x, R.y, R.w, R.h, 0, 0, R.w, R.h);
+  bc.filter = 'none';
+  // borde: el pigmento se junta en la orilla (anillo = trazo menos su versión difuminada)
+  const edge = mkCanvas(R.w, R.h), ec = edge.getContext('2d');
+  ec.drawImage(body, 0, 0);
+  ec.globalCompositeOperation = 'destination-out';
+  if (hasCtxFilter) ec.filter = `blur(${bleed.toFixed(1)}px)`;
+  ec.drawImage(bufCv, R.x, R.y, R.w, R.h, 0, 0, R.w, R.h);
+  ec.filter = 'none';
+  // textura de papel: el agua se reparte desigual
+  bc.globalCompositeOperation = 'destination-out'; bc.globalAlpha = 0.28;
+  bc.fillStyle = bc.createPattern(grain(), 'repeat'); bc.translate(-(R.x % 128), -(R.y % 128)); bc.fillRect(R.x % 128, R.y % 128, R.w, R.h);
+  bc.setTransform(1, 0, 0, 1, 0, 0);
+  const c = layers.color.ctx;
+  c.save();
+  c.beginPath(); c.rect(R.x, R.y, R.w, R.h); c.clip();          // 'copy' borraría todo lo que queda fuera
+  c.globalCompositeOperation = 'copy'; c.drawImage(layers.color.bak, R.x, R.y, R.w, R.h, R.x, R.y, R.w, R.h);
+  c.globalCompositeOperation = 'source-over';
+  c.globalAlpha = st.alpha; c.drawImage(body, R.x, R.y);
+  c.globalCompositeOperation = 'multiply'; c.globalAlpha = 0.9; c.drawImage(edge, R.x, R.y);
+  c.restore();
+}
+
+/* ---------- difuminar: arrastra el color como con el dedo, mezclando suavemente (las líneas negras no se tocan) ---------- */
+function blendStart(gg, p) {
+  const R = Math.max(3, Math.round(gg.lw / 2)), S = 2 * R + 1;
+  gg.R = R; gg.carry = new Float32Array(S * S * 4); gg.has = new Uint8Array(S * S);
+  const la = layers.line.ctx.getImageData(Math.round(p.x) - R, Math.round(p.y) - R, S, S).data;
+  const d = layers.color.ctx.getImageData(Math.round(p.x) - R, Math.round(p.y) - R, S, S).data;
+  for (let i = 0; i < S * S; i++) {
+    if (d[i * 4 + 3] === 0 || la[i * 4 + 3] >= LINE_T) continue;      // fuera de la hoja o bajo una línea
+    gg.carry[i * 4] = d[i * 4]; gg.carry[i * 4 + 1] = d[i * 4 + 1]; gg.carry[i * 4 + 2] = d[i * 4 + 2]; gg.has[i] = 1;
+  }
+  gg.lastDab = p;
+  bboxAdd(gg.box, p.x, p.y, R + 2);
+}
+function blendTo(gg, p) {
+  const a = gg.lastDab, dist = Math.hypot(p.x - a.x, p.y - a.y);
+  const step = Math.max(1.5, gg.R * 0.18);
+  if (dist < step) return;
+  const n = Math.floor(dist / step), R = gg.R, S = 2 * R + 1;
+  // leer una sola vez el rectángulo que cubren todos los toques de este movimiento
+  const ex = a.x + (p.x - a.x) * (n * step / dist), ey = a.y + (p.y - a.y) * (n * step / dist);
+  const rx = Math.floor(Math.min(a.x, ex)) - R - 1, ry = Math.floor(Math.min(a.y, ey)) - R - 1;
+  const rw = Math.ceil(Math.abs(ex - a.x)) + S + 3, rh = Math.ceil(Math.abs(ey - a.y)) + S + 3;
+  const cc = layers.color.ctx, img = cc.getImageData(rx, ry, rw, rh), d = img.data;
+  const la = layers.line.ctx.getImageData(rx, ry, rw, rh).data;
+  const carry = gg.carry, has = gg.has, STR = 0.55, PICK = 0.28;
+  for (let k = 1; k <= n; k++) {
+    const t = k * step / dist, cx = Math.round(a.x + (p.x - a.x) * t), cy = Math.round(a.y + (p.y - a.y) * t);
+    const ox = cx - R - rx, oy = cy - R - ry;
+    for (let j = 0; j < S; j++) {
+      const yy = oy + j; if (yy < 0 || yy >= rh) continue;
+      for (let i = 0; i < S; i++) {
+        const xx = ox + i; if (xx < 0 || xx >= rw) continue;
+        const dx = i - R, dy = j - R, q = (dx * dx + dy * dy) / (R * R);
+        if (q >= 1) continue;
+        const pi = yy * rw + xx, b = pi * 4, ci = j * S + i;
+        if (d[b + 3] === 0) continue;                       // fuera de la hoja
+        if (la[b + 3] >= LINE_T) continue;                  // bajo una línea del dibujo: ni se pinta ni se recoge
+        const r0 = d[b], g0 = d[b + 1], b0 = d[b + 2];
+        if (r0 < 40 && g0 < 40 && b0 < 40) continue;        // negro (líneas de fotos "tal cual"): se respeta
+        if (!has[ci]) { carry[ci * 4] = r0; carry[ci * 4 + 1] = g0; carry[ci * 4 + 2] = b0; has[ci] = 1; continue; }
+        const f = 1 - q, w = STR * f * f;
+        const nr = r0 + (carry[ci * 4] - r0) * w, ng = g0 + (carry[ci * 4 + 1] - g0) * w, nb = b0 + (carry[ci * 4 + 2] - b0) * w;
+        d[b] = nr; d[b + 1] = ng; d[b + 2] = nb;
+        carry[ci * 4] += (nr - carry[ci * 4]) * PICK; carry[ci * 4 + 1] += (ng - carry[ci * 4 + 1]) * PICK; carry[ci * 4 + 2] += (nb - carry[ci * 4 + 2]) * PICK;
+      }
+    }
+  }
+  cc.putImageData(img, rx, ry);
+  bboxAdd(gg.box, rx, ry, 0); bboxAdd(gg.box, rx + rw, ry + rh, 0);
+  gg.lastDab = { x: ex, y: ey };
+}
+
 /* ---------- bote de pintura ---------- */
 function hexToRgb(h) { h = h.replace('#', ''); if (h.length === 3) h = h.split('').map((c) => c + c).join(''); const n = parseInt(h, 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
 const LINE_T = 110;   // alfa desde el cual un píxel del contorno cuenta como "pared"
 const DILATE = 2;     // píxeles extra bajo el borde suavizado (evita halos blancos)
-function floodFill(fx, fy, hex) {
+// Zona cerrada por las líneas alrededor de (fx, fy): máscara + rectángulo que la contiene
+function regionMask(fx, fy) {
   let sx = Math.round(fx), sy = Math.round(fy);
-  if (sx < 0 || sy < 0 || sx >= W || sy >= H) return false;
+  if (sx < 0 || sy < 0 || sx >= W || sy >= H) return null;
   const la = layers.line.ctx.getImageData(0, 0, W, H).data;
   const wall = (i) => la[i * 4 + 3] >= LINE_T;
   if (wall(sy * W + sx)) {                  // tocó encima de una línea: busca un hueco cercano
@@ -1026,7 +1300,7 @@ function floodFill(fx, fy, hex) {
         if (x >= 0 && y >= 0 && x < W && y < H && !wall(y * W + x)) { sx = x; sy = y; found = true; }
       }
     }
-    if (!found) return false;
+    if (!found) return null;
   }
   const mask = new Uint8Array(W * H);
   let minX = sx, maxX = sx, minY = sy, maxY = sy;
@@ -1062,6 +1336,11 @@ function floodFill(fx, fy, hex) {
     for (const i of add) mask[i] = 1;
     minX = x1; maxX = x2; minY = y1; maxY = y2;
   }
+  return { mask, minX, minY, maxX, maxY };
+}
+function floodFill(fx, fy, hex) {
+  const reg = regionMask(fx, fy); if (!reg) return false;
+  const { mask, minX, minY, maxX, maxY } = reg;
   const bw = maxX - minX + 1, bh = maxY - minY + 1;
   const cctx = layers.color.ctx;
   const img = cctx.getImageData(minX, minY, bw, bh), d = img.data;
@@ -1080,6 +1359,73 @@ function floodFill(fx, fy, hex) {
   cctx.putImageData(img, minX, minY);
   commit([capturePart('color', { x: minX, y: minY, w: bw, h: bh })]);
   return true;
+}
+
+/* ---------- degradado: rellena una zona (como el bote) pasando de un color a otro ---------- */
+// a = donde empieza (primer color); b = donde termina (segundo color). Sin b: usa la dirección elegida sobre la zona entera.
+function gradientFill(a, b, opts) {
+  opts = opts || {};
+  const c1 = hexToRgb(opts.c1 || state.color), c2 = hexToRgb(opts.c2 || state.color2), type = opts.type || state.gradType, dir = opts.dir || state.gradDir;
+  const reg = regionMask(a.x, a.y); if (!reg) return false;
+  const { mask, minX, minY, maxX, maxY } = reg;
+  // la zona real (sin la parte bajo las líneas) para que el degradado se vea completo
+  let zx1 = maxX, zx2 = minX, zy1 = maxY, zy2 = minY;
+  for (let y = minY; y <= maxY; y++) for (let x = minX; x <= maxX; x++) if (mask[y * W + x]) { if (x < zx1) zx1 = x; if (x > zx2) zx2 = x; if (y < zy1) zy1 = y; if (y > zy2) zy2 = y; }
+  let p0, p1;
+  if (b) { p0 = a; p1 = b; }
+  else if (type === 'radial') { p0 = { x: (zx1 + zx2) / 2, y: (zy1 + zy2) / 2 }; p1 = null; }
+  else if (dir === 'right') { p0 = { x: zx1, y: (zy1 + zy2) / 2 }; p1 = { x: zx2, y: (zy1 + zy2) / 2 }; }
+  else if (dir === 'diag') { p0 = { x: zx1, y: zy1 }; p1 = { x: zx2, y: zy2 }; }
+  else if (dir === 'up') { p0 = { x: zx1, y: zy2 }; p1 = { x: zx2, y: zy1 }; }
+  else { p0 = { x: (zx1 + zx2) / 2, y: zy1 }; p1 = { x: (zx1 + zx2) / 2, y: zy2 }; }
+  let rad = 1;
+  if (type === 'radial') {
+    if (p1) rad = Math.max(8, Math.hypot(p1.x - p0.x, p1.y - p0.y));
+    else rad = Math.max(8, Math.max(Math.hypot(zx1 - p0.x, zy1 - p0.y), Math.hypot(zx2 - p0.x, zy2 - p0.y)));
+  }
+  const vx = p1 ? p1.x - p0.x : 0, vy = p1 ? p1.y - p0.y : 0, vv = Math.max(1e-6, vx * vx + vy * vy);
+  const bw = maxX - minX + 1, bh = maxY - minY + 1;
+  const cctx = layers.color.ctx;
+  const img = cctx.getImageData(minX, minY, bw, bh), d = img.data;
+  for (let y = 0; y < bh; y++) {
+    const mrow = (y + minY) * W + minX, drow = y * bw, py = y + minY;
+    for (let x = 0; x < bw; x++) {
+      if (!mask[mrow + x]) continue;
+      const px = x + minX;
+      let t = type === 'radial' ? Math.hypot(px - p0.x, py - p0.y) / rad : ((px - p0.x) * vx + (py - p0.y) * vy) / vv;
+      t = t < 0 ? 0 : t > 1 ? 1 : t;
+      t = t * t * (3 - 2 * t) * 0.35 + t * 0.65;              // un poco más suave en los extremos
+      const dz = (((px * 7 + py * 13) & 15) / 16 - 0.47) * 1.2;   // tramado leve: sin "escalones"
+      const k = (drow + x) * 4;
+      d[k] = clamp(Math.round(c1[0] + (c2[0] - c1[0]) * t + dz), 0, 255);
+      d[k + 1] = clamp(Math.round(c1[1] + (c2[1] - c1[1]) * t + dz), 0, 255);
+      d[k + 2] = clamp(Math.round(c1[2] + (c2[2] - c1[2]) * t + dz), 0, 255);
+      d[k + 3] = 255;
+    }
+  }
+  cctx.putImageData(img, minX, minY);
+  commit([capturePart('color', { x: minX, y: minY, w: bw, h: bh })]);
+  return true;
+}
+// Flecha de vista previa al arrastrar con el degradado
+function drawGradArrow(c, a, b) {
+  const lw = Math.max(4, 3 * docPerCss());
+  c.save();
+  const gr = state.gradType === 'radial' ? null : c.createLinearGradient(a.x, a.y, b.x, b.y);
+  c.lineCap = 'round'; c.lineJoin = 'round';
+  if (state.gradType === 'radial') {
+    c.beginPath(); c.arc(a.x, a.y, Math.hypot(b.x - a.x, b.y - a.y), 0, Math.PI * 2);
+    c.setLineDash([lw * 3, lw * 2]); c.lineWidth = lw; c.strokeStyle = 'rgba(40,28,60,.75)'; c.stroke(); c.setLineDash([]);
+  }
+  c.beginPath(); c.moveTo(a.x, a.y); c.lineTo(b.x, b.y);
+  c.lineWidth = lw * 2.4; c.strokeStyle = 'rgba(255,255,255,.9)'; c.stroke();
+  if (gr) { gr.addColorStop(0, state.color); gr.addColorStop(1, state.color2); }
+  c.lineWidth = lw; c.strokeStyle = gr || state.color; c.stroke();
+  const ang = Math.atan2(b.y - a.y, b.x - a.x), h = lw * 4;
+  c.beginPath(); c.moveTo(b.x, b.y); c.lineTo(b.x - h * Math.cos(ang - 0.45), b.y - h * Math.sin(ang - 0.45)); c.lineTo(b.x - h * Math.cos(ang + 0.45), b.y - h * Math.sin(ang + 0.45)); c.closePath();
+  c.fillStyle = state.color2; c.strokeStyle = 'rgba(40,28,60,.8)'; c.lineWidth = lw * 0.5; c.fill(); c.stroke();
+  c.beginPath(); c.arc(a.x, a.y, lw * 1.8, 0, Math.PI * 2); c.fillStyle = state.color; c.fill(); c.stroke();
+  c.restore();
 }
 
 /* ---------- plantillas (dibujadas con código, en un espacio de 300×400) ---------- */
@@ -1105,8 +1451,56 @@ function bez(p0, p1, p2, p3, t) {
   return [u * u * u * p0[0] + 3 * u * u * t * p1[0] + 3 * u * t * t * p2[0] + t * t * t * p3[0],
           u * u * u * p0[1] + 3 * u * u * t * p1[1] + 3 * u * t * t * p2[1] + t * t * t * p3[1]];
 }
+// Traza "shape" solo por fuera de varias figuras a la vez
+function strokeExcept(c, holes, shape) {
+  c.save();
+  for (const h of holes) { c.beginPath(); c.rect(-10, -10, 320, 420); h(c); c.clip('evenodd'); }
+  c.beginPath(); shape(c); c.stroke();
+  c.restore();
+}
+// Contorno de la unión de varios círculos (copas de árbol, nubes, melenas…)
+function unionCircles(c, circles) {
+  circles.forEach((ci, i) => strokeExcept(c, circles.filter((_, j) => j !== i).map((o) => (k) => ringPath(k, o[0], o[1], o[2])), (k) => ringPath(k, ci[0], ci[1], ci[2])));
+}
+const circlesPath = (circles) => (k) => { for (const o of circles) ringPath(k, o[0], o[1], o[2]); };
+// Subtrayectos (sin beginPath) para combinar en un mismo trazo
+function starSub(c, cx, cy, r, inner = 0.45, n = 5, rot = -Math.PI / 2) {
+  for (let i = 0; i < 2 * n; i++) {
+    const a = rot + i * Math.PI / n, rr = i % 2 ? r * inner : r;
+    const x = cx + rr * Math.cos(a), y = cy + rr * Math.sin(a);
+    if (i) c.lineTo(x, y); else c.moveTo(x, y);
+  }
+  c.closePath();
+}
+function heartSub(c, cx, cy, s) {
+  c.moveTo(cx, cy + 0.85 * s);
+  c.bezierCurveTo(cx - 1.25 * s, cy + 0.05 * s, cx - 1.0 * s, cy - 1.0 * s, cx, cy - 0.45 * s);
+  c.bezierCurveTo(cx + 1.0 * s, cy - 1.0 * s, cx + 1.25 * s, cy + 0.05 * s, cx, cy + 0.85 * s);
+  c.closePath();
+}
+function polarSub(c, cx, cy, rf, n = 240) {           // curva cerrada r(θ)
+  for (let i = 0; i <= n; i++) {
+    const a = i / n * Math.PI * 2 - Math.PI / 2, r = rf(a);
+    const x = cx + r * Math.cos(a), y = cy + r * Math.sin(a);
+    if (i) c.lineTo(x, y); else c.moveTo(x, y);
+  }
+  c.closePath();
+}
+function petalRing(c, cx, cy, r1, r2, n, rot = 0, fat = 1) {   // pétalos entre dos círculos (puntas tocan r2)
+  const dl = Math.PI / n;
+  for (let i = 0; i < n; i++) {
+    const a = rot + i * 2 * dl - Math.PI / 2;
+    const p0 = [cx + r1 * Math.cos(a - dl), cy + r1 * Math.sin(a - dl)], p1 = [cx + r1 * Math.cos(a + dl), cy + r1 * Math.sin(a + dl)];
+    const tip = [cx + r2 * Math.cos(a), cy + r2 * Math.sin(a)], rm = r1 + (r2 - r1) * 0.75;
+    c.moveTo(p0[0], p0[1]);
+    c.quadraticCurveTo(cx + rm * Math.cos(a - dl * fat), cy + rm * Math.sin(a - dl * fat), tip[0], tip[1]);
+    c.quadraticCurveTo(cx + rm * Math.cos(a + dl * fat), cy + rm * Math.sin(a + dl * fat), p1[0], p1[1]);
+  }
+}
+const grassLine = (c, y) => { c.moveTo(0, y); c.lineTo(300, y); };
+const TEMPLATE_CATS = [['animales', 'Animales'], ['naturaleza', 'Naturaleza'], ['pr', 'Puerto Rico'], ['mandalas', 'Mandalas'], ['cosas', 'Cosas']];
 const TEMPLATES = [
-  { id: 'casa', name: 'Casa', draw(c) {
+  { id: 'casa', name: 'Casa', cat: 'cosas', probe: [90, 300], draw(c) {
     c.beginPath();
     c.rect(60, 200, 180, 140);                                           // paredes
     c.moveTo(45, 200); c.lineTo(150, 110); c.lineTo(255, 200); c.closePath(); // techo
@@ -1126,7 +1520,7 @@ const TEMPLATES = [
     }
     c.stroke();
   }},
-  { id: 'flor', name: 'Flor', draw(c) {
+  { id: 'flor', name: 'Flor', cat: 'naturaleza', probe: [150, 80], draw(c) {
     const cx = 150, cy = 125, r0 = 26, R = 82, n = 8, dl = Math.PI / n;
     c.beginPath();
     ringPath(c, cx, cy, r0);
@@ -1153,7 +1547,7 @@ const TEMPLATES = [
     c.moveTo(238, 47); c.quadraticCurveTo(234, 36, 228, 33); c.moveTo(242, 47); c.quadraticCurveTo(246, 36, 252, 33);
     c.stroke();
   }},
-  { id: 'sol', name: 'Sol', draw(c) {
+  { id: 'sol', name: 'Sol', cat: 'naturaleza', probe: [150, 120], draw(c) {
     const cx = 150, cy = 170, r = 72;
     c.beginPath();
     ringPath(c, cx, cy, r);
@@ -1171,7 +1565,7 @@ const TEMPLATES = [
     cloudPath(c, 165, 385, 120);
     c.stroke();
   }},
-  { id: 'pez', name: 'Pez', draw(c) {
+  { id: 'pez', name: 'Pez', cat: 'animales', probe: [120, 215], draw(c) {
     const T0 = [60, 180], T1 = [90, 100], T2 = [200, 100], T3 = [225, 180];
     const B1 = [200, 260], B2 = [90, 260];
     c.beginPath();
@@ -1193,7 +1587,7 @@ const TEMPLATES = [
     ringPath(c, 60, 377, 12); ringPath(c, 120, 382, 8); ringPath(c, 180, 376, 10);                               // piedritas
     c.stroke();
   }},
-  { id: 'gato', name: 'Gato', draw(c) {
+  { id: 'gato', name: 'Gato', cat: 'animales', probe: [150, 110], draw(c) {
     const head = (k) => ringPath(k, 150, 150, 62);
     const body = (k) => ellPath(k, 150, 280, 70, 80);
     strokeOutside(c, head, body);
@@ -1220,7 +1614,7 @@ const TEMPLATES = [
     c.moveTo(0, 370); c.lineTo(300, 370);                                        // piso
     c.stroke();
   }},
-  { id: 'carro', name: 'Carro', draw(c) {
+  { id: 'carro', name: 'Carro', cat: 'cosas', probe: [65, 205], draw(c) {
     c.beginPath();
     c.moveTo(30, 250); c.lineTo(30, 205); c.quadraticCurveTo(32, 190, 50, 188); c.lineTo(85, 185); c.lineTo(115, 140); c.quadraticCurveTo(120, 132, 132, 132);
     c.lineTo(200, 132); c.quadraticCurveTo(212, 132, 218, 142); c.lineTo(245, 185); c.lineTo(262, 188); c.quadraticCurveTo(275, 192, 275, 205); c.lineTo(275, 250);
@@ -1238,6 +1632,305 @@ const TEMPLATES = [
     for (let i = 0; i < 10; i++) { const a = i * Math.PI / 5; c.moveTo(248 + 32 * Math.cos(a), 62 + 32 * Math.sin(a)); c.lineTo(248 + 44 * Math.cos(a), 62 + 44 * Math.sin(a)); }
     c.stroke();
   }},
+  { id: 'perro', name: 'Perro', cat: 'animales', probe: [150, 290], draw(c) {
+    const head = (k) => ringPath(k, 150, 150, 58);
+    const body = (k) => ellPath(k, 150, 292, 66, 60);
+    strokeOutside(c, head, body);
+    strokeOutside(c, head, (k) => { ellPath(k, 92, 150, 20, 46, 0.35); ellPath(k, 208, 150, 20, 46, -0.35); });      // orejas caídas
+    strokeOutside(c, body, (k) => { ellPath(k, 115, 352, 22, 12); ellPath(k, 185, 352, 22, 12);                          // patas
+      k.moveTo(212, 300); k.quadraticCurveTo(262, 290, 258, 238); k.quadraticCurveTo(244, 250, 246, 262); k.quadraticCurveTo(240, 282, 214, 280); k.closePath(); });   // cola
+    c.beginPath();
+    head(c);
+    ringPath(c, 128, 138, 9); ringPath(c, 172, 138, 9); ringPath(c, 130, 136, 3.5); ringPath(c, 174, 136, 3.5);
+    ellPath(c, 150, 172, 13, 9);                                                  // nariz
+    c.moveTo(150, 181); c.lineTo(150, 190); c.moveTo(150, 190); c.quadraticCurveTo(138, 202, 128, 192); c.moveTo(150, 190); c.quadraticCurveTo(162, 202, 172, 192);
+    ellPath(c, 172, 285, 20, 16);                                                 // mancha
+    c.moveTo(105, 222); c.quadraticCurveTo(150, 240, 195, 222);                   // collar
+    ringPath(c, 150, 244, 9);
+    grassLine(c, 370);
+    c.stroke();
+  }},
+  { id: 'conejo', name: 'Conejo', cat: 'animales', probe: [150, 300], draw(c) {
+    const head = (k) => ringPath(k, 150, 168, 50);
+    const body = (k) => ellPath(k, 150, 292, 62, 68);
+    strokeOutside(c, head, body);
+    strokeOutside(c, head, (k) => { ellPath(k, 125, 78, 15, 50, -0.15); ellPath(k, 175, 78, 15, 50, 0.15); });
+    strokeOutside(c, body, (k) => { ringPath(k, 212, 320, 16); ellPath(k, 118, 358, 28, 11); ellPath(k, 182, 358, 28, 11); });
+    c.beginPath();
+    head(c);
+    ellPath(c, 125, 82, 6, 34, -0.15); ellPath(c, 175, 82, 6, 34, 0.15);         // interior de orejas
+    ringPath(c, 132, 160, 7); ringPath(c, 168, 160, 7);
+    c.moveTo(143, 180); c.lineTo(157, 180); c.lineTo(150, 188); c.closePath();
+    c.moveTo(150, 188); c.quadraticCurveTo(144, 198, 136, 194); c.moveTo(150, 188); c.quadraticCurveTo(156, 198, 164, 194);
+    c.moveTo(128, 184); c.lineTo(96, 178); c.moveTo(128, 190); c.lineTo(98, 196); c.moveTo(172, 184); c.lineTo(204, 178); c.moveTo(172, 190); c.lineTo(202, 196);
+    ellPath(c, 150, 300, 34, 42);                                                  // pancita
+    // zanahoria
+    c.moveTo(40, 300); c.lineTo(70, 360); c.lineTo(52, 364); c.closePath();
+    c.moveTo(46, 302); c.quadraticCurveTo(30, 280, 38, 272); c.quadraticCurveTo(46, 286, 50, 300);
+    grassLine(c, 372);
+    c.stroke();
+  }},
+  { id: 'mariposa', name: 'Mariposa', cat: 'animales', probe: [60, 165], draw(c) {
+    const body = (k) => ellPath(k, 150, 205, 9, 72);
+    const wings = (k) => {
+      for (const s of [1, -1]) {
+        const X = (x) => 150 + s * (x - 150);
+        k.moveTo(X(146), 168); k.bezierCurveTo(X(95), 70, X(18), 88, X(38), 160); k.bezierCurveTo(X(52), 200, X(110), 206, X(146), 196); k.closePath();
+        k.moveTo(X(146), 206); k.bezierCurveTo(X(92), 210, X(48), 258, X(78), 300); k.bezierCurveTo(X(104), 326, X(140), 282, X(147), 236); k.closePath();
+      }
+    };
+    strokeOutside(c, body, wings);
+    c.beginPath();
+    body(c);
+    for (const s of [1, -1]) {
+      const X = (x) => 150 + s * (x - 150);
+      ringPath(c, X(92), 142, 18); ringPath(c, X(92), 142, 8); ringPath(c, X(52), 124, 7); ringPath(c, X(110), 262, 13); ringPath(c, X(80), 282, 6);
+    }
+    c.moveTo(146, 136); c.quadraticCurveTo(128, 100, 112, 96); c.moveTo(154, 136); c.quadraticCurveTo(172, 100, 188, 96);
+    ringPath(c, 110, 95, 5); ringPath(c, 190, 95, 5);
+    // flores abajo
+    for (const fx of [60, 150, 240]) { ringPath(c, fx, 360, 8); for (let i = 0; i < 6; i++) { const a = i * Math.PI / 3; ellPath(c, fx + 17 * Math.cos(a), 360 + 17 * Math.sin(a), 9, 6, a); } }
+    c.stroke();
+  }},
+  { id: 'tortuga', name: 'Tortuga', cat: 'animales', probe: [150, 208], draw(c) {
+    const shell = (k) => { k.moveTo(60, 262); k.bezierCurveTo(62, 128, 238, 128, 240, 262); k.closePath(); };
+    strokeOutside(c, shell, (k) => {
+      ellPath(k, 262, 236, 28, 21);                                                          // cabeza
+      ellPath(k, 95, 275, 20, 15); ellPath(k, 205, 275, 20, 15);                              // patas
+      k.moveTo(62, 250); k.lineTo(32, 262); k.lineTo(62, 258);                                 // cola
+      k.rect(52, 258, 196, 12);                                                               // borde
+    });
+    c.save(); c.beginPath(); shell(c); c.clip();
+    c.beginPath();
+    const hx = 150, hy = 206, hr = 30, hex = [];
+    for (let i = 0; i < 6; i++) { const a = i * Math.PI / 3 - Math.PI / 2; hex.push([hx + hr * Math.cos(a), hy + hr * Math.sin(a)]); }
+    c.moveTo(...hex[0]); for (const p of hex.slice(1)) c.lineTo(...p); c.closePath();
+    hex.forEach((p, i) => { const a = i * Math.PI / 3 - Math.PI / 2; c.moveTo(...p); c.lineTo(hx + 200 * Math.cos(a), hy + 200 * Math.sin(a)); });
+    c.stroke(); c.restore();
+    c.beginPath(); shell(c); ringPath(c, 270, 230, 5); c.moveTo(262, 246); c.quadraticCurveTo(272, 252, 282, 244);
+    grassLine(c, 300); cloudPath(c, 30, 70, 100); ringPath(c, 250, 60, 24);
+    c.stroke();
+  }},
+  { id: 'unicornio', name: 'Unicornio', cat: 'animales', probe: [150, 185], draw(c) {
+    const head = (k) => ellPath(k, 150, 196, 58, 72);
+    const snout = (k) => ellPath(k, 150, 252, 44, 30);
+    const mane = [[92, 150, 20], [84, 186, 20], [86, 222, 19], [96, 256, 18], [212, 150, 18]];
+    strokeExcept(c, [head], (k) => { k.moveTo(137, 132); k.lineTo(150, 50); k.lineTo(163, 132); });            // cuerno
+    strokeExcept(c, [head, circlesPath(mane)], (k) => { k.moveTo(106, 146); k.lineTo(100, 100); k.lineTo(130, 128); k.moveTo(194, 146); k.lineTo(200, 100); k.lineTo(170, 128); });  // orejas
+    mane.forEach((m, i) => strokeExcept(c, [head, ...mane.slice(0, i).map((o) => (k) => ringPath(k, o[0], o[1], o[2]))], (k) => ringPath(k, m[0], m[1], m[2])));
+    strokeExcept(c, [head, snout, circlesPath(mane)], (k) => { k.moveTo(112, 262); k.quadraticCurveTo(96, 330, 84, 392); k.lineTo(222, 392); k.quadraticCurveTo(206, 330, 190, 262); });   // cuello
+    c.save(); c.beginPath(); c.moveTo(137, 132); c.lineTo(150, 50); c.lineTo(163, 132); c.closePath(); c.clip();
+    c.beginPath(); for (let y = 70; y < 135; y += 16) { c.moveTo(130, y + 8); c.lineTo(170, y - 6); } c.stroke(); c.restore();
+    strokeOutside(c, snout, head);
+    c.beginPath();
+    snout(c); ringPath(c, 136, 254, 5); ringPath(c, 164, 254, 5);
+    c.moveTo(138, 268); c.quadraticCurveTo(150, 276, 162, 268);
+    c.moveTo(112, 192); c.quadraticCurveTo(124, 202, 136, 192); c.moveTo(164, 192); c.quadraticCurveTo(176, 202, 188, 192);   // ojos cerrados
+    c.moveTo(116, 196); c.lineTo(110, 204); c.moveTo(124, 199); c.lineTo(122, 208); c.moveTo(184, 196); c.lineTo(190, 204); c.moveTo(176, 199); c.lineTo(178, 208);
+    starSub(c, 45, 60, 18); starSub(c, 255, 70, 14); starSub(c, 250, 300, 12); heartSub(c, 45, 320, 16);
+    c.stroke();
+  }},
+  { id: 'dino', name: 'Dinosaurio', cat: 'animales', probe: [120, 262], draw(c) {
+    const body = (k) => ellPath(k, 140, 262, 82, 56);
+    const neck = (k) => { k.moveTo(186, 226); k.lineTo(204, 140); k.quadraticCurveTo(210, 96, 246, 96); k.quadraticCurveTo(280, 100, 272, 128); k.quadraticCurveTo(264, 148, 236, 146); k.lineTo(232, 250); k.closePath(); };
+    strokeOutside(c, body, neck);
+    strokeOutside(c, neck, body);
+    strokeExcept(c, [body, neck], (k) => {
+      k.moveTo(64, 248); k.quadraticCurveTo(14, 256, 6, 304); k.quadraticCurveTo(40, 290, 74, 290); k.closePath();   // cola
+      k.rect(92, 296, 30, 58); k.rect(164, 296, 30, 58);                                                               // patas
+      for (let i = 0; i < 5; i++) { const x = 80 + i * 26; const y = 262 - 56 * Math.sqrt(Math.max(0, 1 - ((x + 13 - 140) / 82) ** 2)); k.moveTo(x, y + 6); k.lineTo(x + 13, y - 18); k.lineTo(x + 26, y + 6); }  // picos
+    });
+    c.beginPath();
+    ringPath(c, 250, 116, 6); c.moveTo(254, 134); c.quadraticCurveTo(262, 138, 268, 132);
+    ringPath(c, 110, 250, 12); ringPath(c, 150, 268, 9); ringPath(c, 175, 244, 7); ringPath(c, 125, 285, 7);
+    grassLine(c, 354);
+    for (const x of [30, 250]) { c.moveTo(x, 354); c.lineTo(x + 6, 336); c.lineTo(x + 12, 354); }
+    c.stroke();
+  }},
+  { id: 'arbol', name: 'Árbol', cat: 'naturaleza', probe: [150, 270], draw(c) {
+    const crown = [[150, 110, 58], [95, 150, 48], [205, 150, 48], [115, 205, 50], [185, 205, 50], [150, 175, 55]];
+    unionCircles(c, crown);
+    strokeExcept(c, [circlesPath(crown)], (k) => { k.moveTo(128, 372); k.quadraticCurveTo(140, 300, 134, 220); k.lineTo(166, 220); k.quadraticCurveTo(160, 300, 172, 372); });
+    c.beginPath();
+    ellPath(c, 150, 318, 7, 12);
+    for (const [x, y] of [[110, 140], [175, 120], [140, 190], [205, 185], [90, 195]]) ringPath(c, x, y, 9);
+    grassLine(c, 372);
+    ringPath(c, 262, 44, 20); cloudPath(c, 10, 40, 70);
+    c.moveTo(40, 372); c.lineTo(46, 356); c.lineTo(52, 372); c.moveTo(240, 372); c.lineTo(246, 356); c.lineTo(252, 372);
+    c.stroke();
+  }},
+  { id: 'estrella', name: 'Estrella', cat: 'cosas', probe: [150, 170], draw(c) {
+    c.beginPath();
+    starSub(c, 150, 205, 118, 0.48); starSub(c, 150, 205, 70, 0.48);
+    ringPath(c, 130, 200, 7); ringPath(c, 170, 200, 7); c.moveTo(134, 222); c.quadraticCurveTo(150, 236, 166, 222);
+    starSub(c, 40, 50, 18); starSub(c, 262, 60, 14); starSub(c, 40, 360, 14); starSub(c, 255, 350, 20);
+    c.moveTo(244, 68); c.lineTo(214, 84); c.moveTo(248, 76); c.lineTo(224, 94); c.moveTo(252, 82); c.lineTo(236, 100);   // estrella fugaz
+    c.stroke();
+  }},
+  { id: 'corazones', name: 'Corazones', cat: 'cosas', probe: [150, 275], draw(c) {
+    c.beginPath();
+    heartSub(c, 150, 210, 95); heartSub(c, 150, 212, 55); heartSub(c, 150, 214, 22);
+    heartSub(c, 45, 60, 22); heartSub(c, 255, 55, 26); heartSub(c, 40, 355, 24); heartSub(c, 260, 355, 20); heartSub(c, 150, 370, 14);
+    c.stroke();
+  }},
+  { id: 'cohete', name: 'Cohete', cat: 'cosas', probe: [150, 235], draw(c) {
+    const body = (k) => { k.moveTo(150, 40); k.bezierCurveTo(202, 82, 202, 200, 190, 280); k.lineTo(110, 280); k.bezierCurveTo(98, 200, 98, 82, 150, 40); k.closePath(); };
+    strokeOutside(c, body, (k) => {
+      k.moveTo(112, 212); k.lineTo(66, 300); k.lineTo(110, 280); k.moveTo(188, 212); k.lineTo(234, 300); k.lineTo(190, 280);
+      k.rect(124, 280, 52, 16);
+      k.moveTo(128, 296); k.quadraticCurveTo(122, 330, 150, 372); k.quadraticCurveTo(178, 330, 172, 296);
+    });
+    c.save(); c.beginPath(); body(c); c.clip(); c.beginPath(); c.moveTo(80, 98); c.quadraticCurveTo(150, 116, 220, 98); c.stroke(); c.restore();
+    c.beginPath(); body(c); ringPath(c, 150, 160, 27); ringPath(c, 150, 160, 18);
+    c.moveTo(140, 300); c.quadraticCurveTo(140, 330, 150, 345); c.quadraticCurveTo(160, 330, 160, 300);
+    ringPath(c, 58, 90, 22); ellPath(c, 58, 90, 38, 9, -0.3);
+    starSub(c, 250, 70, 14); starSub(c, 40, 230, 11); starSub(c, 262, 210, 10); starSub(c, 60, 360, 12); starSub(c, 250, 360, 15);
+    c.stroke();
+  }},
+  { id: 'castillo', name: 'Castillo', cat: 'cosas', probe: [150, 240], draw(c) {
+    const wall = (k) => k.rect(80, 200, 140, 150);
+    const towers = (k) => { k.rect(30, 160, 56, 190); k.rect(214, 160, 56, 190); };
+    strokeOutside(c, towers, wall);
+    c.beginPath(); towers(c);
+    c.moveTo(24, 160); c.lineTo(58, 88); c.lineTo(92, 160); c.closePath(); c.moveTo(208, 160); c.lineTo(242, 88); c.lineTo(276, 160); c.closePath();
+    c.moveTo(58, 88); c.lineTo(58, 58); c.lineTo(80, 66); c.lineTo(58, 74); c.moveTo(242, 88); c.lineTo(242, 58); c.lineTo(264, 66); c.lineTo(242, 74);
+    for (const x of [92, 124, 156, 188]) c.rect(x, 184, 20, 16);
+    c.moveTo(125, 350); c.lineTo(125, 300); c.arc(150, 300, 25, Math.PI, 0); c.lineTo(175, 350);
+    for (const x of [58, 242]) { c.moveTo(x - 9, 250); c.lineTo(x - 9, 226); c.arc(x, 226, 9, Math.PI, 0); c.lineTo(x + 9, 250); c.closePath(); }
+    for (const x of [112, 188]) { c.moveTo(x - 8, 262); c.lineTo(x - 8, 244); c.arc(x, 244, 8, Math.PI, 0); c.lineTo(x + 8, 262); c.closePath(); }
+    grassLine(c, 350); cloudPath(c, 110, 90, 90);
+    c.stroke();
+  }},
+  { id: 'mandala1', name: 'Mandala flor', cat: 'mandalas', probe: [150, 200], draw(c) {
+    const cx = 150, cy = 200;
+    c.lineWidth = 2;
+    c.beginPath();
+    ringPath(c, cx, cy, 16); ringPath(c, cx, cy, 34); ringPath(c, cx, cy, 70); ringPath(c, cx, cy, 104); ringPath(c, cx, cy, 138);
+    petalRing(c, cx, cy, 16, 34, 8);
+    petalRing(c, cx, cy, 34, 70, 12, 0, 1.1); petalRing(c, cx, cy, 34, 58, 12, Math.PI / 12, 0.8);
+    petalRing(c, cx, cy, 70, 104, 16, 0, 1.05);
+    for (let i = 0; i < 16; i++) { const a = i * Math.PI / 8 - Math.PI / 2 + Math.PI / 16; ringPath(c, cx + 96 * Math.cos(a), cy + 96 * Math.sin(a), 4); }
+    for (let i = 0; i < 24; i++) {                                                          // festones
+      const a0 = i * Math.PI / 12, a1 = a0 + Math.PI / 12, am = (a0 + a1) / 2;
+      c.moveTo(cx + 104 * Math.cos(a0), cy + 104 * Math.sin(a0));
+      c.quadraticCurveTo(cx + 150 * Math.cos(am), cy + 150 * Math.sin(am), cx + 104 * Math.cos(a1), cy + 104 * Math.sin(a1));
+      ringPath(c, cx + 118 * Math.cos(am), cy + 118 * Math.sin(am), 5);
+    }
+    c.stroke();
+  }},
+  { id: 'mandala2', name: 'Mandala estrella', cat: 'mandalas', probe: [150, 200], draw(c) {
+    const cx = 150, cy = 200;
+    c.lineWidth = 2;
+    c.beginPath();
+    ringPath(c, cx, cy, 14); ringPath(c, cx, cy, 140);
+    starSub(c, cx, cy, 44, 0.5, 8);
+    for (const rot of [0, Math.PI / 4]) {                                                   // dos cuadrados = estrella de 8 puntas
+      for (let i = 0; i < 4; i++) { const a = rot + i * Math.PI / 2; const x = cx + 100 * Math.cos(a), y = cy + 100 * Math.sin(a); if (i) c.lineTo(x, y); else c.moveTo(x, y); }
+      c.closePath();
+    }
+    ringPath(c, cx, cy, 70);
+    for (let i = 0; i < 8; i++) {                                                          // gotas entre las puntas
+      const a = i * Math.PI / 4 + Math.PI / 8, r0 = 104, r1 = 136, x0 = cx + r0 * Math.cos(a), y0 = cy + r0 * Math.sin(a);
+      const tx = cx + r1 * Math.cos(a), ty = cy + r1 * Math.sin(a), px = -Math.sin(a) * 14, py = Math.cos(a) * 14;
+      c.moveTo(x0, y0); c.bezierCurveTo(x0 + px * 1.4, y0 + py * 1.4, tx + px, ty + py, tx, ty); c.bezierCurveTo(tx - px, ty - py, x0 - px * 1.4, y0 - py * 1.4, x0, y0);
+      ringPath(c, cx + 118 * Math.cos(a), cy + 118 * Math.sin(a), 4);
+      const b = i * Math.PI / 4; ringPath(c, cx + 118 * Math.cos(b), cy + 118 * Math.sin(b), 7);
+    }
+    for (let i = 0; i < 16; i++) { const a = i * Math.PI / 8; ringPath(c, cx + 57 * Math.cos(a), cy + 57 * Math.sin(a), 4); }
+    c.stroke();
+  }},
+  { id: 'coqui', name: 'Coquí', cat: 'pr', probe: [150, 262], draw(c) {
+    const body = (k) => ellPath(k, 150, 258, 66, 46);
+    const head = (k) => ellPath(k, 150, 188, 54, 40);
+    const eyes = (k) => { ringPath(k, 118, 156, 19); ringPath(k, 182, 156, 19); };
+    const leaf = (k) => { k.moveTo(20, 330); k.quadraticCurveTo(150, 250, 290, 320); k.quadraticCurveTo(150, 400, 20, 330); k.closePath(); };
+    strokeExcept(c, [body, head, eyes], leaf);
+    strokeExcept(c, [head, eyes], body);
+    strokeExcept(c, [eyes], head);
+    strokeExcept(c, [body, head], (k) => {
+      ellPath(k, 84, 288, 36, 16, -0.5); ellPath(k, 216, 288, 36, 16, 0.5);                 // patas de atrás
+      for (const s of [1, -1]) { const X = (x) => 150 + s * (x - 150);
+        k.moveTo(X(112), 226); k.lineTo(X(80), 236); k.lineTo(X(70), 222);                   // brazos (abiertos, terminan en la hoja)
+        ringPath(k, X(64), 218, 6); ringPath(k, X(74), 244, 6);
+        ringPath(k, X(52), 316, 6); ringPath(k, X(66), 322, 6); }
+    });
+    c.beginPath(); eyes(c); ringPath(c, 120, 158, 8); ringPath(c, 180, 158, 8);
+    c.moveTo(124, 204); c.quadraticCurveTo(150, 222, 176, 204);
+    ringPath(c, 138, 188, 2.5); ringPath(c, 162, 188, 2.5);
+    c.moveTo(150, 318); c.lineTo(150, 344);
+    // notas "co-quí"
+    c.moveTo(232, 88); c.lineTo(232, 50); c.lineTo(262, 42); c.lineTo(262, 80); ellPath(c, 224, 90, 9, 7); ellPath(c, 254, 82, 9, 7);
+    c.stroke();
+  }},
+  { id: 'maga', name: 'Flor de maga', cat: 'pr', probe: [150, 125], draw(c) {
+    const cx = 150, cy = 175;
+    const flower = (k) => polarSub(k, cx, cy, (a) => 100 * (0.62 + 0.38 * Math.pow(Math.abs(Math.cos(2.5 * (a + Math.PI / 2))), 0.7)));
+    const leaves = (k) => {
+      k.moveTo(150, 300); k.bezierCurveTo(110, 280, 50, 300, 40, 350); k.bezierCurveTo(90, 360, 130, 340, 150, 300);
+      k.moveTo(150, 300); k.bezierCurveTo(190, 280, 250, 300, 260, 350); k.bezierCurveTo(210, 360, 170, 340, 150, 300);
+    };
+    strokeExcept(c, [flower], (k) => { k.moveTo(145, 262); k.lineTo(145, 395); k.moveTo(155, 262); k.lineTo(155, 395); });
+    c.beginPath(); flower(c); leaves(c);
+    c.moveTo(56, 344); c.quadraticCurveTo(100, 320, 150, 302); c.moveTo(244, 344); c.quadraticCurveTo(200, 320, 150, 302);
+    for (let i = 0; i < 5; i++) { const a = i * 2 * Math.PI / 5 - Math.PI / 2 + Math.PI / 5; c.moveTo(cx + 18 * Math.cos(a), cy + 18 * Math.sin(a)); c.lineTo(cx + 62 * Math.cos(a), cy + 62 * Math.sin(a)); }
+    ringPath(c, cx, cy, 18);
+    c.moveTo(cx + 4, cy - 10); c.quadraticCurveTo(cx + 30, cy - 50, cx + 58, cy - 92); c.moveTo(cx + 12, cy - 6); c.quadraticCurveTo(cx + 36, cy - 44, cx + 64, cy - 88);
+    ringPath(c, cx + 64, cy - 96, 8); ringPath(c, cx + 48, cy - 80, 4); ringPath(c, cx + 42, cy - 66, 4); ringPath(c, cx + 76, cy - 84, 4);
+    c.stroke();
+  }},
+  { id: 'palmera', name: 'Palmera y playa', cat: 'pr', probe: [150, 380], draw(c) {
+    const trunk = (k) => { k.moveTo(128, 336); k.quadraticCurveTo(122, 240, 170, 140); k.lineTo(186, 146); k.quadraticCurveTo(146, 240, 156, 330); k.closePath(); };
+    const top = [178, 140];
+    const fronds = (k) => {
+      for (const [tx, ty, cx1, cy1, cx2, cy2] of [[60, 120, 110, 80, 110, 140], [90, 190, 120, 130, 140, 170], [280, 130, 240, 80, 240, 150], [250, 210, 230, 140, 200, 170], [180, 50, 150, 80, 210, 80]]) {
+        k.moveTo(...top); k.quadraticCurveTo(cx1, cy1, tx, ty); k.quadraticCurveTo(cx2, cy2, ...top);
+      }
+    };
+    const nuts = [[166, 158, 9], [184, 160, 9], [175, 172, 9]];
+    const sand = (k) => { k.moveTo(0, 330); k.quadraticCurveTo(150, 300, 300, 330); k.lineTo(300, 400); k.lineTo(0, 400); k.closePath(); };
+    strokeExcept(c, [fronds, circlesPath(nuts)], trunk);
+    strokeExcept(c, [circlesPath(nuts)], fronds);
+    strokeExcept(c, [trunk, fronds, sand], (k) => { k.moveTo(0, 262); k.lineTo(300, 262); });                    // horizonte
+    strokeExcept(c, [trunk, sand], (k) => { for (const y of [285, 305]) for (let x = 0; x < 300; x += 50) { k.moveTo(x, y); k.quadraticCurveTo(x + 12, y - 8, x + 25, y); k.quadraticCurveTo(x + 37, y + 8, x + 50, y); } });
+    strokeExcept(c, [trunk], sand);
+    c.save(); c.beginPath(); trunk(c); c.clip(); c.beginPath();
+    for (let i = 0; i < 9; i++) { const y = 320 - i * 21; c.moveTo(100, y + 6); c.lineTo(210, y - 6); } c.stroke(); c.restore();
+    c.beginPath(); for (const n of nuts) ringPath(c, n[0], n[1], n[2]);
+    ringPath(c, 50, 50, 24);
+    for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4; c.moveTo(50 + 32 * Math.cos(a), 50 + 32 * Math.sin(a)); c.lineTo(50 + 42 * Math.cos(a), 50 + 42 * Math.sin(a)); }
+    starSub(c, 240, 360, 16, 0.5); ringPath(c, 60, 362, 10); ellPath(c, 90, 372, 12, 6);           // estrella de mar, caracol
+    c.moveTo(232, 240); c.lineTo(282, 240); c.lineTo(274, 252); c.lineTo(240, 252); c.closePath();   // botecito
+    c.moveTo(256, 240); c.lineTo(256, 204); c.lineTo(276, 236); c.closePath();
+    c.stroke();
+  }},
+  { id: 'garita', name: 'Garita del Morro', cat: 'pr', probe: [150, 250], draw(c) {
+    const dome = (k) => { k.moveTo(98, 166); k.quadraticCurveTo(150, 60, 202, 166); k.closePath(); };
+    c.beginPath();
+    c.rect(106, 178, 88, 142);                                                  // cuerpo
+    c.rect(94, 166, 112, 12);                                                   // cornisa
+    dome(c);
+    ringPath(c, 150, 100, 8); c.rect(146, 78, 8, 14); ringPath(c, 150, 74, 4);  // remate
+    c.moveTo(140, 290); c.lineTo(140, 222); c.arc(150, 222, 10, Math.PI, 0); c.lineTo(160, 290); c.closePath();   // ventana
+    c.moveTo(106, 320); c.lineTo(194, 320); c.lineTo(214, 348); c.lineTo(86, 348); c.closePath();                 // base
+    c.rect(0, 348, 300, 52);                                                    // muralla
+    for (let y = 348; y < 400; y += 17) { c.moveTo(0, y); c.lineTo(300, y); }
+    for (let r = 0; r < 3; r++) for (let x = (r % 2) * 25; x < 300; x += 50) { const y = 348 + r * 17; c.moveTo(x, y); c.lineTo(x, y + 17); }
+    cloudPath(c, 10, 90, 80); cloudPath(c, 210, 60, 80);
+    c.moveTo(230, 250); c.quadraticCurveTo(245, 240, 260, 250); c.moveTo(255, 225); c.quadraticCurveTo(268, 216, 281, 225);   // pajaritos
+    c.stroke();
+    c.save(); c.beginPath(); dome(c); c.clip(); c.beginPath();
+    for (const x of [124, 150, 176]) { c.moveTo(x, 170); c.quadraticCurveTo(150 + (x - 150) * 0.4, 110, 150, 96); } c.stroke(); c.restore();
+  }},
+  { id: 'bandera', name: 'Bandera de Puerto Rico', cat: 'pr', probe: [50, 150], draw(c) {
+    const X0 = 40, Y0 = 110, FW = 240, FH = 160, TW = FH * Math.sqrt(3) / 2;
+    const tri = (k) => { k.moveTo(X0, Y0); k.lineTo(X0 + TW, Y0 + FH / 2); k.lineTo(X0, Y0 + FH); k.closePath(); };
+    c.beginPath();
+    c.rect(X0, Y0, FW, FH); tri(c);
+    starSub(c, X0 + TW / 3, Y0 + FH / 2, 26, 0.4);
+    c.rect(26, 96, 12, 290); ringPath(c, 32, 88, 9);                            // asta
+    c.stroke();
+    strokeExcept(c, [tri], (k) => { for (let i = 1; i < 5; i++) { const y = Y0 + i * FH / 5; k.moveTo(X0, y); k.lineTo(X0 + FW, y); } });
+  }},
 ];
 function renderTemplate(c, t, w, h) {
   const s = Math.min(w / 300, h / 400);
@@ -1254,15 +1947,30 @@ function buildTemplateGrid() {
   const ph = document.createElement('button'); ph.className = 'card tplPhoto'; ph.id = 'tplPhoto'; ph.style.border = '0'; ph.style.padding = '8px';
   ph.innerHTML = '<div class="ph"><svg><use href="#i-camera"/></svg><span>Foto de tu libro para colorear</span></div><div class="name">Subir foto</div>';
   grid.append(ph);
+  const head = (key, label) => { const h = document.createElement('h3'); h.className = 'tplcat'; h.dataset.cat = key; h.textContent = label; grid.append(h); };
   const mk = (id, name, t) => {
-    const b = document.createElement('button'); b.className = 'card tpl'; b.dataset.tpl = id;
+    const b = document.createElement('button'); b.className = 'card tpl'; b.dataset.tpl = id; b.dataset.cat = t ? t.cat : 'cosas';
     const cv = mkCanvas(240, 320); const c = cv.getContext('2d'); c.fillStyle = '#fff'; c.fillRect(0, 0, 240, 320);
     if (t) renderTemplate(c, t, 240, 320);
     const n = document.createElement('div'); n.className = 'name'; n.textContent = name;
     b.append(cv, n); grid.append(b);
   };
-  for (const t of TEMPLATES) mk(t.id, t.name, t);
-  mk('blank', 'Hoja en blanco', null);
+  for (const [key, label] of TEMPLATE_CATS) {
+    head(key, label);
+    for (const t of TEMPLATES) if (t.cat === key) mk(t.id, t.name, t);
+    if (key === 'cosas') mk('blank', 'Hoja en blanco', null);
+  }
+  const tabs = $('#tplTabs'); tabs.innerHTML = '';
+  for (const [key, label] of [['all', 'Todas'], ...TEMPLATE_CATS]) {
+    const b = document.createElement('button'); b.dataset.tcat = key; b.textContent = label; b.classList.toggle('on', key === 'all');
+    b.onclick = () => {
+      $$('#tplTabs button').forEach((x) => x.classList.toggle('on', x === b));
+      $$('#tplGrid [data-cat]').forEach((el) => { el.hidden = key !== 'all' && el.dataset.cat !== key; });
+      $('#tplPhoto').hidden = key !== 'all';
+      $('#tplSheet .scroll').scrollTop = 0;
+    };
+    tabs.append(b);
+  }
 }
 function loadTemplate(id) {
   cancelGesture(); flattenObjs();
@@ -1275,7 +1983,7 @@ function loadTemplate(id) {
 
 /* ---------- modos y herramientas ---------- */
 function setMode(m) {
-  cancelGesture();
+  cancelGesture(); hidePop();
   if (m !== state.mode) flattenObjs();
   state.mode = m;
   document.body.classList.toggle('mode-draw', m === 'draw');
@@ -1295,22 +2003,102 @@ $$('#drawTools .tool').forEach((b) => b.onclick = () => {
   state.drawTool = b.dataset.tool;
   $$('#drawTools .tool').forEach((x) => x.classList.toggle('on', x === b)); updateCursor();
 });
+const isBrush = (t) => t in BRUSHES;
 function setColorTool(t) {
+  if (isBrush(t)) setBrush(t);
   state.colorTool = t;
-  $$('#colorTools [data-ctool]').forEach((x) => x.classList.toggle('on', x.dataset.ctool === t)); updateCursor();
+  $$('#colorTools [data-ctool]').forEach((x) => x.classList.toggle('on', x.dataset.ctool === t || (x.id === 'brushBtn' && isBrush(t))));
+  updateCursor();
 }
-$$('#colorTools [data-ctool]').forEach((b) => b.onclick = () => { pickTool(); setColorTool(b.dataset.ctool); });
-$$('#drawSizes .size').forEach((b) => b.onclick = () => { state.drawSize = +b.dataset.size; $$('#drawSizes .size').forEach((x) => x.classList.toggle('on', x === b)); });
-$$('#colorSizes .size').forEach((b) => b.onclick = () => {
-  state.colorSize = +b.dataset.size; $$('#colorSizes .size').forEach((x) => x.classList.toggle('on', x === b));
-  if (state.colorTool === 'fill') { pickTool(); setColorTool('crayon'); }      // el grosor es para el crayón
+// El botón de crayón/marcadores muestra el que se está usando; la lista completa está en su submenú
+function setBrush(b) {
+  state.brush = b;
+  const btn = $('#brushBtn');
+  btn.dataset.ctool = b;
+  btn.querySelector('use').setAttribute('href', '#' + BRUSH_ICONS[b]);
+  btn.querySelector('.bl').textContent = BRUSHES[b];
+  btn.setAttribute('aria-label', BRUSHES[b] + ' (toca otra vez para cambiar de marcador)');
+  $$('#brushPop [data-brush]').forEach((x) => x.classList.toggle('on', x.dataset.brush === b));
+}
+/* submenús flotantes (marcadores, grosor, degradado) */
+let openPop = null;
+function showPop(id, anchor) {
+  hidePop();
+  const pop = $('#' + id); pop.classList.add('show'); openPop = { pop, anchor };
+  $('#toast').classList.remove('show');
+  const r = anchor.getBoundingClientRect(), vw = window.innerWidth, vh = window.innerHeight;
+  pop.style.left = '0px'; pop.style.top = '0px';
+  const pw = Math.min(pop.offsetWidth, vw - 16), ph = pop.offsetHeight;
+  let left = clamp(r.left + r.width / 2 - pw / 2, 8, vw - pw - 8);
+  let top = r.top - ph - 8;
+  if (top < 8) top = Math.min(vh - ph - 8, r.bottom + 8);
+  if (top < 8) top = 8;
+  pop.style.left = left + 'px'; pop.style.top = top + 'px';
+}
+function hidePop() { if (openPop) { openPop.pop.classList.remove('show'); openPop = null; } }
+document.addEventListener('pointerdown', (e) => {
+  if (!openPop) return;
+  if (openPop.pop.contains(e.target) || openPop.anchor.contains(e.target)) return;
+  const onPaper = stage.contains(e.target) && !isUI(e.target);
+  hidePop();
+  if (onPaper) { e.stopPropagation(); e.preventDefault(); }   // tocar la hoja solo cierra el submenú
+}, true);
+window.addEventListener('resize', hidePop);
+$$('#colorTools [data-ctool]').forEach((b) => b.onclick = () => {
+  const t = b.dataset.ctool, wasOn = b.classList.contains('on');
+  if (b.dataset.pop && (wasOn || openPop)) {                   // tocar otra vez: abrir / cerrar opciones
+    if (openPop && openPop.anchor === b) hidePop(); else showPop(b.dataset.pop, b);
+    return;
+  }
+  pickTool(); setColorTool(t);
+  if (t === 'grad' && !state.gradSeen) { state.gradSeen = true; showPop('gradPop', b); }
+  else if (b.id === 'brushBtn' && !state.brushSeen) { state.brushSeen = true; toast('Toca otra vez para elegir marcador: acrílico, de agua o de alcohol'); }
 });
+$$('#brushPop [data-brush]').forEach((b) => b.onclick = () => { pickTool(); setColorTool(b.dataset.brush); state.brushSeen = true; hidePop(); });
+$('#sizeBtn').onclick = () => { if (openPop && openPop.anchor === $('#sizeBtn')) hidePop(); else showPop('sizePop', $('#sizeBtn')); };
+function setColorSize(k) {
+  state.colorSize = String(k);
+  $$('#colorSizes .size').forEach((x) => x.classList.toggle('on', x.dataset.size === state.colorSize));
+  const dot = $('#colorSizes .size[data-size="' + state.colorSize + '"] i');
+  const sb = $('#sizeBtn');
+  sb.querySelector('.dotbox i').style.cssText = dot ? dot.style.cssText : '';
+  sb.querySelector('.sl').textContent = SIZE_NAMES[state.colorSize];
+}
+$$('#drawSizes .size').forEach((b) => b.onclick = () => { state.drawSize = b.dataset.size; $$('#drawSizes .size').forEach((x) => x.classList.toggle('on', x === b)); });
+$$('#colorSizes .size').forEach((b) => b.onclick = () => {
+  setColorSize(b.dataset.size); hidePop();
+  if (state.colorTool === 'fill' || state.colorTool === 'grad') { pickTool(); setColorTool(state.brush); }   // el grosor es para pintar a mano
+});
+/* opciones del degradado */
+function updateGradUI() {
+  const c1 = state.color, c2 = state.color2;
+  const css = state.gradType === 'radial' ? `radial-gradient(circle, ${c1}, ${c2})` : `linear-gradient(135deg, ${c1}, ${c2})`;
+  const sw = $('#gradBtn .gswatch'); sw.style.background = css; sw.classList.toggle('radial', state.gradType === 'radial');
+  $('#gC1').style.background = c1; $('#gC2').style.background = c2;
+  $('#gPrev').style.background = `linear-gradient(90deg, ${c1}, ${c2})`;
+  $$('#gPal .sw').forEach((s) => s.classList.toggle('on', s.dataset.c === c2));
+  $$('#gType [data-gt]').forEach((x) => x.classList.toggle('on', x.dataset.gt === state.gradType));
+  $$('#gDir [data-gd]').forEach((x) => { x.classList.toggle('on', x.dataset.gd === state.gradDir); x.disabled = state.gradType === 'radial'; });
+}
+(function buildGradPalette() {
+  const p = $('#gPal');
+  for (const c of ['#FFFFFF', '#FFE66D', '#FFCC00', '#FF9500', '#FF3B30', '#FF2D92', '#AF52DE', '#5856D6',
+                   '#007AFF', '#5AC8FA', '#00C7BE', '#34C759', '#A8E063', '#8B4513', '#9E9E9E', '#333333']) {
+    const b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.dataset.c = c; b.setAttribute('aria-label', 'Segundo color ' + c);
+    b.onclick = () => { state.color2 = c; updateGradUI(); }; p.append(b);
+  }
+})();
+$('#gSwap').onclick = () => { const c = state.color; setColor(state.color2); state.color2 = c; updateGradUI(); };
+$$('#gType [data-gt]').forEach((b) => b.onclick = () => { state.gradType = b.dataset.gt; updateGradUI(); });
+$$('#gDir [data-gd]').forEach((b) => b.onclick = () => { state.gradDir = b.dataset.gd; updateGradUI(); });
 function setColor(hex) {
   state.color = hex.toUpperCase();
   $$('#palette .sw').forEach((s) => s.classList.toggle('on', s.dataset.c === state.color));
   const tint = state.color === '#FFFFFF' ? '' : state.color;
-  $$('#colorTools [data-ctool="fill"] svg, #colorTools [data-ctool="crayon"] svg').forEach((s) => { s.style.color = tint; });
+  $$('#colorTools [data-ctool="fill"] svg, #brushBtn svg').forEach((s) => { s.style.color = tint; });
   if (state.colorTool === 'cerase') setColorTool('fill');
+  else if (state.colorTool === 'blend') setColorTool(state.brush);    // eligió un color: quiere pintar
+  updateGradUI();
 }
 (function buildPalette() {
   const p = $('#palette');
@@ -2360,15 +3148,29 @@ let deferredPrompt = null;
 const isStandalone = () => (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
 const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 function showHint() {
+  $('#hintTitle').textContent = 'Instala la app en tu teléfono'; $('#hintIcon').setAttribute('href', '#i-phone');
   let html;
   if (isStandalone()) html = '<p>¡La app ya está instalada! Ábrela desde el ícono en tu pantalla de inicio. Funciona sin internet.</p>';
   else if (isIOS()) html = '<p><b>iPhone / iPad (Safari):</b> toca <span class="kbd">Compartir</span> (el cuadrito con la flecha ↑) y luego <span class="kbd">Agregar a pantalla de inicio</span>.</p>';
   else html = '<p><b>Android (Chrome):</b> toca el menú <span class="kbd">⋮</span> y luego <span class="kbd">Instalar app</span> o <span class="kbd">Agregar a pantalla de inicio</span></p><p><b>iPhone (Safari):</b> <span class="kbd">Compartir</span> → <span class="kbd">Agregar a pantalla de inicio</span>.</p>';
-  html += '<p style="color:var(--muted);font-size:13px">Consejo: en el menú ☰ encontrarás <b>Plantillas</b> y <b>Subir foto</b> para colorear páginas de tus libros.</p>';
+  html += '<p style="color:var(--muted);font-size:13px">Consejo: en el menú ☰ encontrarás <b>Plantillas</b> y <b>Subir foto</b> para colorear páginas de tus libros. En <b>Colorear</b> tienes crayón, marcadores (acrílico, de agua y de alcohol), degradado y difuminar.</p>';
   $('#hintBody').innerHTML = html;
   $('#hintInstall').style.display = deferredPrompt ? '' : 'none';
   $('#hint').classList.add('show');
 }
+const NEWS_HTML = '<p><b>Nuevo en la versión 3</b> (en <b>Colorear</b>):</p>' +
+  '<p>🖍️ <b>Marcadores</b>: toca <span class="kbd">Crayón</span> dos veces y elige <b>acrílico</b> (tapa todo, color fuerte), <b>de agua</b> (acuarela suave que se nota más al repasar) o <b>de alcohol</b> (transparente y parejo, se oscurece al repasar).</p>' +
+  '<p>🌈 <b>Degradado</b>: toca una zona y se rellena pasando de un color a otro; arrastra para elegir la dirección. Tócalo otra vez para elegir el segundo color, lineal o circular.</p>' +
+  '<p>👆 <b>Difuminar</b>: pasa el dedo sobre los colores para mezclarlos suavemente (las líneas negras no se tocan).</p>' +
+  '<p>✏️ Punta <b>súper fina</b> para detalles (en <span class="kbd">Grosor</span>).</p>' +
+  '<p>🐸 <b>18 plantillas nuevas</b> por categorías: animales, naturaleza, mandalas y <b>Puerto Rico</b> (coquí, flor de maga, palmera y playa, garita del Morro y la bandera). Menú ☰ → <span class="kbd">Plantillas</span>.</p>';
+function showNews() {
+  $('#hintTitle').textContent = 'Novedades'; $('#hintIcon').setAttribute('href', '#i-sticker');
+  $('#hintBody').innerHTML = NEWS_HTML;
+  $('#hintInstall').style.display = 'none';
+  $('#hint').classList.add('show');
+}
+$('#mNews').onclick = () => { closeSheet('#menuSheet'); showNews(); };
 function hideHint(remember = true) {
   if (!$('#hint').classList.contains('show')) return;
   $('#hint').classList.remove('show');
@@ -2437,15 +3239,19 @@ setAddTab('stk');
 layout();
 updateUndoButtons();
 updateObjBar();
-restore().then(async () => {
+restore().then(async (restored) => {
   await receiveShared();
-  let seen = false; try { seen = localStorage.getItem('colorear.hintVisto') === '1'; } catch (_) {}
-  if (!seen && !isStandalone() && !$('#adjust').classList.contains('show')) showHint();
+  let seen = false, prevVer = null;
+  try { seen = localStorage.getItem('colorear.hintVisto') === '1'; prevVer = localStorage.getItem('colorear.version'); localStorage.setItem('colorear.version', APP_VERSION); } catch (_) {}
+  const busy = $('#adjust').classList.contains('show');
+  if (!seen && !isStandalone() && !busy) showHint();
+  else if ((seen || restored) && prevVer !== APP_VERSION && !busy) showNews();   // quien ya usaba la app: contarle lo nuevo una vez
 });
 // Acceso para pruebas / depuración
 window.__colorear = {
   layers, state, view, floodFill, loadTemplate, undo, redo, saveToGallery, openGallery, exportPng, buildExport, shareDrawing, undoStack, redoStack, tx,
   processLineArt, importImageFile, readPngText, addObject, flattenObjs, zoomAt, zoomFit, adj,
+  gradientFill, regionMask, setColorTool, setColorSize, setColor, showNews, templates: TEMPLATES,
   get W() { return W; }, get H() { return H; }, get objs() { return objs; }, get objMode() { return objMode; }, version: APP_VERSION,
 };
 </script>
