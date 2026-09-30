@@ -29,7 +29,7 @@ body{
   font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   color:var(--ink);background:var(--bg);
   -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
-  display:grid;grid-template-rows:auto minmax(0,1fr) auto;grid-template-columns:minmax(0,1fr);
+  display:grid;grid-template-rows:auto auto auto minmax(0,1fr);grid-template-columns:minmax(0,1fr);
 }
 button{font:inherit;color:inherit;touch-action:manipulation;cursor:pointer}
 svg{display:block}
@@ -65,7 +65,7 @@ header.top{
 }
 @media (max-width:340px){ :root{--btn:40px} header.top{gap:3px} header .seg button{font-size:13px;padding:0 2px} .ib svg{width:22px;height:22px} }
 #stage{
-  grid-row:2;grid-column:1;position:relative;min-height:0;min-width:0;
+  grid-row:4;grid-column:1;position:relative;min-height:0;min-width:0;
   padding:8px;overflow:hidden;touch-action:none;
 }
 #stage.panning,#stage.pan-tool{cursor:grab}
@@ -89,10 +89,7 @@ header.top{
 #zoomBar .ib svg{width:24px;height:24px}
 #zoomBar .ib.on{background:var(--sel);color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent)}
 #zoomPct{min-width:40px;text-align:center;font-weight:800;font-size:13px;color:var(--muted)}
-#addBtn{left:calc(env(safe-area-inset-left) + 8px);bottom:8px;height:52px;border:0;border-radius:18px;padding:0 16px 0 12px;
-  background:var(--accent2);color:#fff;font-weight:800;font-size:16px;gap:6px;box-shadow:0 3px 12px rgba(60,30,120,.3)}
-#addBtn svg{width:26px;height:26px}
-#addBtn:active{transform:scale(.95)}
+/* 3.4: Añadir está en la pestaña Más */
 #objBar{left:50%;transform:translateX(-50%);top:8px;background:rgba(255,255,255,.97);border-radius:18px;padding:5px;
   box-shadow:0 3px 14px rgba(60,30,90,.25);display:none;max-width:calc(100% - 16px);overflow-x:auto;scrollbar-width:none}
 #objBar::-webkit-scrollbar{display:none}
@@ -105,10 +102,47 @@ body.obj-mode #addBtn{display:none}
 .ob.primary svg{width:22px;height:22px}
 .ob:disabled{opacity:.35}
 .ob.danger{color:#d93a2f}
+/* 3.4: las herramientas viven en un panel que se abre desde las pestañas de arriba (la hoja usa el resto de la pantalla) */
 footer.tools{
-  grid-row:3;grid-column:1;background:var(--panel);box-shadow:0 -1px 0 var(--line);z-index:2;
-  padding:6px calc(env(safe-area-inset-right) + 6px) calc(env(safe-area-inset-bottom) + 6px) calc(env(safe-area-inset-left) + 6px);
+  position:fixed;z-index:22;left:6px;top:0;width:calc(100% - 12px);display:none;overflow-y:auto;overscroll-behavior:contain;
+  background:var(--panel);border-radius:18px;box-shadow:0 8px 30px rgba(50,25,90,.3);padding:8px;touch-action:pan-y;
 }
+body.panel-open footer.tools{display:block;animation:popin .14s ease-out}
+@media (max-width:399px){ footer.tools{padding:6px 5px;border-radius:14px} }
+footer .grp{display:none}
+body[data-panel="tools"] footer .grp[data-grp="tools"],body[data-panel="colors"] footer .grp[data-grp="colors"],
+body[data-panel="size"] footer .grp[data-grp="size"],body[data-panel="more"] footer .grp[data-grp="more"]{display:block}
+footer .gh{margin:0 4px 6px;font-size:12.5px;font-weight:800;color:var(--muted)}
+#tabBar{grid-row:2;grid-column:1;display:flex;gap:4px;padding:4px calc(env(safe-area-inset-right) + 6px) 4px calc(env(safe-area-inset-left) + 6px);background:var(--panel);z-index:2;min-width:0}
+.tb{flex:1 1 0;min-width:max-content;height:46px;border:0;border-radius:12px;background:#faf6f1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  font-size:11px;font-weight:700;color:var(--muted);position:relative;padding:0 3px}
+.tb .tbi{height:24px;display:flex;align-items:center;justify-content:center}
+.tb svg{width:23px;height:23px;color:var(--ink)}
+.tb .tbl{white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.tb.on{background:var(--sel);color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent)}
+.tb:active{transform:scale(.96)}
+.tb .tbsw{display:block;width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.22)}
+.tb .tbdot{display:block;border-radius:50%;background:var(--ink)}
+.tb .tbgrad{display:block;width:24px;height:21px;border-radius:6px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
+#tbTools{flex-grow:1.5}
+@media (max-width:359px){ .tb{font-size:10px;letter-spacing:-.3px;padding:0 1px} #tabBar{gap:3px} }
+#quickStrip{grid-row:3;grid-column:1;display:flex;align-items:center;gap:6px;padding:2px calc(env(safe-area-inset-right) + 8px) 4px calc(env(safe-area-inset-left) + 8px);background:var(--panel);box-shadow:0 1px 0 var(--line);z-index:2;min-width:0}
+#qsCur{flex:0 0 auto;height:30px;border:0;border-radius:15px;padding:0 8px 0 3px;display:flex;align-items:center;gap:4px;background:#f1eaf7;font-size:11.5px;font-weight:800;color:var(--accent2)}
+#qsCur i{display:block;width:24px;height:24px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.22),0 0 0 2px #fff}
+#qsList{flex:1 1 auto;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;touch-action:pan-x;min-width:0;padding:2px}
+#qsList::-webkit-scrollbar{display:none}
+#qsList .sw{flex:0 0 26px;width:26px;height:26px;min-height:26px}
+#qsList .sw.on{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--ink);transform:scale(.85)}
+#qsMore{flex:0 0 auto;width:30px;height:30px;border:0;border-radius:50%;padding:0;background:conic-gradient(#ff3b30,#ffcc00,#34c759,#00c7be,#007aff,#af52de,#ff2d92,#ff3b30);box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+#recentLine{display:flex;align-items:center;gap:6px;margin-top:6px;min-width:0}
+#recentLine .rlbl{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap}
+#recentRow #customWrap{flex:0 0 auto;height:38px;min-width:0;flex-direction:row;gap:6px;border-radius:19px;padding:0 12px 0 6px;font-size:14px;font-weight:700;color:var(--ink);background:#f1eaf7}
+#recentRow #customWrap .rainbow{width:26px;height:26px}
+.moregrid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.moregrid .mbtn{min-height:54px;font-size:14.5px}
+.moregrid .mbtn.danger svg{color:#d93a2f}
+#panel .sizes{flex:1 1 auto}
+#panel .sizes .size{flex:1 1 0;width:auto;min-width:0}
 .row{display:flex;gap:4px;align-items:stretch;overflow-x:auto;scrollbar-width:none;touch-action:pan-x}
 .row::-webkit-scrollbar{display:none}
 .row + .row{margin-top:6px}
@@ -159,7 +193,6 @@ footer.tools{
 .pop .gprev{flex:1;height:26px;border-radius:13px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
 .pop .gswap{border:0;border-radius:12px;background:#f1eaf7;min-height:40px;padding:0 10px;font-weight:700}
 .pop .ptip{font-size:12.5px;color:var(--muted);margin:8px 4px 2px;line-height:1.35}
-#sizePop .pgrid{grid-template-columns:1fr 1fr}
 /* degradado fácil: degradados listos */
 #gradPop{width:340px;overflow-y:auto;overscroll-behavior:contain}
 .pop .ghint{font-size:14px;font-weight:700;color:var(--ink);margin:0 4px 8px;line-height:1.3}
@@ -194,24 +227,49 @@ footer.tools{
 #toast .tsw{display:inline-block;width:20px;height:20px;border-radius:50%;vertical-align:-5px;margin-right:8px;box-shadow:0 0 0 2px #fff}
 @media (max-width:399px){ #pickColor span{max-width:44px} #pickColor{padding-right:9px} }
 @media (max-width:374px){ #recentRow .rlbl{display:none} }
-@media (max-width:379px){ #addBtn .lb{display:none} #addBtn{padding:0 13px} }   /* en pantallas muy angostas el zoom tapaba "Añadir" */
-@media (max-width:359px){ #moreColors{padding-right:10px;font-size:13px} #recentRow{gap:5px} }
-/* hoja de 360 colores */
-#colorsSheet .sheet{height:88%}
-.ctip{margin:-4px 2px 8px;font-size:14px;color:var(--muted);line-height:1.35}
-.ctabs{margin-bottom:6px;gap:6px;padding-bottom:2px}
-.ctabs button{flex:0 0 auto;height:40px;padding:0 12px 0 8px;font-size:14px;display:flex;align-items:center;gap:6px;white-space:nowrap}
-.ctabs button i{width:18px;height:18px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15),0 0 0 2px #fff;flex:0 0 auto}
+@media (max-width:359px){ #moreColors{padding-right:8px;font-size:13px} #recentRow{gap:4px} #recentRow #customWrap{padding-right:9px} }
+/* hoja de 360 colores (3.4: media pantalla, familias en acordeón, códigos propios) */
+#colorsSheet{background:rgba(30,20,50,.16)}
+#colorsSheet .sheet{height:48%;max-height:48%;padding-top:2px;transition:height .18s ease,max-height .18s ease}
+#colorsSheet.tall .sheet{height:88%;max-height:88%}
+.cgrab{flex:0 0 auto;width:100%;height:20px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;touch-action:none;cursor:ns-resize;padding:0}
+.cgrab i{display:block;width:44px;height:5px;border-radius:3px;background:#d6cce2}
+#colorsSheet .sheet-head{margin-bottom:2px;gap:6px}
+#colorsSheet .sheet-head h2{font-size:17px}
+#colorsSheet .sheet-head .ib{width:40px;height:40px}
+.cwheel{flex:0 0 auto;display:flex;align-items:center;gap:6px;height:36px;border:0;border-radius:18px;padding:0 12px 0 5px;background:#f1eaf7;font-weight:700;font-size:13.5px;color:var(--ink)}
+.cwheel .rainbow{width:26px;height:26px;border-radius:50%;background:conic-gradient(#ff3b30,#ffcc00,#34c759,#00c7be,#007aff,#af52de,#ff2d92,#ff3b30)}
+.ctip{margin:0 2px 4px;font-size:12.5px;color:var(--muted);line-height:1.3}
+#cTabs{margin-bottom:4px;gap:5px;padding-bottom:2px}
+#cTabs button{flex:0 0 auto;height:32px;padding:0 10px 0 6px;font-size:13px;border-radius:16px;display:flex;align-items:center;gap:5px;white-space:nowrap}
+#cTabs button i{width:14px;height:14px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15),0 0 0 2px #fff;flex:0 0 auto}
 #cScroll{position:relative;flex:1 1 auto;padding:0 2px 10px}
-.cfam h3{margin:12px 2px 8px;font-size:16px;color:var(--accent2);display:flex;align-items:baseline;gap:8px}
-.cfam h3 small{font-size:12px;font-weight:600;color:var(--muted)}
-.cfam:first-child h3{margin-top:2px}
-.cgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;max-width:480px}
-.cgrid .sw{border-radius:14px;min-height:40px}
+.crow{display:flex;align-items:center;gap:6px;margin-bottom:4px;min-height:40px}
+.crow>h3,.crow>b{flex:0 0 62px;margin:0;font-size:12px;line-height:1.15;color:var(--accent2);font-weight:800}
+.crow>h3 small{display:none}
+.crow .recent,.crow .cqrow{flex:1 1 auto;display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;touch-action:pan-x;padding:3px 2px;min-width:0}
+.crow .cqrow::-webkit-scrollbar{display:none}
+.crow .recent .sw,.crow .cqrow .sw{flex:0 0 32px;width:32px;height:32px;min-height:32px}
+.cquick{display:none}
+body.ui-hidden .cquick{display:flex}
+.cfam.fam{display:flex;align-items:center;gap:4px;border-radius:14px;padding:2px 0;margin-bottom:2px;cursor:pointer}
+.cfam.fam.open{flex-wrap:wrap;background:#faf6f1;padding:2px 0 6px;cursor:default}
+.cfh{flex:0 0 62px;display:flex;align-items:center;gap:2px;border:0;background:transparent;min-height:38px;padding:0 0 0 2px;font-weight:800;font-size:12px;line-height:1.15;color:var(--accent2);text-align:left}
+.cfh span{min-width:0}
+.cfh b{flex:0 0 auto;font-size:11px;transition:transform .15s;opacity:.7}
+.cfam.open .cfh{flex:1 0 100%;font-size:14px;min-height:34px;padding-left:6px}
+.cfam.open .cfh b{transform:rotate(180deg)}
+.cfh small{font-size:11.5px;font-weight:600;color:var(--muted);margin-left:6px;display:none}
+.cfam.open .cfh small{display:inline}
+.cgrid{flex:1 1 auto;min-width:0;display:flex;gap:4px;overflow:hidden;padding:2px}
+.cgrid .sw{position:relative;flex:0 0 34px;width:34px;height:34px;min-height:0;border-radius:10px;aspect-ratio:auto}
+.cgrid .sw:not(.rep){display:none}
+.cfam.open .cgrid{flex:1 0 100%;display:grid;grid-template-columns:repeat(6,36px);gap:6px;justify-content:start;padding:2px 6px}
+.cfam.open .cgrid .sw{display:block;width:36px;height:36px}
+.cgrid .sw .cc{position:absolute;left:0;right:0;bottom:2px;font:700 8.5px/1 system-ui,sans-serif;text-align:center;color:rgba(0,0,0,.6);pointer-events:none;letter-spacing:-.2px}
+.cgrid .sw.dk .cc{color:rgba(255,255,255,.88)}
 .cgrid .sw.on{transform:scale(.86)}
 .crec{margin-bottom:4px}
-.crec .recent{padding:5px 2px;flex-wrap:wrap;overflow:visible}
-.crec .recent .sw{flex-basis:38px;width:38px;height:38px}
 .cother{display:flex;align-items:center;justify-content:center;gap:10px;position:relative;overflow:hidden;margin-top:16px;min-height:54px;border-radius:16px;
   background:#faf6f1;font-weight:700;font-size:15px;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
 .cother .rainbow{width:28px;height:28px;border-radius:50%;background:conic-gradient(#ff3b30,#ffcc00,#34c759,#00c7be,#007aff,#af52de,#ff2d92,#ff3b30)}
@@ -342,7 +400,7 @@ body.mode-color .only-draw{display:none!important}
 .ahint{font-size:12.5px;color:var(--muted);margin:6px 2px 0;text-align:center}
 #adjust.asis .only-photo{display:none!important}
 #toast{
-  position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 150px);transform:translateX(-50%) translateY(20px);
+  position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 76px);transform:translateX(-50%) translateY(20px);
   background:rgba(40,28,60,.92);color:#fff;padding:12px 18px;border-radius:14px;font-weight:600;font-size:15px;
   opacity:0;pointer-events:none;transition:.25s;z-index:40;max-width:90%;width:max-content;text-align:center
 }
@@ -369,9 +427,11 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
 .hidden-input{position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0}
 @media (orientation:landscape) and (max-height:560px){
   body{grid-template-columns:minmax(0,1fr) minmax(280px,42%);grid-template-rows:auto minmax(0,1fr)}
-  #stage{grid-column:1;grid-row:1 / span 2;padding:6px}
+  body{grid-template-rows:auto auto auto minmax(0,1fr)}
+  #stage{grid-column:1;grid-row:1 / span 4;padding:6px}
   header.top{grid-column:2;grid-row:1}
-  footer.tools{grid-column:2;grid-row:2;overflow-y:auto;box-shadow:-1px 0 0 var(--line);touch-action:pan-y}
+  #tabBar{grid-column:2;grid-row:2}
+  #quickStrip{grid-column:2;grid-row:3;align-self:start}
   footer .row{flex-wrap:wrap}
   footer .tool{flex:1 0 56px;height:52px}
   :root{--btn:44px}
@@ -383,8 +443,6 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
   #toast{bottom:20px}
   #hint{top:10px}
   #hint .hlogo{display:none}
-  #addBtn .lb{display:none}
-  #addBtn{padding:0 12px}
   #adjust{grid-template-columns:minmax(0,1fr) minmax(300px,44%);grid-template-rows:auto minmax(0,1fr)}
   #adjust .ahead{grid-column:1 / span 2}
   #adjust .apanel{grid-column:2;grid-row:2;border-radius:20px 0 0 0;overflow-y:auto}
@@ -406,17 +464,49 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
 #viewBar .ib{width:42px;height:42px;border-radius:13px;background:rgba(255,255,255,.94);box-shadow:0 2px 10px rgba(60,30,90,.22);position:relative;color:var(--ink)}
 #viewBar .ib svg{width:23px;height:23px}
 #viewBar .ib.on{background:var(--sel);color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent),0 2px 10px rgba(60,30,90,.22)}
-#layersBtn .lcount{position:absolute;right:-5px;top:-5px;min-width:19px;height:19px;border-radius:10px;background:var(--accent2);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 5px;box-shadow:0 0 0 2px #fff}
+#layersBtn .lcount{position:absolute;right:2px;top:1px;min-width:19px;height:19px;border-radius:10px;background:var(--accent2);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 5px;box-shadow:0 0 0 2px #fff}
 body.obj-mode #viewBar{display:none}
-#showUI{display:none;right:calc(env(safe-area-inset-right) + 6px);top:calc(env(safe-area-inset-top) + 6px);height:40px;border:0;border-radius:20px;padding:0 12px 0 9px;gap:6px;
-  background:rgba(255,255,255,.9);color:var(--accent2);font-weight:800;font-size:13px;box-shadow:0 2px 10px rgba(60,30,90,.25)}
-#showUI svg{width:20px;height:20px}
-#showUI:active{transform:scale(.95)}
 body.ui-hidden{display:block}
-body.ui-hidden header.top,body.ui-hidden footer.tools,body.ui-hidden #zoomBar,body.ui-hidden #addBtn,body.ui-hidden #viewBar{display:none!important}
+body.ui-hidden header.top,body.ui-hidden footer.tools,body.ui-hidden #tabBar,body.ui-hidden #quickStrip,body.ui-hidden #zoomBar,body.ui-hidden #addBtn,body.ui-hidden #viewBar{display:none!important}
 body.ui-hidden #stage{position:absolute;inset:0;padding:calc(env(safe-area-inset-top) + 4px) calc(env(safe-area-inset-right) + 4px) calc(env(safe-area-inset-bottom) + 4px) calc(env(safe-area-inset-left) + 4px)}
-body.ui-hidden #showUI{display:flex}
 body.ui-hidden #toast{bottom:calc(env(safe-area-inset-bottom) + 40px)}
+/* 3.4: botones rápidos con los botones ocultos (se pueden mover a otro borde y achicar a un punto) */
+#miniBar{display:none;position:fixed;left:0;top:0;z-index:6;flex-direction:column;gap:3px;padding:4px;border-radius:24px;
+  background:rgba(255,255,255,.66);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);box-shadow:0 2px 12px rgba(60,30,90,.22)}
+body.ui-hidden #miniBar{display:flex}
+body.ui-hidden.obj-mode #miniBar{display:none}
+#miniBar.h{flex-direction:row}
+#miniBar.wrap{flex-wrap:wrap}
+#miniBar.no-redo #mbRedo{display:none}
+#miniBar .mb{width:40px;height:40px;flex:0 0 auto;border:0;border-radius:50%;background:rgba(255,255,255,.72);display:flex;align-items:center;justify-content:center;padding:0;color:var(--ink);position:relative}
+#miniBar .mb svg{width:22px;height:22px}
+#miniBar .mb:active{transform:scale(.92)}
+#miniBar .mb:disabled{opacity:.35}
+#miniBar .mb.on{background:var(--accent2);color:#fff}
+#miniBar .mbsw{display:block;width:28px;height:28px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.22),0 0 0 2px #fff}
+#miniBar .mbdot{display:block;border-radius:50%;background:var(--ink)}
+#miniBar .mbgrad{display:block;width:24px;height:24px;border-radius:7px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
+#miniBar #showUI{color:var(--accent2)}
+#miniBar .mbgrip{background:transparent;touch-action:none;cursor:grab;color:var(--muted)}
+#miniBar #mbDot{display:none;touch-action:none;cursor:grab}
+#miniBar.folded{padding:3px;background:rgba(255,255,255,.55)}
+#miniBar.folded>.mb{display:none}
+#miniBar.folded>#mbDot{display:flex}
+#miniBar.dragging{opacity:.85}
+#miniBar.dragging .mbgrip,#miniBar.dragging #mbDot{cursor:grabbing}
+.pop.mini{padding:6px;border-radius:16px}
+.pop.mini h4{margin:2px 4px 4px;font-size:12px}
+.pop.mini .pgrid{grid-template-columns:repeat(2,minmax(0,112px));gap:5px}
+.pop.mini .pbtn{min-height:44px;padding:4px 7px;gap:6px;font-size:12.5px;line-height:1.15;border-radius:12px}
+.pop.mini .pbtn svg{width:24px;height:24px}
+.pop.mini .pbtn small{font-size:10.5px}
+.pop.mini .pbtn .mgs{width:24px;height:22px;border-radius:6px;flex:0 0 auto;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
+.pop.mini .pbtn .dotbox{width:24px;height:24px}
+#mSizePop .pgrid{grid-template-columns:minmax(0,130px)}
+#mSizes .size{width:auto;flex:none}
+.pop.mini .mmode{display:flex;gap:5px;margin-top:6px}
+.pop.mini .mmode button{flex:1 1 0;border:0;border-radius:12px;min-height:40px;background:#f1eaf7;font-weight:700;font-size:13px;color:var(--ink)}
+.pop.mini .mmode button.on{background:var(--accent2);color:#fff}
 /* panel de Capas */
 #layersPop{width:330px;overflow-y:auto;overscroll-behavior:contain}
 .lyr{display:flex;align-items:center;gap:4px;border-radius:14px;background:#faf6f1;padding:4px;margin-bottom:6px}
@@ -453,7 +543,12 @@ body.ui-hidden #toast{bottom:calc(env(safe-area-inset-bottom) + 40px)}
 .pk-side{flex:0 0 84px;display:flex;flex-direction:column;align-items:stretch;gap:8px}
 .pk-prev{height:84px;border-radius:18px;position:relative;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15);background:repeating-conic-gradient(#d9d9d9 0 25%,#fff 0 50%) 0 0/14px 14px}
 .pk-prev i{position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
-#pkHex{font:700 12.5px ui-monospace,SFMono-Regular,Menlo,monospace;text-align:center;color:var(--muted);line-height:1.25;-webkit-user-select:text;user-select:text}
+#pkHex{font:700 11.5px system-ui,sans-serif;text-align:center;color:var(--muted);line-height:1.2;min-height:14px;overflow-wrap:anywhere}
+#pkInput{width:100%;height:34px;border:0;border-radius:10px;background:#f6f0ff;box-shadow:inset 0 0 0 1px var(--line);font:700 13px ui-monospace,SFMono-Regular,Menlo,monospace;
+  text-align:center;color:var(--ink);padding:0 3px;-webkit-user-select:text;user-select:text;text-transform:uppercase;min-width:0}
+#pkInput:focus{outline:2px solid var(--accent2);outline-offset:1px}
+#pkInput.bad{box-shadow:inset 0 0 0 2px #d93a2f}
+#pkMsg{font-size:11px;font-weight:600;color:#c62f24;line-height:1.2;text-align:center}
 #pkDropper{border:0;border-radius:14px;background:#f1eaf7;color:var(--accent2);font-weight:800;font-size:12px;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;line-height:1.05;padding:4px}
 #pkDropper svg{width:22px;height:22px}
 #pkDropper:active{transform:scale(.95)}
@@ -475,8 +570,8 @@ body.ui-hidden #toast{bottom:calc(env(safe-area-inset-bottom) + 40px)}
 .picker .btns{margin-top:14px}
 #alphaChip{flex:0 0 auto;height:30px;border:0;border-radius:15px;padding:0 9px;font-weight:800;font-size:12px;color:var(--accent2);background:repeating-conic-gradient(#ece6f3 0 25%,#fff 0 50%) 0 0/10px 10px;box-shadow:inset 0 0 0 1.5px #d7c9e6;white-space:nowrap}
 /* grosor "Detalle": en pantallas angostas los 5 grosores caben junto a Limpiar */
-@media (max-width:430px){ #drawSizes .size{flex:0 0 46px;width:46px;min-width:46px;font-size:10px;letter-spacing:-.3px} footer .row.only-draw #btnClear{flex:0 0 64px!important} }
-@media (max-width:340px){ #drawSizes .size{flex:0 0 43px;width:43px;min-width:43px;font-size:9.5px} footer .row.only-draw #btnClear{flex:0 0 56px!important} }
+@media (max-width:430px){ #drawSizes .size,#colorSizes .size{flex:0 0 46px;width:46px;min-width:46px;font-size:10px;letter-spacing:-.3px} }
+@media (max-width:340px){ #drawSizes .size,#colorSizes .size{flex:0 0 43px;width:43px;min-width:43px;font-size:9.5px} }
 @media print{
   @page{size:auto;margin:10mm}
   html,body{height:auto;overflow:visible;background:#fff}
@@ -543,6 +638,7 @@ body.ui-hidden #toast{bottom:calc(env(safe-area-inset-bottom) + 40px)}
     <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 018 0v3"/></symbol>
     <symbol id="i-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M14 4h6v6M20 4l-6.5 6.5M10 20H4v-6M4 20l6.5-6.5"/></symbol>
     <symbol id="i-shrink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M20 10h-6V4M14 10l6.5-6.5M4 14h6v6M10 14l-6.5 6.5"/></symbol>
+    <symbol id="i-grip" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.8"/><circle cx="15" cy="6" r="1.8"/><circle cx="9" cy="12" r="1.8"/><circle cx="15" cy="12" r="1.8"/><circle cx="9" cy="18" r="1.8"/><circle cx="15" cy="18" r="1.8"/></symbol>
   </defs>
 </svg>
 
@@ -556,6 +652,18 @@ body.ui-hidden #toast{bottom:calc(env(safe-area-inset-bottom) + 40px)}
   <button class="ib" id="btnSave" title="Guardar en Mis dibujos" aria-label="Guardar en Mis dibujos"><svg><use href="#i-save"/></svg></button>
   <button class="ib" id="btnMenu" title="Menú" aria-label="Menú"><svg><use href="#i-menu"/></svg></button>
 </header>
+<nav id="tabBar" role="toolbar" aria-label="Herramientas y opciones">
+  <button class="tb" id="tbTools" data-grp="tools" aria-haspopup="dialog" aria-expanded="false" title="Herramientas: lápiz, crayón, marcadores, bote, degradado, difuminar, borrador…" aria-label="Herramientas"><span class="tbi"><svg><use href="#i-pen"/></svg></span><span class="tbl">Herramientas</span></button>
+  <button class="tb" id="tbColors" data-grp="colors" aria-haspopup="dialog" aria-expanded="false" title="Colores: colores rápidos, Más colores, Otro y Copiar color" aria-label="Colores"><span class="tbi"><i class="tbsw"></i></span><span class="tbl">Colores</span></button>
+  <button class="tb" id="tbSize" data-grp="size" aria-haspopup="dialog" aria-expanded="false" title="Tamaño de la punta: de Detalle a Gruesa" aria-label="Tamaño"><span class="tbi"><i class="tbdot"></i></span><span class="tbl">Tamaño</span></button>
+  <button class="tb" id="layersBtn" title="Capas: pinta en hojas transparentes, una encima de otra" aria-label="Capas" aria-haspopup="dialog" aria-expanded="false"><span class="tbi"><svg><use href="#i-layers"/></svg></span><span class="tbl">Capas</span><span class="lcount" hidden></span></button>
+  <button class="tb" id="tbMore" data-grp="more" aria-haspopup="dialog" aria-expanded="false" title="Más: añadir stickers y texto, limpiar la hoja, ocultar botones" aria-label="Más opciones"><span class="tbi"><svg><use href="#i-grip"/></svg></span><span class="tbl">Más</span></button>
+</nav>
+<div id="quickStrip" role="toolbar" aria-label="Color actual y colores rápidos">
+  <button id="qsCur" title="Color actual: toca para ver todos los colores" aria-label="Color actual. Toca para ver todos los colores"><i></i>Color</button>
+  <div id="qsList" aria-label="Colores rápidos"></div>
+  <button id="qsMore" title="Más colores: 360 colores" aria-label="Más colores (360 colores)"></button>
+</div>
 
 <main id="stage">
   <div id="paper" class="c-pen">
@@ -572,7 +680,6 @@ body.ui-hidden #toast{bottom:calc(env(safe-area-inset-bottom) + 40px)}
     <button class="ob danger" id="objDel"><svg><use href="#i-trash"/></svg>Borrar</button>
     <button class="ob" id="objMore"><svg><use href="#i-plus"/></svg>Más</button>
   </div>
-  <button class="float" id="addBtn" aria-label="Añadir stickers, texto o figuras"><svg><use href="#i-plus"/></svg><span class="lb">Añadir</span></button>
   <div class="float" id="zoomBar" role="toolbar" aria-label="Zoom">
     <button class="ib" id="toolPan" title="Mano: mover la hoja" aria-label="Mano: mover la hoja"><svg><use href="#i-hand"/></svg></button>
     <button class="ib" id="zoomOut" title="Alejar" aria-label="Alejar"><svg><use href="#i-minus"/></svg></button>
@@ -580,14 +687,25 @@ body.ui-hidden #toast{bottom:calc(env(safe-area-inset-bottom) + 40px)}
     <button class="ib" id="zoomIn" title="Acercar" aria-label="Acercar"><svg><use href="#i-plus"/></svg></button>
     <button class="ib" id="zoomFit" title="Ajustar a la pantalla" aria-label="Ajustar a la pantalla"><svg><use href="#i-fit"/></svg></button>
   </div>
-  <div class="float" id="viewBar" role="toolbar" aria-label="Vista y capas">
+  <div class="float" id="viewBar" role="toolbar" aria-label="Vista">
     <button class="ib" id="hideUI" title="Ocultar botones: la hoja usa casi toda la pantalla" aria-label="Ocultar botones (pantalla completa)"><svg><use href="#i-full"/></svg></button>
-    <button class="ib" id="layersBtn" title="Capas: pinta en hojas transparentes, una encima de otra" aria-label="Capas" aria-haspopup="dialog" aria-expanded="false"><svg><use href="#i-layers"/></svg><span class="lcount" hidden></span></button>
   </div>
-  <button class="float" id="showUI" title="Mostrar botones otra vez" aria-label="Mostrar botones"><svg><use href="#i-shrink"/></svg><span>Mostrar botones</span></button>
+  <div class="float" id="miniBar" role="toolbar" aria-label="Botones rápidos">
+    <button class="mb" id="mbColor" title="Color: toca para elegir otro" aria-label="Elegir color" aria-haspopup="dialog"><i class="mbsw"></i></button>
+    <button class="mb" id="mbTool" title="Herramienta: toca para cambiarla" aria-label="Cambiar herramienta" aria-haspopup="menu" aria-expanded="false"><svg><use href="#i-fill"/></svg></button>
+    <button class="mb" id="mbSize" title="Grosor de la punta" aria-label="Grosor de la punta" aria-haspopup="menu" aria-expanded="false"><i class="mbdot"></i></button>
+    <button class="mb" id="mbUndo" title="Deshacer" aria-label="Deshacer" disabled><svg><use href="#i-undo"/></svg></button>
+    <button class="mb" id="mbRedo" title="Rehacer" aria-label="Rehacer" disabled><svg><use href="#i-redo"/></svg></button>
+    <button class="mb" id="mbPick" title="Copiar color: toca aquí y luego un color del dibujo" aria-label="Copiar color" aria-pressed="false"><svg><use href="#i-picker"/></svg></button>
+    <button class="mb" id="showUI" title="Mostrar botones otra vez (todas las opciones)" aria-label="Mostrar botones"><svg><use href="#i-shrink"/></svg></button>
+    <button class="mb mbgrip" id="mbGrip" title="Arrastra para mover la barra a otro lado. Toca para achicarla" aria-label="Mover o achicar la barra"><svg><use href="#i-grip"/></svg></button>
+    <button class="mb" id="mbDot" title="Toca para abrir los botones rápidos. Arrastra para moverlo" aria-label="Abrir botones rápidos"><i class="mbsw"></i></button>
+  </div>
 </main>
 
-<footer class="tools">
+<footer class="tools" id="panel" role="dialog" aria-label="Opciones">
+  <div class="grp" data-grp="tools">
+    <p class="gh">Herramientas</p>
   <div class="row only-draw" id="drawTools">
     <button class="tool on" data-tool="pen" title="Lápiz: dibuja líneas a mano con el color elegido"><svg><use href="#i-pen"/></svg>Lápiz</button>
     <button class="tool has-pop" id="markBtn" data-tool="marker" data-pop="markPop" aria-label="Marcador (toca otra vez para elegir el tipo)" title="Marcador: pinta un trazo de color. Toca otra vez para elegir liso, acrílico, de agua o de alcohol"><svg><use href="#i-marker"/></svg>Marcador</button>
@@ -598,8 +716,27 @@ body.ui-hidden #toast{bottom:calc(env(safe-area-inset-bottom) + 40px)}
     <button class="tool" data-tool="heart" title="Corazón: toca o arrastra"><svg><use href="#i-heart"/></svg>Corazón</button>
     <button class="tool" data-tool="erase" title="Borrador de líneas"><svg><use href="#i-eraser"/></svg>Borrador</button>
   </div>
-  <div class="row only-draw">
-    <span class="lbl">Grosor</span>
+  <div class="row only-color" id="colorTools">
+    <button class="tool on" data-ctool="fill" title="Bote: toca una zona para rellenarla de color" aria-label="Bote de pintura"><svg><use href="#i-fill"/></svg>Bote</button>
+    <button class="tool has-pop" id="brushBtn" data-ctool="crayon" data-pop="brushPop" aria-label="Crayón y marcadores" title="Pinta con el dedo. Toca otra vez para elegir crayón o marcador"><svg><use href="#i-crayon"/></svg><span class="bl">Crayón</span></button>
+    <button class="tool has-pop" id="gradBtn" data-ctool="grad" data-pop="gradPop" aria-label="Degradado" title="Degradado: toca una zona y se pinta con colores que se mezclan"><span class="gswatch"></span>Degradado</button>
+    <button class="tool" data-ctool="blend" aria-label="Difuminar" title="Difuminar: pasa el dedo para mezclar los colores"><svg><use href="#i-blend"/></svg>Difuminar</button>
+    <button class="tool" data-ctool="cerase" title="Borrar color (las líneas no se borran)" aria-label="Borrar color"><svg><use href="#i-eraser"/></svg>Borrar</button>
+  </div>
+  </div>
+  <div class="grp" data-grp="colors">
+    <div class="palette" id="palette"></div>
+    <div id="recentRow">
+    <button id="moreColors" title="Más colores: 360 colores para elegir con un toque" aria-label="Más colores (360 colores)"><span class="rainbow"></span>Más colores</button>
+    <button class="tool" id="customWrap" title="Otro color: elige cualquier color en la rueda de colores" aria-label="Otro color: elegir cualquier color" aria-haspopup="dialog"><span class="rainbow"></span>Otro</button>
+    <button id="pickColor" aria-pressed="false" aria-label="Copiar color: toca aquí y luego toca un color del dibujo o de la foto" title="Copiar color: toca aquí y luego toca cualquier color del dibujo o de tu foto"><svg><use href="#i-picker"/></svg><span>Copiar color</span></button>
+    <button id="alphaChip" hidden title="Opacidad del color: toca para cambiarla" aria-label="Opacidad del color">100 %</button>
+    </div>
+    <div id="recentLine"><span class="rlbl">Recientes</span><div class="recent" id="recent" aria-label="Colores recientes"></div></div>
+  </div>
+  <div class="grp" data-grp="size">
+    <p class="gh">Tamaño de la punta</p>
+    <div class="row only-draw">
     <div class="sizes" id="drawSizes">
       <button class="tool size" data-size="xxs" aria-label="Detalle" title="Detalle: la punta más finita, para detalles pequeños (acerca la hoja con dos dedos)"><i style="width:1px;height:1px"></i>Detalle</button>
       <button class="tool size" data-size="xs" aria-label="Súper fina" title="Súper fina: una línea muy finita que se queda finita aunque acerques la hoja"><i style="width:2px;height:2px"></i>Súper fina</button>
@@ -607,27 +744,25 @@ body.ui-hidden #toast{bottom:calc(env(safe-area-inset-bottom) + 40px)}
       <button class="tool size on" data-size="1" aria-label="Mediana"><i style="width:11px;height:11px"></i>Mediana</button>
       <button class="tool size" data-size="2" aria-label="Gruesa"><i style="width:18px;height:18px"></i>Gruesa</button>
     </div>
-    <span class="spacer"></span>
-    <button class="tool danger" id="btnClear" style="flex:0 0 76px"><svg><use href="#i-trash"/></svg>Limpiar</button>
+    </div>
+    <div class="row only-color">
+      <div class="sizes" id="colorSizes">
+        <button class="tool size" data-size="xxs" aria-label="Detalle" title="Detalle: la punta más finita, para detalles pequeños"><i style="width:1px;height:1px"></i>Detalle</button>
+        <button class="tool size" data-size="xs" aria-label="Súper fina" title="Súper fina: se queda finita aunque acerques la hoja"><i style="width:2px;height:2px"></i>Súper fina</button>
+        <button class="tool size" data-size="0" aria-label="Fina"><i style="width:6px;height:6px"></i>Fina</button>
+        <button class="tool size on" data-size="1" aria-label="Mediana"><i style="width:13px;height:13px"></i>Mediana</button>
+        <button class="tool size" data-size="2" aria-label="Gruesa"><i style="width:22px;height:22px"></i>Gruesa</button>
+      </div>
+    </div>
   </div>
-
-  <div class="row only-color" id="colorTools">
-    <button class="tool on" data-ctool="fill" title="Bote: toca una zona para rellenarla de color" aria-label="Bote de pintura"><svg><use href="#i-fill"/></svg>Bote</button>
-    <button class="tool has-pop" id="brushBtn" data-ctool="crayon" data-pop="brushPop" aria-label="Crayón y marcadores" title="Pinta con el dedo. Toca otra vez para elegir crayón o marcador"><svg><use href="#i-crayon"/></svg><span class="bl">Crayón</span></button>
-    <button class="tool has-pop" id="gradBtn" data-ctool="grad" data-pop="gradPop" aria-label="Degradado" title="Degradado: toca una zona y se pinta con colores que se mezclan"><span class="gswatch"></span>Degradado</button>
-    <button class="tool" data-ctool="blend" aria-label="Difuminar" title="Difuminar: pasa el dedo para mezclar los colores"><svg><use href="#i-blend"/></svg>Difuminar</button>
-    <button class="tool" data-ctool="cerase" title="Borrar color (las líneas no se borran)" aria-label="Borrar color"><svg><use href="#i-eraser"/></svg>Borrar</button>
-    <button class="tool has-pop" id="sizeBtn" data-pop="sizePop" aria-label="Grosor de la punta" title="Grosor de la punta: fina o gruesa"><span class="dotbox"><i style="width:13px;height:13px"></i></span><span class="sl">Mediana</span></button>
-    <button class="tool" id="customWrap" title="Otro color: elige cualquier color en la rueda de colores" aria-label="Otro color: elegir cualquier color" aria-haspopup="dialog"><span class="rainbow"></span>Otro</button>
+  <div class="grp" data-grp="more">
+    <div class="moregrid">
+      <button class="mbtn" id="addBtn" aria-label="Añadir stickers, texto o figuras" title="Añadir stickers, texto o figuras"><svg><use href="#i-plus"/></svg><div>Añadir<small>stickers, texto…</small></div></button>
+      <button class="mbtn danger" id="btnClear" title="Borrar todo lo de la hoja (puedes deshacer)"><svg><use href="#i-trash"/></svg><div>Limpiar<small>borra la hoja</small></div></button>
+      <button class="mbtn" id="moreHide" title="Ocultar botones: la hoja usa casi toda la pantalla" aria-label="Ocultar botones (pantalla completa)"><svg><use href="#i-full"/></svg><div>Ocultar botones<small>pantalla completa</small></div></button>
+      <button class="mbtn" id="moreMenu" title="Menú: guardar, plantillas, fotos y más" aria-label="Menú"><svg><use href="#i-menu"/></svg><div>Menú<small>guardar, plantillas…</small></div></button>
+    </div>
   </div>
-  <div id="recentRow">
-    <button id="moreColors" title="Más colores: 360 colores para elegir con un toque" aria-label="Más colores (360 colores)"><span class="rainbow"></span>Más colores</button>
-    <button id="pickColor" aria-pressed="false" aria-label="Copiar color: toca aquí y luego toca un color del dibujo o de la foto" title="Copiar color: toca aquí y luego toca cualquier color del dibujo o de tu foto"><svg><use href="#i-picker"/></svg><span>Copiar color</span></button>
-    <button id="alphaChip" hidden title="Opacidad del color: toca para cambiarla" aria-label="Opacidad del color">100 %</button>
-    <span class="rlbl">Recientes</span>
-    <div class="recent" id="recent" aria-label="Colores recientes"></div>
-  </div>
-  <div class="palette" id="palette"></div>
 </footer>
 
 <div class="pop" id="brushPop" role="menu" aria-label="Crayón y marcadores">
@@ -646,16 +781,6 @@ body.ui-hidden #toast{bottom:calc(env(safe-area-inset-bottom) + 40px)}
     <button class="pbtn" data-mark="acrylic"><svg><use href="#i-acrylic"/></svg><div>Marcador acrílico<small>Tapa todo, color fuerte y mate</small></div></button>
     <button class="pbtn" data-mark="water"><svg><use href="#i-water"/></svg><div>Marcador de agua<small>Suave como acuarela: se nota más al repasar</small></div></button>
     <button class="pbtn" data-mark="alcohol"><svg><use href="#i-alcohol"/></svg><div>Marcador de alcohol<small>Transparente y parejo; se oscurece al repasar</small></div></button>
-  </div>
-</div>
-<div class="pop" id="sizePop" role="menu" aria-label="Grosor de la punta">
-  <h4>Grosor de la punta</h4>
-  <div class="pgrid" id="colorSizes">
-    <button class="pbtn size" data-size="xxs" aria-label="Detalle" title="Detalle: la punta más finita, para detalles pequeños"><span class="dotbox"><i style="width:1px;height:1px"></i></span>Detalle</button>
-    <button class="pbtn size" data-size="xs" aria-label="Súper fina" title="Súper fina: se queda finita aunque acerques la hoja"><span class="dotbox"><i style="width:2px;height:2px"></i></span>Súper fina</button>
-    <button class="pbtn size" data-size="0" aria-label="Fina"><span class="dotbox"><i style="width:6px;height:6px"></i></span>Fina</button>
-    <button class="pbtn size on" data-size="1" aria-label="Mediana"><span class="dotbox"><i style="width:13px;height:13px"></i></span>Mediana</button>
-    <button class="pbtn size" data-size="2" aria-label="Gruesa"><span class="dotbox"><i style="width:22px;height:22px"></i></span>Gruesa</button>
   </div>
 </div>
 <div class="pop" id="gradPop" role="dialog" aria-label="Opciones de degradado">
@@ -680,6 +805,8 @@ body.ui-hidden #toast{bottom:calc(env(safe-area-inset-bottom) + 40px)}
   </div>
 </div>
 
+<div class="pop mini" id="mToolPop" role="menu" aria-label="Elegir herramienta"><h4>Herramienta</h4><div class="pgrid" id="mTools"></div><div class="mmode" id="mMode"><button data-m="draw">Dibujar</button><button data-m="color">Colorear</button></div></div>
+<div class="pop mini" id="mSizePop" role="menu" aria-label="Grosor de la punta"><h4>Grosor</h4><div class="pgrid" id="mSizes"></div></div>
 <div class="pop" id="layersPop" role="dialog" aria-label="Capas">
   <h4>Capas</h4>
   <p class="ptip" style="margin:0 4px 8px">Pinta en una capa sin tocar las otras. Las líneas del dibujo siempre quedan encima.</p>
@@ -694,7 +821,9 @@ body.ui-hidden #toast{bottom:calc(env(safe-area-inset-bottom) + 40px)}
       <div class="pk-wheel" id="pkWheel" role="slider" aria-label="Rueda de colores: arrastra la cruz para elegir el color" tabindex="0"><canvas id="pkWheelCv" width="400" height="400"></canvas><div class="pk-dim" id="pkDim"></div><div class="pk-cross" id="pkCross"></div></div>
       <div class="pk-side">
         <div class="pk-prev" title="Así se verá tu color"><i id="pkPrev"></i></div>
-        <div id="pkHex" aria-live="polite">#FF6F61</div>
+        <input id="pkInput" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="9" enterkeyhint="done" placeholder="#RRGGBB" aria-describedby="pkMsg" aria-label="Código del color: escribe #RRGGBB, #RGB o un código como R3 o A5" title="Escribe un color: #FF3B30, F00 o un código de Más colores como R3 o A5">
+        <div id="pkHex" aria-live="polite"></div>
+        <div id="pkMsg" role="status" hidden>Escribe un color como #FF3B30, F00 o R3</div>
         <button id="pkDropper" title="Copiar color: toca aquí y luego cualquier color del dibujo o de tu foto" aria-label="Copiar color del dibujo"><svg><use href="#i-picker"/></svg>Copiar color</button>
       </div>
     </div>
@@ -724,7 +853,7 @@ body.ui-hidden #toast{bottom:calc(env(safe-area-inset-bottom) + 40px)}
         <button class="mbtn" id="mNews"><svg><use href="#i-sticker"/></svg>Novedades y ayuda</button>
       </div>
       <div class="menu-foot">
-        <span id="versionText">Colorear · Versión 3.3</span>
+        <span id="versionText">Colorear · Versión 3.4</span>
         <a href="privacidad.html" target="_blank" rel="noopener" id="mPrivacy">Política de privacidad</a>
       </div>
     </div>
@@ -733,11 +862,13 @@ body.ui-hidden #toast{bottom:calc(env(safe-area-inset-bottom) + 40px)}
 
 <div class="overlay" id="colorsSheet">
   <div class="sheet" role="dialog" aria-label="Más colores">
-    <div class="sheet-head"><h2>Más colores</h2><button class="ib close" aria-label="Cerrar"><svg><use href="#i-close"/></svg></button></div>
-    <p class="ctip">Toca un color para usarlo. Cada fila va de <b>claro</b> a <b>oscuro</b>.</p>
+    <button class="cgrab" id="cGrab" title="Arrastra hacia arriba para ver más colores" aria-label="Agrandar o achicar la hoja de colores"><i></i></button>
+    <div class="sheet-head"><h2>Más colores</h2><button class="cwheel" id="cWheel" title="Elige cualquier color en la rueda de colores" aria-label="Otro color: rueda de colores" aria-haspopup="dialog"><span class="rainbow"></span>Otro</button><button class="ib close" aria-label="Cerrar"><svg><use href="#i-close"/></svg></button></div>
+    <p class="ctip">Toca un color para usarlo. Toca el nombre de una familia para ver todos sus tonos.</p>
     <div class="tabs ctabs" id="cTabs" role="tablist" aria-label="Familias de colores"></div>
     <div class="scroll" id="cScroll">
-      <section class="cfam crec" id="fam-recientes"><h3>Recientes <small>tus últimos colores</small></h3><div class="recent" id="cRecent"></div></section>
+      <section class="cfam crec crow" id="fam-recientes"><h3>Recientes <small>tus últimos colores</small></h3><div class="recent" id="cRecent"></div></section>
+      <section class="crow cquick" id="cQuickRow"><b>Rápidos</b><div class="cqrow" id="cQuick" aria-label="Colores rápidos"></div></section>
       <div id="cList"></div>
       <button class="cother" id="otherColor" style="width:100%;border:0" title="Elige cualquier color en la rueda de colores" aria-label="¿No está? Elige cualquier color" aria-haspopup="dialog"><span class="rainbow"></span>¿No está? Elige cualquier color</button>
     </div>
@@ -871,7 +1002,7 @@ body.ui-hidden #toast{bottom:calc(env(safe-area-inset-bottom) + 40px)}
 /* Colorear v3.3: crea dibujos para colorear, sube fotos de tus libros y coloréalos
    (lápiz y marcador de colores, crayón, marcadores acrílico / de agua / de alcohol, degradados, difuminar, copiar color,
    capas, ocultar botones, punta Detalle y rueda de colores con opacidad) */
-const APP_VERSION = '3.3';
+const APP_VERSION = '3.4';
 const PORTRAIT = [1200, 1600], LANDSCAPE = [1600, 1200];
 let W = 1200, H = 1600;                       // tamaño de la hoja (px internos); vertical u horizontal
 /* Grosores en píxeles de la hoja (1200×1600). "Súper fina" (xs) y "Detalle" (xxs) no son fijas: se calculan
@@ -909,12 +1040,18 @@ const PALETTE_NAMES = ['Rojo','Coral','Naranja','Amarillo','Amarillo claro','Ver
 const COLOR_FAMILIES = [{"id":"rojos","n":"Rojos","rows":[["Rojo","FAC6C6 F68E8E F15555 ED1D1D BD0F0F 840B0B"],["Rojo cereza","F7C9D0 F094A0 E85E71 E02941 B3192E 7D1220"],["Rojo tomate","FDCAC4 FA9589 F8604F F52B14 C41B08 891306"],["Rojo vino","F3CDD7 E89CAF DC6A87 D0395F A52746 741B31"],["Rojo ladrillo","F2D5CF E5AA9E D8806E CC553E A13F2B 712C1E"]]},{"id":"naranjas","n":"Naranjas","rows":[["Naranja","FFDEC2 FFBE85 FF9D47 FF7C0A CC5F00 8F4300"],["Mandarina","FDD9C3 FCB288 FA8C4C F96610 C74C05 8B3504"],["Calabaza","FCE2C5 F9C58B F6A951 F38C16 C26C0A 884C07"],["Coral","FAD3C6 F6A68E F17A55 ED4D1D BD380F 84270B"],["Durazno","F9E5C8 F3CC91 EDB25A E79823 B87614 81530E"]]},{"id":"amarillos","n":"Amarillos","rows":[["Amarillo","FFF5B8 FFEF85 FFE53D FFDD00 CCB100 998500"],["Limón","FDFBB9 FCF888 FAF442 F9F106 C7C005 959004"],["Oro","FFEDB8 FFE085 FFCF3D FFBF00 CC9900 997300"],["Mostaza","F7E3B6 F1CE7E EBBA47 DCA218 AE8013 815E0E"],["Maíz","FCF3CF FAE89E F7D964 F4CB2A D5AD0B A58609"]]},{"id":"verdes","n":"Verdes","rows":[["Verde lima","E6F4CD CCEA9A B3DF68 9AD435 78A824 547619"],["Verde hoja","D8F1D0 B1E3A0 8AD671 63C841 4A9E2E 346F20"],["Verde","CEF3D3 9DE7A7 6CDA7B 3BCE4F 29A339 1D7228"],["Verde esmeralda","CDF4DF 9AEABF 68DF9F 35D47F 24A862 197644"],["Verde menta","D0F1E7 A0E3CF 71D6B7 41C8A0 2E9E7C 206F57"]]},{"id":"azules","n":"Azules","rows":[["Turquesa","CBF6F3 97EDE7 63E3DB 2FDACF 1FADA4 157973"],["Celeste","C6EDFA 8EDAF6 55C8F1 1DB5ED 0F8EBD 0B6484"],["Azul cielo","C5E4FB 8CC9F8 52AEF4 1993F0 0C72C0 095086"],["Azul","C8DAF9 91B5F3 5A90ED 236AE7 1450B8 0E3881"],["Azul marino","CCD1F5 98A3EB 6575E2 3148D8 2133AB 172478"]]},{"id":"morados","n":"Morados","rows":[["Violeta","D4CDF3 A99CE8 7D6ADC 5239D0 3C27A5 2A1B74"],["Morado","DBCCF5 B799EA 9367E0 6F34D5 5423A9 3B1877"],["Uva","E2CEF3 C49DE7 A76CDA 893BCE 6A29A3 4A1D72"],["Lila","E7D0F1 CFA0E3 B771D6 A041C8 7C2E9E 57206F"],["Berenjena","EBD2EF D7A4DF C477CF B04ABF 8A3597 61256A"]]},{"id":"rosas","n":"Rosas","rows":[["Fucsia","F6CAF3 EE96E7 E561DA DD2CCE AF1DA3 7B1472"],["Rosa chicle","F8C9EA F292D5 EB5CC0 E425AB B61686 7F105E"],["Rosa","FAC6E2 F68EC5 F155A8 ED1D8C BD0F6C 840B4B"],["Rosa fresa","FCC5D9 F98BB3 F6518D F31667 C20A4E 880736"],["Frambuesa","F9C8D3 F391A8 ED5A7C E72350 B8143A 810E29"]]},{"id":"piel","n":"Tonos de piel","rows":[["Piel rosada","F7DDD4 EABEAE D79E88 C27B61 9D5B43 6A3F2F"],["Piel dorada","F8E6D3 ECCCAC DBB085 C4915F 9F7041 6B4C2E"],["Piel canela","F5E2D6 E6C7B3 D3A98D BD8965 996848 674732"],["Piel oliva","F3E8D8 E2D0B6 CEB692 B7996C 94774C 635136"],["Piel morena","E7CABB D3A892 BD866B A0674B 744D39 4A3226"]]},{"id":"tierra","n":"Cafés y tierra","rows":[["Café","DAB395 CA9268 B57340 8F5B32 6A4325 442B18"],["Chocolate","D6AC9A C4886E AE6647 8A5138 653B29 41261B"],["Madera","D3B99C C09C72 A97E4C 86633C 63492C 3F2F1C"],["Arena","E4DBC8 D4C4A5 C0A97C AC8E53 8A7242 675532"],["Oliva","C9C99C B4B474 989852 777740 56562E 35351D"]]},{"id":"grises","n":"Grises y negros","rows":[["Blanco a gris","FFFFFF F0F0F0 DBDBDB C4C4C4 ADADAD 949494"],["Gris a negro","787878 5E5E5E 454545 2E2E2E 171717 000000"],["Gris azulado","E2E5E9 BFC6CF 96A2B0 6E7E91 4F5B69 303840"],["Gris cálido","E8E6E3 CDC7C1 ACA49A 8C8073 655C53 3E3832"]]},{"id":"pastel","n":"Pastel","rows":[["Rosa pastel","FFE5EC FFD1DD FFBDCD FFA8BE FF94AF FF809F"],["Durazno pastel","FFF0E5 FFE4D1 FFD8BD FFCCA8 FFC194 FFB580"],["Vainilla","FFFCE5 FFF9D1 FFF6BD FFF3A8 FFF194 FFEE80"],["Menta pastel","EAFBF1 D9F7E6 C8F3DA B7F0CF A7ECC4 96E9B8"],["Celeste pastel","E7F5FE D3EEFD C0E6FC ADDEFB 99D6FA 86CFF9"],["Lila pastel","F2E8FC E8D6FA DEC3F8 D4B1F6 C99FF4 BF8CF2"]]},{"id":"neon","n":"Neón y vivos","rows":[["Rosa neón","FF70CB FF4DBE FF29B0 FF0AA5 EB0095 CC0081"],["Naranja neón","FFA570 FF8E4D FF7729 FF640A EB5600 CC4B00"],["Lima neón","BCFF70 ACFF4D 9BFF29 8DFF0A 7DEB00 6DCC00"],["Verde neón","70FFA0 4DFF88 29FF70 0AFF5C 00EB4E 00CC44"],["Azul eléctrico","70D9FF 4DCFFF 29C6FF 0ABEFF 00ACEB 0096CC"]]}];
 const TONE_NAMES = ['muy claro', 'claro', 'suave', 'medio', 'oscuro', 'muy oscuro'];
 const GREY_NAMES = [['Blanco', 'Gris perla', 'Gris nube', 'Gris plata', 'Gris claro', 'Gris medio'], ['Gris', 'Gris piedra', 'Gris carbón', 'Gris muy oscuro', 'Casi negro', 'Negro']];
-const ALL_COLORS = [], COLOR_NAME = {};
+const ALL_COLORS = [], COLOR_NAME = {}, COLOR_CODE = {};
+// 3.4: códigos propios (letra de la familia + número, de claro a oscuro fila por fila). No son códigos de ninguna marca.
+const FAM_CODES = { rojos: 'R', naranjas: 'N', amarillos: 'AM', verdes: 'V', azules: 'A', morados: 'M', rosas: 'RS', piel: 'P', tierra: 'T', grises: 'G', pastel: 'PA', neon: 'NE' };
 PALETTE.forEach((c, i) => { COLOR_NAME[c] = PALETTE_NAMES[i]; });
 for (const f of COLOR_FAMILIES) f.rows.forEach(([rn, hexes], ri) => hexes.split(' ').forEach((h, i) => {
   const c = '#' + h; ALL_COLORS.push(c);
   COLOR_NAME[c] = f.id === 'grises' && ri < 2 ? GREY_NAMES[ri][i] : rn + ' ' + TONE_NAMES[i];
+  COLOR_CODE[c] = (FAM_CODES[f.id] || f.id.slice(0, 2).toUpperCase()) + (ri * 6 + i + 1);
 }));
+// tonos que se ven en la fila compacta de cada familia (el tono medio de cada fila; en grises también blanco y negro)
+const famReps = (f) => f.id === 'grises' ? [[0, 0], [0, 3], [1, 0], [1, 5], [2, 3], [3, 3]] : f.rows.map((_, ri) => [ri, 3]);
+const colorLabel = (c) => (COLOR_CODE[c] ? COLOR_CODE[c] + ' · ' : '') + (COLOR_NAME[c] || 'Color');
 /* degradados listos (de arriba a abajo) */
 const GRAD_PRESETS = [
   { id: 'mine', n: 'Mi color' },
@@ -1123,7 +1260,7 @@ function applyEntry(entry, which) {
 function undo() { cancelGesture(); const e = undoStack.pop(); if (!e) return; applyEntry(e, 'before'); redoStack.push(e); markDirty(); updateUndoButtons(); refreshLayersUI(); }
 function redo() { cancelGesture(); const e = redoStack.pop(); if (!e) return; applyEntry(e, 'after'); undoStack.push(e); markDirty(); updateUndoButtons(); refreshLayersUI(); }
 function resetHistory() { undoStack.length = 0; redoStack.length = 0; updateUndoButtons(); }
-function updateUndoButtons() { $('#btnUndo').disabled = !undoStack.length; $('#btnRedo').disabled = !redoStack.length; }
+function updateUndoButtons() { $('#btnUndo').disabled = $('#mbUndo').disabled = !undoStack.length; $('#btnRedo').disabled = $('#mbRedo').disabled = !redoStack.length; }
 function syncBackups() { for (const k in layers) { const L = layers[k]; L.bctx.clearRect(0, 0, W, H); L.bctx.drawImage(L.cv, 0, 0); } }
 function markDirty() { state.dirty = true; scheduleAutosave(); }
 
@@ -2332,7 +2469,7 @@ function loadTemplate(id) {
 
 /* ---------- modos y herramientas ---------- */
 function setMode(m) {
-  cancelGesture(); hidePop();
+  cancelGesture(); hidePop(); if (typeof hidePanel === 'function') hidePanel();
   if (m !== state.mode) flattenObjs();
   if (m !== state.mode) setPicking(false);
   state.mode = m;
@@ -2345,7 +2482,7 @@ function setMode(m) {
   layout();
   requestAnimationFrame(layout);
 }
-function updateCursor() { paper.className = 'c-' + (objMode ? 'obj' : state.picking ? 'pick' : currentTool()); }
+function updateCursor() { paper.className = 'c-' + (objMode ? 'obj' : state.picking ? 'pick' : currentTool()); refreshMini(); }
 $('#tabDraw').onclick = () => { flattenObjs(); setMode('draw'); };
 $('#tabColor').onclick = () => { flattenObjs(); setMode('color'); };
 function pickTool() { flattenObjs(); if (state.panTool) setPanTool(false); setPicking(false); }
@@ -2355,10 +2492,10 @@ $$('#drawTools .tool').forEach((b) => b.onclick = () => {
     return;
   }
   pickTool();
-  state.drawTool = b.dataset.tool;
-  $$('#drawTools .tool').forEach((x) => x.classList.toggle('on', x === b)); updateCursor();
+  setDrawTool(b.dataset.tool);
   if (b.id === 'markBtn' && !state.markSeen) { state.markSeen = true; toast('Toca otra vez “Marcador” para elegir: liso, acrílico, de agua o de alcohol', 3200); }
 });
+function setDrawTool(t) { state.drawTool = t; $$('#drawTools .tool').forEach((x) => x.classList.toggle('on', x.dataset.tool === t)); updateCursor(); }
 // Tipo de marcador de Dibujar (liso, acrílico, de agua, de alcohol)
 const MARK_NAMES = { crayon: 'liso', acrylic: 'acrílico', water: 'de agua', alcohol: 'de alcohol' };
 function setDrawBrush(b) {
@@ -2403,6 +2540,12 @@ function showPop(id, anchor) {
   const pw = Math.min(pop.offsetWidth, vw - 16);
   let ph = pop.offsetHeight;
   const above = r.top - 16;
+  if (r.bottom < vh * 0.45) {                                   // 3.4: botón arriba (pestañas / panel): el submenú va debajo, sin tapar el botón
+    const top = Math.round(r.bottom + 8);
+    if (ph > vh - top - 8) { pop.style.maxHeight = (vh - top - 8) + 'px'; ph = vh - top - 8; }
+    pop.style.left = clamp(r.left + r.width / 2 - pw / 2, 8, vw - pw - 8) + 'px'; pop.style.top = top + 'px';
+    return;
+  }
   if (ph > above && above >= 220) { pop.style.maxHeight = above + 'px'; ph = above; }
   else if (ph > vh - 16) { pop.style.maxHeight = (vh - 16) + 'px'; ph = vh - 16; }
   let left = clamp(r.left + r.width / 2 - pw / 2, 8, vw - pw - 8);
@@ -2412,7 +2555,7 @@ function showPop(id, anchor) {
   pop.style.left = left + 'px'; pop.style.top = top + 'px';
 }
 function hidePop() {
-  if (openPop) { openPop.pop.classList.remove('show'); openPop = null; }
+  if (openPop) { openPop.pop.classList.remove('show'); if (openPop.anchor && openPop.anchor.classList.contains('mb')) openPop.anchor.setAttribute('aria-expanded', 'false'); openPop = null; }
   const lb = $('#layersBtn'); if (lb) { lb.classList.remove('on'); lb.setAttribute('aria-expanded', 'false'); }
 }
 document.addEventListener('pointerdown', (e) => {
@@ -2434,16 +2577,13 @@ $$('#colorTools [data-ctool]').forEach((b) => b.onclick = () => {
   else if (b.id === 'brushBtn' && !state.brushSeen) { state.brushSeen = true; toast('Toca otra vez para elegir marcador: acrílico, de agua o de alcohol'); }
 });
 $$('#brushPop [data-brush]').forEach((b) => b.onclick = () => { pickTool(); setColorTool(b.dataset.brush); state.brushSeen = true; hidePop(); });
-$('#sizeBtn').onclick = () => { if (openPop && openPop.anchor === $('#sizeBtn')) hidePop(); else showPop('sizePop', $('#sizeBtn')); };
 function setColorSize(k) {
   state.colorSize = String(k);
   $$('#colorSizes .size').forEach((x) => x.classList.toggle('on', x.dataset.size === state.colorSize));
-  const dot = $('#colorSizes .size[data-size="' + state.colorSize + '"] i');
-  const sb = $('#sizeBtn');
-  sb.querySelector('.dotbox i').style.cssText = dot ? dot.style.cssText : '';
-  sb.querySelector('.sl').textContent = SIZE_NAMES[state.colorSize];
+  refreshMini();
 }
-$$('#drawSizes .size').forEach((b) => b.onclick = () => { state.drawSize = b.dataset.size; $$('#drawSizes .size').forEach((x) => x.classList.toggle('on', x === b)); });
+function setDrawSize(k) { state.drawSize = String(k); $$('#drawSizes .size').forEach((x) => x.classList.toggle('on', x.dataset.size === state.drawSize)); refreshMini(); }
+$$('#drawSizes .size').forEach((b) => b.onclick = () => setDrawSize(b.dataset.size));
 $$('#colorSizes .size').forEach((b) => b.onclick = () => {
   setColorSize(b.dataset.size); hidePop();
   if (state.colorTool === 'fill' || state.colorTool === 'grad') { pickTool(); setColorTool(state.brush); }   // el grosor es para pintar a mano
@@ -2504,13 +2644,15 @@ function refreshColorUI() {
   // "Negro" de los colores rápidos: negro puro en Dibujar (como el lápiz de siempre), #333333 en Colorear
   const blk = $('#palette .sw[data-black]');
   if (blk) { const c = state.mode === 'draw' ? '#000000' : '#333333'; blk.dataset.c = c; blk.style.background = c; }
-  $$('#palette .sw, .recent .sw, #cList .sw').forEach((s) => s.classList.toggle('on', s.dataset.c === cur));
+  $$('#cQuick .sw[data-black]').forEach((q) => { const c = state.mode === 'draw' ? '#000000' : '#333333'; q.dataset.c = c; q.style.background = c; });
+  $$('#palette .sw, .recent .sw, #cList .sw, #cQuick .sw').forEach((s) => s.classList.toggle('on', s.dataset.c === cur));
   const tint = (c) => (c === '#FFFFFF' ? '' : c);
   $$('#colorTools [data-ctool="fill"] svg, #brushBtn svg').forEach((s) => { s.style.color = tint(state.color); });
   $$('#drawTools [data-tool="pen"] svg, #markBtn svg').forEach((s) => { s.style.color = tint(state.drawColor); });
   const a = curAlpha(), chip = $('#alphaChip');
   chip.hidden = a >= 0.999; chip.textContent = Math.round(a * 100) + ' %';
   chip.setAttribute('aria-label', 'Opacidad del color: ' + Math.round(a * 100) + ' %. Toca para cambiarla');
+  refreshMini();
 }
 // alpha: opacidad (solo la da la rueda de colores; cualquier otro color vuelve a 100 %)
 function setColor(hex, alpha) {
@@ -2553,7 +2695,7 @@ function renderRecent() {
     for (const c of recentColors) {
       const b = document.createElement('button'); b.className = 'sw' + (c === curColor() ? ' on' : ''); b.style.background = c; b.dataset.c = c;
       const nm = COLOR_NAME[c] || 'Color ' + c; b.title = nm + ' (reciente)'; b.setAttribute('aria-label', 'Color reciente: ' + nm);
-      b.onclick = () => { setColor(c); if (box.id === 'cRecent') closeSheet('#colorsSheet'); };
+      b.onclick = () => { if (box.id === 'cRecent') pickSheetColor(c); else setColor(c); };
       box.append(b);
     }
   }
@@ -2561,30 +2703,76 @@ function renderRecent() {
 /* ---------- Más colores: 360 colores por familias ---------- */
 function pickSheetColor(c) {
   setColor(c); addRecent(c); closeSheet('#colorsSheet');
-  toast((COLOR_NAME[c] || 'Color') + (state.mode === 'draw' ? ' ✓ Toca la hoja para dibujar' : ' ✓ Toca el dibujo para pintar'), 2400, c);
+  toast(colorLabel(c) + (state.mode === 'draw' ? ' ✓ Toca la hoja para dibujar' : ' ✓ Toca el dibujo para pintar'), 2600, c);
 }
 (function buildColorSheet() {
   const tabs = $('#cTabs'), list = $('#cList');
   const mkTab = (id, name, dot) => {
     const t = document.createElement('button'); t.dataset.fam = id; t.setAttribute('role', 'tab');
     t.innerHTML = '<i></i>'; t.querySelector('i').style.background = dot; t.append(name);
-    t.onclick = () => { const sc = $('#cScroll'), sec = $('#fam-' + id); sc.scrollTo({ top: sec.offsetTop - 4, behavior: 'smooth' }); setFamTab(id); };
+    t.onclick = () => { if (id !== 'recientes') setFamOpen(id, true); const sc = $('#cScroll'), sec = $('#fam-' + id); sc.scrollTo({ top: sec.offsetTop - 4, behavior: 'smooth' }); setFamTab(id); };
     tabs.append(t);
   };
   mkTab('recientes', 'Recientes', 'conic-gradient(#ff3b30,#ffcc00,#34c759,#007aff,#af52de,#ff3b30)');
   for (const f of COLOR_FAMILIES) {
     const hexes = f.rows.map((r) => r[1].split(' '));
     mkTab(f.id, f.n, '#' + hexes[Math.min(2, hexes.length - 1)][3]);
-    const sec = document.createElement('section'); sec.className = 'cfam'; sec.id = 'fam-' + f.id;
-    const h = document.createElement('h3'); h.textContent = f.n; sec.append(h);
-    const grid = document.createElement('div'); grid.className = 'cgrid';
-    for (const row of hexes) for (const h6 of row) {
-      const c = '#' + h6, b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.dataset.c = c;
-      b.title = COLOR_NAME[c]; b.setAttribute('aria-label', COLOR_NAME[c]);
-      b.onclick = () => pickSheetColor(c); grid.append(b);
-    }
+    const sec = document.createElement('section'); sec.className = 'cfam fam'; sec.id = 'fam-' + f.id;
+    const n = hexes.length * 6, code = FAM_CODES[f.id];
+    const h = document.createElement('button'); h.className = 'cfh'; h.setAttribute('aria-expanded', 'false'); h.setAttribute('aria-controls', 'grid-' + f.id);
+    h.title = 'Ver todos los tonos de ' + f.n.toLowerCase() + ' (' + code + '1–' + code + n + ')';
+    h.innerHTML = '<span></span><small></small><b>▾</b>'; h.querySelector('span').textContent = f.n; h.querySelector('small').textContent = n + ' tonos · ' + code + '1–' + code + n;
+    h.onclick = (e) => { e.stopPropagation(); const open = !sec.classList.contains('open'); setFamOpen(f.id, open); if (open) showFam(f.id); };
+    sec.append(h);
+    const grid = document.createElement('div'); grid.className = 'cgrid'; grid.id = 'grid-' + f.id;
+    const reps = new Set(famReps(f).map(([r, i]) => r * 6 + i));
+    hexes.forEach((row, ri) => row.forEach((h6, i) => {
+      const c = '#' + h6, b = document.createElement('button'); b.className = 'sw' + (reps.has(ri * 6 + i) ? ' rep' : ''); b.style.background = c; b.dataset.c = c;
+      const nv = parseInt(h6, 16), lum = 0.299 * (nv >> 16 & 255) + 0.587 * (nv >> 8 & 255) + 0.114 * (nv & 255);
+      if (lum < 150) b.classList.add('dk');
+      b.title = COLOR_NAME[c] + ' · ' + COLOR_CODE[c]; b.setAttribute('aria-label', COLOR_NAME[c] + ', código ' + COLOR_CODE[c]);
+      const cc = document.createElement('span'); cc.className = 'cc'; cc.textContent = COLOR_CODE[c]; b.append(cc);
+      b.onclick = (e) => { e.stopPropagation(); pickSheetColor(c); }; grid.append(b);
+    }));
+    sec.addEventListener('click', () => { if (!sec.classList.contains('open')) { setFamOpen(f.id, true); showFam(f.id); } });   // tocar la fila la abre
     sec.append(grid); list.append(sec);
   }
+})();
+// Acordeón: solo una familia abierta a la vez
+function setFamOpen(id, on) {
+  $$('#cList .cfam.fam').forEach((s) => { const o = on && s.id === 'fam-' + id; s.classList.toggle('open', o); s.querySelector('.cfh').setAttribute('aria-expanded', String(o)); });
+}
+function showFam(id) {
+  const sc = $('#cScroll'), sec = $('#fam-' + id); if (!sec) return;
+  const top = sec.offsetTop - 4, bot = sec.offsetTop + sec.offsetHeight + 4;
+  if (top < sc.scrollTop || bot > sc.scrollTop + sc.clientHeight) sc.scrollTo({ top: bot - top > sc.clientHeight ? top : Math.min(top, bot - sc.clientHeight), behavior: 'smooth' });
+  setFamTab(id);
+}
+(function buildQuickRow() {
+  const q = $('#cQuick');
+  for (const c of PALETTE) {
+    const b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.dataset.c = c;
+    b.setAttribute('aria-label', 'Color ' + COLOR_NAME[c]); b.title = COLOR_NAME[c];
+    if (c === '#333333') b.dataset.black = '1';
+    b.onclick = () => { const x = b.dataset.c; setColor(x); closeSheet('#colorsSheet'); toast((COLOR_NAME[x] || 'Color') + ' ✓', 2000, x); };
+    q.append(b);
+  }
+})();
+// Agarradera: arrastrar hacia arriba agranda la hoja; hacia abajo la achica o la cierra; tocar cambia
+(function sheetGrab() {
+  const g = $('#cGrab'), ov = $('#colorsSheet'); let y0 = null, id = null;
+  g.addEventListener('pointerdown', (e) => { y0 = e.clientY; id = e.pointerId; try { g.setPointerCapture(id); } catch (_) {} e.preventDefault(); });
+  const end = (e, cancel) => {
+    if (y0 == null || e.pointerId !== id) return;
+    const dy = e.clientY - y0; y0 = null; if (cancel) return;
+    if (dy < -25) ov.classList.add('tall');
+    else if (dy > 25) { if (ov.classList.contains('tall')) ov.classList.remove('tall'); else closeSheet('#colorsSheet'); }
+    else ov.classList.toggle('tall');
+  };
+  g.addEventListener('pointerup', (e) => end(e)); g.addEventListener('pointercancel', (e) => end(e, true));
+  // sin gestos del navegador al arrastrar (si no, el siguiente toque se perdía)
+  ['touchstart', 'touchmove'].forEach((t) => g.addEventListener(t, (e) => { if (e.cancelable) e.preventDefault(); }, { passive: false }));
+  g.addEventListener('click', (e) => { if (e.detail === 0) ov.classList.toggle('tall'); });   // teclado
 })();
 function setFamTab(id) {
   $$('#cTabs [data-fam]').forEach((t) => {
@@ -2602,13 +2790,15 @@ $('#cScroll').addEventListener('scroll', () => {
     const on = $('#cTabs .on'); if (!on || on.dataset.fam !== cur) setFamTab(cur);
   });
 }, { passive: true });
-$('#moreColors').onclick = () => {
-  hidePop(); renderRecent(); openSheet('#colorsSheet');
+function openColorsSheet() {
+  hidePop(); $('#toast').classList.remove('show'); renderRecent(); refreshColorUI(); $('#colorsSheet').classList.remove('tall'); openSheet('#colorsSheet');
   const sel = $('#cList .sw.on');
   const sc = $('#cScroll');
-  if (sel) { const sec = sel.closest('.cfam'); sc.scrollTop = sec.offsetTop - 4; setFamTab(sec.id.slice(4)); }
-  else { sc.scrollTop = 0; setFamTab('recientes'); }
-};
+  if (sel) { const sec = sel.closest('.cfam'); const id = sec.id.slice(4); setFamOpen(id, true); sc.scrollTop = Math.max(0, sec.offsetTop - 4); setFamTab(id); }
+  else { setFamOpen(null, false); sc.scrollTop = 0; setFamTab('recientes'); }
+}
+$('#moreColors').onclick = openColorsSheet;
+$('#cWheel').onclick = () => openPicker('sheet');
 $('#otherColor').onclick = () => openPicker('sheet');
 renderRecent();
 /* ---------- Copiar color (gotero): toca el botón y luego cualquier color del dibujo o de la foto ---------- */
@@ -2617,6 +2807,7 @@ function setPicking(on) {
   if (!on) state.pickToPicker = false;
   const b = $('#pickColor');
   if (b) { b.classList.toggle('on', state.picking); b.setAttribute('aria-pressed', String(state.picking)); }
+  const m = $('#mbPick'); if (m) { m.classList.toggle('on', state.picking); m.setAttribute('aria-pressed', String(state.picking)); }
   updateCursor();
 }
 // Color que se ve en ese punto: todas las capas visibles (con su opacidad) sobre papel blanco, y las líneas encima
@@ -2650,6 +2841,7 @@ $('#btnRedo').onclick = redo;
 document.addEventListener('keydown', (e) => {
   if (isTyping(e)) return;
   if (e.key === 'Escape' && $('#pickerDlg').classList.contains('show')) { e.preventDefault(); closeSheet('#pickerDlg'); return; }
+  if (e.key === 'Escape' && openGrp) { e.preventDefault(); hidePanel(); return; }
   if (e.key === 'Escape' && state.uiHidden && !objMode) { e.preventDefault(); setUIHidden(false); return; }
   if (objMode && (e.key === 'Delete' || e.key === 'Backspace')) { e.preventDefault(); deleteSelected(); return; }
   if (objMode && (e.key === 'Enter' || e.key === 'Escape')) { e.preventDefault(); flattenObjs(); return; }
@@ -2836,7 +3028,7 @@ function openLayers() {
   showPop('layersPop', $('#layersBtn'));      // otra vez, ya con su tamaño real
   $('#layersBtn').classList.add('on'); $('#layersBtn').setAttribute('aria-expanded', 'true');
 }
-$('#layersBtn').onclick = () => { if (layersOpen()) hidePop(); else openLayers(); };
+$('#layersBtn').onclick = () => { hidePanel(); if (layersOpen()) hidePop(); else openLayers(); };
 $('#lyrAdd').onclick = () => { if (addLayer()) openLayers(); };
 $('#lyrList').addEventListener('click', (e) => {
   const b = e.target.closest('[data-la]'); if (!b || b.disabled) return;
@@ -2854,11 +3046,258 @@ $('#lyrOp').addEventListener('input', (e) => {
 });
 $('#lyrOp').addEventListener('change', (e) => { setLayerOpacity(paintTarget(), +e.target.value / 100); });
 
+/* ---------- 3.4: pestañas de arriba (Herramientas, Colores, Tamaño, Capas, Más) con su panel ---------- */
+let openGrp = null;
+const GRP_TAB = { tools: 'tbTools', colors: 'tbColors', size: 'tbSize', more: 'tbMore' };
+function placePanel() {
+  const p = $('#panel'), bar = $('#tabBar').getBoundingClientRect(), strip = $('#quickStrip').getBoundingClientRect();
+  const vw = innerWidth, vh = innerHeight, w = Math.min(bar.width - (vw < 400 ? 4 : 8), 620);
+  const tab = openGrp && $('#' + GRP_TAB[openGrp]).getBoundingClientRect();
+  const m = vw < 400 ? 2 : 4, left = clamp(tab ? tab.left + tab.width / 2 - w / 2 : bar.left + m, bar.left + m, bar.right - m - w);
+  const top = Math.round(bar.bottom + 2);
+  p.style.width = w + 'px'; p.style.left = Math.round(left) + 'px'; p.style.top = top + 'px';
+  p.style.maxHeight = Math.max(160, vh - top - 10) + 'px';
+}
+function showPanel(g) {
+  hidePop(); cancelGesture();
+  openGrp = g; document.body.dataset.panel = g; document.body.classList.add('panel-open');
+  for (const k in GRP_TAB) { const t = $('#' + GRP_TAB[k]); t.classList.toggle('on', k === g); t.setAttribute('aria-expanded', String(k === g)); }
+  if (g === 'colors') renderRecent();
+  $('#panel').setAttribute('aria-label', { tools: 'Herramientas', colors: 'Colores', size: 'Tamaño de la punta', more: 'Más opciones' }[g]);
+  placePanel(); $('#panel').scrollTop = 0;
+}
+function hidePanel() {
+  if (!openGrp) return;
+  openGrp = null; delete document.body.dataset.panel; document.body.classList.remove('panel-open');
+  for (const k in GRP_TAB) { const t = $('#' + GRP_TAB[k]); t.classList.remove('on'); t.setAttribute('aria-expanded', 'false'); }
+}
+for (const g in GRP_TAB) $('#' + GRP_TAB[g]).onclick = () => { if (openGrp === g) hidePanel(); else showPanel(g); };
+// elegir algo en el panel (o en su submenú) cierra el panel; si se abrió un submenú (tipos de marcador, degradado) se queda
+// (se escucha al final del clic, cuando el botón ya hizo lo suyo; así un toque rápido en la hoja justo después ya pinta)
+$('#panel').addEventListener('click', (e) => { if (e.target.closest('button') && !openPop) hidePanel(); });
+document.addEventListener('click', (e) => { if (openGrp && e.target.closest && e.target.closest('.pop button') && !e.target.closest('#gMore, #gAdv') && !openPop) hidePanel(); });
+document.addEventListener('pointerdown', (e) => {
+  if (!openGrp) return;
+  const t = e.target;
+  if ($('#panel').contains(t) || (t.closest && (t.closest('#tabBar') || t.closest('.pop') || t.closest('.overlay')))) return;
+  const onPaper = stage.contains(t) && !isUI(t);
+  hidePanel();
+  if (onPaper) { e.stopPropagation(); e.preventDefault(); }   // tocar la hoja solo cierra el panel
+}, true);
+window.addEventListener('resize', () => { if (openGrp) placePanel(); });
+$('#moreHide').onclick = () => setUIHidden(true);
+$('#moreMenu').onclick = () => openSheet('#menuSheet');
+// tira fina: color actual + colores rápidos
+const QUICK = ['#333333', '#FFFFFF', '#FF3B30', '#FF9500', '#FFCC00', '#34C759', '#007AFF', '#AF52DE', '#FF2D92', '#8B4513'];
+(function buildQuickStrip() {
+  const box = $('#qsList');
+  for (const c of QUICK) {
+    const b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.dataset.c = c;
+    b.setAttribute('aria-label', 'Color ' + COLOR_NAME[c]); b.title = COLOR_NAME[c];
+    if (c === '#333333') b.dataset.black = '1';
+    b.onclick = () => { hidePanel(); setColor(b.dataset.c); };
+    box.append(b);
+  }
+})();
+$('#qsCur').onclick = () => { if (openGrp === 'colors') hidePanel(); else showPanel('colors'); };
+$('#qsMore').onclick = () => { hidePanel(); openColorsSheet(); };
+function setToolIcon(btn, ti, c) {
+  if (ti.grad) { btn.innerHTML = '<span class="' + (btn.id === 'mbTool' ? 'mbgrad' : 'tbgrad') + '"></span>'; btn.firstChild.style.background = $('#gradBtn .gswatch').style.background || 'linear-gradient(#FF3B30,#FFE66D)'; return; }
+  if (!btn.querySelector('use')) btn.innerHTML = '<svg><use href="#i-fill"/></svg>';
+  btn.querySelector('use').setAttribute('href', '#' + ti.icon); btn.querySelector('svg').style.color = ti.tint && c !== '#FFFFFF' ? c : '';
+}
+
+/* ---------- 3.4: botones rápidos cuando los botones están ocultos ---------- */
+const MINI_KEY = 'colorear.miniBarra';
+const MINI = { edge: 'right', pos: 0.5, folded: false };
+try {
+  const s0 = JSON.parse(localStorage.getItem(MINI_KEY) || 'null');
+  if (s0 && ['left', 'right', 'top', 'bottom'].includes(s0.edge)) { MINI.edge = s0.edge; MINI.pos = clamp(+s0.pos || 0.5, 0, 1); MINI.folded = !!s0.folded; }
+} catch (_) {}
+function saveMini() { try { localStorage.setItem(MINI_KEY, JSON.stringify(MINI)); } catch (_) {} }
+const TOOL_ICON = { pen: 'i-pen', line: 'i-line', ellipse: 'i-ellipse', rect: 'i-rect', star: 'i-star', heart: 'i-heart', erase: 'i-eraser', fill: 'i-fill', blend: 'i-blend', cerase: 'i-eraser' };
+const TOOL_NAME = { pen: 'Lápiz', line: 'Línea', ellipse: 'Círculo', rect: 'Cuadro', star: 'Estrella', heart: 'Corazón', erase: 'Borrador', fill: 'Bote', grad: 'Degradado', blend: 'Difuminar', cerase: 'Borrar color',
+  crayon: 'Crayón', acrylic: 'Marcador acrílico', water: 'Marcador de agua', alcohol: 'Marcador de alcohol' };
+const SIZE_DOT = { xxs: 2, xs: 3, 0: 6, 1: 11, 2: 18 };
+function miniToolInfo() {
+  const t = currentTool();
+  if (state.mode === 'draw') {
+    if (t === 'marker') return { icon: state.drawBrush === 'crayon' ? 'i-marker' : BRUSH_ICONS[state.drawBrush], name: 'Marcador ' + MARK_NAMES[state.drawBrush], tint: true };
+    return { icon: TOOL_ICON[t] || 'i-pen', name: TOOL_NAME[t] || t, tint: t !== 'erase' };
+  }
+  if (isBrush(t)) return { icon: BRUSH_ICONS[t], name: TOOL_NAME[t], tint: true };
+  return { icon: TOOL_ICON[t], name: TOOL_NAME[t] || t, tint: t === 'fill', grad: t === 'grad' };
+}
+function refreshMini() {
+  const bar = document.getElementById('miniBar'); if (!bar) return;
+  const c = curColor(), a = curAlpha(), rgb = hexToRgb(c);
+  const fill = a < 0.999 ? `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${a})` : c;
+  bar.querySelectorAll('.mbsw').forEach((s) => { s.style.background = fill; });
+  const nm = colorLabel(c);
+  $('#mbColor').setAttribute('aria-label', 'Color: ' + nm + '. Toca para elegir otro'); $('#mbColor').title = 'Color: ' + nm + ' (toca para elegir otro)';
+  const ti = miniToolInfo(), tb = $('#mbTool');
+  setToolIcon(tb, ti, c); setToolIcon($('#tbTools .tbi'), ti, c);
+  $('#tbTools').title = 'Herramientas (ahora: ' + ti.name + ')';
+  $('#tbColors .tbsw').style.background = fill; $('#qsCur i').style.background = fill;
+  $('#qsCur').setAttribute('aria-label', 'Color actual: ' + nm + '. Toca para ver todos los colores');
+  $$('#qsList .sw[data-black]').forEach((q) => { const k = state.mode === 'draw' ? '#000000' : '#333333'; q.dataset.c = k; q.style.background = k; });
+  $$('#qsList .sw').forEach((q) => q.classList.toggle('on', q.dataset.c === c));
+  tb.setAttribute('aria-label', 'Herramienta: ' + ti.name + '. Toca para cambiarla'); tb.title = 'Herramienta: ' + ti.name + ' (toca para cambiarla)';
+  const sk = state.mode === 'draw' ? state.drawSize : state.colorSize, d = SIZE_DOT[sk] || 11, dot = $('#mbSize .mbdot');
+  dot.style.width = dot.style.height = d + 'px';
+  const td = $('#tbSize .tbdot'); td.style.width = td.style.height = Math.max(3, Math.min(20, d)) + 'px'; $('#tbSize').title = 'Tamaño de la punta (ahora: ' + SIZE_NAMES[sk] + ')';
+  $('#mbSize').setAttribute('aria-label', 'Grosor de la punta: ' + SIZE_NAMES[sk] + '. Toca para cambiarlo'); $('#mbSize').title = 'Grosor: ' + SIZE_NAMES[sk];
+}
+let insProbe = null;
+function safeInsets() {
+  if (!insProbe) { insProbe = document.createElement('div'); insProbe.style.cssText = 'position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)'; document.body.append(insProbe); }
+  const cs = getComputedStyle(insProbe);
+  return { t: parseFloat(cs.paddingTop) || 0, r: parseFloat(cs.paddingRight) || 0, b: parseFloat(cs.paddingBottom) || 0, l: parseFloat(cs.paddingLeft) || 0 };
+}
+function placeMini() {
+  const bar = $('#miniBar'); if (!state.uiHidden) return;
+  const horiz = MINI.edge === 'top' || MINI.edge === 'bottom';
+  bar.classList.toggle('h', horiz); bar.classList.toggle('folded', MINI.folded); bar.dataset.edge = MINI.edge;
+  bar.classList.remove('no-redo', 'wrap'); bar.style.maxWidth = bar.style.maxHeight = '';
+  const ins = safeInsets(), M = 6, vw = innerWidth, vh = innerHeight;
+  const avail = horiz ? vw - ins.l - ins.r - 2 * M : vh - ins.t - ins.b - 2 * M;
+  const len = () => (horiz ? bar.offsetWidth : bar.offsetHeight);
+  if (len() > avail) bar.classList.add('no-redo');         // si no cabe, primero se quita Rehacer
+  if (len() > avail) { bar.classList.add('wrap'); bar.style[horiz ? 'maxWidth' : 'maxHeight'] = avail + 'px'; }   // y si aún no cabe, en dos filas
+  const w = bar.offsetWidth, h = bar.offsetHeight;
+  let x, y;
+  if (MINI.edge === 'right') { x = vw - ins.r - M - w; y = MINI.pos * vh - h / 2; }
+  else if (MINI.edge === 'left') { x = ins.l + M; y = MINI.pos * vh - h / 2; }
+  else if (MINI.edge === 'top') { y = ins.t + M; x = MINI.pos * vw - w / 2; }
+  else { y = vh - ins.b - M - h; x = MINI.pos * vw - w / 2; }
+  x = clamp(x, ins.l + M, Math.max(ins.l + M, vw - ins.r - M - w)); y = clamp(y, ins.t + M, Math.max(ins.t + M, vh - ins.b - M - h));
+  bar.style.left = Math.round(x) + 'px'; bar.style.top = Math.round(y) + 'px';
+}
+function setMiniFolded(on) {
+  MINI.folded = !!on; saveMini(); hidePop(); placeMini();
+  toast(on ? 'Barra achicada. Toca el punto para abrirla' : 'Botones rápidos ✓', 2200);
+}
+function setMiniPos(edge, pos) { MINI.edge = edge; MINI.pos = clamp(pos, 0, 1); saveMini(); placeMini(); }
+// Arrastrar desde la agarradera (o el punto): se pega al borde más cercano. Tocar sin mover: achicar / abrir.
+function miniDrag(el) {
+  let d = null;
+  el.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    e.preventDefault(); e.stopPropagation();
+    const r = $('#miniBar').getBoundingClientRect();
+    d = { id: e.pointerId, x0: e.clientX, y0: e.clientY, l: r.left, t: r.top, moved: false };
+    try { el.setPointerCapture(e.pointerId); } catch (_) {}
+  });
+  el.addEventListener('pointermove', (e) => {
+    if (!d || e.pointerId !== d.id) return;
+    const dx = e.clientX - d.x0, dy = e.clientY - d.y0, bar = $('#miniBar');
+    if (!d.moved && Math.hypot(dx, dy) < 8) return;
+    if (!d.moved) { d.moved = true; hidePop(); bar.classList.add('dragging'); }
+    bar.style.left = clamp(d.l + dx, 0, innerWidth - bar.offsetWidth) + 'px'; bar.style.top = clamp(d.t + dy, 0, innerHeight - bar.offsetHeight) + 'px';
+  });
+  const end = (e, cancel) => {
+    if (!d || e.pointerId !== d.id) return;
+    const moved = d.moved; d = null; const bar = $('#miniBar'); bar.classList.remove('dragging');
+    if (!moved) { if (!cancel) setMiniFolded(el.id === 'mbGrip'); return; }
+    const cx = clamp(e.clientX, 0, innerWidth), cy = clamp(e.clientY, 0, innerHeight);                   // donde se suelta el dedo
+    const dist = { left: cx, right: innerWidth - cx, top: cy * 1.15, bottom: (innerHeight - cy) * 1.15 };   // un poco de preferencia por los lados
+    const edge = Object.keys(dist).reduce((a, b) => (dist[b] < dist[a] ? b : a));
+    setMiniPos(edge, edge === 'left' || edge === 'right' ? cy / innerHeight : cx / innerWidth);
+  };
+  el.addEventListener('pointerup', (e) => end(e)); el.addEventListener('pointercancel', (e) => end(e, true));
+  // sin gestos del navegador al arrastrar (si no, el siguiente toque en la barra se perdía)
+  ['touchstart', 'touchmove'].forEach((t) => el.addEventListener(t, (e) => { if (e.cancelable) e.preventDefault(); }, { passive: false }));
+  el.addEventListener('click', (e) => { if (e.detail === 0) setMiniFolded(el.id === 'mbGrip'); });   // teclado (Enter / espacio)
+}
+miniDrag($('#mbGrip')); miniDrag($('#mbDot'));
+// submenús de la barra: al lado de la barra (a la izquierda si está a la derecha, arriba si está abajo…)
+function showMiniPop(id, anchor) {
+  if (openPop && openPop.anchor === anchor) { hidePop(); return; }
+  showPop(id, anchor);
+  const pop = $('#' + id), br = $('#miniBar').getBoundingClientRect(), ar = anchor.getBoundingClientRect(), vw = innerWidth, vh = innerHeight;
+  pop.style.maxHeight = (vh - 16) + 'px';
+  const pw = pop.offsetWidth, ph = Math.min(pop.offsetHeight, vh - 16);
+  let left, top;
+  if (MINI.edge === 'right' || MINI.edge === 'left') {
+    left = MINI.edge === 'right' ? br.left - pw - 8 : br.right + 8;
+    top = ar.top + ar.height / 2 - ph / 2;
+  } else {
+    top = MINI.edge === 'bottom' ? br.top - ph - 8 : br.bottom + 8;
+    left = ar.left + ar.width / 2 - pw / 2;
+  }
+  pop.style.left = clamp(left, 8, Math.max(8, vw - pw - 8)) + 'px'; pop.style.top = clamp(top, 8, Math.max(8, vh - ph - 8)) + 'px';
+  anchor.setAttribute('aria-expanded', 'true');
+}
+const MINI_TOOLS = {
+  color: [['fill', 'Bote', 'i-fill'], ['crayon', 'Crayón<small>lápiz de color</small>', 'i-crayon'], ['acrylic', 'Marcador<small>acrílico</small>', 'i-acrylic'], ['water', 'Marcador<small>de agua</small>', 'i-water'],
+          ['alcohol', 'Marcador<small>de alcohol</small>', 'i-alcohol'], ['grad', 'Degradado', null], ['blend', 'Difuminar', 'i-blend'], ['cerase', 'Borrador<small>de color</small>', 'i-eraser']],
+  draw: [['pen', 'Lápiz', 'i-pen'], ['m-crayon', 'Marcador<small>liso</small>', 'i-marker'], ['m-acrylic', 'Marcador<small>acrílico</small>', 'i-acrylic'], ['m-water', 'Marcador<small>de agua</small>', 'i-water'],
+         ['m-alcohol', 'Marcador<small>de alcohol</small>', 'i-alcohol'], ['erase', 'Borrador', 'i-eraser']],
+};
+function miniToolOn(k) {
+  const t = currentTool();
+  if (state.mode === 'draw') return k.startsWith('m-') ? t === 'marker' && state.drawBrush === k.slice(2) : t === k;
+  return t === k;
+}
+function buildMiniTools() {
+  const box = $('#mTools'); box.textContent = '';
+  for (const [k, label, icon] of MINI_TOOLS[state.mode]) {
+    const b = document.createElement('button'); b.className = 'pbtn' + (miniToolOn(k) ? ' on' : ''); b.dataset.mtool = k; b.setAttribute('role', 'menuitem');
+    b.innerHTML = (icon ? `<svg><use href="#${icon}"/></svg>` : '<span class="mgs"></span>') + '<div>' + label + '</div>';
+    if (!icon) b.querySelector('.mgs').style.background = $('#gradBtn .gswatch').style.background || 'linear-gradient(#FF3B30,#FFE66D)';
+    b.setAttribute('aria-label', label.replace('<small>', ' ').replace('</small>', ''));
+    b.onclick = () => pickMiniTool(k);
+    box.append(b);
+  }
+  $$('#mMode [data-m]').forEach((x) => x.classList.toggle('on', x.dataset.m === state.mode));
+}
+function pickMiniTool(k) {
+  pickTool();
+  if (state.mode === 'draw') {
+    if (k.startsWith('m-')) { setDrawBrush(k.slice(2)); state.markSeen = true; setDrawTool('marker'); }
+    else setDrawTool(k);
+  } else {
+    if (k === 'grad') state.gradSeen = true;
+    if (isBrush(k)) state.brushSeen = true;
+    setColorTool(k);
+  }
+  hidePop(); toast(miniToolInfo().name + ' ✓', 1800);
+}
+(function buildMiniSizes() {
+  const box = $('#mSizes');
+  for (const k of ['xxs', 'xs', '0', '1', '2']) {
+    const b = document.createElement('button'); b.className = 'pbtn size'; b.dataset.msize = k; b.setAttribute('role', 'menuitem'); b.setAttribute('aria-label', SIZE_NAMES[k]);
+    b.innerHTML = '<span class="dotbox"><i></i></span>' + SIZE_NAMES[k];
+    const i = b.querySelector('i'); i.style.width = i.style.height = SIZE_DOT[k] + 'px';
+    b.onclick = () => setMiniSize(k); box.append(b);
+  }
+})();
+function setMiniSize(k) {
+  if (state.mode === 'draw') setDrawSize(k);
+  else {
+    setColorSize(k);
+    if (state.colorTool === 'fill' || state.colorTool === 'grad') { pickTool(); setColorTool(state.brush); }   // el grosor es para pintar a mano
+  }
+  hidePop(); toast('Punta ' + SIZE_NAMES[k] + ' ✓', 1800);
+}
+$('#mbColor').onclick = () => openColorsSheet();
+$('#mbTool').onclick = () => { buildMiniTools(); showMiniPop('mToolPop', $('#mbTool')); };
+$('#mbSize').onclick = () => {
+  const sk = state.mode === 'draw' ? state.drawSize : state.colorSize;
+  $$('#mSizes [data-msize]').forEach((x) => x.classList.toggle('on', x.dataset.msize === sk));
+  showMiniPop('mSizePop', $('#mbSize'));
+};
+$$('#mMode [data-m]').forEach((b) => b.onclick = () => { const m = b.dataset.m; hidePop(); if (m !== state.mode) { flattenObjs(); setMode(m); } toast(m === 'draw' ? 'Dibujar ✓' : 'Colorear ✓', 1600); });
+$('#mbUndo').onclick = () => undo();
+$('#mbRedo').onclick = () => redo();
+$('#mbPick').onclick = () => $('#pickColor').onclick();
+window.addEventListener('resize', () => { if (state.uiHidden) placeMini(); });
+
 /* ---------- Ocultar botones: la hoja usa casi toda la pantalla (y pantalla completa si se puede) ---------- */
 let fsByUs = false;
 function setUIHidden(on, opts = {}) {
   on = !!on;
-  cancelGesture(); hidePop();
+  cancelGesture(); hidePop(); hidePanel();
   state.uiHidden = on;
   document.body.classList.toggle('ui-hidden', on);
   try { localStorage.setItem('colorear.ocultarBotones', on ? '1' : '0'); } catch (_) {}
@@ -2874,9 +3313,10 @@ function setUIHidden(on, opts = {}) {
     } catch (_) {}
   }
   layout(); requestAnimationFrame(layout);
-  if (on && !opts.quiet) toast('Para ver los botones otra vez, toca “Mostrar botones” (arriba)', 2800);
+  if (on) { refreshMini(); placeMini(); requestAnimationFrame(placeMini); }
+  if (on && !opts.quiet) toast('Botones rápidos al lado ✓ Arrastra ⠿ para moverlos. ⤡ muestra todos los botones', 3200);
 }
-document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement) fsByUs = false; setTimeout(layout, 60); });
+document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement) fsByUs = false; setTimeout(() => { layout(); placeMini(); }, 60); });
 $('#hideUI').onclick = () => setUIHidden(true);
 $('#showUI').onclick = () => setUIHidden(false);
 
@@ -2923,8 +3363,10 @@ function pkUpdate() {
   cr.style.left = (50 + pk.s * Math.cos(ang) * 50) + '%'; cr.style.top = (50 - pk.s * Math.sin(ang) * 50) + '%';
   $('#pkDim').style.opacity = String(1 - pk.v);
   $('#pkPrev').style.background = `rgba(${r},${g},${b},${pk.a})`;
-  $('#pkHex').textContent = hex + (A < 100 ? ` · ${A} %` : '');
+  const inp = $('#pkInput');
+  if (document.activeElement !== inp) { inp.value = hex; inp.classList.remove('bad'); $('#pkMsg').hidden = true; }   // mientras escribes no se cambia lo que escribes
   const nm = COLOR_NAME[hex];
+  $('#pkHex').textContent = [COLOR_CODE[hex], A < 100 ? A + ' %' : ''].filter(Boolean).join(' · ');
   $('#pkWheel').setAttribute('aria-valuetext', (nm || hex) + (A < 100 ? `, opacidad ${A} %` : ''));
   const bi = $('#pkBright'); bi.value = Math.round(pk.v * 100); bi.style.background = `linear-gradient(90deg, #000, rgb(${full.join(',')}))`;
   $('#pkBrightV').textContent = Math.round(pk.v * 100) + ' %';
@@ -2932,6 +3374,34 @@ function pkUpdate() {
   ai.style.background = `linear-gradient(90deg, rgba(${r},${g},${b},0), rgb(${r},${g},${b})), repeating-conic-gradient(#d9d9d9 0 25%, #fff 0 50%) 0 0 / 14px 14px`;
   $('#pkAlphaV').textContent = A + ' %';
 }
+// 3.4: escribir un color: #RRGGBB, #RGB (con o sin #) o un código propio (R3, A5…). Sin # gana el código (A12 es el azul A12; #A12 es hexadecimal).
+const CODE_TO_HEX = {};
+for (const c in COLOR_CODE) CODE_TO_HEX[COLOR_CODE[c]] = c;
+function parseColorText(t) {
+  t = String(t || '').trim().toUpperCase().replace(/\s+/g, '');
+  if (!t) return null;
+  const hash = t[0] === '#', body = hash ? t.slice(1) : t;
+  if (!hash && CODE_TO_HEX[body]) return CODE_TO_HEX[body];
+  if (/^[0-9A-F]{6}$/.test(body)) return '#' + body;
+  if (/^[0-9A-F]{3}$/.test(body)) return '#' + body.split('').map((c) => c + c).join('');
+  return null;
+}
+let pkBefore = null;                                           // el color de antes de escribir (si lo escrito no vale, se vuelve a él)
+function pkTyped(final) {
+  const inp = $('#pkInput'), hex = parseColorText(inp.value), raw = inp.value.replace(/[#\s]/g, '');
+  const bad = !hex && (final ? raw.length > 0 : raw.length >= 3);
+  inp.classList.toggle('bad', bad); $('#pkMsg').hidden = !bad;
+  if (hex) pkSetHex(hex);
+  else if (bad && pkBefore) { const typed = inp.value; pk.h = pkBefore.h; pk.s = pkBefore.s; pk.v = pkBefore.v; pkUpdate(); inp.value = typed; inp.classList.add('bad'); $('#pkMsg').hidden = false; }
+  if (final && hex) inp.value = rgbHex(...hsvToRgb(pk.h, pk.s, pk.v));
+  if (final && hex) pkBefore = { h: pk.h, s: pk.s, v: pk.v };
+  return hex;
+}
+$('#pkInput').addEventListener('focus', () => { pkBefore = { h: pk.h, s: pk.s, v: pk.v }; });
+$('#pkInput').addEventListener('input', () => pkTyped(false));
+$('#pkInput').addEventListener('change', () => pkTyped(true));
+$('#pkInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); pkTyped(true); e.target.blur(); } });
+$('#pkInput').addEventListener('blur', () => { if (parseColorText($('#pkInput').value)) pkTyped(true); });
 function pkSetHex(hex, a) {
   const [h, s, v] = rgbToHsv(...hexToRgb(hex));
   if (s > 0.001 && v > 0.001) pk.h = h;
@@ -3071,6 +3541,8 @@ function toast(msg, ms = 2400, swatch) {
   // encima de la barra de herramientas (en Dibujar es más alta), para no tapar los botones
   const f = document.querySelector('footer.tools').getBoundingClientRect();
   t.style.bottom = f.top > innerHeight * 0.4 && f.bottom >= innerHeight - 2 ? Math.round(innerHeight - f.top + 12) + 'px' : '';
+  if (!f.height) t.style.bottom = '';
+  if (state.uiHidden && MINI.edge === 'bottom') { const mr = $('#miniBar').getBoundingClientRect(); if (mr.height) t.style.bottom = Math.round(innerHeight - mr.top + 10) + 'px'; }
   t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), ms);
 }
 
@@ -4105,7 +4577,12 @@ function showHint() {
   $('#hintInstall').style.display = deferredPrompt ? '' : 'none';
   $('#hint').classList.add('show');
 }
-const NEWS_HTML = '<p><b>Nuevo en la versión 3.3</b>:</p>' +
+const NEWS_HTML = '<p><b>Nuevo en la versión 3.4</b>: ¡más espacio para la hoja!</p>' +
+  '<p>🗂️ <b>Pestañas arriba</b>: <span class="kbd">Herramientas</span>, <span class="kbd">Colores</span>, <span class="kbd">Tamaño</span>, <span class="kbd">Capas</span> y <span class="kbd">Más</span>. Toca una, elige y se cierra sola. Las barras de abajo ya no están: la hoja llega hasta abajo. Debajo de las pestañas tienes tu color y unos colores rápidos. <b>Añadir</b> y <b>Limpiar</b> están en <span class="kbd">Más</span>.</p>' +
+  '<p>⌨️ En la <b>rueda de colores</b> (<span class="kbd">Otro</span>) puedes <b>escribir el código</b> del color: #FF3B30, F00 o uno de Más colores como R3 o A5.</p>' +
+  '<p>🎛️ <b>Botones rápidos</b> con los botones ocultos: una barrita al lado de la hoja con el <b>color</b>, la <b>herramienta</b> (lápiz, crayón, marcadores, difuminar…), el <b>grosor</b>, <b>deshacer</b>, <b>copiar color</b> y <b>Mostrar botones</b>. Arrástrala por <b>⠿</b> a otro lado, o tócala ahí para achicarla a un puntito.</p>' +
+  '<p>🌈 <b>Más colores</b> ocupa media pantalla: cada familia se ve en una fila; toca su nombre para ver todos sus tonos. Siguen los <b>360 colores</b>, y cada uno tiene su <b>código</b> (por ejemplo R4, A10, V22) para encontrarlo otra vez.</p>' +
+  '<p style="margin-top:12px"><b>En la versión 3.3</b>:</p>' +
   '<p>🖼️ <b>Más espacio para pintar</b>: toca <span class="kbd">Ocultar botones</span> (arriba a la derecha de la hoja) y la hoja usa casi toda la pantalla. Puedes seguir pintando y acercar con dos dedos. Para verlos otra vez, toca <span class="kbd">Mostrar botones</span>.</p>' +
   '<p>📚 <b>Capas</b> (si quieres): toca <span class="kbd">Capas</span> para pintar en hojas transparentes, una encima de otra. Puedes esconderlas (ojito), subirlas, bajarlas, cambiar su opacidad o borrarlas. Las líneas del dibujo siempre quedan encima. Si no las usas, todo sigue igual.</p>' +
   '<p>✏️ <b>Punta más fina</b>: <b>Súper fina</b> se queda finita aunque acerques la hoja, los puntitos son pequeños y hay una nueva, <b>Detalle</b>, la más finita de todas.</p>' +
@@ -4216,7 +4693,7 @@ window.__colorear = {
   gradientFill, regionMask, setColorTool, setColorSize, setColor, showNews, setMode, setDrawBrush, setPicking, colorAt, pickColorAt, thinLW, sizeLW, templates: TEMPLATES, COLOR_FAMILIES, ALL_COLORS, GRAD_PRESETS, gradStops, lighterOf,
   get recentColors() { return recentColors.slice(); },
   paint, addLayer, deleteLayer, moveLayer, selectLayer, setLayerVisible, setLayerOpacity, composite, setUIHidden, openPicker, pk, pkSetHex, hsvToRgb, rgbToHsv, docPerScreenPx,
-  get mySlots() { return mySlots.slice(); }, get activeLayer() { return paintTarget(); },
+  get mySlots() { return mySlots.slice(); }, COLOR_CODE, placeMini, showPanel, hidePanel, get openPanel() { return openGrp; }, setMiniPos, setMiniFolded, get mini() { return { ...MINI }; }, setFamOpen, openColorsSheet, get activeLayer() { return paintTarget(); },
   get W() { return W; }, get H() { return H; }, get objs() { return objs; }, get objMode() { return objMode; }, version: APP_VERSION,
 };
 </script>
