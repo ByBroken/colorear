@@ -400,6 +400,83 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
   footer .row, .palette{max-width:760px;margin-left:auto;margin-right:auto}
   .palette{gap:8px}
 }
+
+/* 3.3: Capas y Ocultar botones (arriba a la derecha de la hoja) */
+#viewBar{right:calc(env(safe-area-inset-right) + 8px);top:8px;flex-direction:column;gap:6px}
+#viewBar .ib{width:42px;height:42px;border-radius:13px;background:rgba(255,255,255,.94);box-shadow:0 2px 10px rgba(60,30,90,.22);position:relative;color:var(--ink)}
+#viewBar .ib svg{width:23px;height:23px}
+#viewBar .ib.on{background:var(--sel);color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent),0 2px 10px rgba(60,30,90,.22)}
+#layersBtn .lcount{position:absolute;right:-5px;top:-5px;min-width:19px;height:19px;border-radius:10px;background:var(--accent2);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 5px;box-shadow:0 0 0 2px #fff}
+body.obj-mode #viewBar{display:none}
+#showUI{display:none;right:calc(env(safe-area-inset-right) + 6px);top:calc(env(safe-area-inset-top) + 6px);height:40px;border:0;border-radius:20px;padding:0 12px 0 9px;gap:6px;
+  background:rgba(255,255,255,.9);color:var(--accent2);font-weight:800;font-size:13px;box-shadow:0 2px 10px rgba(60,30,90,.25)}
+#showUI svg{width:20px;height:20px}
+#showUI:active{transform:scale(.95)}
+body.ui-hidden{display:block}
+body.ui-hidden header.top,body.ui-hidden footer.tools,body.ui-hidden #zoomBar,body.ui-hidden #addBtn,body.ui-hidden #viewBar{display:none!important}
+body.ui-hidden #stage{position:absolute;inset:0;padding:calc(env(safe-area-inset-top) + 4px) calc(env(safe-area-inset-right) + 4px) calc(env(safe-area-inset-bottom) + 4px) calc(env(safe-area-inset-left) + 4px)}
+body.ui-hidden #showUI{display:flex}
+body.ui-hidden #toast{bottom:calc(env(safe-area-inset-bottom) + 40px)}
+/* panel de Capas */
+#layersPop{width:330px;overflow-y:auto;overscroll-behavior:contain}
+.lyr{display:flex;align-items:center;gap:4px;border-radius:14px;background:#faf6f1;padding:4px;margin-bottom:6px}
+.lyr.on{background:var(--sel);box-shadow:inset 0 0 0 2px var(--accent)}
+.lyr.lines{background:#f1eaf7}
+.lyr .lsel{flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:8px;border:0;background:transparent;min-height:44px;padding:0 4px;font-weight:700;font-size:14px;text-align:left;color:var(--ink)}
+.lyr .lsel .th{flex:0 0 auto;width:30px;height:40px;border-radius:5px;box-shadow:0 0 0 1px var(--line);background:repeating-conic-gradient(#e9e4ee 0 25%,#fff 0 50%) 0 0/8px 8px}
+.lyr .lsel .th.land{width:40px;height:30px}
+.lyr .lsel svg{width:22px;height:22px;flex:0 0 auto;color:var(--accent2)}
+.lyr .lsel span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lyr .lsel small{display:block;font-size:11.5px;font-weight:500;color:var(--muted);overflow:hidden;text-overflow:ellipsis}
+.lyr.off .lsel .th,.lyr.off .lsel span{opacity:.45}
+.lyr .lb{flex:0 0 36px;width:36px;height:40px;border:0;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;padding:0;color:var(--ink)}
+.lyr .lb svg{width:20px;height:20px}
+.lyr .lb:disabled{opacity:.28}
+.lyr .lb.danger{color:#d93a2f}
+.lyr .lb:active{transform:scale(.92)}
+.lop{display:flex;align-items:center;gap:8px;margin:4px 4px 0;font-size:13px;font-weight:700;color:var(--muted)}
+.lop input{flex:1;min-width:0;accent-color:var(--accent2);height:34px}
+.lop b{min-width:42px;text-align:right;color:var(--ink)}
+#lyrAdd:disabled{opacity:.45}
+/* Otro color: rueda de colores */
+#pickerDlg{z-index:26}
+#pickerDlg .box.picker{width:min(94%,400px);padding:14px 14px 12px;text-align:left;max-height:calc(100% - 16px);overflow-y:auto;overscroll-behavior:contain}
+.picker h2{margin:0 0 10px;font-size:18px}
+.pk-main{display:flex;gap:12px;align-items:center}
+.pk-wheel{position:relative;flex:1 1 auto;min-width:0;max-width:250px;aspect-ratio:1/1;touch-action:none;border-radius:50%;cursor:crosshair}
+.pk-wheel canvas{position:absolute;inset:0;width:100%;height:100%;border-radius:50%}
+.pk-dim{position:absolute;inset:0;border-radius:50%;background:#000;pointer-events:none;opacity:0}
+.pk-cross{position:absolute;left:50%;top:50%;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1.5px rgba(0,0,0,.6),inset 0 0 0 1.5px rgba(0,0,0,.4);pointer-events:none}
+.pk-cross::before,.pk-cross::after{content:"";position:absolute;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.45)}
+.pk-cross::before{left:50%;top:-9px;bottom:-9px;width:2px;margin-left:-1px;clip-path:polygon(0 0,100% 0,100% 30%,0 30%,0 70%,100% 70%,100% 100%,0 100%)}
+.pk-cross::after{top:50%;left:-9px;right:-9px;height:2px;margin-top:-1px;clip-path:polygon(0 0,30% 0,30% 100%,0 100%,70% 0,100% 0,100% 100%,70% 100%)}
+.pk-side{flex:0 0 84px;display:flex;flex-direction:column;align-items:stretch;gap:8px}
+.pk-prev{height:84px;border-radius:18px;position:relative;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15);background:repeating-conic-gradient(#d9d9d9 0 25%,#fff 0 50%) 0 0/14px 14px}
+.pk-prev i{position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+#pkHex{font:700 12.5px ui-monospace,SFMono-Regular,Menlo,monospace;text-align:center;color:var(--muted);line-height:1.25;-webkit-user-select:text;user-select:text}
+#pkDropper{border:0;border-radius:14px;background:#f1eaf7;color:var(--accent2);font-weight:800;font-size:12px;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;line-height:1.05;padding:4px}
+#pkDropper svg{width:22px;height:22px}
+#pkDropper:active{transform:scale(.95)}
+.pk-row{display:flex;align-items:center;gap:10px;margin-top:12px}
+.pk-row b{flex:0 0 70px;font-size:14px}
+.pk-row .pkv{flex:0 0 44px;text-align:right;font-weight:800;font-size:14px;color:var(--muted)}
+.pk-range{-webkit-appearance:none;appearance:none;flex:1 1 auto;min-width:0;height:30px;border-radius:15px;margin:0;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15);outline:none;touch-action:none;background:#ccc}
+.pk-range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:30px;height:30px;border-radius:50%;background:transparent;border:4px solid #fff;box-shadow:0 0 0 1.5px rgba(0,0,0,.5),0 2px 6px rgba(0,0,0,.35)}
+.pk-range::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:transparent;border:4px solid #fff;box-shadow:0 0 0 1.5px rgba(0,0,0,.5),0 2px 6px rgba(0,0,0,.35)}
+.pk-range:focus-visible{box-shadow:inset 0 0 0 1px rgba(0,0,0,.15),0 0 0 3px var(--accent2)}
+.pk-slots-h{margin:14px 2px 6px;font-weight:800;font-size:14px}
+.pk-slots-h small{display:block;font-weight:500;font-size:12px;color:var(--muted);margin-top:2px;line-height:1.3}
+.pk-slots{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.pk-slot{aspect-ratio:1/1;border:0;border-radius:12px;padding:0;min-height:36px;position:relative;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15);
+  background:repeating-conic-gradient(#d9d9d9 0 25%,#fff 0 50%) 0 0/12px 12px;-webkit-touch-callout:none}
+.pk-slot i{position:absolute;inset:0}
+.pk-slot.empty{background:#fff;box-shadow:none;border:2px dashed #d7c9e6;color:#b3a3c6;font-size:22px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.pk-slot:active{transform:scale(.93)}
+.picker .btns{margin-top:14px}
+#alphaChip{flex:0 0 auto;height:30px;border:0;border-radius:15px;padding:0 9px;font-weight:800;font-size:12px;color:var(--accent2);background:repeating-conic-gradient(#ece6f3 0 25%,#fff 0 50%) 0 0/10px 10px;box-shadow:inset 0 0 0 1.5px #d7c9e6;white-space:nowrap}
+/* grosor "Detalle": en pantallas angostas los 5 grosores caben junto a Limpiar */
+@media (max-width:430px){ #drawSizes .size{flex:0 0 46px;width:46px;min-width:46px;font-size:10px;letter-spacing:-.3px} footer .row.only-draw #btnClear{flex:0 0 64px!important} }
+@media (max-width:340px){ #drawSizes .size{flex:0 0 43px;width:43px;min-width:43px;font-size:9.5px} footer .row.only-draw #btnClear{flex:0 0 56px!important} }
 @media print{
   @page{size:auto;margin:10mm}
   html,body{height:auto;overflow:visible;background:#fff}
@@ -458,6 +535,14 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
     <symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></symbol>
     <symbol id="i-front" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="3" width="11" height="11" rx="1.5"/><rect x="10" y="10" width="11" height="11" rx="1.5" fill="currentColor"/></symbol>
     <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M12 3.5l9 4.8-9 4.8-9-4.8z"/><path d="M3 12.3l9 4.8 9-4.8"/><path d="M3 16.2l9 4.8 9-4.8"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-eyeoff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M9.9 5.8A9.7 9.7 0 0112 5.5c6 0 9.5 6.5 9.5 6.5a17 17 0 01-2.6 3.4M6.3 7.3C3.9 9 2.5 12 2.5 12S6 18.5 12 18.5c1.7 0 3.2-.5 4.5-1.2"/><path d="M9.9 9.9a3 3 0 004.2 4.2"/><path d="M3.5 3.5l17 17"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><path d="M12 19V5.5M6 11l6-6 6 6"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><path d="M12 5v13.5M6 13l6 6 6-6"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 018 0v3"/></symbol>
+    <symbol id="i-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M14 4h6v6M20 4l-6.5 6.5M10 20H4v-6M4 20l6.5-6.5"/></symbol>
+    <symbol id="i-shrink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M20 10h-6V4M14 10l6.5-6.5M4 14h6v6M10 14l-6.5 6.5"/></symbol>
   </defs>
 </svg>
 
@@ -495,6 +580,11 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
     <button class="ib" id="zoomIn" title="Acercar" aria-label="Acercar"><svg><use href="#i-plus"/></svg></button>
     <button class="ib" id="zoomFit" title="Ajustar a la pantalla" aria-label="Ajustar a la pantalla"><svg><use href="#i-fit"/></svg></button>
   </div>
+  <div class="float" id="viewBar" role="toolbar" aria-label="Vista y capas">
+    <button class="ib" id="hideUI" title="Ocultar botones: la hoja usa casi toda la pantalla" aria-label="Ocultar botones (pantalla completa)"><svg><use href="#i-full"/></svg></button>
+    <button class="ib" id="layersBtn" title="Capas: pinta en hojas transparentes, una encima de otra" aria-label="Capas" aria-haspopup="dialog" aria-expanded="false"><svg><use href="#i-layers"/></svg><span class="lcount" hidden></span></button>
+  </div>
+  <button class="float" id="showUI" title="Mostrar botones otra vez" aria-label="Mostrar botones"><svg><use href="#i-shrink"/></svg><span>Mostrar botones</span></button>
 </main>
 
 <footer class="tools">
@@ -511,7 +601,8 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
   <div class="row only-draw">
     <span class="lbl">Grosor</span>
     <div class="sizes" id="drawSizes">
-      <button class="tool size" data-size="xs" aria-label="Súper fina" title="Súper fina: una línea muy finita para detalles"><i style="width:2px;height:2px"></i>Súper fina</button>
+      <button class="tool size" data-size="xxs" aria-label="Detalle" title="Detalle: la punta más finita, para detalles pequeños (acerca la hoja con dos dedos)"><i style="width:1px;height:1px"></i>Detalle</button>
+      <button class="tool size" data-size="xs" aria-label="Súper fina" title="Súper fina: una línea muy finita que se queda finita aunque acerques la hoja"><i style="width:2px;height:2px"></i>Súper fina</button>
       <button class="tool size" data-size="0" aria-label="Fina"><i style="width:5px;height:5px"></i>Fina</button>
       <button class="tool size on" data-size="1" aria-label="Mediana"><i style="width:11px;height:11px"></i>Mediana</button>
       <button class="tool size" data-size="2" aria-label="Gruesa"><i style="width:18px;height:18px"></i>Gruesa</button>
@@ -527,11 +618,12 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
     <button class="tool" data-ctool="blend" aria-label="Difuminar" title="Difuminar: pasa el dedo para mezclar los colores"><svg><use href="#i-blend"/></svg>Difuminar</button>
     <button class="tool" data-ctool="cerase" title="Borrar color (las líneas no se borran)" aria-label="Borrar color"><svg><use href="#i-eraser"/></svg>Borrar</button>
     <button class="tool has-pop" id="sizeBtn" data-pop="sizePop" aria-label="Grosor de la punta" title="Grosor de la punta: fina o gruesa"><span class="dotbox"><i style="width:13px;height:13px"></i></span><span class="sl">Mediana</span></button>
-    <label class="tool" id="customWrap" title="Otro color: elige cualquier color que quieras"><span class="rainbow"></span>Otro<input type="color" id="customColor" value="#ff6f61" aria-label="Elegir otro color"></label>
+    <button class="tool" id="customWrap" title="Otro color: elige cualquier color en la rueda de colores" aria-label="Otro color: elegir cualquier color" aria-haspopup="dialog"><span class="rainbow"></span>Otro</button>
   </div>
   <div id="recentRow">
     <button id="moreColors" title="Más colores: 360 colores para elegir con un toque" aria-label="Más colores (360 colores)"><span class="rainbow"></span>Más colores</button>
     <button id="pickColor" aria-pressed="false" aria-label="Copiar color: toca aquí y luego toca un color del dibujo o de la foto" title="Copiar color: toca aquí y luego toca cualquier color del dibujo o de tu foto"><svg><use href="#i-picker"/></svg><span>Copiar color</span></button>
+    <button id="alphaChip" hidden title="Opacidad del color: toca para cambiarla" aria-label="Opacidad del color">100 %</button>
     <span class="rlbl">Recientes</span>
     <div class="recent" id="recent" aria-label="Colores recientes"></div>
   </div>
@@ -559,7 +651,8 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
 <div class="pop" id="sizePop" role="menu" aria-label="Grosor de la punta">
   <h4>Grosor de la punta</h4>
   <div class="pgrid" id="colorSizes">
-    <button class="pbtn size" data-size="xs" aria-label="Súper fina"><span class="dotbox"><i style="width:2px;height:2px"></i></span>Súper fina</button>
+    <button class="pbtn size" data-size="xxs" aria-label="Detalle" title="Detalle: la punta más finita, para detalles pequeños"><span class="dotbox"><i style="width:1px;height:1px"></i></span>Detalle</button>
+    <button class="pbtn size" data-size="xs" aria-label="Súper fina" title="Súper fina: se queda finita aunque acerques la hoja"><span class="dotbox"><i style="width:2px;height:2px"></i></span>Súper fina</button>
     <button class="pbtn size" data-size="0" aria-label="Fina"><span class="dotbox"><i style="width:6px;height:6px"></i></span>Fina</button>
     <button class="pbtn size on" data-size="1" aria-label="Mediana"><span class="dotbox"><i style="width:13px;height:13px"></i></span>Mediana</button>
     <button class="pbtn size" data-size="2" aria-label="Gruesa"><span class="dotbox"><i style="width:22px;height:22px"></i></span>Gruesa</button>
@@ -587,6 +680,32 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
   </div>
 </div>
 
+<div class="pop" id="layersPop" role="dialog" aria-label="Capas">
+  <h4>Capas</h4>
+  <p class="ptip" style="margin:0 4px 8px">Pinta en una capa sin tocar las otras. Las líneas del dibujo siempre quedan encima.</p>
+  <div id="lyrList"></div>
+  <div class="lop" id="lyrOpRow"><span id="lyrOpName">Opacidad</span><input type="range" id="lyrOp" min="0" max="100" value="100" aria-label="Opacidad de la capa elegida"><b id="lyrOpV">100 %</b></div>
+  <button class="gmore" id="lyrAdd" title="Añadir una capa transparente encima de la elegida">+ Añadir capa</button>
+</div>
+<div class="overlay dialog" id="pickerDlg">
+  <div class="box picker" role="dialog" aria-modal="true" aria-labelledby="pkTitle">
+    <h2 id="pkTitle">Elige cualquier color</h2>
+    <div class="pk-main">
+      <div class="pk-wheel" id="pkWheel" role="slider" aria-label="Rueda de colores: arrastra la cruz para elegir el color" tabindex="0"><canvas id="pkWheelCv" width="400" height="400"></canvas><div class="pk-dim" id="pkDim"></div><div class="pk-cross" id="pkCross"></div></div>
+      <div class="pk-side">
+        <div class="pk-prev" title="Así se verá tu color"><i id="pkPrev"></i></div>
+        <div id="pkHex" aria-live="polite">#FF6F61</div>
+        <button id="pkDropper" title="Copiar color: toca aquí y luego cualquier color del dibujo o de tu foto" aria-label="Copiar color del dibujo"><svg><use href="#i-picker"/></svg>Copiar color</button>
+      </div>
+    </div>
+    <div class="pk-row"><b>Brillo</b><input type="range" class="pk-range" id="pkBright" min="0" max="100" value="100" aria-label="Brillo: de oscuro a claro"><span class="pkv" id="pkBrightV">100 %</span></div>
+    <div class="pk-row"><b>Opacidad</b><input type="range" class="pk-range" id="pkAlpha" min="5" max="100" value="100" aria-label="Opacidad: de transparente a sólido"><span class="pkv" id="pkAlphaV">100 %</span></div>
+    <div class="pk-slots-h">Mis colores<small>Toca un espacio vacío (+) para guardar el color. Toca uno lleno para usarlo. Mantén presionado para quitarlo.</small></div>
+    <div class="pk-slots" id="pkSlots" aria-label="Mis colores guardados"></div>
+    <div class="btns"><button id="pkCancel">Cancelar</button><button class="ok" id="pkOk">Listo</button></div>
+  </div>
+</div>
+
 <div class="overlay" id="menuSheet">
   <div class="sheet">
     <div class="sheet-head"><img class="brand" src="logo-badge-96.png" srcset="logo-badge-96.png 1x, logo-badge-192.png 2x" width="44" height="44" alt="ByBroken Coloring"><h2>Menú</h2><button class="ib close" aria-label="Cerrar"><svg><use href="#i-close"/></svg></button></div>
@@ -605,7 +724,7 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
         <button class="mbtn" id="mNews"><svg><use href="#i-sticker"/></svg>Novedades y ayuda</button>
       </div>
       <div class="menu-foot">
-        <span id="versionText">Colorear · Versión 3.2</span>
+        <span id="versionText">Colorear · Versión 3.3</span>
         <a href="privacidad.html" target="_blank" rel="noopener" id="mPrivacy">Política de privacidad</a>
       </div>
     </div>
@@ -620,7 +739,7 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
     <div class="scroll" id="cScroll">
       <section class="cfam crec" id="fam-recientes"><h3>Recientes <small>tus últimos colores</small></h3><div class="recent" id="cRecent"></div></section>
       <div id="cList"></div>
-      <label class="cother" title="Elige cualquier color"><span class="rainbow"></span>¿No está? Elige cualquier color<input type="color" id="customColor2" value="#ff6f61" aria-label="Elegir cualquier color"></label>
+      <button class="cother" id="otherColor" style="width:100%;border:0" title="Elige cualquier color en la rueda de colores" aria-label="¿No está? Elige cualquier color" aria-haspopup="dialog"><span class="rainbow"></span>¿No está? Elige cualquier color</button>
     </div>
   </div>
 </div>
@@ -749,28 +868,34 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
 <div id="printArea"><img id="printImg" alt="Dibujo para colorear"></div>
 <script>
 'use strict';
-/* Colorear v3.2: crea dibujos para colorear, sube fotos de tus libros y coloréalos
-   (lápiz y marcador de colores, crayón, marcadores acrílico / de agua / de alcohol, degradados, difuminar y copiar color) */
-const APP_VERSION = '3.2';
+/* Colorear v3.3: crea dibujos para colorear, sube fotos de tus libros y coloréalos
+   (lápiz y marcador de colores, crayón, marcadores acrílico / de agua / de alcohol, degradados, difuminar, copiar color,
+   capas, ocultar botones, punta Detalle y rueda de colores con opacidad) */
+const APP_VERSION = '3.3';
 const PORTRAIT = [1200, 1600], LANDSCAPE = [1600, 1200];
 let W = 1200, H = 1600;                       // tamaño de la hoja (px internos); vertical u horizontal
-/* Grosores en píxeles de la hoja (1200×1600). "Súper fina" (xs) no es fija: se calcula para que se vea
-   de ~1,2 px en la pantalla con la hoja ajustada (zoom 100 %), en cualquier teléfono o tablet. */
-const THIN_CSS = 1.0;
+/* Grosores en píxeles de la hoja (1200×1600). "Súper fina" (xs) y "Detalle" (xxs) no son fijas: se calculan
+   según el zoom para que se vean de ~1 px y ~½ px en la pantalla (la hoja tiene más píxeles que la pantalla con
+   el zoom al 100 %, así que se ven nítidas). Al acercar la hoja siguen finitas; el mínimo es 1 px (0,6 en Detalle)
+   de la hoja, que es lo más fino que se puede pintar. */
+const THIN_CSS = 1.0, DETAIL_CSS = 0.5;
 const DRAW_SIZES = { 0: 8, 1: 12, 2: 22 };        // lápiz y figuras (Dibujar): fina, mediana, gruesa
 const MARK_SIZES = { 0: 14, 1: 28, 2: 50 };       // marcador (Dibujar)
 const COLOR_SIZES = { 0: 14, 1: 40, 2: 80 };      // crayón y marcadores (Colorear)
-const ERASE_SIZES = { xs: 9, 0: 18, 1: 36, 2: 66 };   // borrador de líneas (Dibujar)
-function thinLW() {
+const ERASE_SIZES = { xxs: 5, xs: 9, 0: 18, 1: 36, 2: 66 };   // borrador de líneas (Dibujar)
+function docPerScreenPx() {            // píxeles de la hoja por píxel CSS de la pantalla, con el zoom actual
   const bw = view.bw || (paper.getBoundingClientRect().width / (view.z || 1)) || 300;
-  return clamp(THIN_CSS * W / bw, 1.5, 8);
+  return W / (bw * (view.z || 1));
 }
+function thinLW(css = THIN_CSS, min = 1) { return clamp(css * docPerScreenPx(), min, 8); }
 function sizeLW(kind, size) {           // kind: 'draw' | 'mark' | 'color'
   size = String(size);
-  if (size === 'xs') return thinLW();
+  if (size === 'xs') return thinLW(THIN_CSS, 1);
+  if (size === 'xxs') return thinLW(DETAIL_CSS, 0.6);
   return (kind === 'draw' ? DRAW_SIZES : kind === 'mark' ? MARK_SIZES : COLOR_SIZES)[size] || 12;
 }
-const SIZE_NAMES = { xs: 'Súper fina', 0: 'Fina', 1: 'Mediana', 2: 'Gruesa' };
+const isThin = (size) => size === 'xs' || size === 'xxs';
+const SIZE_NAMES = { xxs: 'Detalle', xs: 'Súper fina', 0: 'Fina', 1: 'Mediana', 2: 'Gruesa' };
 const BRUSHES = { crayon: 'Crayón', acrylic: 'Acrílico', water: 'Acuarela', alcohol: 'Alcohol' };
 const BRUSH_ICONS = { crayon: 'i-crayon', acrylic: 'i-acrylic', water: 'i-water', alcohol: 'i-alcohol' };
 const ZMIN = 1, ZMAX = 6;
@@ -812,14 +937,18 @@ function mkCanvas(w = W, h = H) { const c = document.createElement('canvas'); c.
 function ctx2d(c) { return c.getContext('2d', { willReadFrequently: true }); }
 const paper = $('#paper'), stage = $('#stage');
 const layers = {
-  color: { cv: $('#cvColor'), bak: mkCanvas() },
-  line:  { cv: $('#cvLine'),  bak: mkCanvas() },
+  color: { id: 'color', name: 'Capa 1', cv: $('#cvColor'), bak: mkCanvas(), vis: true, op: 1 },   // Capa 1: el papel y los colores de siempre
+  line:  { id: 'line', name: 'Líneas del dibujo', cv: $('#cvLine'),  bak: mkCanvas(), vis: true, op: 1 },   // líneas: siempre encima
 };
 for (const k in layers) {
   const L = layers[k];
   L.cv.width = W; L.cv.height = H;
   L.ctx = ctx2d(L.cv); L.bctx = ctx2d(L.bak);
 }
+// Capas de pintura, de abajo hacia arriba. Empieza con una sola (la Capa 1): quien no abre "Capas" no nota nada.
+const paint = [layers.color];
+const MAX_LAYERS = 6;
+let layerIdSeq = 2;
 const preview = $('#cvPreview'); preview.width = W; preview.height = H;
 const pctx = preview.getContext('2d');
 const objCv = $('#cvObj'); objCv.width = W; objCv.height = H;
@@ -845,6 +974,7 @@ const state = {
   drawColor: '#000000', drawBrush: 'crayon', picking: false,      // Dibujar tiene su propio color (empieza en negro)
   color2: '#FFE66D', gradType: 'linear', gradDir: 'down', gradPreset: 'mine', gradAdv: false,
   currentId: null, dirty: false, panTool: false,
+  alpha: 1, drawAlpha: 1, activeLayer: 'color', uiHidden: false, pickToPicker: false,
 };
 
 /* ---------- vista: ajuste a la pantalla, zoom y desplazamiento ---------- */
@@ -857,7 +987,7 @@ function layout() {
   if (aw <= 0 || ah <= 0) return;
   let s = Math.min(aw / W, ah / H);
   // Si los botones flotantes de abajo (Añadir y zoom) taparían la parte baja de la hoja, achicarla un poco (hasta 10 %)
-  const barH = 60, spare0 = ah - H * s;
+  const barH = state.uiHidden ? 0 : 60, spare0 = ah - H * s;
   if (spare0 < barH) {
     const addW = ($('#addBtn').offsetWidth || 0) + 12, zW = ($('#zoomBar').offsetWidth || 0) + 12;
     const bx0 = pl + (aw - W * s) / 2;
@@ -924,7 +1054,8 @@ function capturePart(name, rect) {
 }
 function entryBytes(e) {
   let n = (e.parts || []).reduce((a, p) => a + p.before.data.length * 2, 0);
-  if (e.resize) n += (e.resize.before.line.data.length + e.resize.before.color.data.length + e.resize.after.line.data.length + e.resize.after.color.data.length);
+  if (e.resize) for (const k of ['before', 'after']) for (const id in e.resize[k].data) n += e.resize[k].data[id].data.length;
+  if (e.layerOp && e.layerOp.data) n += e.layerOp.data.data.length;
   return n + 1000;
 }
 function pushEntry(e) {
@@ -940,27 +1071,43 @@ function commit(parts, extra) {
   if (!parts.length && !extra) return;
   pushEntry(Object.assign({ parts }, extra || {}));
 }
-function snapLayers() { return { w: W, h: H, line: layers.line.ctx.getImageData(0, 0, W, H), color: layers.color.ctx.getImageData(0, 0, W, H) }; }
+// Foto de todas las capas (para deshacer cambios de hoja completa)
+function snapLayers() {
+  const data = {};
+  for (const L of [...paint, layers.line]) data[L.id] = L.ctx.getImageData(0, 0, W, H);
+  return { w: W, h: H, meta: paint.map((L) => ({ id: L.id, vis: L.vis, op: L.op })), lineVis: layers.line.vis, active: state.activeLayer, data };
+}
+function restoreSnap(sn) {
+  setSheetSize(sn.w, sn.h);
+  paint.length = 0;
+  for (const m of sn.meta) { const L = layers[m.id]; if (!L) continue; L.vis = m.vis; L.op = m.op; fitLayer(L); paint.push(L); }
+  if (!paint.includes(layers.color)) paint.unshift(layers.color);
+  layers.line.vis = sn.lineVis !== false;
+  for (const id in sn.data) if (layers[id]) layers[id].ctx.putImageData(sn.data[id], 0, 0);
+  state.activeLayer = sn.active && paint.some((L) => L.id === sn.active) ? sn.active : 'color';
+  syncBackups(); mountLayers();
+}
+// Vuelve a una sola capa (la Capa 1), como al empezar
+function resetLayerStack() {
+  paint.length = 0; paint.push(layers.color);
+  layers.color.vis = true; layers.color.op = 1; layers.line.vis = true; state.activeLayer = 'color';
+}
 // Reemplaza la hoja completa (plantilla, foto, hoja nueva…) de forma que se pueda deshacer, aunque cambie de orientación
 function replaceSheet(nw, nh, drawFn) {
   const before = snapLayers();
   setSheetSize(nw, nh);
+  resetLayerStack();
   const lc = layers.line.ctx, cc = layers.color.ctx;
   lc.clearRect(0, 0, W, H);
   cc.fillStyle = '#fff'; cc.fillRect(0, 0, W, H);
   if (drawFn) drawFn(lc, cc);
   const after = snapLayers();
-  syncBackups();
+  syncBackups(); mountLayers();
   pushEntry({ parts: [], resize: { before, after } });
 }
 function applyEntry(entry, which) {
-  if (entry.resize) {
-    const s = entry.resize[which];
-    setSheetSize(s.w, s.h);
-    layers.line.ctx.putImageData(s.line, 0, 0);
-    layers.color.ctx.putImageData(s.color, 0, 0);
-    syncBackups();
-  }
+  if (entry.resize) restoreSnap(entry.resize[which]);
+  if (entry.layerOp) applyLayerOp(entry.layerOp, which);
   for (const p of entry.parts) {
     const L = layers[p.name];
     L.ctx.putImageData(p[which], p.x, p.y);
@@ -973,8 +1120,8 @@ function applyEntry(entry, which) {
     renderObjs();
   }
 }
-function undo() { cancelGesture(); const e = undoStack.pop(); if (!e) return; applyEntry(e, 'before'); redoStack.push(e); markDirty(); updateUndoButtons(); }
-function redo() { cancelGesture(); const e = redoStack.pop(); if (!e) return; applyEntry(e, 'after'); undoStack.push(e); markDirty(); updateUndoButtons(); }
+function undo() { cancelGesture(); const e = undoStack.pop(); if (!e) return; applyEntry(e, 'before'); redoStack.push(e); markDirty(); updateUndoButtons(); refreshLayersUI(); }
+function redo() { cancelGesture(); const e = redoStack.pop(); if (!e) return; applyEntry(e, 'after'); undoStack.push(e); markDirty(); updateUndoButtons(); refreshLayersUI(); }
 function resetHistory() { undoStack.length = 0; redoStack.length = 0; updateUndoButtons(); }
 function updateUndoButtons() { $('#btnUndo').disabled = !undoStack.length; $('#btnRedo').disabled = !redoStack.length; }
 function syncBackups() { for (const k in layers) { const L = layers[k]; L.bctx.clearRect(0, 0, W, H); L.bctx.drawImage(L.cv, 0, 0); } }
@@ -1010,8 +1157,9 @@ function heartPath(c, cx, cy, s) {
   c.bezierCurveTo(cx + 1.0 * s, cy - 1.0 * s, cx + 1.25 * s, cy + 0.05 * s, cx, cy + 0.85 * s);
   c.closePath();
 }
-function drawShape(c, tool, a, b, lw, color = '#000') {
+function drawShape(c, tool, a, b, lw, color = '#000', alpha = 1) {
   c.save();
+  c.globalAlpha = alpha == null ? 1 : alpha;
   c.lineWidth = lw; c.lineCap = 'round'; c.lineJoin = 'round'; c.strokeStyle = color;
   if (tool === 'line') { c.beginPath(); c.moveTo(a.x, a.y); c.lineTo(b.x, b.y); c.stroke(); }
   else if (tool === 'rect') { c.beginPath(); c.rect(Math.min(a.x, b.x), Math.min(a.y, b.y), Math.abs(b.x - a.x), Math.abs(b.y - a.y)); c.stroke(); }
@@ -1040,12 +1188,27 @@ let pinch = null;             // gesto de dos dedos en curso
 let lockTouch = false;        // tras un pellizco, no dibujar con el dedo que queda
 let spaceDown = false;
 function currentTool() { return state.mode === 'draw' ? state.drawTool : state.colorTool; }
+// Capa donde se pinta: Colorear usa la capa elegida (la Capa 1 si no se abrió "Capas").
+// Dibujar con la Capa 1 dibuja en las líneas (como siempre); con otra capa elegida, dibuja en esa capa.
+const isLiveLayer = (id) => paint.some((L) => L.id === id);
+function paintTarget() { return isLiveLayer(state.activeLayer) ? state.activeLayer : 'color'; }
+function drawTarget() { const t = paintTarget(); return t === 'color' ? 'line' : t; }
+function toolTarget(tool) { return state.mode === 'draw' ? drawTarget() : paintTarget(); }
+// Opacidad del color elegido (rueda de colores): el trazo se pinta en una capa aparte y se mezcla con esa opacidad
+function withAlpha(st, a) {
+  if (!st || a == null || a >= 0.999) return st;
+  if (st.buf) { st.alpha *= a; return st; }
+  delete st.fx; st.buf = 'alpha'; st.alpha = a;
+  return st;
+}
 function strokeStyleFor(tool) {
-  if (tool === 'pen') return { layer: 'line', color: state.drawColor, comp: 'source-over', lw: sizeLW('draw', state.drawSize) };
-  if (tool === 'erase') return { layer: 'line', color: '#000', comp: 'destination-out', lw: ERASE_SIZES[state.drawSize] };
-  if (tool === 'marker') return brushStyle(state.drawBrush, 'line', state.drawColor, sizeLW('mark', state.drawSize), state.drawSize === 'xs');
-  if (isBrush(tool)) return brushStyle(tool, 'color', state.color, sizeLW('color', state.colorSize), state.colorSize === 'xs');
-  if (tool === 'cerase') return { layer: 'color', color: '#FFFFFF', comp: 'source-over', lw: sizeLW('color', state.colorSize) };
+  const dl = drawTarget(), pl = paintTarget();
+  if (tool === 'pen') return withAlpha({ layer: dl, color: state.drawColor, comp: 'source-over', lw: sizeLW('draw', state.drawSize) }, state.drawAlpha);
+  if (tool === 'erase') return { layer: dl, color: '#000', comp: 'destination-out', lw: ERASE_SIZES[state.drawSize] || 18 };
+  if (tool === 'marker') return withAlpha(brushStyle(state.drawBrush, dl, state.drawColor, sizeLW('mark', state.drawSize), isThin(state.drawSize)), state.drawAlpha);
+  if (isBrush(tool)) return withAlpha(brushStyle(tool, pl, state.color, sizeLW('color', state.colorSize), isThin(state.colorSize)), state.alpha);
+  if (tool === 'cerase') return pl === 'color' ? { layer: 'color', color: '#FFFFFF', comp: 'source-over', lw: sizeLW('color', state.colorSize) }
+    : { layer: pl, color: '#000', comp: 'destination-out', lw: sizeLW('color', state.colorSize) };   // en otra capa, borra de verdad (queda transparente)
   return null;
 }
 // Crayón / marcadores. En Colorear pintan debajo de las líneas (capa de color); el marcador de Dibujar pinta en la capa del dibujo.
@@ -1094,12 +1257,14 @@ function startSingle(e) {
   if (objMode) { g = objDown(base, p); return; }
   if (state.picking) { g = Object.assign(base, { kind: 'pick' }); return; }     // Copiar color: se copia al soltar
   const tool = currentTool();
+  const tgt = layers[toolTarget(tool)];
+  if (tgt && !tgt.vis) { toast('Esta capa está oculta 🙈 Ábrela en “Capas” y toca el ojito', 2800); return; }
   if (state.mode === 'color' && (tool === 'fill' || isBrush(tool) || (tool === 'grad' && gradUsesColor()))) addRecent(state.color);
   if (state.mode === 'draw' && tool !== 'erase' && state.drawColor !== '#000000') addRecent(state.drawColor);   // el negro de siempre ya está en los colores rápidos
   if (tool === 'fill') { g = Object.assign(base, { kind: 'fill' }); return; }
   if (tool === 'grad') { g = Object.assign(base, { kind: 'grad' }); return; }
   if (tool === 'blend') {
-    g = Object.assign(base, { kind: 'blend', lw: sizeLW('color', state.colorSize) * 1.2, box: { x1: Infinity, y1: Infinity, x2: -Infinity, y2: -Infinity } });
+    g = Object.assign(base, { kind: 'blend', layer: paintTarget(), lw: sizeLW('color', state.colorSize) * 1.2, box: { x1: Infinity, y1: Infinity, x2: -Infinity, y2: -Infinity } });
     blendStart(g, p);
     return;
   }
@@ -1151,7 +1316,7 @@ function onMove(e) {
   }
   if (g.kind === 'shape') {
     pctx.clearRect(0, 0, W, H);
-    drawShape(pctx, g.tool, g.start, g.last, sizeLW('draw', state.drawSize), state.drawColor);
+    drawShape(pctx, g.tool, g.start, g.last, sizeLW('draw', state.drawSize), state.drawColor, state.drawAlpha);
   }
 }
 function onUp(e) {
@@ -1172,12 +1337,12 @@ function endSingle(cancelled) {
   if (cur.kind === 'pick') {
     if (!cancelled) pickColorAt(cur.travel < 14 ? cur.start : cur.last);
   } else if (cur.kind === 'fill') {
-    if (!cancelled && cur.travel < 14) floodFill(cur.start.x, cur.start.y, state.color);
+    if (!cancelled && cur.travel < 14) floodFill(cur.start.x, cur.start.y, state.color, state.alpha);
   } else if (cur.kind === 'grad') {
     pctx.clearRect(0, 0, W, H);
     if (!cancelled) gradientFill(cur.start, state.gradAdv && cur.travel >= 14 ? cur.last : null);
   } else if (cur.kind === 'blend') {
-    commit([capturePart('color', rectOf(cur.box))]);
+    commit([capturePart(cur.layer || 'color', rectOf(cur.box))]);
   } else if (cur.kind === 'stroke') {
     strokeSeg(cur, cur.mid, cur.last, cur.last);
     strokeFinish(cur);
@@ -1190,9 +1355,9 @@ function endSingle(cancelled) {
       if (cur.tool === 'star' || cur.tool === 'heart') b = { x: cur.start.x + 120, y: cur.start.y };  // un toque pone un sello mediano
       else return;                                // un toque sin arrastrar no dibuja líneas/círculos/cuadros
     }
-    const lw = sizeLW('draw', state.drawSize);
-    drawShape(layers.line.ctx, cur.tool, cur.start, b, lw, state.drawColor);
-    commit([capturePart('line', shapeBox(cur.tool, cur.start, b, lw))]);
+    const lw = sizeLW('draw', state.drawSize), tl = drawTarget();
+    drawShape(layers[tl].ctx, cur.tool, cur.start, b, lw, state.drawColor, state.drawAlpha);
+    commit([capturePart(tl, shapeBox(cur.tool, cur.start, b, lw))]);
   } else if (cur.kind === 'obj') {
     objUp(cur, cancelled);
   }
@@ -1204,7 +1369,7 @@ function abortSingle() {
   if (!cur) return;
   if (cur.kind === 'stroke' || cur.kind === 'blend') {
     const young = performance.now() - cur.t0 < 450 || cur.travel < 45;
-    const layer = cur.kind === 'blend' ? 'color' : cur.st.layer;
+    const layer = cur.kind === 'blend' ? (cur.layer || 'color') : cur.st.layer;
     if (young) {
       const r = clampRect(rectOf(cur.box));
       if (r) { const L = layers[layer]; L.ctx.putImageData(L.bctx.getImageData(r.x, r.y, r.w, r.h), r.x, r.y); }
@@ -1396,7 +1561,7 @@ function blendStart(gg, p) {
   const R = Math.max(3, Math.round(gg.lw / 2)), S = 2 * R + 1;
   gg.R = R; gg.carry = new Float32Array(S * S * 4); gg.has = new Uint8Array(S * S);
   const la = layers.line.ctx.getImageData(Math.round(p.x) - R, Math.round(p.y) - R, S, S).data;
-  const d = layers.color.ctx.getImageData(Math.round(p.x) - R, Math.round(p.y) - R, S, S).data;
+  const d = layers[gg.layer || 'color'].ctx.getImageData(Math.round(p.x) - R, Math.round(p.y) - R, S, S).data;
   for (let i = 0; i < S * S; i++) {
     if (d[i * 4 + 3] === 0 || la[i * 4 + 3] >= LINE_T) continue;      // fuera de la hoja o bajo una línea
     gg.carry[i * 4] = d[i * 4]; gg.carry[i * 4 + 1] = d[i * 4 + 1]; gg.carry[i * 4 + 2] = d[i * 4 + 2]; gg.has[i] = 1;
@@ -1413,7 +1578,7 @@ function blendTo(gg, p) {
   const ex = a.x + (p.x - a.x) * (n * step / dist), ey = a.y + (p.y - a.y) * (n * step / dist);
   const rx = Math.floor(Math.min(a.x, ex)) - R - 1, ry = Math.floor(Math.min(a.y, ey)) - R - 1;
   const rw = Math.ceil(Math.abs(ex - a.x)) + S + 3, rh = Math.ceil(Math.abs(ey - a.y)) + S + 3;
-  const cc = layers.color.ctx, img = cc.getImageData(rx, ry, rw, rh), d = img.data;
+  const cc = layers[gg.layer || 'color'].ctx, img = cc.getImageData(rx, ry, rw, rh), d = img.data;
   const la = layers.line.ctx.getImageData(rx, ry, rw, rh).data;
   const carry = gg.carry, has = gg.has, STR = 0.55, PICK = 0.28;
   for (let k = 1; k <= n; k++) {
@@ -1499,26 +1664,35 @@ function regionMask(fx, fy) {
   }
   return { mask, minX, minY, maxX, maxY };
 }
-function floodFill(fx, fy, hex) {
+// Pinta un píxel encima de lo que hay (con opacidad A: 1 = tapa todo)
+function overPx(d, k, r, g, b, A) {
+  if (A >= 0.999) { d[k] = r; d[k + 1] = g; d[k + 2] = b; d[k + 3] = 255; return; }
+  const da = d[k + 3] / 255, oa = A + da * (1 - A);
+  d[k] = Math.round((r * A + d[k] * da * (1 - A)) / oa); d[k + 1] = Math.round((g * A + d[k + 1] * da * (1 - A)) / oa);
+  d[k + 2] = Math.round((b * A + d[k + 2] * da * (1 - A)) / oa); d[k + 3] = Math.round(oa * 255);
+}
+// Las paredes del bote siempre son las líneas del dibujo (plantilla, foto o lo dibujado en Dibujar con la Capa 1),
+// aunque se pinte en otra capa o las líneas estén ocultas. El color va a la capa elegida.
+function floodFill(fx, fy, hex, alpha = 1) {
   const reg = regionMask(fx, fy); if (!reg) return false;
   const { mask, minX, minY, maxX, maxY } = reg;
   const bw = maxX - minX + 1, bh = maxY - minY + 1;
-  const cctx = layers.color.ctx;
+  const target = paintTarget(), cctx = layers[target].ctx;
   const img = cctx.getImageData(minX, minY, bw, bh), d = img.data;
-  const [r, gg, b] = hexToRgb(hex);
+  const [r, gg, b] = hexToRgb(hex), A = clamp(alpha == null ? 1 : +alpha, 0, 1);
   let changed = false;
   for (let y = 0; y < bh; y++) {
     const mrow = (y + minY) * W + minX, drow = y * bw;
     for (let x = 0; x < bw; x++) {
       if (!mask[mrow + x]) continue;
       const k = (drow + x) * 4;
-      if (d[k] !== r || d[k + 1] !== gg || d[k + 2] !== b || d[k + 3] !== 255) changed = true;
-      d[k] = r; d[k + 1] = gg; d[k + 2] = b; d[k + 3] = 255;
+      if (A < 0.999 || d[k] !== r || d[k + 1] !== gg || d[k + 2] !== b || d[k + 3] !== 255) changed = true;
+      overPx(d, k, r, gg, b, A);
     }
   }
   if (!changed) return false;
   cctx.putImageData(img, minX, minY);
-  commit([capturePart('color', { x: minX, y: minY, w: bw, h: bh })]);
+  commit([capturePart(target, { x: minX, y: minY, w: bw, h: bh })]);
   return true;
 }
 
@@ -1547,7 +1721,8 @@ function gradientFill(a, b, opts) {
   }
   const vx = p1 ? p1.x - p0.x : 0, vy = p1 ? p1.y - p0.y : 0, vv = Math.max(1e-6, vx * vx + vy * vy);
   const bw = maxX - minX + 1, bh = maxY - minY + 1;
-  const cctx = layers.color.ctx;
+  const target = paintTarget(), cctx = layers[target].ctx;
+  const A = clamp(opts.alpha != null ? +opts.alpha : (gradUsesColor() ? state.alpha : 1), 0, 1);
   const img = cctx.getImageData(minX, minY, bw, bh), d = img.data;
   for (let y = 0; y < bh; y++) {
     const mrow = (y + minY) * W + minX, drow = y * bw, py = y + minY;
@@ -1559,14 +1734,12 @@ function gradientFill(a, b, opts) {
       t = t * t * (3 - 2 * t) * 0.35 + t * 0.65;              // un poco más suave en los extremos
       const dz = (((px * 7 + py * 13) & 15) / 16 - 0.47) * 1.2;   // tramado leve: sin "escalones"
       const k = (drow + x) * 4, u = t * ns, si = u >= ns ? ns - 1 : u | 0, f = u - si, c1 = S[si], c2 = S[si + 1];
-      d[k] = clamp(Math.round(c1[0] + (c2[0] - c1[0]) * f + dz), 0, 255);
-      d[k + 1] = clamp(Math.round(c1[1] + (c2[1] - c1[1]) * f + dz), 0, 255);
-      d[k + 2] = clamp(Math.round(c1[2] + (c2[2] - c1[2]) * f + dz), 0, 255);
-      d[k + 3] = 255;
+      overPx(d, k, clamp(Math.round(c1[0] + (c2[0] - c1[0]) * f + dz), 0, 255), clamp(Math.round(c1[1] + (c2[1] - c1[1]) * f + dz), 0, 255),
+        clamp(Math.round(c1[2] + (c2[2] - c1[2]) * f + dz), 0, 255), A);
     }
   }
   cctx.putImageData(img, minX, minY);
-  commit([capturePart('color', { x: minX, y: minY, w: bw, h: bh })]);
+  commit([capturePart(target, { x: minX, y: minY, w: bw, h: bh })]);
   return true;
 }
 // Colores del degradado elegido: uno listo, "Mi color" (del color elegido a uno más claro) o dos colores a mano
@@ -2238,7 +2411,10 @@ function showPop(id, anchor) {
   if (top < 8) top = 8;
   pop.style.left = left + 'px'; pop.style.top = top + 'px';
 }
-function hidePop() { if (openPop) { openPop.pop.classList.remove('show'); openPop = null; } }
+function hidePop() {
+  if (openPop) { openPop.pop.classList.remove('show'); openPop = null; }
+  const lb = $('#layersBtn'); if (lb) { lb.classList.remove('on'); lb.setAttribute('aria-expanded', 'false'); }
+}
 document.addEventListener('pointerdown', (e) => {
   if (!openPop) return;
   if (openPop.pop.contains(e.target) || openPop.anchor.contains(e.target)) return;
@@ -2322,6 +2498,7 @@ $$('#gType [data-gt]').forEach((b) => b.onclick = () => { state.gradType = b.dat
 $$('#gDir [data-gd]').forEach((b) => b.onclick = () => { state.gradDir = b.dataset.gd; updateGradUI(); });
 // Cada modo recuerda su color: Dibujar (lápiz, marcador y figuras; empieza en negro) y Colorear
 const curColor = () => (state.mode === 'draw' ? state.drawColor : state.color);
+const curAlpha = () => (state.mode === 'draw' ? state.drawAlpha : state.alpha);
 function refreshColorUI() {
   const cur = curColor();
   // "Negro" de los colores rápidos: negro puro en Dibujar (como el lápiz de siempre), #333333 en Colorear
@@ -2331,11 +2508,16 @@ function refreshColorUI() {
   const tint = (c) => (c === '#FFFFFF' ? '' : c);
   $$('#colorTools [data-ctool="fill"] svg, #brushBtn svg').forEach((s) => { s.style.color = tint(state.color); });
   $$('#drawTools [data-tool="pen"] svg, #markBtn svg').forEach((s) => { s.style.color = tint(state.drawColor); });
+  const a = curAlpha(), chip = $('#alphaChip');
+  chip.hidden = a >= 0.999; chip.textContent = Math.round(a * 100) + ' %';
+  chip.setAttribute('aria-label', 'Opacidad del color: ' + Math.round(a * 100) + ' %. Toca para cambiarla');
 }
-function setColor(hex) {
+// alpha: opacidad (solo la da la rueda de colores; cualquier otro color vuelve a 100 %)
+function setColor(hex, alpha) {
   hex = String(hex).toUpperCase();
-  if (state.mode === 'draw') { state.drawColor = hex; refreshColorUI(); return; }
-  state.color = hex;
+  const a = alpha == null ? 1 : clamp(+alpha || 0, 0.05, 1);
+  if (state.mode === 'draw') { state.drawColor = hex; state.drawAlpha = a; refreshColorUI(); return; }
+  state.color = hex; state.alpha = a;
   refreshColorUI();
   if (state.colorTool === 'grad' && !gradUsesColor()) state.gradPreset = 'mine';   // eligió un color con el degradado: usar "Mi color"
   if (state.colorTool === 'cerase') setColorTool('fill');
@@ -2351,8 +2533,8 @@ function setColor(hex) {
     b.onclick = () => setColor(b.dataset.c); p.append(b);
   }
 })();
-$('#customColor').addEventListener('input', (e) => setColor(e.target.value));
-$('#customColor').addEventListener('change', (e) => { setColor(e.target.value); addRecent(e.target.value); });
+$('#customWrap').onclick = () => openPicker('tool');
+$('#alphaChip').onclick = () => openPicker('tool');
 /* ---------- colores recientes (se guardan en el teléfono) ---------- */
 const RECENT_MAX = 10;
 let recentColors = [];
@@ -2427,30 +2609,35 @@ $('#moreColors').onclick = () => {
   if (sel) { const sec = sel.closest('.cfam'); sc.scrollTop = sec.offsetTop - 4; setFamTab(sec.id.slice(4)); }
   else { sc.scrollTop = 0; setFamTab('recientes'); }
 };
-$('#customColor2').addEventListener('input', (e) => setColor(e.target.value));
-$('#customColor2').addEventListener('change', (e) => { setColor(e.target.value); addRecent(e.target.value); closeSheet('#colorsSheet'); toast(state.mode === 'draw' ? 'Color elegido ✓ Toca la hoja para dibujar' : 'Color elegido ✓ Toca el dibujo para pintar', 2400, e.target.value); });
+$('#otherColor').onclick = () => openPicker('sheet');
 renderRecent();
 /* ---------- Copiar color (gotero): toca el botón y luego cualquier color del dibujo o de la foto ---------- */
 function setPicking(on) {
   state.picking = !!on;
+  if (!on) state.pickToPicker = false;
   const b = $('#pickColor');
   if (b) { b.classList.toggle('on', state.picking); b.setAttribute('aria-pressed', String(state.picking)); }
   updateCursor();
 }
-// Color que se ve en ese punto: la capa del dibujo encima de la de color
+// Color que se ve en ese punto: todas las capas visibles (con su opacidad) sobre papel blanco, y las líneas encima
 function colorAt(x, y) {
   x = clamp(Math.floor(x), 0, W - 1); y = clamp(Math.floor(y), 0, H - 1);
-  const c = layers.color.ctx.getImageData(x, y, 1, 1).data, l = layers.line.ctx.getImageData(x, y, 1, 1).data;
-  const a = l[3] / 255, ca = c[3] / 255;
-  const h = (i) => Math.round(l[i] * a + (c[i] * ca + 255 * (1 - ca)) * (1 - a)).toString(16).padStart(2, '0');
-  return ('#' + h(0) + h(1) + h(2)).toUpperCase();
+  const c = [255, 255, 255];
+  const over = (L) => {
+    const d = L.ctx.getImageData(x, y, 1, 1).data, a = d[3] / 255 * L.op;
+    for (let i = 0; i < 3; i++) c[i] = d[i] * a + c[i] * (1 - a);
+  };
+  for (const L of paint) if (L.vis) over(L);
+  if (layers.line.vis) over(layers.line);
+  return ('#' + c.map((v) => Math.round(v).toString(16).padStart(2, '0')).join('')).toUpperCase();
 }
 function pickColorAt(p) {
   if (!p || p.x < 0 || p.y < 0 || p.x >= W || p.y >= H) { toast('Toca dentro de la hoja para copiar un color'); return null; }
-  const hex = colorAt(p.x, p.y);
+  const hex = colorAt(p.x, p.y), back = state.pickToPicker;
   setPicking(false);
   setColor(hex); addRecent(hex);
-  toast('✓ Color copiado', 2600, hex);
+  if (back) { const a = pk.a; openPicker(pk.from); pk.a = a; pkUpdate(); toast('✓ Color copiado. Toca “Listo” para usarlo', 2600, hex); }
+  else toast('✓ Color copiado', 2600, hex);
   return hex;
 }
 $('#pickColor').onclick = () => {
@@ -2462,6 +2649,8 @@ $('#btnUndo').onclick = undo;
 $('#btnRedo').onclick = redo;
 document.addEventListener('keydown', (e) => {
   if (isTyping(e)) return;
+  if (e.key === 'Escape' && $('#pickerDlg').classList.contains('show')) { e.preventDefault(); closeSheet('#pickerDlg'); return; }
+  if (e.key === 'Escape' && state.uiHidden && !objMode) { e.preventDefault(); setUIHidden(false); return; }
   if (objMode && (e.key === 'Delete' || e.key === 'Backspace')) { e.preventDefault(); deleteSelected(); return; }
   if (objMode && (e.key === 'Enter' || e.key === 'Escape')) { e.preventDefault(); flattenObjs(); return; }
   if (!(e.ctrlKey || e.metaKey)) {
@@ -2483,6 +2672,379 @@ async function clearSheet() {
   replaceSheet(W, H, null);
 }
 $('#btnClear').onclick = clearSheet;
+
+/* ---------- Capas (opcional): hojas transparentes encima de la Capa 1; las líneas del dibujo siempre encima ---------- */
+function fitLayer(L) {
+  if (L.cv.width !== W || L.cv.height !== H) { L.cv.width = W; L.cv.height = H; L.bak.width = W; L.bak.height = H; }
+}
+function newLayer(name) {
+  const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const L = { id: 'capa' + (layerIdSeq++), name, cv, bak: mkCanvas(), vis: true, op: 1 };
+  L.ctx = ctx2d(cv); L.bctx = ctx2d(L.bak);
+  layers[L.id] = L;
+  return L;
+}
+function nextLayerName() {
+  const nums = paint.map((L) => +((/(\d+)\s*$/.exec(L.name) || [])[1] || 0));
+  return 'Capa ' + (Math.max(1, ...nums) + 1);
+}
+// Quita de la memoria las capas borradas que ya no se pueden recuperar con "Deshacer"
+function purgeDeadLayers() {
+  for (const k of Object.keys(layers)) {
+    const L = layers[k];
+    if (k === 'color' || k === 'line' || paint.includes(L)) continue;
+    L.cv.remove(); delete layers[k];
+  }
+}
+// Pone los lienzos de las capas en orden dentro de la hoja y aplica ojito / opacidad
+function mountLayers() {
+  const top = layers.line.cv;
+  for (const L of paint) { fitLayer(L); if (L.cv.nextSibling !== top || L.cv.parentNode !== paper) paper.insertBefore(L.cv, top); }
+  for (const k in layers) { const L = layers[k]; if (k !== 'line' && !paint.includes(L) && L.cv.parentNode) L.cv.remove(); }
+  for (const L of [...paint, layers.line]) { L.cv.style.visibility = L.vis ? '' : 'hidden'; L.cv.style.opacity = L.op < 0.999 ? String(L.op) : ''; }
+  if (!isLiveLayer(state.activeLayer)) state.activeLayer = 'color';
+  refreshLayersUI();
+}
+function applyLayerOp(op, which) {
+  const L = layers[op.id]; if (!L) return;
+  const rm = () => {
+    const i = paint.indexOf(L); if (i < 1) return;
+    paint.splice(i, 1);
+    if (state.activeLayer === L.id) state.activeLayer = (paint[i - 1] || paint[0]).id;
+  };
+  const ins = (i) => { if (!paint.includes(L)) { fitLayer(L); paint.splice(clamp(i, 1, paint.length), 0, L); } };
+  if (op.type === 'add') { if (which === 'before') rm(); else { ins(op.index); state.activeLayer = L.id; } }
+  else if (op.type === 'del') {
+    if (which === 'before') {
+      ins(op.index);
+      if (op.data && op.data.width === W && op.data.height === H) { L.ctx.putImageData(op.data, 0, 0); L.bctx.putImageData(op.data, 0, 0); }
+      state.activeLayer = L.id;
+    } else rm();
+  } else if (op.type === 'move') {
+    const i = paint.indexOf(L);
+    if (i >= 1) { paint.splice(i, 1); paint.splice(clamp(which === 'before' ? op.from : op.to, 1, paint.length), 0, L); }
+  }
+  mountLayers();
+}
+function addLayer() {
+  if (paint.length >= MAX_LAYERS) { toast(`Puedes tener hasta ${MAX_LAYERS} capas`); return null; }
+  cancelGesture(); flattenObjs();
+  const L = newLayer(nextLayerName());
+  const index = paint.indexOf(layers[paintTarget()]) + 1;          // encima de la capa elegida
+  paint.splice(index, 0, L); state.activeLayer = L.id;
+  mountLayers();
+  pushEntry({ parts: [], layerOp: { type: 'add', id: L.id, index } });
+  toast(`${L.name} lista: lo que pintes va en esta capa`);
+  return L;
+}
+async function deleteLayer(id, ask = true) {
+  const L = layers[id]; if (!L || id === 'color' || id === 'line' || !paint.includes(L)) return false;
+  const reopen = !!(openPop && openPop.pop.id === 'layersPop');
+  if (ask) {
+    hidePop();
+    const ok = await confirmBox(`¿Borrar “${L.name}” y lo que tiene pintado? (Puedes deshacer)`, 'Borrar');
+    if (reopen) openLayers();
+    if (!ok) return false;
+  }
+  cancelGesture(); flattenObjs();
+  const index = paint.indexOf(L); if (index < 1) return false;
+  const data = L.ctx.getImageData(0, 0, W, H);
+  paint.splice(index, 1);
+  if (state.activeLayer === id) state.activeLayer = (paint[index - 1] || paint[0]).id;
+  mountLayers();
+  pushEntry({ parts: [], layerOp: { type: 'del', id, index, data } });
+  toast(`${L.name} borrada (puedes deshacer)`);
+  return true;
+}
+function moveLayer(id, dir) {                     // dir: +1 = subir, -1 = bajar
+  const L = layers[id], i = paint.indexOf(L), j = i + dir;
+  if (i < 1 || j < 1 || j >= paint.length) return false;
+  cancelGesture();
+  paint.splice(i, 1); paint.splice(j, 0, L);
+  mountLayers();
+  pushEntry({ parts: [], layerOp: { type: 'move', id, from: i, to: j } });
+  return true;
+}
+function setLayerVisible(id, on) {
+  const L = layers[id]; if (!L) return;
+  cancelGesture();
+  L.vis = !!on; mountLayers(); markDirty();
+}
+function selectLayer(id) {
+  if (!isLiveLayer(id)) return;
+  flattenObjs();
+  state.activeLayer = id; refreshLayersUI();
+}
+function setLayerOpacity(id, op) {
+  const L = layers[id]; if (!L) return;
+  L.op = clamp(+op, 0, 1); mountLayers(); markDirty();
+}
+const layersOpen = () => !!(openPop && openPop.pop.id === 'layersPop');
+function layerThumb(L) {
+  const land = W > H, tw = land ? 40 : 30, th = land ? 30 : 40, c = mkCanvas(tw * 2, th * 2);
+  c.className = 'th' + (land ? ' land' : '');
+  c.getContext('2d').drawImage(L.cv, 0, 0, tw * 2, th * 2);
+  return c;
+}
+function refreshLayersUI() {
+  const n = paint.length, badge = $('#layersBtn .lcount');
+  badge.hidden = n < 2; badge.textContent = String(n);
+  $('#layersBtn').setAttribute('aria-label', n > 1 ? `Capas (${n} capas, pintando en ${layers[paintTarget()].name})` : 'Capas');
+  if (layersOpen()) renderLayersUI();
+}
+function renderLayersUI() {
+  const list = $('#lyrList'); list.textContent = '';
+  const act = paintTarget();
+  const mkBtn = (la, id, icon, label, dis, cls) => {
+    const b = document.createElement('button'); b.className = 'lb' + (cls ? ' ' + cls : ''); b.dataset.la = la; b.dataset.id = id;
+    b.innerHTML = `<svg><use href="#${icon}"/></svg>`; b.title = label; b.setAttribute('aria-label', label); b.disabled = !!dis;
+    return b;
+  };
+  // fila de las líneas del dibujo (siempre encima)
+  const lr = document.createElement('div'); lr.className = 'lyr lines' + (layers.line.vis ? '' : ' off');
+  const ls = document.createElement('div'); ls.className = 'lsel';
+  ls.innerHTML = '<svg><use href="#i-lock"/></svg><span>Líneas del dibujo<small>Siempre encima · el bote las respeta</small></span>';
+  lr.append(ls, mkBtn('vis', 'line', layers.line.vis ? 'i-eye' : 'i-eyeoff', layers.line.vis ? 'Ocultar las líneas del dibujo' : 'Mostrar las líneas del dibujo'));
+  list.append(lr);
+  for (let i = paint.length - 1; i >= 0; i--) {
+    const L = paint[i], base = i === 0;
+    const row = document.createElement('div'); row.className = 'lyr' + (L.id === act ? ' on' : '') + (L.vis ? '' : ' off'); row.dataset.id = L.id;
+    const sel = document.createElement('button'); sel.className = 'lsel'; sel.dataset.la = 'sel'; sel.dataset.id = L.id;
+    sel.setAttribute('aria-pressed', String(L.id === act));
+    sel.title = `Pintar en ${L.name}`; sel.setAttribute('aria-label', `Pintar en ${L.name}` + (L.id === act ? ' (elegida)' : ''));
+    const sp = document.createElement('span'); sp.textContent = L.name;
+    const sm = document.createElement('small'); sm.textContent = (L.id === act ? 'Pintando aquí' : base ? 'El papel' : 'Transparente') + (L.op < 0.999 ? ` · ${Math.round(L.op * 100)} %` : '');
+    sp.append(sm);
+    sel.append(layerThumb(L), sp);
+    row.append(sel,
+      mkBtn('vis', L.id, L.vis ? 'i-eye' : 'i-eyeoff', (L.vis ? 'Ocultar ' : 'Mostrar ') + L.name),
+      mkBtn('up', L.id, 'i-up', 'Subir ' + L.name, base || i === paint.length - 1),
+      mkBtn('down', L.id, 'i-down', 'Bajar ' + L.name, base || i === 1),
+      mkBtn('del', L.id, 'i-trash', base ? 'La Capa 1 (el papel) no se puede borrar' : 'Borrar ' + L.name, base, 'danger'));
+    list.append(row);
+  }
+  const A = layers[act], v = Math.round(A.op * 100);
+  $('#lyrOp').value = v; $('#lyrOpV').textContent = v + ' %';
+  $('#lyrOpName').textContent = 'Opacidad';
+  $('#lyrOp').setAttribute('aria-label', 'Opacidad de ' + A.name);
+  const full = paint.length >= MAX_LAYERS;
+  $('#lyrAdd').disabled = full; $('#lyrAdd').textContent = full ? `Máximo ${MAX_LAYERS} capas` : '+ Añadir capa';
+}
+function openLayers() {
+  flattenObjs(); setPicking(false);
+  showPop('layersPop', $('#layersBtn')); renderLayersUI();
+  showPop('layersPop', $('#layersBtn'));      // otra vez, ya con su tamaño real
+  $('#layersBtn').classList.add('on'); $('#layersBtn').setAttribute('aria-expanded', 'true');
+}
+$('#layersBtn').onclick = () => { if (layersOpen()) hidePop(); else openLayers(); };
+$('#lyrAdd').onclick = () => { if (addLayer()) openLayers(); };
+$('#lyrList').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-la]'); if (!b || b.disabled) return;
+  const id = b.dataset.id, la = b.dataset.la;
+  if (la === 'sel') { selectLayer(id); toast('Pintando en ' + layers[id].name); }
+  else if (la === 'vis') { setLayerVisible(id, !layers[id].vis); }
+  else if (la === 'up') moveLayer(id, +1);
+  else if (la === 'down') moveLayer(id, -1);
+  else if (la === 'del') deleteLayer(id, true);
+});
+$('#lyrOp').addEventListener('input', (e) => {
+  const id = paintTarget(); layers[id].op = clamp(+e.target.value / 100, 0, 1);
+  $('#lyrOpV').textContent = e.target.value + ' %';
+  const L = layers[id]; L.cv.style.opacity = L.op < 0.999 ? String(L.op) : '';
+});
+$('#lyrOp').addEventListener('change', (e) => { setLayerOpacity(paintTarget(), +e.target.value / 100); });
+
+/* ---------- Ocultar botones: la hoja usa casi toda la pantalla (y pantalla completa si se puede) ---------- */
+let fsByUs = false;
+function setUIHidden(on, opts = {}) {
+  on = !!on;
+  cancelGesture(); hidePop();
+  state.uiHidden = on;
+  document.body.classList.toggle('ui-hidden', on);
+  try { localStorage.setItem('colorear.ocultarBotones', on ? '1' : '0'); } catch (_) {}
+  if (!opts.noFS) {
+    try {
+      const de = document.documentElement;
+      if (on && document.fullscreenEnabled && !document.fullscreenElement && de.requestFullscreen) {
+        const p = de.requestFullscreen({ navigationUI: 'hide' });
+        if (p && p.then) p.then(() => { fsByUs = true; }, () => {});
+      } else if (!on && fsByUs && document.fullscreenElement && document.exitFullscreen) {
+        fsByUs = false; const p = document.exitFullscreen(); if (p && p.catch) p.catch(() => {});
+      }
+    } catch (_) {}
+  }
+  layout(); requestAnimationFrame(layout);
+  if (on && !opts.quiet) toast('Para ver los botones otra vez, toca “Mostrar botones” (arriba)', 2800);
+}
+document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement) fsByUs = false; setTimeout(layout, 60); });
+$('#hideUI').onclick = () => setUIHidden(true);
+$('#showUI').onclick = () => setUIHidden(false);
+
+/* ---------- Otro color: rueda de colores (como en la Mac), brillo, opacidad, copiar color y Mis colores ---------- */
+function hsvToRgb(h, s, v) {
+  const f = (n) => { const k = (n + h / 60) % 6; return v - v * s * Math.max(0, Math.min(k, 4 - k, 1)); };
+  return [f(5), f(3), f(1)].map((x) => Math.round(x * 255));
+}
+function rgbToHsv(r, g, b) {
+  r /= 255; g /= 255; b /= 255;
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+  let h = 0;
+  if (d) { if (mx === r) h = ((g - b) / d) % 6; else if (mx === g) h = (b - r) / d + 2; else h = (r - g) / d + 4; h *= 60; if (h < 0) h += 360; }
+  return [h, mx ? d / mx : 0, mx];
+}
+const rgbHex = (r, g, b) => ('#' + [r, g, b].map((x) => clamp(Math.round(x), 0, 255).toString(16).padStart(2, '0')).join('')).toUpperCase();
+const pk = { h: 0, s: 1, v: 1, a: 1, from: null, drag: null };
+const SLOT_N = 12;
+let mySlots = [];
+try {
+  const a = JSON.parse(localStorage.getItem('colorear.misColores') || '[]');
+  mySlots = Array.from({ length: SLOT_N }, (_, i) => (a[i] && /^#[0-9A-F]{6}$/.test(a[i].c) ? { c: a[i].c, a: clamp(a[i].a == null ? 1 : +a[i].a, 0.05, 1) } : null));
+} catch (_) { mySlots = Array(SLOT_N).fill(null); }
+function saveSlots() { try { localStorage.setItem('colorear.misColores', JSON.stringify(mySlots)); } catch (_) {} }
+const pkHex = () => rgbHex(...hsvToRgb(pk.h, pk.s, pk.v));
+let wheelN = 0;
+function drawWheel() {
+  const box = $('#pkWheel'), cv = $('#pkWheelCv');
+  const n = Math.max(120, Math.round((box.clientWidth || 200) * Math.min(2, window.devicePixelRatio || 1)));
+  if (wheelN === n) return;
+  wheelN = n; cv.width = cv.height = n;
+  const c = cv.getContext('2d'), im = c.createImageData(n, n), d = im.data, R = n / 2;
+  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+    const dx = x + 0.5 - R, dy = R - (y + 0.5), r = Math.hypot(dx, dy) / R;
+    if (r > 1 + 1 / R) continue;
+    const [cr, cg, cb] = hsvToRgb((Math.atan2(dy, dx) * 180 / Math.PI + 360) % 360, Math.min(1, r), 1), k = (y * n + x) * 4;
+    d[k] = cr; d[k + 1] = cg; d[k + 2] = cb; d[k + 3] = Math.round(clamp((1 - r) * R + 0.5, 0, 1) * 255);
+  }
+  c.putImageData(im, 0, 0);
+}
+function pkUpdate() {
+  const [r, g, b] = hsvToRgb(pk.h, pk.s, pk.v), hex = rgbHex(r, g, b), full = hsvToRgb(pk.h, pk.s, 1), A = Math.round(pk.a * 100);
+  const ang = pk.h * Math.PI / 180, cr = $('#pkCross');
+  cr.style.left = (50 + pk.s * Math.cos(ang) * 50) + '%'; cr.style.top = (50 - pk.s * Math.sin(ang) * 50) + '%';
+  $('#pkDim').style.opacity = String(1 - pk.v);
+  $('#pkPrev').style.background = `rgba(${r},${g},${b},${pk.a})`;
+  $('#pkHex').textContent = hex + (A < 100 ? ` · ${A} %` : '');
+  const nm = COLOR_NAME[hex];
+  $('#pkWheel').setAttribute('aria-valuetext', (nm || hex) + (A < 100 ? `, opacidad ${A} %` : ''));
+  const bi = $('#pkBright'); bi.value = Math.round(pk.v * 100); bi.style.background = `linear-gradient(90deg, #000, rgb(${full.join(',')}))`;
+  $('#pkBrightV').textContent = Math.round(pk.v * 100) + ' %';
+  const ai = $('#pkAlpha'); ai.value = A;
+  ai.style.background = `linear-gradient(90deg, rgba(${r},${g},${b},0), rgb(${r},${g},${b})), repeating-conic-gradient(#d9d9d9 0 25%, #fff 0 50%) 0 0 / 14px 14px`;
+  $('#pkAlphaV').textContent = A + ' %';
+}
+function pkSetHex(hex, a) {
+  const [h, s, v] = rgbToHsv(...hexToRgb(hex));
+  if (s > 0.001 && v > 0.001) pk.h = h;
+  pk.s = s; pk.v = v;
+  if (a != null) pk.a = clamp(+a, 0.05, 1);
+  pkUpdate();
+}
+function renderSlots() {
+  const box = $('#pkSlots'); box.textContent = '';
+  mySlots.forEach((sl, i) => {
+    const b = document.createElement('button'); b.className = 'pk-slot' + (sl ? '' : ' empty'); b.dataset.i = i;
+    if (sl) {
+      const [r, g, bb] = hexToRgb(sl.c), nm = (COLOR_NAME[sl.c] || sl.c) + (sl.a < 0.999 ? `, ${Math.round(sl.a * 100)} %` : '');
+      const t = document.createElement('i'); t.style.background = `rgba(${r},${g},${bb},${sl.a})`; b.append(t);
+      b.title = `Usar ${nm} (mantén presionado para quitarlo)`; b.setAttribute('aria-label', `Mi color ${i + 1}: ${nm}. Toca para usarlo, mantén presionado para quitarlo`);
+      b.dataset.c = sl.c;
+    } else {
+      b.textContent = '+'; b.title = 'Guardar aquí el color de ahora'; b.setAttribute('aria-label', `Espacio ${i + 1} vacío: toca para guardar el color de ahora`);
+    }
+    box.append(b);
+  });
+}
+function removeSlot(i) {
+  if (!mySlots[i]) return;
+  mySlots[i] = null; saveSlots(); renderSlots(); toast('Color quitado de “Mis colores”');
+}
+(function slotEvents() {
+  const box = $('#pkSlots'); let lp = null;
+  const stop = () => { if (lp) { clearTimeout(lp.t); lp = null; } };
+  box.addEventListener('pointerdown', (e) => {
+    const b = e.target.closest('.pk-slot'); if (!b) return;
+    stop(); delete box.dataset.lp;            // un toque nuevo
+    const i = +b.dataset.i;
+    if (!mySlots[i]) return;
+    lp = { i, x: e.clientX, y: e.clientY, t: setTimeout(() => { box.dataset.lp = String(i); lp = null; removeSlot(i); if (navigator.vibrate) try { navigator.vibrate(20); } catch (_) {} }, 550) };
+  });
+  box.addEventListener('pointermove', (e) => { if (lp && Math.hypot(e.clientX - lp.x, e.clientY - lp.y) > 12) stop(); });
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach((t) => box.addEventListener(t, stop));
+  box.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    const b = e.target.closest('.pk-slot'); if (!b) return;
+    const i = +b.dataset.i;
+    if (box.dataset.lp === String(i)) return;          // ya se quitó con la pulsación larga
+    stop(); if (mySlots[i]) { box.dataset.lp = String(i); removeSlot(i); }
+  });
+  box.addEventListener('click', (e) => {
+    const b = e.target.closest('.pk-slot'); if (!b) return;
+    const i = +b.dataset.i;
+    if (box.dataset.lp != null) { delete box.dataset.lp; return; }    // fue una pulsación larga
+    if (mySlots[i]) { pkSetHex(mySlots[i].c, mySlots[i].a); }
+    else { mySlots[i] = { c: pkHex(), a: Math.round(pk.a * 100) / 100 }; saveSlots(); renderSlots(); toast('Guardado en “Mis colores” ✓', 1800, mySlots[i].c); }
+  });
+})();
+function openPicker(from) {
+  hidePop();
+  pk.from = from || null;
+  const [h, s, v] = rgbToHsv(...hexToRgb(curColor()));
+  if (s > 0.001 && v > 0.001) pk.h = h;
+  pk.s = s; pk.v = v; pk.a = curAlpha();
+  openSheet('#pickerDlg');
+  drawWheel(); renderSlots(); pkUpdate();
+}
+function closePicker() { closeSheet('#pickerDlg'); pk.drag = null; }
+(function wheelEvents() {
+  const wh = $('#pkWheel');
+  const at = (e) => {
+    const r = wh.getBoundingClientRect(), R = r.width / 2;
+    const dx = e.clientX - r.left - R, dy = r.top + R - e.clientY;
+    pk.h = (Math.atan2(dy, dx) * 180 / Math.PI + 360) % 360;
+    pk.s = Math.min(1, Math.hypot(dx, dy) / R);
+    if (pk.v < 0.1) pk.v = 1;                 // estaba casi en negro: mostrar el color de la rueda
+    pkUpdate();
+  };
+  // se escucha en el contenedor: la rueda es redonda y un toque justo fuera del borde también vale
+  (wh.parentElement || wh).addEventListener('pointerdown', (e) => {
+    if (e.target.closest && e.target.closest('button, input')) return;
+    const r = wh.getBoundingClientRect(), R = r.width / 2;
+    if (Math.hypot(e.clientX - r.left - R, e.clientY - r.top - R) > R * 1.12) return;
+    e.preventDefault(); pk.drag = e.pointerId;
+    try { wh.setPointerCapture(e.pointerId); } catch (_) {}
+    at(e);
+  });
+  wh.addEventListener('pointermove', (e) => { if (pk.drag === e.pointerId) { e.preventDefault(); at(e); } });
+  const end = (e) => { if (pk.drag === e.pointerId) pk.drag = null; };
+  wh.addEventListener('pointerup', end); wh.addEventListener('pointercancel', end);
+  wh.addEventListener('keydown', (e) => {         // teclado: flechas giran el tono / cambian la saturación
+    const k = e.key; if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(k)) return;
+    e.preventDefault();
+    if (k === 'ArrowLeft') pk.h = (pk.h + 355) % 360; else if (k === 'ArrowRight') pk.h = (pk.h + 5) % 360;
+    else pk.s = clamp(pk.s + (k === 'ArrowUp' ? 0.05 : -0.05), 0, 1);
+    pkUpdate();
+  });
+  ['touchstart', 'touchmove'].forEach((t) => wh.addEventListener(t, (e) => { if (e.cancelable) e.preventDefault(); }, { passive: false }));
+})();
+$('#pkBright').addEventListener('input', (e) => { pk.v = clamp(+e.target.value / 100, 0, 1); pkUpdate(); });
+$('#pkAlpha').addEventListener('input', (e) => { pk.a = clamp(+e.target.value / 100, 0.05, 1); pkUpdate(); });
+$('#pkCancel').onclick = closePicker;
+$('#pickerDlg').addEventListener('click', (e) => { if (e.target === $('#pickerDlg')) closePicker(); });
+$('#pkOk').onclick = () => {
+  const hex = pkHex(), a = Math.round(pk.a * 100) / 100, from = pk.from;
+  closePicker();
+  if (from === 'sheet') closeSheet('#colorsSheet');
+  setColor(hex, a); addRecent(hex);
+  const tip = state.mode === 'draw' ? 'Toca la hoja para dibujar' : 'Toca el dibujo para pintar';
+  toast('Color elegido ✓' + (a < 0.999 ? ` (opacidad ${Math.round(a * 100)} %)` : '') + ' ' + tip, 2600, hex);
+};
+$('#pkDropper').onclick = () => {
+  const from = pk.from, a = pk.a;
+  closePicker(); closeSheet('#colorsSheet');
+  pickTool(); setPicking(true);
+  state.pickToPicker = true; pk.from = from; pk.a = a;
+  toast('Toca el color que quieres copiar 👆', 3000);
+};
 
 /* ---------- hojas y diálogos ---------- */
 function openSheet(id) { $(id).classList.add('show'); }
@@ -2759,10 +3321,11 @@ function flattenObjs() {
     const b = objBounds(o), m = 8;
     for (const [x, y] of [[b.x1 - m, b.y1 - m], [b.x2 + m, b.y1 - m], [b.x2 + m, b.y2 + m], [b.x1 - m, b.y2 + m]]) { const p = toWorld(o, x, y); bboxAdd(box, p.x, p.y, 6); }
   }
-  for (const o of objs) { drawObj(layers.color.ctx, o, 'color'); drawObj(layers.line.ctx, o, 'line'); }
+  const pt = paintTarget();
+  for (const o of objs) { drawObj(layers[pt].ctx, o, 'color'); drawObj(layers.line.ctx, o, 'line'); }
   objs = []; selId = null;
   exitObjMode(); renderObjs();
-  commit([capturePart('line', rectOf(box)), capturePart('color', rectOf(box))], { objsBefore: before, objsAfter: [] });
+  commit([capturePart('line', rectOf(box)), capturePart(pt, rectOf(box))], { objsBefore: before, objsAfter: [] });
 }
 function objDown(base, p) {
   const s = selected();
@@ -3263,11 +3826,13 @@ document.addEventListener('drop', (e) => {
 
 /* ---------- imágenes ---------- */
 function toBlob(cv, type = 'image/png', q) { return new Promise((res) => cv.toBlob(res, type, q)); }
-function composite(w = W, h = H, onlyLine = false) {
+// Imagen aplanada: todas las capas visibles (con su opacidad) y las líneas encima. onlyLine: solo las líneas (para colorear)
+function composite(w = W, h = H, onlyLine = false, withLines = true) {
   const c = mkCanvas(w, h), x = c.getContext('2d');
   x.fillStyle = '#fff'; x.fillRect(0, 0, w, h);
-  if (!onlyLine) x.drawImage(layers.color.cv, 0, 0, w, h);
-  x.drawImage(layers.line.cv, 0, 0, w, h);
+  if (!onlyLine) for (const L of paint) if (L.vis && L.op > 0) { x.globalAlpha = L.op; x.drawImage(L.cv, 0, 0, w, h); }
+  x.globalAlpha = 1;
+  if (onlyLine || (withLines && layers.line.vis)) x.drawImage(layers.line.cv, 0, 0, w, h);
   return c;
 }
 function thumbSize() { return W > H ? [320, 240] : [240, 320]; }
@@ -3279,18 +3844,41 @@ function loadImage(blob) {
     img.src = url;
   });
 }
-async function setLayersFrom(lineBlob, colorBlob) {
-  const [li, ci] = await Promise.all([lineBlob ? loadImage(lineBlob) : null, colorBlob ? loadImage(colorBlob) : null]);
+// Carga un dibujo (líneas + Capa 1 y, desde la 3.3, las otras capas si las tiene). Los dibujos viejos traen solo líneas y color.
+async function setLayersFrom(lineBlob, colorBlob, extras, meta) {
+  extras = Array.isArray(extras) ? extras.filter((x) => x && x.img).slice(0, MAX_LAYERS - 1) : [];
+  const [li, ci, ...xi] = await Promise.all([lineBlob ? loadImage(lineBlob) : null, colorBlob ? loadImage(colorBlob) : null,
+    ...extras.map((x) => loadImage(x.img).catch(() => null))]);
   const ref = li || ci;
   const [nw, nh] = ref && ref.width > ref.height ? LANDSCAPE : PORTRAIT;
   setSheetSize(nw, nh);
+  resetLayerStack(); purgeDeadLayers();
   const lc = layers.line.ctx, cc = layers.color.ctx;
   lc.clearRect(0, 0, W, H);
   cc.fillStyle = '#fff'; cc.fillRect(0, 0, W, H);
   if (li) lc.drawImage(li, 0, 0, W, H);
   if (ci) cc.drawImage(ci, 0, 0, W, H);
-  syncBackups();
+  extras.forEach((x, i) => {
+    if (!xi[i]) return;
+    const L = newLayer(String(x.name || nextLayerName()).slice(0, 30));
+    L.vis = x.vis !== false; L.op = x.op == null ? 1 : clamp(+x.op, 0, 1);
+    L.ctx.drawImage(xi[i], 0, 0, W, H); paint.push(L);
+  });
+  if (meta) {
+    if (meta.lineVis === false) layers.line.vis = false;
+    if (meta.baseVis === false) layers.color.vis = false;
+    if (meta.baseOp != null) layers.color.op = clamp(+meta.baseOp, 0, 1);
+    if (meta.activeIndex > 0 && paint[meta.activeIndex]) state.activeLayer = paint[meta.activeIndex].id;
+  }
+  syncBackups(); mountLayers();
 }
+// Las capas extra (y su configuración) para guardar
+async function extraLayersData() {
+  const out = [];
+  for (const L of paint.slice(1)) out.push({ name: L.name, vis: L.vis, op: L.op, img: await toBlob(L.cv) });
+  return out;
+}
+function layerMeta() { return { lineVis: layers.line.vis, baseVis: layers.color.vis, baseOp: layers.color.op, activeIndex: Math.max(0, paint.indexOf(layers[paintTarget()])) }; }
 
 /* PNG con una marca de Colorear (texto dentro del archivo) para poder abrirlo de nuevo sin limpiar */
 const CRC_T = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
@@ -3330,12 +3918,13 @@ function blobToB64(blob) { return new Promise((res, rej) => { const r = new File
 function b64ToBlob(b64) { const s = atob(b64), u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); return new Blob([u], { type: 'image/png' }); }
 async function buildExport(kind) {        // 'outline' = solo líneas; 'color' = con colores (y capas guardadas dentro)
   cancelGesture(); flattenObjs();
-  const info = { app: 'colorear', v: 2, tipo: kind === 'outline' ? 'contorno' : 'color', w: W, h: H };
+  const info = { app: 'colorear', v: 2, tipo: kind === 'outline' ? 'contorno' : 'color', w: W, h: H, capas: paint.length };
   if (kind === 'outline') {
     const blob = await toBlob(composite(W, H, true));
     return pngWithText(blob, [['Software', 'Colorear'], ['Colorear', JSON.stringify(info)]]);
   }
-  const [comp, line, color] = await Promise.all([toBlob(composite()), toBlob(layers.line.cv), toBlob(layers.color.cv)]);
+  // la imagen es el dibujo aplanado (capas visibles); adentro van las líneas y los colores aplanados para abrirlo otra vez en Colorear
+  const [comp, line, color] = await Promise.all([toBlob(composite()), toBlob(layers.line.cv), toBlob(composite(W, H, false, false))]);
   const [l64, c64] = await Promise.all([blobToB64(line), blobToB64(color)]);
   return pngWithText(comp, [['Software', 'Colorear'], ['Colorear', JSON.stringify(info)], ['ColorearLineas', l64], ['ColorearColores', c64]]);
 }
@@ -3407,9 +3996,10 @@ async function doSave() {
   cancelGesture(); flattenObjs();
   try {
     const [tw, th] = thumbSize();
-    const [line, color, thumb] = await Promise.all([toBlob(layers.line.cv), toBlob(layers.color.cv), toBlob(composite(tw, th), 'image/jpeg', 0.85)]);
+    const [line, color, thumb, extra] = await Promise.all([toBlob(layers.line.cv), toBlob(layers.color.cv), toBlob(composite(tw, th), 'image/jpeg', 0.85), extraLayersData()]);
     const now = Date.now();
     const rec = { line, color, thumb, w: W, h: H, updated: now };
+    if (extra.length || !layers.line.vis || !layers.color.vis || layers.color.op < 1) { rec.capas = extra; rec.capasInfo = layerMeta(); }
     if (state.currentId != null) {
       const old = await tx('dibujos', 'readonly', (s) => s.get(state.currentId));
       if (old) { rec.id = state.currentId; rec.created = old.created; }
@@ -3460,7 +4050,7 @@ $('#galleryGrid').addEventListener('click', async (e) => {
   if (!it) return;
   cancelGesture();
   objs = []; exitObjMode(); renderObjs();
-  await setLayersFrom(it.line, act === 'open' ? it.color : null);
+  await setLayersFrom(it.line, act === 'open' ? it.color : null, act === 'open' ? it.capas : null, act === 'open' ? it.capasInfo : null);
   resetHistory();
   state.currentId = act === 'open' ? id : null;
   state.dirty = false;
@@ -3477,8 +4067,8 @@ async function autosave() {
   if (autoBusy) { scheduleAutosave(); return; }
   autoBusy = true;
   try {
-    const [line, color] = await Promise.all([toBlob(layers.line.cv), toBlob(layers.color.cv)]);
-    await tx('estado', 'readwrite', (s) => s.put({ line, color, w: W, h: H, objs: snapshotObjs(), currentId: state.currentId, dirty: state.dirty, mode: state.mode, t: Date.now() }, 'actual'));
+    const [line, color, capas] = await Promise.all([toBlob(layers.line.cv), toBlob(layers.color.cv), extraLayersData()]);
+    await tx('estado', 'readwrite', (s) => s.put({ line, color, capas, capasInfo: layerMeta(), w: W, h: H, objs: snapshotObjs(), currentId: state.currentId, dirty: state.dirty, mode: state.mode, t: Date.now() }, 'actual'));
   } catch (e) { console.warn('autoguardado', e); }
   autoBusy = false;
 }
@@ -3487,7 +4077,7 @@ async function restore() {
   try {
     const s = await tx('estado', 'readonly', (st) => st.get('actual'));
     if (s && s.line) {
-      await setLayersFrom(s.line, s.color);
+      await setLayersFrom(s.line, s.color, s.capas, s.capasInfo);
       state.currentId = s.currentId ?? null; state.dirty = !!s.dirty;
       setMode(s.mode === 'color' ? 'color' : 'draw');
       if (Array.isArray(s.objs) && s.objs.length) {
@@ -3515,7 +4105,12 @@ function showHint() {
   $('#hintInstall').style.display = deferredPrompt ? '' : 'none';
   $('#hint').classList.add('show');
 }
-const NEWS_HTML = '<p><b>Nuevo en la versión 3.2</b>:</p>' +
+const NEWS_HTML = '<p><b>Nuevo en la versión 3.3</b>:</p>' +
+  '<p>🖼️ <b>Más espacio para pintar</b>: toca <span class="kbd">Ocultar botones</span> (arriba a la derecha de la hoja) y la hoja usa casi toda la pantalla. Puedes seguir pintando y acercar con dos dedos. Para verlos otra vez, toca <span class="kbd">Mostrar botones</span>.</p>' +
+  '<p>📚 <b>Capas</b> (si quieres): toca <span class="kbd">Capas</span> para pintar en hojas transparentes, una encima de otra. Puedes esconderlas (ojito), subirlas, bajarlas, cambiar su opacidad o borrarlas. Las líneas del dibujo siempre quedan encima. Si no las usas, todo sigue igual.</p>' +
+  '<p>✏️ <b>Punta más fina</b>: <b>Súper fina</b> se queda finita aunque acerques la hoja, los puntitos son pequeños y hay una nueva, <b>Detalle</b>, la más finita de todas.</p>' +
+  '<p>🎨 <b>Nueva rueda de colores</b> en <span class="kbd">Otro</span> (y en “¿No está? Elige cualquier color”): elige cualquier color, su <b>brillo</b> y su <b>opacidad</b> (transparencia), cópialo del dibujo y guarda tus favoritos en <b>Mis colores</b>. La opacidad sirve con el lápiz, marcadores, crayón, figuras, el bote y el degradado.</p>' +
+  '<p style="margin-top:12px"><b>En la versión 3.2</b>:</p>' +
   '<p>🖊️ <b>Marcador en Dibujar</b>, al lado del <b>Lápiz</b>. Toca <span class="kbd">Marcador</span> otra vez para elegirlo <b>liso</b>, <b>acrílico</b>, <b>de agua</b> o <b>de alcohol</b>.</p>' +
   '<p>🎨 <b>Todos los colores en Dibujar</b>: el lápiz, el marcador y las figuras usan el color que elijas: colores rápidos, <span class="kbd">Más colores</span> (360), tus <b>Recientes</b> o cualquier otro color.</p>' +
   '<p>💧 <b>Copiar color</b> (gotero): toca <span class="kbd">Copiar color</span> y luego toca cualquier parte del dibujo o de tu foto. Ese color queda elegido y se guarda en <b>Recientes</b>.</p>' +
@@ -3604,6 +4199,8 @@ setAddTab('stk');
 layout();
 updateUndoButtons();
 updateObjBar();
+mountLayers();
+try { if (localStorage.getItem('colorear.ocultarBotones') === '1') setUIHidden(true, { noFS: true, quiet: true }); } catch (_) {}
 restore().then(async (restored) => {
   await receiveShared();
   let seen = false, prevVer = null;
@@ -3618,6 +4215,8 @@ window.__colorear = {
   processLineArt, importImageFile, readPngText, addObject, flattenObjs, zoomAt, zoomFit, adj,
   gradientFill, regionMask, setColorTool, setColorSize, setColor, showNews, setMode, setDrawBrush, setPicking, colorAt, pickColorAt, thinLW, sizeLW, templates: TEMPLATES, COLOR_FAMILIES, ALL_COLORS, GRAD_PRESETS, gradStops, lighterOf,
   get recentColors() { return recentColors.slice(); },
+  paint, addLayer, deleteLayer, moveLayer, selectLayer, setLayerVisible, setLayerOpacity, composite, setUIHidden, openPicker, pk, pkSetHex, hsvToRgb, rgbToHsv, docPerScreenPx,
+  get mySlots() { return mySlots.slice(); }, get activeLayer() { return paintTarget(); },
   get W() { return W; }, get H() { return H; }, get objs() { return objs; }, get objMode() { return objMode; }, version: APP_VERSION,
 };
 </script>
