@@ -157,6 +157,53 @@ footer.tools{
 .pop .gswap{border:0;border-radius:12px;background:#f1eaf7;min-height:40px;padding:0 10px;font-weight:700}
 .pop .ptip{font-size:12.5px;color:var(--muted);margin:8px 4px 2px;line-height:1.35}
 #sizePop .pgrid{grid-template-columns:1fr 1fr}
+/* degradado fácil: degradados listos */
+#gradPop{width:340px;overflow-y:auto;overscroll-behavior:contain}
+.pop .ghint{font-size:14px;font-weight:700;color:var(--ink);margin:0 4px 8px;line-height:1.3}
+.gpresets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.gpresets button{border:0;border-radius:14px;background:#faf6f1;padding:5px 5px 6px;display:flex;flex-direction:column;align-items:stretch;gap:4px;
+  min-height:66px;font-size:12.5px;font-weight:700;color:var(--ink);line-height:1.1;text-align:center}
+.gpresets button i{display:block;height:32px;border-radius:10px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+.gpresets button.on{background:var(--sel);color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent)}
+.gpresets button:active{transform:scale(.96)}
+.pop .gmore{width:100%;margin-top:8px;border:0;border-radius:12px;background:#f1eaf7;min-height:42px;font-weight:700;font-size:14px;color:var(--accent2)}
+.pop .gmore b{display:inline-block;transition:transform .15s}
+.pop .gmore[aria-expanded="true"] b{transform:rotate(180deg)}
+#gAdv{border-top:1px solid var(--line);margin-top:8px;padding-top:2px}
+/* colores recientes + botón Más colores */
+#recentRow{display:flex;align-items:center;gap:6px;margin-top:6px;min-width:0}
+#moreColors{flex:0 0 auto;display:flex;align-items:center;gap:6px;height:38px;border:0;border-radius:19px;padding:0 12px 0 6px;
+  background:#f1eaf7;font-weight:800;font-size:13.5px;color:var(--accent2);white-space:nowrap}
+#moreColors .rainbow{width:26px;height:26px;border-radius:50%;flex:0 0 auto;
+  background:conic-gradient(#ff3b30,#ff9500,#ffcc00,#34c759,#00c7be,#007aff,#5856d6,#af52de,#ff2d92,#ff3b30);box-shadow:0 0 0 2px #fff,0 0 0 3px #ddd}
+#moreColors:active{transform:scale(.96)}
+#recentRow .rlbl{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap}
+.recent{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;touch-action:pan-x;flex:1 1 auto;min-width:0;padding:5px 6px;align-items:center}
+.recent::-webkit-scrollbar{display:none}
+.recent .sw{flex:0 0 30px;width:30px;height:30px;min-height:30px}
+.recent .none{font-size:12px;color:var(--muted);white-space:nowrap}
+@media (max-width:359px){ #recentRow .rlbl{display:none} #moreColors{padding-right:10px;font-size:13px} }
+/* hoja de 360 colores */
+#colorsSheet .sheet{height:88%}
+.ctip{margin:-4px 2px 8px;font-size:14px;color:var(--muted);line-height:1.35}
+.ctabs{margin-bottom:6px;gap:6px;padding-bottom:2px}
+.ctabs button{flex:0 0 auto;height:40px;padding:0 12px 0 8px;font-size:14px;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.ctabs button i{width:18px;height:18px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15),0 0 0 2px #fff;flex:0 0 auto}
+#cScroll{position:relative;flex:1 1 auto;padding:0 2px 10px}
+.cfam h3{margin:12px 2px 8px;font-size:16px;color:var(--accent2);display:flex;align-items:baseline;gap:8px}
+.cfam h3 small{font-size:12px;font-weight:600;color:var(--muted)}
+.cfam:first-child h3{margin-top:2px}
+.cgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;max-width:480px}
+.cgrid .sw{border-radius:14px;min-height:40px}
+.cgrid .sw.on{transform:scale(.86)}
+.crec{margin-bottom:4px}
+.crec .recent{padding:5px 2px;flex-wrap:wrap;overflow:visible}
+.crec .recent .sw{flex-basis:38px;width:38px;height:38px}
+.cother{display:flex;align-items:center;justify-content:center;gap:10px;position:relative;overflow:hidden;margin-top:16px;min-height:54px;border-radius:16px;
+  background:#faf6f1;font-weight:700;font-size:15px;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+.cother .rainbow{width:28px;height:28px;border-radius:50%;background:conic-gradient(#ff3b30,#ffcc00,#34c759,#00c7be,#007aff,#af52de,#ff2d92,#ff3b30)}
+.cother input{position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;padding:0;cursor:pointer}
+#hintBody{max-height:calc(100vh - 250px);overflow-y:auto}
 @media (max-width:479px){
   #colorTools,#drawTools{gap:3px}
   #colorTools .tool,#drawTools .tool{font-size:10.5px;letter-spacing:-.3px;padding:0}
@@ -433,13 +480,13 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
 
 <footer class="tools">
   <div class="row only-draw" id="drawTools">
-    <button class="tool on" data-tool="pen"><svg><use href="#i-pen"/></svg>Lápiz</button>
-    <button class="tool" data-tool="line"><svg><use href="#i-line"/></svg>Línea</button>
-    <button class="tool" data-tool="ellipse"><svg><use href="#i-ellipse"/></svg>Círculo</button>
-    <button class="tool" data-tool="rect"><svg><use href="#i-rect"/></svg>Cuadro</button>
-    <button class="tool" data-tool="star"><svg><use href="#i-star"/></svg>Estrella</button>
-    <button class="tool" data-tool="heart"><svg><use href="#i-heart"/></svg>Corazón</button>
-    <button class="tool" data-tool="erase"><svg><use href="#i-eraser"/></svg>Borrador</button>
+    <button class="tool on" data-tool="pen" title="Lápiz: dibuja a mano"><svg><use href="#i-pen"/></svg>Lápiz</button>
+    <button class="tool" data-tool="line" title="Línea recta: arrastra de un punto a otro"><svg><use href="#i-line"/></svg>Línea</button>
+    <button class="tool" data-tool="ellipse" title="Círculo: arrastra para hacerlo grande o pequeño"><svg><use href="#i-ellipse"/></svg>Círculo</button>
+    <button class="tool" data-tool="rect" title="Cuadro: arrastra para dibujarlo"><svg><use href="#i-rect"/></svg>Cuadro</button>
+    <button class="tool" data-tool="star" title="Estrella: toca o arrastra"><svg><use href="#i-star"/></svg>Estrella</button>
+    <button class="tool" data-tool="heart" title="Corazón: toca o arrastra"><svg><use href="#i-heart"/></svg>Corazón</button>
+    <button class="tool" data-tool="erase" title="Borrador de líneas"><svg><use href="#i-eraser"/></svg>Borrador</button>
   </div>
   <div class="row only-draw">
     <span class="lbl">Grosor</span>
@@ -454,13 +501,18 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
   </div>
 
   <div class="row only-color" id="colorTools">
-    <button class="tool on" data-ctool="fill"><svg><use href="#i-fill"/></svg>Bote</button>
-    <button class="tool has-pop" id="brushBtn" data-ctool="crayon" data-pop="brushPop" aria-label="Crayón y marcadores"><svg><use href="#i-crayon"/></svg><span class="bl">Crayón</span></button>
-    <button class="tool has-pop" id="gradBtn" data-ctool="grad" data-pop="gradPop" aria-label="Degradado"><span class="gswatch"></span>Degradado</button>
-    <button class="tool" data-ctool="blend" aria-label="Difuminar"><svg><use href="#i-blend"/></svg>Difuminar</button>
-    <button class="tool" data-ctool="cerase"><svg><use href="#i-eraser"/></svg>Borrar</button>
-    <button class="tool has-pop" id="sizeBtn" data-pop="sizePop" aria-label="Grosor de la punta"><span class="dotbox"><i style="width:13px;height:13px"></i></span><span class="sl">Mediana</span></button>
-    <label class="tool" id="customWrap" title="Elegir otro color"><span class="rainbow"></span>Otro<input type="color" id="customColor" value="#ff6f61" aria-label="Elegir otro color"></label>
+    <button class="tool on" data-ctool="fill" title="Bote: toca una zona para rellenarla de color" aria-label="Bote de pintura"><svg><use href="#i-fill"/></svg>Bote</button>
+    <button class="tool has-pop" id="brushBtn" data-ctool="crayon" data-pop="brushPop" aria-label="Crayón y marcadores" title="Pinta con el dedo. Toca otra vez para elegir crayón o marcador"><svg><use href="#i-crayon"/></svg><span class="bl">Crayón</span></button>
+    <button class="tool has-pop" id="gradBtn" data-ctool="grad" data-pop="gradPop" aria-label="Degradado" title="Degradado: toca una zona y se pinta con colores que se mezclan"><span class="gswatch"></span>Degradado</button>
+    <button class="tool" data-ctool="blend" aria-label="Difuminar" title="Difuminar: pasa el dedo para mezclar los colores"><svg><use href="#i-blend"/></svg>Difuminar</button>
+    <button class="tool" data-ctool="cerase" title="Borrar color (las líneas no se borran)" aria-label="Borrar color"><svg><use href="#i-eraser"/></svg>Borrar</button>
+    <button class="tool has-pop" id="sizeBtn" data-pop="sizePop" aria-label="Grosor de la punta" title="Grosor de la punta: fina o gruesa"><span class="dotbox"><i style="width:13px;height:13px"></i></span><span class="sl">Mediana</span></button>
+    <label class="tool" id="customWrap" title="Otro color: elige cualquier color que quieras"><span class="rainbow"></span>Otro<input type="color" id="customColor" value="#ff6f61" aria-label="Elegir otro color"></label>
+  </div>
+  <div class="only-color" id="recentRow">
+    <button id="moreColors" title="Más colores: 360 colores para elegir con un toque" aria-label="Más colores (360 colores)"><span class="rainbow"></span>Más colores</button>
+    <span class="rlbl">Recientes</span>
+    <div class="recent" id="recent" aria-label="Colores recientes"></div>
   </div>
   <div class="palette only-color" id="palette"></div>
 </footer>
@@ -485,19 +537,24 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
 </div>
 <div class="pop" id="gradPop" role="dialog" aria-label="Opciones de degradado">
   <h4>Degradado</h4>
-  <div class="grow">
-    <span class="gcol"><i id="gC1"></i></span><span class="gprev" id="gPrev"></span><span class="gcol"><i id="gC2"></i></span>
-    <button class="gswap" id="gSwap" aria-label="Intercambiar colores">⇄</button>
+  <p class="ghint">Toca una zona para pintar con degradado 👆</p>
+  <div class="gpresets" id="gPresets"></div>
+  <button class="gmore" id="gMore" aria-expanded="false" aria-controls="gAdv">Más opciones <b>▾</b></button>
+  <div id="gAdv" hidden>
+    <div class="grow">
+      <span class="gcol"><i id="gC1"></i></span><span class="gprev" id="gPrev"></span><span class="gcol"><i id="gC2"></i></span>
+      <button class="gswap" id="gSwap" aria-label="Intercambiar colores" title="Intercambiar colores">⇄</button>
+    </div>
+    <div class="ptip" style="margin-top:6px">Segundo color (el primero es el color elegido):</div>
+    <div class="gpal" id="gPal"></div>
+    <div class="chips" id="gType" style="margin-top:8px">
+      <button data-gt="linear" class="on" title="De un lado a otro">Lineal</button><button data-gt="radial" title="Del centro hacia afuera">Circular</button>
+    </div>
+    <div class="chips" id="gDir" style="margin-top:6px">
+      <button data-gd="down" class="on" aria-label="De arriba a abajo" title="De arriba a abajo">↓</button><button data-gd="right" aria-label="De izquierda a derecha" title="De izquierda a derecha">→</button><button data-gd="diag" aria-label="En diagonal hacia abajo" title="En diagonal hacia abajo">↘</button><button data-gd="up" aria-label="En diagonal hacia arriba" title="En diagonal hacia arriba">↗</button>
+    </div>
+    <p class="ptip">Con estas opciones abiertas también puedes <b>arrastrar</b> dentro de una zona para elegir la dirección (empieza con el primer color y termina con el último).</p>
   </div>
-  <div class="ptip" style="margin-top:6px">Segundo color:</div>
-  <div class="gpal" id="gPal"></div>
-  <div class="chips" id="gType" style="margin-top:8px">
-    <button data-gt="linear" class="on">Lineal</button><button data-gt="radial">Circular</button>
-  </div>
-  <div class="chips" id="gDir" style="margin-top:6px">
-    <button data-gd="down" class="on" aria-label="De arriba a abajo">↓</button><button data-gd="right" aria-label="De izquierda a derecha">→</button><button data-gd="diag" aria-label="En diagonal hacia abajo">↘</button><button data-gd="up" aria-label="En diagonal hacia arriba">↗</button>
-  </div>
-  <p class="ptip">Toca una zona para rellenarla con el degradado, o <b>arrastra</b> dentro de ella para elegir la dirección (empieza con el primer color y termina con el segundo).</p>
 </div>
 
 <div class="overlay" id="menuSheet">
@@ -518,9 +575,22 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
         <button class="mbtn" id="mNews"><svg><use href="#i-sticker"/></svg>Novedades y ayuda</button>
       </div>
       <div class="menu-foot">
-        <span id="versionText">Colorear · Versión 3</span>
+        <span id="versionText">Colorear · Versión 3.1</span>
         <a href="privacidad.html" target="_blank" rel="noopener" id="mPrivacy">Política de privacidad</a>
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="colorsSheet">
+  <div class="sheet" role="dialog" aria-label="Más colores">
+    <div class="sheet-head"><h2>Más colores</h2><button class="ib close" aria-label="Cerrar"><svg><use href="#i-close"/></svg></button></div>
+    <p class="ctip">Toca un color para usarlo. Cada fila va de <b>claro</b> a <b>oscuro</b>.</p>
+    <div class="tabs ctabs" id="cTabs" role="tablist" aria-label="Familias de colores"></div>
+    <div class="scroll" id="cScroll">
+      <section class="cfam crec" id="fam-recientes"><h3>Recientes <small>tus últimos colores</small></h3><div class="recent" id="cRecent"></div></section>
+      <div id="cList"></div>
+      <label class="cother" title="Elige cualquier color"><span class="rainbow"></span>¿No está? Elige cualquier color<input type="color" id="customColor2" value="#ff6f61" aria-label="Elegir cualquier color"></label>
     </div>
   </div>
 </div>
@@ -649,9 +719,9 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
 <div id="printArea"><img id="printImg" alt="Dibujo para colorear"></div>
 <script>
 'use strict';
-/* Colorear v3: crea dibujos para colorear, sube fotos de tus libros y coloréalos
+/* Colorear v3.1: crea dibujos para colorear, sube fotos de tus libros y coloréalos
    (crayón, marcadores acrílico / de agua / de alcohol, degradados y difuminar) */
-const APP_VERSION = '3';
+const APP_VERSION = '3.1';
 const PORTRAIT = [1200, 1600], LANDSCAPE = [1600, 1200];
 let W = 1200, H = 1600;                       // tamaño de la hoja (px internos); vertical u horizontal
 const DRAW_SIZES = { xs: 3, 0: 6, 1: 12, 2: 22 };      // grosor de línea (Dibujar): súper fina, fina, mediana, gruesa
@@ -663,6 +733,31 @@ const ZMIN = 1, ZMAX = 6;
 const PALETTE = ['#FF3B30','#FF6F61','#FF9500','#FFCC00','#FFE66D','#A8E063','#34C759','#0B8F3C',
   '#00C7BE','#5AC8FA','#007AFF','#1E3A8A','#5856D6','#AF52DE','#D291FF','#FF2D92',
   '#FFB6C1','#F4C095','#C68642','#8B4513','#5D3A1A','#9E9E9E','#333333','#FFFFFF'];
+const PALETTE_NAMES = ['Rojo','Coral','Naranja','Amarillo','Amarillo claro','Verde lima','Verde','Verde oscuro',
+  'Turquesa','Celeste','Azul','Azul marino','Índigo','Morado','Lila','Rosa fuerte',
+  'Rosa claro','Piel','Canela','Café','Café oscuro','Gris','Negro','Blanco'];
+/* 360 colores listos para tocar, por familias; cada fila va de claro a oscuro (6 tonos) */
+const COLOR_FAMILIES = [{"id":"rojos","n":"Rojos","rows":[["Rojo","FAC6C6 F68E8E F15555 ED1D1D BD0F0F 840B0B"],["Rojo cereza","F7C9D0 F094A0 E85E71 E02941 B3192E 7D1220"],["Rojo tomate","FDCAC4 FA9589 F8604F F52B14 C41B08 891306"],["Rojo vino","F3CDD7 E89CAF DC6A87 D0395F A52746 741B31"],["Rojo ladrillo","F2D5CF E5AA9E D8806E CC553E A13F2B 712C1E"]]},{"id":"naranjas","n":"Naranjas","rows":[["Naranja","FFDEC2 FFBE85 FF9D47 FF7C0A CC5F00 8F4300"],["Mandarina","FDD9C3 FCB288 FA8C4C F96610 C74C05 8B3504"],["Calabaza","FCE2C5 F9C58B F6A951 F38C16 C26C0A 884C07"],["Coral","FAD3C6 F6A68E F17A55 ED4D1D BD380F 84270B"],["Durazno","F9E5C8 F3CC91 EDB25A E79823 B87614 81530E"]]},{"id":"amarillos","n":"Amarillos","rows":[["Amarillo","FFF5B8 FFEF85 FFE53D FFDD00 CCB100 998500"],["Limón","FDFBB9 FCF888 FAF442 F9F106 C7C005 959004"],["Oro","FFEDB8 FFE085 FFCF3D FFBF00 CC9900 997300"],["Mostaza","F7E3B6 F1CE7E EBBA47 DCA218 AE8013 815E0E"],["Maíz","FCF3CF FAE89E F7D964 F4CB2A D5AD0B A58609"]]},{"id":"verdes","n":"Verdes","rows":[["Verde lima","E6F4CD CCEA9A B3DF68 9AD435 78A824 547619"],["Verde hoja","D8F1D0 B1E3A0 8AD671 63C841 4A9E2E 346F20"],["Verde","CEF3D3 9DE7A7 6CDA7B 3BCE4F 29A339 1D7228"],["Verde esmeralda","CDF4DF 9AEABF 68DF9F 35D47F 24A862 197644"],["Verde menta","D0F1E7 A0E3CF 71D6B7 41C8A0 2E9E7C 206F57"]]},{"id":"azules","n":"Azules","rows":[["Turquesa","CBF6F3 97EDE7 63E3DB 2FDACF 1FADA4 157973"],["Celeste","C6EDFA 8EDAF6 55C8F1 1DB5ED 0F8EBD 0B6484"],["Azul cielo","C5E4FB 8CC9F8 52AEF4 1993F0 0C72C0 095086"],["Azul","C8DAF9 91B5F3 5A90ED 236AE7 1450B8 0E3881"],["Azul marino","CCD1F5 98A3EB 6575E2 3148D8 2133AB 172478"]]},{"id":"morados","n":"Morados","rows":[["Violeta","D4CDF3 A99CE8 7D6ADC 5239D0 3C27A5 2A1B74"],["Morado","DBCCF5 B799EA 9367E0 6F34D5 5423A9 3B1877"],["Uva","E2CEF3 C49DE7 A76CDA 893BCE 6A29A3 4A1D72"],["Lila","E7D0F1 CFA0E3 B771D6 A041C8 7C2E9E 57206F"],["Berenjena","EBD2EF D7A4DF C477CF B04ABF 8A3597 61256A"]]},{"id":"rosas","n":"Rosas","rows":[["Fucsia","F6CAF3 EE96E7 E561DA DD2CCE AF1DA3 7B1472"],["Rosa chicle","F8C9EA F292D5 EB5CC0 E425AB B61686 7F105E"],["Rosa","FAC6E2 F68EC5 F155A8 ED1D8C BD0F6C 840B4B"],["Rosa fresa","FCC5D9 F98BB3 F6518D F31667 C20A4E 880736"],["Frambuesa","F9C8D3 F391A8 ED5A7C E72350 B8143A 810E29"]]},{"id":"piel","n":"Tonos de piel","rows":[["Piel rosada","F7DDD4 EABEAE D79E88 C27B61 9D5B43 6A3F2F"],["Piel dorada","F8E6D3 ECCCAC DBB085 C4915F 9F7041 6B4C2E"],["Piel canela","F5E2D6 E6C7B3 D3A98D BD8965 996848 674732"],["Piel oliva","F3E8D8 E2D0B6 CEB692 B7996C 94774C 635136"],["Piel morena","E7CABB D3A892 BD866B A0674B 744D39 4A3226"]]},{"id":"tierra","n":"Cafés y tierra","rows":[["Café","DAB395 CA9268 B57340 8F5B32 6A4325 442B18"],["Chocolate","D6AC9A C4886E AE6647 8A5138 653B29 41261B"],["Madera","D3B99C C09C72 A97E4C 86633C 63492C 3F2F1C"],["Arena","E4DBC8 D4C4A5 C0A97C AC8E53 8A7242 675532"],["Oliva","C9C99C B4B474 989852 777740 56562E 35351D"]]},{"id":"grises","n":"Grises y negros","rows":[["Blanco a gris","FFFFFF F0F0F0 DBDBDB C4C4C4 ADADAD 949494"],["Gris a negro","787878 5E5E5E 454545 2E2E2E 171717 000000"],["Gris azulado","E2E5E9 BFC6CF 96A2B0 6E7E91 4F5B69 303840"],["Gris cálido","E8E6E3 CDC7C1 ACA49A 8C8073 655C53 3E3832"]]},{"id":"pastel","n":"Pastel","rows":[["Rosa pastel","FFE5EC FFD1DD FFBDCD FFA8BE FF94AF FF809F"],["Durazno pastel","FFF0E5 FFE4D1 FFD8BD FFCCA8 FFC194 FFB580"],["Vainilla","FFFCE5 FFF9D1 FFF6BD FFF3A8 FFF194 FFEE80"],["Menta pastel","EAFBF1 D9F7E6 C8F3DA B7F0CF A7ECC4 96E9B8"],["Celeste pastel","E7F5FE D3EEFD C0E6FC ADDEFB 99D6FA 86CFF9"],["Lila pastel","F2E8FC E8D6FA DEC3F8 D4B1F6 C99FF4 BF8CF2"]]},{"id":"neon","n":"Neón y vivos","rows":[["Rosa neón","FF70CB FF4DBE FF29B0 FF0AA5 EB0095 CC0081"],["Naranja neón","FFA570 FF8E4D FF7729 FF640A EB5600 CC4B00"],["Lima neón","BCFF70 ACFF4D 9BFF29 8DFF0A 7DEB00 6DCC00"],["Verde neón","70FFA0 4DFF88 29FF70 0AFF5C 00EB4E 00CC44"],["Azul eléctrico","70D9FF 4DCFFF 29C6FF 0ABEFF 00ACEB 0096CC"]]}];
+const TONE_NAMES = ['muy claro', 'claro', 'suave', 'medio', 'oscuro', 'muy oscuro'];
+const GREY_NAMES = [['Blanco', 'Gris perla', 'Gris nube', 'Gris plata', 'Gris claro', 'Gris medio'], ['Gris', 'Gris piedra', 'Gris carbón', 'Gris muy oscuro', 'Casi negro', 'Negro']];
+const ALL_COLORS = [], COLOR_NAME = {};
+PALETTE.forEach((c, i) => { COLOR_NAME[c] = PALETTE_NAMES[i]; });
+for (const f of COLOR_FAMILIES) f.rows.forEach(([rn, hexes], ri) => hexes.split(' ').forEach((h, i) => {
+  const c = '#' + h; ALL_COLORS.push(c);
+  COLOR_NAME[c] = f.id === 'grises' && ri < 2 ? GREY_NAMES[ri][i] : rn + ' ' + TONE_NAMES[i];
+}));
+/* degradados listos (de arriba a abajo) */
+const GRAD_PRESETS = [
+  { id: 'mine', n: 'Mi color' },
+  { id: 'atardecer', n: 'Atardecer', s: ['#6A3093', '#E8505B', '#FF9A44', '#FFD86F'] },
+  { id: 'mar', n: 'Mar', s: ['#A8EDEA', '#48C6EF', '#1E6FD9', '#0B3D91'] },
+  { id: 'arcoiris', n: 'Arcoíris', s: ['#FF3B30', '#FF9500', '#FFCC00', '#34C759', '#00A6FF', '#5856D6', '#AF52DE'] },
+  { id: 'bosque', n: 'Bosque', s: ['#D4F08A', '#7BC950', '#2E8B3E', '#0E5130'] },
+  { id: 'algodon', n: 'Algodón de azúcar', s: ['#FFB3D9', '#E2C2FF', '#A8E6FF'] },
+  { id: 'fuego', n: 'Fuego', s: ['#B3001B', '#FF3B1F', '#FF9A00', '#FFE259'] },
+  { id: 'cielo', n: 'Cielo', s: ['#1F6FD9', '#56CCF2', '#DDF5FF'] },
+  { id: 'lavanda', n: 'Lavanda', s: ['#F5EDFF', '#CDB2F5', '#9270D6'] },
+];
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => Array.from(document.querySelectorAll(s));
@@ -703,7 +798,7 @@ function sizeForImage(w, h) { return w > h ? LANDSCAPE : PORTRAIT; }
 const state = {
   mode: 'draw', drawTool: 'pen', colorTool: 'fill',
   drawSize: '1', colorSize: '1', color: '#FF3B30', brush: 'crayon',
-  color2: '#FFE66D', gradType: 'linear', gradDir: 'down',
+  color2: '#FFE66D', gradType: 'linear', gradDir: 'down', gradPreset: 'mine', gradAdv: false,
   currentId: null, dirty: false, panTool: false,
 };
 
@@ -939,6 +1034,7 @@ function startSingle(e) {
   }
   if (objMode) { g = objDown(base, p); return; }
   const tool = currentTool();
+  if (state.mode === 'color' && (tool === 'fill' || isBrush(tool) || (tool === 'grad' && gradUsesColor()))) addRecent(state.color);
   if (tool === 'fill') { g = Object.assign(base, { kind: 'fill' }); return; }
   if (tool === 'grad') { g = Object.assign(base, { kind: 'grad' }); return; }
   if (tool === 'blend') {
@@ -972,7 +1068,7 @@ function onMove(e) {
   if (g.kind === 'grad') {
     g.last = toDoc(e);
     pctx.clearRect(0, 0, W, H);
-    if (g.travel >= 14) drawGradArrow(pctx, g.start, g.last);
+    if (state.gradAdv && g.travel >= 14) drawGradArrow(pctx, g.start, g.last);
     return;
   }
   const co = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
@@ -1015,7 +1111,7 @@ function endSingle(cancelled) {
     if (!cancelled && cur.travel < 14) floodFill(cur.start.x, cur.start.y, state.color);
   } else if (cur.kind === 'grad') {
     pctx.clearRect(0, 0, W, H);
-    if (!cancelled) gradientFill(cur.start, cur.travel >= 14 ? cur.last : null);
+    if (!cancelled) gradientFill(cur.start, state.gradAdv && cur.travel >= 14 ? cur.last : null);
   } else if (cur.kind === 'blend') {
     commit([capturePart('color', rectOf(cur.box))]);
   } else if (cur.kind === 'stroke') {
@@ -1365,7 +1461,8 @@ function floodFill(fx, fy, hex) {
 // a = donde empieza (primer color); b = donde termina (segundo color). Sin b: usa la dirección elegida sobre la zona entera.
 function gradientFill(a, b, opts) {
   opts = opts || {};
-  const c1 = hexToRgb(opts.c1 || state.color), c2 = hexToRgb(opts.c2 || state.color2), type = opts.type || state.gradType, dir = opts.dir || state.gradDir;
+  const S = (opts.stops || (opts.c1 || opts.c2 ? [opts.c1 || state.color, opts.c2 || state.color2] : gradStops())).map(hexToRgb);
+  const type = opts.type || state.gradType, dir = opts.dir || state.gradDir, ns = S.length - 1;
   const reg = regionMask(a.x, a.y); if (!reg) return false;
   const { mask, minX, minY, maxX, maxY } = reg;
   // la zona real (sin la parte bajo las líneas) para que el degradado se vea completo
@@ -1396,10 +1493,10 @@ function gradientFill(a, b, opts) {
       t = t < 0 ? 0 : t > 1 ? 1 : t;
       t = t * t * (3 - 2 * t) * 0.35 + t * 0.65;              // un poco más suave en los extremos
       const dz = (((px * 7 + py * 13) & 15) / 16 - 0.47) * 1.2;   // tramado leve: sin "escalones"
-      const k = (drow + x) * 4;
-      d[k] = clamp(Math.round(c1[0] + (c2[0] - c1[0]) * t + dz), 0, 255);
-      d[k + 1] = clamp(Math.round(c1[1] + (c2[1] - c1[1]) * t + dz), 0, 255);
-      d[k + 2] = clamp(Math.round(c1[2] + (c2[2] - c1[2]) * t + dz), 0, 255);
+      const k = (drow + x) * 4, u = t * ns, si = u >= ns ? ns - 1 : u | 0, f = u - si, c1 = S[si], c2 = S[si + 1];
+      d[k] = clamp(Math.round(c1[0] + (c2[0] - c1[0]) * f + dz), 0, 255);
+      d[k + 1] = clamp(Math.round(c1[1] + (c2[1] - c1[1]) * f + dz), 0, 255);
+      d[k + 2] = clamp(Math.round(c1[2] + (c2[2] - c1[2]) * f + dz), 0, 255);
       d[k + 3] = 255;
     }
   }
@@ -1407,8 +1504,22 @@ function gradientFill(a, b, opts) {
   commit([capturePart('color', { x: minX, y: minY, w: bw, h: bh })]);
   return true;
 }
+// Colores del degradado elegido: uno listo, "Mi color" (del color elegido a uno más claro) o dos colores a mano
+function lighterOf(hex) {
+  const [r, g, b] = hexToRgb(hex), lum = 0.299 * r + 0.587 * g + 0.114 * b;
+  const m = lum > 228 ? -0.22 : 0.62, to = m < 0 ? 0 : 255, k = Math.abs(m);   // si ya es muy claro, va a uno un poco más oscuro
+  const h = (v) => Math.round(v + (to - v) * k).toString(16).padStart(2, '0');
+  return ('#' + h(r) + h(g) + h(b)).toUpperCase();
+}
+function gradStops() {
+  if (state.gradPreset === 'custom') return [state.color, state.color2];
+  const p = GRAD_PRESETS.find((x) => x.id === state.gradPreset);
+  return p && p.s ? p.s : [state.color, lighterOf(state.color)];
+}
+const gradUsesColor = () => state.gradPreset === 'mine' || state.gradPreset === 'custom';
 // Flecha de vista previa al arrastrar con el degradado
 function drawGradArrow(c, a, b) {
+  const stops = gradStops(), cA = stops[0], cB = stops[stops.length - 1];
   const lw = Math.max(4, 3 * docPerCss());
   c.save();
   const gr = state.gradType === 'radial' ? null : c.createLinearGradient(a.x, a.y, b.x, b.y);
@@ -1419,12 +1530,12 @@ function drawGradArrow(c, a, b) {
   }
   c.beginPath(); c.moveTo(a.x, a.y); c.lineTo(b.x, b.y);
   c.lineWidth = lw * 2.4; c.strokeStyle = 'rgba(255,255,255,.9)'; c.stroke();
-  if (gr) { gr.addColorStop(0, state.color); gr.addColorStop(1, state.color2); }
-  c.lineWidth = lw; c.strokeStyle = gr || state.color; c.stroke();
+  if (gr) stops.forEach((x, i) => gr.addColorStop(i / (stops.length - 1), x));
+  c.lineWidth = lw; c.strokeStyle = gr || cA; c.stroke();
   const ang = Math.atan2(b.y - a.y, b.x - a.x), h = lw * 4;
   c.beginPath(); c.moveTo(b.x, b.y); c.lineTo(b.x - h * Math.cos(ang - 0.45), b.y - h * Math.sin(ang - 0.45)); c.lineTo(b.x - h * Math.cos(ang + 0.45), b.y - h * Math.sin(ang + 0.45)); c.closePath();
-  c.fillStyle = state.color2; c.strokeStyle = 'rgba(40,28,60,.8)'; c.lineWidth = lw * 0.5; c.fill(); c.stroke();
-  c.beginPath(); c.arc(a.x, a.y, lw * 1.8, 0, Math.PI * 2); c.fillStyle = state.color; c.fill(); c.stroke();
+  c.fillStyle = cB; c.strokeStyle = 'rgba(40,28,60,.8)'; c.lineWidth = lw * 0.5; c.fill(); c.stroke();
+  c.beginPath(); c.arc(a.x, a.y, lw * 1.8, 0, Math.PI * 2); c.fillStyle = cA; c.fill(); c.stroke();
   c.restore();
 }
 
@@ -2027,8 +2138,12 @@ function showPop(id, anchor) {
   const pop = $('#' + id); pop.classList.add('show'); openPop = { pop, anchor };
   $('#toast').classList.remove('show');
   const r = anchor.getBoundingClientRect(), vw = window.innerWidth, vh = window.innerHeight;
-  pop.style.left = '0px'; pop.style.top = '0px';
-  const pw = Math.min(pop.offsetWidth, vw - 16), ph = pop.offsetHeight;
+  pop.style.left = '0px'; pop.style.top = '0px'; pop.style.maxHeight = '';
+  const pw = Math.min(pop.offsetWidth, vw - 16);
+  let ph = pop.offsetHeight;
+  const above = r.top - 16;
+  if (ph > above && above >= 220) { pop.style.maxHeight = above + 'px'; ph = above; }
+  else if (ph > vh - 16) { pop.style.maxHeight = (vh - 16) + 'px'; ph = vh - 16; }
   let left = clamp(r.left + r.width / 2 - pw / 2, 8, vw - pw - 8);
   let top = r.top - ph - 8;
   if (top < 8) top = Math.min(vh - ph - 8, r.bottom + 8);
@@ -2069,31 +2184,58 @@ $$('#colorSizes .size').forEach((b) => b.onclick = () => {
   setColorSize(b.dataset.size); hidePop();
   if (state.colorTool === 'fill' || state.colorTool === 'grad') { pickTool(); setColorTool(state.brush); }   // el grosor es para pintar a mano
 });
-/* opciones del degradado */
+/* opciones del degradado: degradados listos + "Más opciones" */
+const cssGrad = (stops, ang) => stops.length > 1 ? `linear-gradient(${ang}, ${stops.join(', ')})` : stops[0];
 function updateGradUI() {
-  const c1 = state.color, c2 = state.color2;
-  const css = state.gradType === 'radial' ? `radial-gradient(circle, ${c1}, ${c2})` : `linear-gradient(135deg, ${c1}, ${c2})`;
-  const sw = $('#gradBtn .gswatch'); sw.style.background = css; sw.classList.toggle('radial', state.gradType === 'radial');
+  const stops = gradStops(), c1 = state.color, c2 = state.color2, radial = state.gradType === 'radial';
+  const sw = $('#gradBtn .gswatch'); sw.style.background = radial ? `radial-gradient(circle, ${stops.join(', ')})` : cssGrad(stops, '180deg'); sw.classList.toggle('radial', radial);
+  $$('#gPresets [data-gp]').forEach((b) => {
+    b.classList.toggle('on', b.dataset.gp === state.gradPreset);
+    if (b.dataset.gp === 'mine') b.querySelector('i').style.background = cssGrad([c1, lighterOf(c1)], '180deg');
+  });
   $('#gC1').style.background = c1; $('#gC2').style.background = c2;
   $('#gPrev').style.background = `linear-gradient(90deg, ${c1}, ${c2})`;
-  $$('#gPal .sw').forEach((s) => s.classList.toggle('on', s.dataset.c === c2));
+  $$('#gPal .sw').forEach((s) => s.classList.toggle('on', state.gradPreset === 'custom' && s.dataset.c === c2));
   $$('#gType [data-gt]').forEach((x) => x.classList.toggle('on', x.dataset.gt === state.gradType));
-  $$('#gDir [data-gd]').forEach((x) => { x.classList.toggle('on', x.dataset.gd === state.gradDir); x.disabled = state.gradType === 'radial'; });
+  $$('#gDir [data-gd]').forEach((x) => { x.classList.toggle('on', x.dataset.gd === state.gradDir); x.disabled = radial; });
+  const more = $('#gMore'); more.setAttribute('aria-expanded', String(state.gradAdv)); $('#gAdv').hidden = !state.gradAdv;
+  more.firstChild.textContent = state.gradAdv ? 'Menos opciones ' : 'Más opciones ';
 }
+(function buildGradPresets() {
+  const p = $('#gPresets');
+  for (const g of GRAD_PRESETS) {
+    const b = document.createElement('button'); b.dataset.gp = g.id;
+    b.title = g.id === 'mine' ? 'Mi color: del color elegido a uno más claro' : 'Degradado ' + g.n;
+    b.setAttribute('aria-label', b.title);
+    b.innerHTML = '<i></i>' + g.n;
+    if (g.s) b.querySelector('i').style.background = cssGrad(g.s, '180deg');
+    b.onclick = () => {
+      state.gradPreset = g.id; state.gradSeen = true;
+      pickTool(); setColorTool('grad'); updateGradUI(); hidePop();
+      toast('Toca una zona para pintar con degradado');
+    };
+    p.append(b);
+  }
+})();
+$('#gMore').onclick = () => {
+  state.gradAdv = !state.gradAdv; updateGradUI();
+  if (openPop && openPop.pop.id === 'gradPop') { showPop('gradPop', openPop.anchor); if (state.gradAdv) $('#gradPop').scrollTop = $('#gradPop').scrollHeight; }
+};
 (function buildGradPalette() {
   const p = $('#gPal');
   for (const c of ['#FFFFFF', '#FFE66D', '#FFCC00', '#FF9500', '#FF3B30', '#FF2D92', '#AF52DE', '#5856D6',
                    '#007AFF', '#5AC8FA', '#00C7BE', '#34C759', '#A8E063', '#8B4513', '#9E9E9E', '#333333']) {
-    const b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.dataset.c = c; b.setAttribute('aria-label', 'Segundo color ' + c);
-    b.onclick = () => { state.color2 = c; updateGradUI(); }; p.append(b);
+    const b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.dataset.c = c; b.setAttribute('aria-label', 'Segundo color: ' + (COLOR_NAME[c] || c)); b.title = COLOR_NAME[c] || c;
+    b.onclick = () => { state.color2 = c; state.gradPreset = 'custom'; updateGradUI(); }; p.append(b);
   }
 })();
-$('#gSwap').onclick = () => { const c = state.color; setColor(state.color2); state.color2 = c; updateGradUI(); };
+$('#gSwap').onclick = () => { const c = state.color; state.gradPreset = 'custom'; setColor(state.color2); state.color2 = c; updateGradUI(); };
 $$('#gType [data-gt]').forEach((b) => b.onclick = () => { state.gradType = b.dataset.gt; updateGradUI(); });
 $$('#gDir [data-gd]').forEach((b) => b.onclick = () => { state.gradDir = b.dataset.gd; updateGradUI(); });
 function setColor(hex) {
   state.color = hex.toUpperCase();
-  $$('#palette .sw').forEach((s) => s.classList.toggle('on', s.dataset.c === state.color));
+  $$('#palette .sw, .recent .sw, #cList .sw').forEach((s) => s.classList.toggle('on', s.dataset.c === state.color));
+  if (state.colorTool === 'grad' && !gradUsesColor()) state.gradPreset = 'mine';   // eligió un color con el degradado: usar "Mi color"
   const tint = state.color === '#FFFFFF' ? '' : state.color;
   $$('#colorTools [data-ctool="fill"] svg, #brushBtn svg').forEach((s) => { s.style.color = tint; });
   if (state.colorTool === 'cerase') setColorTool('fill');
@@ -2103,12 +2245,91 @@ function setColor(hex) {
 (function buildPalette() {
   const p = $('#palette');
   for (const c of PALETTE) {
-    const b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.dataset.c = c; b.setAttribute('aria-label', 'Color ' + c);
+    const b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.dataset.c = c;
+    b.setAttribute('aria-label', 'Color ' + COLOR_NAME[c]); b.title = COLOR_NAME[c];
     b.onclick = () => setColor(c); p.append(b);
   }
 })();
 $('#customColor').addEventListener('input', (e) => setColor(e.target.value));
-$('#customColor').addEventListener('change', (e) => setColor(e.target.value));
+$('#customColor').addEventListener('change', (e) => { setColor(e.target.value); addRecent(e.target.value); });
+/* ---------- colores recientes (se guardan en el teléfono) ---------- */
+const RECENT_MAX = 10;
+let recentColors = [];
+try { recentColors = JSON.parse(localStorage.getItem('colorear.recientes') || '[]').filter((c) => /^#[0-9A-F]{6}$/.test(c)).slice(0, RECENT_MAX); } catch (_) { recentColors = []; }
+function addRecent(c) {
+  c = String(c).toUpperCase();
+  if (!/^#[0-9A-F]{6}$/.test(c) || recentColors[0] === c) return;
+  recentColors = [c].concat(recentColors.filter((x) => x !== c)).slice(0, RECENT_MAX);
+  try { localStorage.setItem('colorear.recientes', JSON.stringify(recentColors)); } catch (_) {}
+  renderRecent();
+}
+function renderRecent() {
+  for (const box of $$('.recent')) {
+    box.textContent = '';
+    if (!recentColors.length) { const n = document.createElement('span'); n.className = 'none'; n.textContent = 'Aquí verás tus últimos colores'; box.append(n); continue; }
+    for (const c of recentColors) {
+      const b = document.createElement('button'); b.className = 'sw' + (c === state.color ? ' on' : ''); b.style.background = c; b.dataset.c = c;
+      const nm = COLOR_NAME[c] || 'Color ' + c; b.title = nm + ' (reciente)'; b.setAttribute('aria-label', 'Color reciente: ' + nm);
+      b.onclick = () => { setColor(c); if (box.id === 'cRecent') closeSheet('#colorsSheet'); };
+      box.append(b);
+    }
+  }
+}
+/* ---------- Más colores: 360 colores por familias ---------- */
+function pickSheetColor(c) {
+  setColor(c); addRecent(c); closeSheet('#colorsSheet');
+  if (state.mode !== 'color') setMode('color');
+  toast((COLOR_NAME[c] || 'Color') + ' ✓ Toca el dibujo para pintar');
+}
+(function buildColorSheet() {
+  const tabs = $('#cTabs'), list = $('#cList');
+  const mkTab = (id, name, dot) => {
+    const t = document.createElement('button'); t.dataset.fam = id; t.setAttribute('role', 'tab');
+    t.innerHTML = '<i></i>'; t.querySelector('i').style.background = dot; t.append(name);
+    t.onclick = () => { const sc = $('#cScroll'), sec = $('#fam-' + id); sc.scrollTo({ top: sec.offsetTop - 4, behavior: 'smooth' }); setFamTab(id); };
+    tabs.append(t);
+  };
+  mkTab('recientes', 'Recientes', 'conic-gradient(#ff3b30,#ffcc00,#34c759,#007aff,#af52de,#ff3b30)');
+  for (const f of COLOR_FAMILIES) {
+    const hexes = f.rows.map((r) => r[1].split(' '));
+    mkTab(f.id, f.n, '#' + hexes[Math.min(2, hexes.length - 1)][3]);
+    const sec = document.createElement('section'); sec.className = 'cfam'; sec.id = 'fam-' + f.id;
+    const h = document.createElement('h3'); h.textContent = f.n; sec.append(h);
+    const grid = document.createElement('div'); grid.className = 'cgrid';
+    for (const row of hexes) for (const h6 of row) {
+      const c = '#' + h6, b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.dataset.c = c;
+      b.title = COLOR_NAME[c]; b.setAttribute('aria-label', COLOR_NAME[c]);
+      b.onclick = () => pickSheetColor(c); grid.append(b);
+    }
+    sec.append(grid); list.append(sec);
+  }
+})();
+function setFamTab(id) {
+  $$('#cTabs [data-fam]').forEach((t) => {
+    const on = t.dataset.fam === id; t.classList.toggle('on', on); t.setAttribute('aria-selected', String(on));
+    if (on) { const tb = $('#cTabs'); const x = t.offsetLeft - (tb.clientWidth - t.offsetWidth) / 2; tb.scrollTo({ left: Math.max(0, x), behavior: 'smooth' }); }
+  });
+}
+let famSpyT = 0;
+$('#cScroll').addEventListener('scroll', () => {
+  cancelAnimationFrame(famSpyT);
+  famSpyT = requestAnimationFrame(() => {
+    const sc = $('#cScroll'); let cur = 'recientes';
+    for (const sec of $$('#cScroll .cfam')) if (sec.offsetTop - 30 <= sc.scrollTop) cur = sec.id.slice(4);
+    if (sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 4) cur = COLOR_FAMILIES[COLOR_FAMILIES.length - 1].id;
+    const on = $('#cTabs .on'); if (!on || on.dataset.fam !== cur) setFamTab(cur);
+  });
+}, { passive: true });
+$('#moreColors').onclick = () => {
+  hidePop(); renderRecent(); openSheet('#colorsSheet');
+  const sel = $('#cList .sw.on');
+  const sc = $('#cScroll');
+  if (sel) { const sec = sel.closest('.cfam'); sc.scrollTop = sec.offsetTop - 4; setFamTab(sec.id.slice(4)); }
+  else { sc.scrollTop = 0; setFamTab('recientes'); }
+};
+$('#customColor2').addEventListener('input', (e) => setColor(e.target.value));
+$('#customColor2').addEventListener('change', (e) => { setColor(e.target.value); addRecent(e.target.value); closeSheet('#colorsSheet'); toast('Color elegido ✓ Toca el dibujo para pintar'); });
+renderRecent();
 $('#btnUndo').onclick = undo;
 $('#btnRedo').onclick = redo;
 document.addEventListener('keydown', (e) => {
@@ -3153,14 +3374,17 @@ function showHint() {
   if (isStandalone()) html = '<p>¡La app ya está instalada! Ábrela desde el ícono en tu pantalla de inicio. Funciona sin internet.</p>';
   else if (isIOS()) html = '<p><b>iPhone / iPad (Safari):</b> toca <span class="kbd">Compartir</span> (el cuadrito con la flecha ↑) y luego <span class="kbd">Agregar a pantalla de inicio</span>.</p>';
   else html = '<p><b>Android (Chrome):</b> toca el menú <span class="kbd">⋮</span> y luego <span class="kbd">Instalar app</span> o <span class="kbd">Agregar a pantalla de inicio</span></p><p><b>iPhone (Safari):</b> <span class="kbd">Compartir</span> → <span class="kbd">Agregar a pantalla de inicio</span>.</p>';
-  html += '<p style="color:var(--muted);font-size:13px">Consejo: en el menú ☰ encontrarás <b>Plantillas</b> y <b>Subir foto</b> para colorear páginas de tus libros. En <b>Colorear</b> tienes crayón, marcadores (acrílico, de agua y de alcohol), degradado y difuminar.</p>';
+  html += '<p style="color:var(--muted);font-size:13px">Consejo: en el menú ☰ encontrarás <b>Plantillas</b> y <b>Subir foto</b> para colorear páginas de tus libros. En <b>Colorear</b> tienes crayón, marcadores (acrílico, de agua y de alcohol), degradados listos, difuminar y <b>Más colores</b> (360 colores).</p>';
   $('#hintBody').innerHTML = html;
   $('#hintInstall').style.display = deferredPrompt ? '' : 'none';
   $('#hint').classList.add('show');
 }
-const NEWS_HTML = '<p><b>Nuevo en la versión 3</b> (en <b>Colorear</b>):</p>' +
+const NEWS_HTML = '<p><b>Nuevo en la versión 3.1</b> (en <b>Colorear</b>):</p>' +
+  '<p>🎨 <b>360 colores</b> listos para tocar: abre <span class="kbd">Más colores</span> (debajo de las herramientas) y elige por familias: rojos, verdes, azules, tonos de piel, pastel, neón… Cada fila va de claro a oscuro.</p>' +
+  '<p>🕘 <b>Colores recientes</b>: los últimos que usaste quedan a la mano, al lado de <b>Más colores</b>.</p>' +
+  '<p>🌈 <b>Degradado más fácil</b>: elige uno listo (<b>Atardecer</b>, <b>Mar</b>, <b>Arcoíris</b>, <b>Bosque</b>…) o <b>Mi color</b>, y toca una zona. ¡Así de fácil! El segundo color, circular y la dirección siguen en <b>Más opciones</b>.</p>' +
+  '<p style="margin-top:12px"><b>También en la versión 3:</b></p>' +
   '<p>🖍️ <b>Marcadores</b>: toca <span class="kbd">Crayón</span> dos veces y elige <b>acrílico</b> (tapa todo, color fuerte), <b>de agua</b> (acuarela suave que se nota más al repasar) o <b>de alcohol</b> (transparente y parejo, se oscurece al repasar).</p>' +
-  '<p>🌈 <b>Degradado</b>: toca una zona y se rellena pasando de un color a otro; arrastra para elegir la dirección. Tócalo otra vez para elegir el segundo color, lineal o circular.</p>' +
   '<p>👆 <b>Difuminar</b>: pasa el dedo sobre los colores para mezclarlos suavemente (las líneas negras no se tocan).</p>' +
   '<p>✏️ Punta <b>súper fina</b> para detalles (en <span class="kbd">Grosor</span>).</p>' +
   '<p>🐸 <b>18 plantillas nuevas</b> por categorías: animales, naturaleza, mandalas y <b>Puerto Rico</b> (coquí, flor de maga, palmera y playa, garita del Morro y la bandera). Menú ☰ → <span class="kbd">Plantillas</span>.</p>';
@@ -3251,7 +3475,8 @@ restore().then(async (restored) => {
 window.__colorear = {
   layers, state, view, floodFill, loadTemplate, undo, redo, saveToGallery, openGallery, exportPng, buildExport, shareDrawing, undoStack, redoStack, tx,
   processLineArt, importImageFile, readPngText, addObject, flattenObjs, zoomAt, zoomFit, adj,
-  gradientFill, regionMask, setColorTool, setColorSize, setColor, showNews, templates: TEMPLATES,
+  gradientFill, regionMask, setColorTool, setColorSize, setColor, showNews, templates: TEMPLATES, COLOR_FAMILIES, ALL_COLORS, GRAD_PRESETS, gradStops, lighterOf,
+  get recentColors() { return recentColors.slice(); },
   get W() { return W; }, get H() { return H; }, get objs() { return objs; }, get objMode() { return objMode; }, version: APP_VERSION,
 };
 </script>
