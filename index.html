@@ -12,8 +12,10 @@
 <meta name="apple-mobile-web-app-title" content="Colorear">
 <meta name="format-detection" content="telephone=no">
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <style>
 :root{
   --bg:#FFF6EC; --panel:#FFFFFF; --ink:#2b2140; --muted:#7a6f8c;
@@ -357,6 +359,8 @@ body.mode-color .only-draw{display:none!important}
 #hint h3{margin:0 0 6px;font-size:17px;display:flex;align-items:center;gap:8px}
 #hint p{margin:4px 0;font-size:15px;line-height:1.35}
 #hint .btns{display:flex;gap:8px;margin-top:10px}
+#hint .hlogo{display:block;width:72px;height:72px;margin:0 auto 4px}
+.sheet-head .brand{width:44px;height:44px;flex:0 0 auto;margin:-4px 0}
 #hint .btns button{flex:1;min-height:46px;border:0;border-radius:12px;font-weight:700;font-size:15px;background:#f1eaf7}
 #hint .btns button.ok{background:var(--accent);color:#fff}
 .kbd{display:inline-block;padding:1px 6px;border-radius:6px;background:#f1eaf7;font-weight:700}
@@ -378,6 +382,7 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
   .palette{grid-template-columns:repeat(8,minmax(0,1fr))}
   #toast{bottom:20px}
   #hint{top:10px}
+  #hint .hlogo{display:none}
   #addBtn .lb{display:none}
   #addBtn{padding:0 12px}
   #adjust{grid-template-columns:minmax(0,1fr) minmax(300px,44%);grid-template-rows:auto minmax(0,1fr)}
@@ -584,7 +589,7 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
 
 <div class="overlay" id="menuSheet">
   <div class="sheet">
-    <div class="sheet-head"><h2>Menú</h2><button class="ib close" aria-label="Cerrar"><svg><use href="#i-close"/></svg></button></div>
+    <div class="sheet-head"><img class="brand" src="logo-badge-96.png" srcset="logo-badge-96.png 1x, logo-badge-192.png 2x" width="44" height="44" alt="ByBroken Coloring"><h2>Menú</h2><button class="ib close" aria-label="Cerrar"><svg><use href="#i-close"/></svg></button></div>
     <div class="scroll">
       <div class="menu-list">
         <button class="mbtn" id="mPhoto"><svg><use href="#i-camera"/></svg>Subir foto</button>
@@ -3501,10 +3506,10 @@ const isStandalone = () => (window.matchMedia && matchMedia('(display-mode: stan
 const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 function showHint() {
   $('#hintTitle').textContent = 'Instala la app en tu teléfono'; $('#hintIcon').setAttribute('href', '#i-phone');
-  let html;
-  if (isStandalone()) html = '<p>¡La app ya está instalada! Ábrela desde el ícono en tu pantalla de inicio. Funciona sin internet.</p>';
-  else if (isIOS()) html = '<p><b>iPhone / iPad (Safari):</b> toca <span class="kbd">Compartir</span> (el cuadrito con la flecha ↑) y luego <span class="kbd">Agregar a pantalla de inicio</span>.</p>';
-  else html = '<p><b>Android (Chrome):</b> toca el menú <span class="kbd">⋮</span> y luego <span class="kbd">Instalar app</span> o <span class="kbd">Agregar a pantalla de inicio</span></p><p><b>iPhone (Safari):</b> <span class="kbd">Compartir</span> → <span class="kbd">Agregar a pantalla de inicio</span>.</p>';
+  let html = '<img class="hlogo" src="logo-badge-192.png" width="72" height="72" alt="ByBroken Coloring">';
+  if (isStandalone()) html += '<p>¡La app ya está instalada! Ábrela desde el ícono en tu pantalla de inicio. Funciona sin internet.</p>';
+  else if (isIOS()) html += '<p><b>iPhone / iPad (Safari):</b> toca <span class="kbd">Compartir</span> (el cuadrito con la flecha ↑) y luego <span class="kbd">Agregar a pantalla de inicio</span>.</p>';
+  else html += '<p><b>Android (Chrome):</b> toca el menú <span class="kbd">⋮</span> y luego <span class="kbd">Instalar app</span> o <span class="kbd">Agregar a pantalla de inicio</span></p><p><b>iPhone (Safari):</b> <span class="kbd">Compartir</span> → <span class="kbd">Agregar a pantalla de inicio</span>.</p>';
   html += '<p style="color:var(--muted);font-size:13px">Consejo: en el menú ☰ encontrarás <b>Plantillas</b> y <b>Subir foto</b> para colorear páginas de tus libros. En <b>Colorear</b> tienes crayón, marcadores (acrílico, de agua y de alcohol), degradados listos, difuminar y <b>Más colores</b> (360 colores). Con <b>Copiar color</b> tomas cualquier color del dibujo o de una foto.</p>';
   $('#hintBody').innerHTML = html;
   $('#hintInstall').style.display = deferredPrompt ? '' : 'none';

@@ -1,16 +1,28 @@
 /* Service worker de Colorear: guarda todo en caché para funcionar sin internet
    y recibe imágenes compartidas desde otras apps (Web Share Target). */
-const CACHE = 'colorear-v6';
+const CACHE = 'colorear-v7';
 const CACHE_COMPARTIDO = 'colorear-compartido';
 const ARCHIVOS = [
   './',
   'index.html',
   'manifest.webmanifest',
   'privacidad.html',
+  'icon-48.png',
+  'icon-72.png',
+  'icon-96.png',
+  'icon-128.png',
+  'icon-144.png',
   'icon-192.png',
+  'icon-256.png',
+  'icon-384.png',
   'icon-512.png',
+  'icon-maskable-192.png',
   'icon-maskable-512.png',
-  'apple-touch-icon.png'
+  'apple-touch-icon.png',
+  'favicon.ico',
+  'favicon-32.png',
+  'logo-badge-96.png',
+  'logo-badge-192.png'
 ];
 
 self.addEventListener('install', (e) => {
