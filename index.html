@@ -74,10 +74,11 @@ header.top{
   touch-action:none;overflow:hidden;
 }
 #paper canvas{position:absolute;left:0;top:0;width:100%;height:100%;touch-action:none}
-#paper.c-pen,#paper.c-line,#paper.c-ellipse,#paper.c-rect,#paper.c-star,#paper.c-heart{cursor:crosshair}
+#paper.c-pen,#paper.c-marker,#paper.c-line,#paper.c-ellipse,#paper.c-rect,#paper.c-star,#paper.c-heart{cursor:crosshair}
 #paper.c-fill,#paper.c-grad{cursor:cell}
 #paper.c-crayon,#paper.c-acrylic,#paper.c-water,#paper.c-alcohol,#paper.c-cerase,#paper.c-blend{cursor:crosshair}
 #paper.c-obj{cursor:move}
+#paper.c-pick{cursor:copy}
 #stage.pan-tool #paper,#stage.panning #paper{cursor:inherit}
 /* botones flotantes sobre la hoja */
 .float{position:absolute;z-index:3;display:flex;gap:4px;align-items:center;touch-action:manipulation}
@@ -182,7 +183,17 @@ footer.tools{
 .recent::-webkit-scrollbar{display:none}
 .recent .sw{flex:0 0 30px;width:30px;height:30px;min-height:30px}
 .recent .none{font-size:12px;color:var(--muted);white-space:nowrap}
-@media (max-width:359px){ #recentRow .rlbl{display:none} #moreColors{padding-right:10px;font-size:13px} }
+/* Copiar color (gotero): toca el botón y luego un color del dibujo */
+#pickColor{flex:0 0 auto;display:flex;align-items:center;gap:5px;height:38px;border:0;border-radius:19px;padding:0 11px 0 7px;
+  background:#f1eaf7;font-weight:800;font-size:12.5px;line-height:1.05;color:var(--accent2);text-align:left}
+#pickColor svg{width:24px;height:24px;flex:0 0 auto}
+#pickColor.on{background:var(--accent2);color:#fff;box-shadow:0 0 0 2px #fff,0 0 0 4px var(--accent2)}
+#pickColor:active{transform:scale(.96)}
+#toast .tsw{display:inline-block;width:20px;height:20px;border-radius:50%;vertical-align:-5px;margin-right:8px;box-shadow:0 0 0 2px #fff}
+@media (max-width:399px){ #pickColor span{max-width:44px} #pickColor{padding-right:9px} }
+@media (max-width:374px){ #recentRow .rlbl{display:none} }
+@media (max-width:379px){ #addBtn .lb{display:none} #addBtn{padding:0 13px} }   /* en pantallas muy angostas el zoom tapaba "Añadir" */
+@media (max-width:359px){ #moreColors{padding-right:10px;font-size:13px} #recentRow{gap:5px} }
 /* hoja de 360 colores */
 #colorsSheet .sheet{height:88%}
 .ctip{margin:-4px 2px 8px;font-size:14px;color:var(--muted);line-height:1.35}
@@ -204,6 +215,7 @@ footer.tools{
 .cother .rainbow{width:28px;height:28px;border-radius:50%;background:conic-gradient(#ff3b30,#ffcc00,#34c759,#00c7be,#007aff,#af52de,#ff2d92,#ff3b30)}
 .cother input{position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;padding:0;cursor:pointer}
 #hintBody{max-height:calc(100vh - 250px);overflow-y:auto}
+#drawTools .tool{flex:1 1 0;min-width:max-content;padding:0 3px}
 @media (max-width:479px){
   #colorTools,#drawTools{gap:3px}
   #colorTools .tool,#drawTools .tool{font-size:10.5px;letter-spacing:-.3px;padding:0}
@@ -212,13 +224,13 @@ footer.tools{
   .only-draw .lbl{display:none}
   #colorTools .tool{flex:1 0 42px;min-width:42px;font-size:10px;letter-spacing:-.35px}
   #colorTools #gradBtn,#colorTools [data-ctool="blend"]{flex-basis:51px;min-width:51px}
-  #drawTools .tool{flex:1 0 44px;min-width:44px;font-size:10px}
+  #drawTools .tool{flex:1 1 0;min-width:max-content;font-size:10px;padding:0 2px}
   #colorTools .tool svg,#drawTools .tool svg{width:24px;height:24px}
 }
 @media (max-width:340px){
   #colorTools .tool{flex-basis:38px;min-width:38px;font-size:9.5px}
   #colorTools #gradBtn,#colorTools [data-ctool="blend"]{flex-basis:46px;min-width:46px}
-  #drawTools .tool{flex-basis:40px;min-width:40px;font-size:9.5px}
+  #drawTools .tool{font-size:9.5px;padding:0 1px}
   #drawSizes .size{flex-basis:46px;width:46px}
 }
 #customWrap{overflow:hidden}
@@ -330,7 +342,7 @@ body.mode-color .only-draw{display:none!important}
 #toast{
   position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 150px);transform:translateX(-50%) translateY(20px);
   background:rgba(40,28,60,.92);color:#fff;padding:12px 18px;border-radius:14px;font-weight:600;font-size:15px;
-  opacity:0;pointer-events:none;transition:.25s;z-index:40;max-width:90%;text-align:center
+  opacity:0;pointer-events:none;transition:.25s;z-index:40;max-width:90%;width:max-content;text-align:center
 }
 #toast.show{opacity:1;transform:translateX(-50%)}
 #updBar{position:fixed;left:10px;right:10px;top:calc(env(safe-area-inset-top) + 8px);z-index:35;display:none;max-width:520px;margin:0 auto;
@@ -409,6 +421,8 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
     <symbol id="i-water" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M20.5 3.5L12 12"/><path d="M11 11c-2.2 0-3.6 1.4-3.6 3.4 0 1.3-.8 2.1-1.8 2.4.9.7 2.3 1.3 3.8 1.3 2.6 0 4.2-1.6 4.2-4z"/><path d="M5 3.5s2.2 2.6 2.2 4a2.2 2.2 0 01-4.4 0c0-1.4 2.2-4 2.2-4z" fill="currentColor" fill-opacity=".35"/></symbol>
     <symbol id="i-alcohol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M8 16l-3 3.5M11 13l7.5-7.5 2 2L13 15z"/><path d="M11 13l-2 1-1 2 2 0 1-1 2-2" fill="currentColor"/><circle cx="7" cy="7" r="4" fill="currentColor" fill-opacity=".25"/><circle cx="11" cy="8.5" r="3.2" fill="currentColor" fill-opacity=".25"/></symbol>
     <symbol id="i-blend" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M13 21c-3 0-5.5-2.3-5.5-5.3V9.5a1.6 1.6 0 013.2 0V13l.1-6.7a1.6 1.6 0 013.2 0V12"/><path d="M14 12V8a1.6 1.6 0 013.2 0v7c0 3.4-1.6 6-4.2 6"/><path d="M2.5 6.5c1.2-1 2.3-1 3.5 0M2.5 10.5c1.2-1 2.3-1 3.5 0M18.5 3.5c1.2-1 2.3-1 3.5 0"/></symbol>
+    <symbol id="i-marker" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M7 12.5l8.5-8.5 4.5 4.5-8.5 8.5z"/><path d="M7 12.5l-3 4.5 3 3 4.5-3" fill="currentColor"/><path d="M13 6.5l4.5 4.5"/></symbol>
+    <symbol id="i-picker" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M14.4 4.4a2.9 2.9 0 014.2 4.2l-1.8 1.8-4.2-4.2z" fill="currentColor"/><path d="M11.2 5.6l7.2 7.2"/><path d="M13.3 7.7l3 3-8 8a2 2 0 01-1.4.6H5v-1.9a2 2 0 01.6-1.4z"/><path d="M3.6 20.4l1.4-1.4"/></symbol>
     <symbol id="i-undo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 010 11H11"/></symbol>
     <symbol id="i-redo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14l5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 000 11H13"/></symbol>
     <symbol id="i-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M5 4h11l3 3v12a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1z"/><path d="M8 4v5h7V4"/><rect x="7.5" y="13" width="9" height="7"/></symbol>
@@ -480,7 +494,8 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
 
 <footer class="tools">
   <div class="row only-draw" id="drawTools">
-    <button class="tool on" data-tool="pen" title="Lápiz: dibuja a mano"><svg><use href="#i-pen"/></svg>Lápiz</button>
+    <button class="tool on" data-tool="pen" title="Lápiz: dibuja líneas a mano con el color elegido"><svg><use href="#i-pen"/></svg>Lápiz</button>
+    <button class="tool has-pop" id="markBtn" data-tool="marker" data-pop="markPop" aria-label="Marcador (toca otra vez para elegir el tipo)" title="Marcador: pinta un trazo de color. Toca otra vez para elegir liso, acrílico, de agua o de alcohol"><svg><use href="#i-marker"/></svg>Marcador</button>
     <button class="tool" data-tool="line" title="Línea recta: arrastra de un punto a otro"><svg><use href="#i-line"/></svg>Línea</button>
     <button class="tool" data-tool="ellipse" title="Círculo: arrastra para hacerlo grande o pequeño"><svg><use href="#i-ellipse"/></svg>Círculo</button>
     <button class="tool" data-tool="rect" title="Cuadro: arrastra para dibujarlo"><svg><use href="#i-rect"/></svg>Cuadro</button>
@@ -491,8 +506,8 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
   <div class="row only-draw">
     <span class="lbl">Grosor</span>
     <div class="sizes" id="drawSizes">
-      <button class="tool size" data-size="xs" aria-label="Súper fina"><i style="width:3px;height:3px"></i>Súper fina</button>
-      <button class="tool size" data-size="0" aria-label="Fina"><i style="width:6px;height:6px"></i>Fina</button>
+      <button class="tool size" data-size="xs" aria-label="Súper fina" title="Súper fina: una línea muy finita para detalles"><i style="width:2px;height:2px"></i>Súper fina</button>
+      <button class="tool size" data-size="0" aria-label="Fina"><i style="width:5px;height:5px"></i>Fina</button>
       <button class="tool size on" data-size="1" aria-label="Mediana"><i style="width:11px;height:11px"></i>Mediana</button>
       <button class="tool size" data-size="2" aria-label="Gruesa"><i style="width:18px;height:18px"></i>Gruesa</button>
     </div>
@@ -509,12 +524,13 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
     <button class="tool has-pop" id="sizeBtn" data-pop="sizePop" aria-label="Grosor de la punta" title="Grosor de la punta: fina o gruesa"><span class="dotbox"><i style="width:13px;height:13px"></i></span><span class="sl">Mediana</span></button>
     <label class="tool" id="customWrap" title="Otro color: elige cualquier color que quieras"><span class="rainbow"></span>Otro<input type="color" id="customColor" value="#ff6f61" aria-label="Elegir otro color"></label>
   </div>
-  <div class="only-color" id="recentRow">
+  <div id="recentRow">
     <button id="moreColors" title="Más colores: 360 colores para elegir con un toque" aria-label="Más colores (360 colores)"><span class="rainbow"></span>Más colores</button>
+    <button id="pickColor" aria-pressed="false" aria-label="Copiar color: toca aquí y luego toca un color del dibujo o de la foto" title="Copiar color: toca aquí y luego toca cualquier color del dibujo o de tu foto"><svg><use href="#i-picker"/></svg><span>Copiar color</span></button>
     <span class="rlbl">Recientes</span>
     <div class="recent" id="recent" aria-label="Colores recientes"></div>
   </div>
-  <div class="palette only-color" id="palette"></div>
+  <div class="palette" id="palette"></div>
 </footer>
 
 <div class="pop" id="brushPop" role="menu" aria-label="Crayón y marcadores">
@@ -526,11 +542,20 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
     <button class="pbtn" data-brush="alcohol"><svg><use href="#i-alcohol"/></svg><div>Marcador de alcohol<small>Transparente y parejo; se oscurece al repasar</small></div></button>
   </div>
 </div>
+<div class="pop" id="markPop" role="menu" aria-label="Tipo de marcador">
+  <h4>Dibuja con marcador…</h4>
+  <div class="pgrid">
+    <button class="pbtn on" data-mark="crayon"><svg><use href="#i-marker"/></svg><div>Marcador liso<small>Color parejo, como el crayón</small></div></button>
+    <button class="pbtn" data-mark="acrylic"><svg><use href="#i-acrylic"/></svg><div>Marcador acrílico<small>Tapa todo, color fuerte y mate</small></div></button>
+    <button class="pbtn" data-mark="water"><svg><use href="#i-water"/></svg><div>Marcador de agua<small>Suave como acuarela: se nota más al repasar</small></div></button>
+    <button class="pbtn" data-mark="alcohol"><svg><use href="#i-alcohol"/></svg><div>Marcador de alcohol<small>Transparente y parejo; se oscurece al repasar</small></div></button>
+  </div>
+</div>
 <div class="pop" id="sizePop" role="menu" aria-label="Grosor de la punta">
   <h4>Grosor de la punta</h4>
   <div class="pgrid" id="colorSizes">
-    <button class="pbtn size" data-size="xs" aria-label="Súper fina"><span class="dotbox"><i style="width:4px;height:4px"></i></span>Súper fina</button>
-    <button class="pbtn size" data-size="0" aria-label="Fina"><span class="dotbox"><i style="width:7px;height:7px"></i></span>Fina</button>
+    <button class="pbtn size" data-size="xs" aria-label="Súper fina"><span class="dotbox"><i style="width:2px;height:2px"></i></span>Súper fina</button>
+    <button class="pbtn size" data-size="0" aria-label="Fina"><span class="dotbox"><i style="width:6px;height:6px"></i></span>Fina</button>
     <button class="pbtn size on" data-size="1" aria-label="Mediana"><span class="dotbox"><i style="width:13px;height:13px"></i></span>Mediana</button>
     <button class="pbtn size" data-size="2" aria-label="Gruesa"><span class="dotbox"><i style="width:22px;height:22px"></i></span>Gruesa</button>
   </div>
@@ -575,7 +600,7 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
         <button class="mbtn" id="mNews"><svg><use href="#i-sticker"/></svg>Novedades y ayuda</button>
       </div>
       <div class="menu-foot">
-        <span id="versionText">Colorear · Versión 3.1</span>
+        <span id="versionText">Colorear · Versión 3.2</span>
         <a href="privacidad.html" target="_blank" rel="noopener" id="mPrivacy">Política de privacidad</a>
       </div>
     </div>
@@ -719,13 +744,27 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
 <div id="printArea"><img id="printImg" alt="Dibujo para colorear"></div>
 <script>
 'use strict';
-/* Colorear v3.1: crea dibujos para colorear, sube fotos de tus libros y coloréalos
-   (crayón, marcadores acrílico / de agua / de alcohol, degradados y difuminar) */
-const APP_VERSION = '3.1';
+/* Colorear v3.2: crea dibujos para colorear, sube fotos de tus libros y coloréalos
+   (lápiz y marcador de colores, crayón, marcadores acrílico / de agua / de alcohol, degradados, difuminar y copiar color) */
+const APP_VERSION = '3.2';
 const PORTRAIT = [1200, 1600], LANDSCAPE = [1600, 1200];
 let W = 1200, H = 1600;                       // tamaño de la hoja (px internos); vertical u horizontal
-const DRAW_SIZES = { xs: 3, 0: 6, 1: 12, 2: 22 };      // grosor de línea (Dibujar): súper fina, fina, mediana, gruesa
-const COLOR_SIZES = { xs: 7, 0: 18, 1: 40, 2: 80 };     // grosor de la punta (Colorear)
+/* Grosores en píxeles de la hoja (1200×1600). "Súper fina" (xs) no es fija: se calcula para que se vea
+   de ~1,2 px en la pantalla con la hoja ajustada (zoom 100 %), en cualquier teléfono o tablet. */
+const THIN_CSS = 1.0;
+const DRAW_SIZES = { 0: 8, 1: 12, 2: 22 };        // lápiz y figuras (Dibujar): fina, mediana, gruesa
+const MARK_SIZES = { 0: 14, 1: 28, 2: 50 };       // marcador (Dibujar)
+const COLOR_SIZES = { 0: 14, 1: 40, 2: 80 };      // crayón y marcadores (Colorear)
+const ERASE_SIZES = { xs: 9, 0: 18, 1: 36, 2: 66 };   // borrador de líneas (Dibujar)
+function thinLW() {
+  const bw = view.bw || (paper.getBoundingClientRect().width / (view.z || 1)) || 300;
+  return clamp(THIN_CSS * W / bw, 1.5, 8);
+}
+function sizeLW(kind, size) {           // kind: 'draw' | 'mark' | 'color'
+  size = String(size);
+  if (size === 'xs') return thinLW();
+  return (kind === 'draw' ? DRAW_SIZES : kind === 'mark' ? MARK_SIZES : COLOR_SIZES)[size] || 12;
+}
 const SIZE_NAMES = { xs: 'Súper fina', 0: 'Fina', 1: 'Mediana', 2: 'Gruesa' };
 const BRUSHES = { crayon: 'Crayón', acrylic: 'Acrílico', water: 'Acuarela', alcohol: 'Alcohol' };
 const BRUSH_ICONS = { crayon: 'i-crayon', acrylic: 'i-acrylic', water: 'i-water', alcohol: 'i-alcohol' };
@@ -798,6 +837,7 @@ function sizeForImage(w, h) { return w > h ? LANDSCAPE : PORTRAIT; }
 const state = {
   mode: 'draw', drawTool: 'pen', colorTool: 'fill',
   drawSize: '1', colorSize: '1', color: '#FF3B30', brush: 'crayon',
+  drawColor: '#000000', drawBrush: 'crayon', picking: false,      // Dibujar tiene su propio color (empieza en negro)
   color2: '#FFE66D', gradType: 'linear', gradDir: 'down', gradPreset: 'mine', gradAdv: false,
   currentId: null, dirty: false, panTool: false,
 };
@@ -810,7 +850,14 @@ function layout() {
   const sw = stage.clientWidth, sh = stage.clientHeight;
   const aw = sw - pl - pr, ah = sh - pt - pb;
   if (aw <= 0 || ah <= 0) return;
-  const s = Math.min(aw / W, ah / H);
+  let s = Math.min(aw / W, ah / H);
+  // Si los botones flotantes de abajo (Añadir y zoom) taparían la parte baja de la hoja, achicarla un poco (hasta 10 %)
+  const barH = 60, spare0 = ah - H * s;
+  if (spare0 < barH) {
+    const addW = ($('#addBtn').offsetWidth || 0) + 12, zW = ($('#zoomBar').offsetWidth || 0) + 12;
+    const bx0 = pl + (aw - W * s) / 2;
+    if (bx0 < addW || bx0 + W * s > sw - zW) s = Math.max(s * 0.9, Math.min(s, (ah - barH) / H));
+  }
   const bw = Math.floor(W * s), bh = Math.floor(H * s);
   // si estaba con zoom, conservar el punto de la hoja que está en el centro
   let fx = 0.5, fy = 0.5;
@@ -819,7 +866,7 @@ function layout() {
   paper.style.width = bw + 'px'; paper.style.height = bh + 'px';
   view.bx = pl + (aw - bw) / 2;
   // centrada, pero subiendo la hoja si hace falta para que no la tapen los botones de abajo
-  const spare = ah - bh, barH = 60;
+  const spare = ah - bh;
   view.by = pt + (spare > 0 ? Math.max(0, Math.min(spare / 2, spare - barH)) : 0);
   if (view.z > 1) { view.x = sw / 2 - fx * bw * view.z; view.y = sh / 2 - fy * bh * view.z; }
   clampView(); applyView();
@@ -958,9 +1005,9 @@ function heartPath(c, cx, cy, s) {
   c.bezierCurveTo(cx + 1.0 * s, cy - 1.0 * s, cx + 1.25 * s, cy + 0.05 * s, cx, cy + 0.85 * s);
   c.closePath();
 }
-function drawShape(c, tool, a, b, lw) {
+function drawShape(c, tool, a, b, lw, color = '#000') {
   c.save();
-  c.lineWidth = lw; c.lineCap = 'round'; c.lineJoin = 'round'; c.strokeStyle = '#000';
+  c.lineWidth = lw; c.lineCap = 'round'; c.lineJoin = 'round'; c.strokeStyle = color;
   if (tool === 'line') { c.beginPath(); c.moveTo(a.x, a.y); c.lineTo(b.x, b.y); c.stroke(); }
   else if (tool === 'rect') { c.beginPath(); c.rect(Math.min(a.x, b.x), Math.min(a.y, b.y), Math.abs(b.x - a.x), Math.abs(b.y - a.y)); c.stroke(); }
   else if (tool === 'ellipse') {
@@ -989,15 +1036,22 @@ let lockTouch = false;        // tras un pellizco, no dibujar con el dedo que qu
 let spaceDown = false;
 function currentTool() { return state.mode === 'draw' ? state.drawTool : state.colorTool; }
 function strokeStyleFor(tool) {
-  if (tool === 'pen') return { layer: 'line', color: '#000', comp: 'source-over', lw: DRAW_SIZES[state.drawSize] };
-  if (tool === 'erase') return { layer: 'line', color: '#000', comp: 'destination-out', lw: DRAW_SIZES[state.drawSize] * 3 };
-  if (tool === 'crayon') return { layer: 'color', color: state.color, comp: 'source-over', lw: COLOR_SIZES[state.colorSize] };
-  if (tool === 'acrylic') return { layer: 'color', color: state.color, comp: 'source-over', lw: COLOR_SIZES[state.colorSize] * 1.1, fx: 'acrylic' };
-  // marcadores translúcidos: el trazo se pinta en una capa aparte y se mezcla con lo de abajo
-  if (tool === 'water') return { layer: 'color', color: state.color, comp: 'source-over', lw: COLOR_SIZES[state.colorSize] * 1.15, buf: 'water', alpha: 0.34 };
-  if (tool === 'alcohol') return { layer: 'color', color: state.color, comp: 'source-over', lw: COLOR_SIZES[state.colorSize], buf: 'alcohol', alpha: 0.58 };
-  if (tool === 'cerase') return { layer: 'color', color: '#FFFFFF', comp: 'source-over', lw: COLOR_SIZES[state.colorSize] };
+  if (tool === 'pen') return { layer: 'line', color: state.drawColor, comp: 'source-over', lw: sizeLW('draw', state.drawSize) };
+  if (tool === 'erase') return { layer: 'line', color: '#000', comp: 'destination-out', lw: ERASE_SIZES[state.drawSize] };
+  if (tool === 'marker') return brushStyle(state.drawBrush, 'line', state.drawColor, sizeLW('mark', state.drawSize), state.drawSize === 'xs');
+  if (isBrush(tool)) return brushStyle(tool, 'color', state.color, sizeLW('color', state.colorSize), state.colorSize === 'xs');
+  if (tool === 'cerase') return { layer: 'color', color: '#FFFFFF', comp: 'source-over', lw: sizeLW('color', state.colorSize) };
   return null;
+}
+// Crayón / marcadores. En Colorear pintan debajo de las líneas (capa de color); el marcador de Dibujar pinta en la capa del dibujo.
+// thin = "Súper fina": el grosor exacto, sin ensanchar
+function brushStyle(b, layer, color, lw, thin) {
+  const k = (f) => (thin ? lw : lw * f);
+  if (b === 'acrylic') return { layer, color, comp: 'source-over', lw: k(1.1), fx: 'acrylic' };
+  // marcadores translúcidos: el trazo se pinta en una capa aparte y se mezcla con lo de abajo
+  if (b === 'water') return { layer, color, comp: 'source-over', lw: k(1.15), buf: 'water', alpha: 0.34 };
+  if (b === 'alcohol') return { layer, color, comp: 'source-over', lw, buf: 'alcohol', alpha: 0.58 };
+  return { layer, color, comp: 'source-over', lw };
 }
 function segment(c, st, p0, p1, p2) {
   c.save();
@@ -1033,12 +1087,14 @@ function startSingle(e) {
     g = Object.assign(base, { kind: 'pan', vx: view.x, vy: view.y }); stage.classList.add('panning'); return;
   }
   if (objMode) { g = objDown(base, p); return; }
+  if (state.picking) { g = Object.assign(base, { kind: 'pick' }); return; }     // Copiar color: se copia al soltar
   const tool = currentTool();
   if (state.mode === 'color' && (tool === 'fill' || isBrush(tool) || (tool === 'grad' && gradUsesColor()))) addRecent(state.color);
+  if (state.mode === 'draw' && tool !== 'erase' && state.drawColor !== '#000000') addRecent(state.drawColor);   // el negro de siempre ya está en los colores rápidos
   if (tool === 'fill') { g = Object.assign(base, { kind: 'fill' }); return; }
   if (tool === 'grad') { g = Object.assign(base, { kind: 'grad' }); return; }
   if (tool === 'blend') {
-    g = Object.assign(base, { kind: 'blend', lw: COLOR_SIZES[state.colorSize] * 1.2, box: { x1: Infinity, y1: Infinity, x2: -Infinity, y2: -Infinity } });
+    g = Object.assign(base, { kind: 'blend', lw: sizeLW('color', state.colorSize) * 1.2, box: { x1: Infinity, y1: Infinity, x2: -Infinity, y2: -Infinity } });
     blendStart(g, p);
     return;
   }
@@ -1065,6 +1121,7 @@ function onMove(e) {
   }
   if (g.kind === 'obj') { objMove(g, e); return; }
   if (g.kind === 'fill') return;
+  if (g.kind === 'pick') { g.last = toDoc(e); return; }
   if (g.kind === 'grad') {
     g.last = toDoc(e);
     pctx.clearRect(0, 0, W, H);
@@ -1089,7 +1146,7 @@ function onMove(e) {
   }
   if (g.kind === 'shape') {
     pctx.clearRect(0, 0, W, H);
-    drawShape(pctx, g.tool, g.start, g.last, DRAW_SIZES[state.drawSize]);
+    drawShape(pctx, g.tool, g.start, g.last, sizeLW('draw', state.drawSize), state.drawColor);
   }
 }
 function onUp(e) {
@@ -1107,7 +1164,9 @@ function endSingle(cancelled) {
   const cur = g; g = null;
   stage.classList.remove('panning');
   if (!cur) return;
-  if (cur.kind === 'fill') {
+  if (cur.kind === 'pick') {
+    if (!cancelled) pickColorAt(cur.travel < 14 ? cur.start : cur.last);
+  } else if (cur.kind === 'fill') {
     if (!cancelled && cur.travel < 14) floodFill(cur.start.x, cur.start.y, state.color);
   } else if (cur.kind === 'grad') {
     pctx.clearRect(0, 0, W, H);
@@ -1126,8 +1185,8 @@ function endSingle(cancelled) {
       if (cur.tool === 'star' || cur.tool === 'heart') b = { x: cur.start.x + 120, y: cur.start.y };  // un toque pone un sello mediano
       else return;                                // un toque sin arrastrar no dibuja líneas/círculos/cuadros
     }
-    const lw = DRAW_SIZES[state.drawSize];
-    drawShape(layers.line.ctx, cur.tool, cur.start, b, lw);
+    const lw = sizeLW('draw', state.drawSize);
+    drawShape(layers.line.ctx, cur.tool, cur.start, b, lw, state.drawColor);
     commit([capturePart('line', shapeBox(cur.tool, cur.start, b, lw))]);
   } else if (cur.kind === 'obj') {
     objUp(cur, cancelled);
@@ -1222,6 +1281,7 @@ $('#zoomIn').onclick = () => zoomBy(1.5);
 $('#zoomOut').onclick = () => zoomBy(1 / 1.5);
 $('#zoomFit').onclick = zoomFit;
 function setPanTool(on) {
+  if (on) setPicking(false);
   state.panTool = on;
   $('#toolPan').classList.toggle('on', on);
   stage.classList.toggle('pan-tool', on || spaceDown);
@@ -1264,7 +1324,7 @@ function strokeSeg(gg, p0, p1, p2) {
 function bufShow(st, x1, y1, x2, y2) {
   const blur = st.buf === 'water' ? Math.max(1, st.lw * 0.08) : 0;
   const r = clampRect({ x: x1 - blur * 2, y: y1 - blur * 2, w: x2 - x1 + blur * 4, h: y2 - y1 + blur * 4 }); if (!r) return;
-  const L = layers.color, c = L.ctx;
+  const L = layers[st.layer], c = L.ctx;
   c.save();
   c.beginPath(); c.rect(r.x, r.y, r.w, r.h); c.clip();
   c.globalCompositeOperation = 'copy'; c.drawImage(L.bak, r.x, r.y, r.w, r.h, r.x, r.y, r.w, r.h);
@@ -1281,13 +1341,13 @@ function strokeFinish(gg) {
   const st = gg.st;
   const r = clampRect(rectOf(gg.box)); if (!r) return;
   if (st.fx === 'acrylic') {
-    const c = layers.color.ctx, t = mkCanvas(r.w, r.h), tc = t.getContext('2d');
+    const L = layers[st.layer], c = L.ctx, t = mkCanvas(r.w, r.h), tc = t.getContext('2d');
     // máscara del trazo = diferencia con lo de antes; se le da un grano mate muy sutil
     tc.fillStyle = tc.createPattern(grain(), 'repeat'); tc.translate(-r.x % 128, -r.y % 128); tc.fillRect(r.x % 128, r.y % 128, r.w, r.h); tc.setTransform(1, 0, 0, 1, 0, 0);
-    const cur = c.getImageData(r.x, r.y, r.w, r.h), old = layers.color.bctx.getImageData(r.x, r.y, r.w, r.h), gr = tc.getImageData(0, 0, r.w, r.h).data;
+    const cur = c.getImageData(r.x, r.y, r.w, r.h), old = L.bctx.getImageData(r.x, r.y, r.w, r.h), gr = tc.getImageData(0, 0, r.w, r.h).data;
     const [cr, cg, cb] = hexToRgb(st.color), d = cur.data, o = old.data;
     for (let i = 0; i < d.length; i += 4) {
-      if (d[i] === o[i] && d[i + 1] === o[i + 1] && d[i + 2] === o[i + 2]) continue;
+      if (d[i] === o[i] && d[i + 1] === o[i + 1] && d[i + 2] === o[i + 2] && d[i + 3] === o[i + 3]) continue;
       if (Math.abs(d[i] - cr) > 3 || Math.abs(d[i + 1] - cg) > 3 || Math.abs(d[i + 2] - cb) > 3) continue;  // bordes suavizados: se dejan
       const k = 1 + (gr[i + 3] / 255 - 0.5) * 0.06;      // ±3 % de luz: mate, sin brillo
       d[i] = clamp(Math.round(cr * k), 0, 255); d[i + 1] = clamp(Math.round(cg * k), 0, 255); d[i + 2] = clamp(Math.round(cb * k), 0, 255);
@@ -1316,10 +1376,10 @@ function strokeFinish(gg) {
   bc.globalCompositeOperation = 'destination-out'; bc.globalAlpha = 0.28;
   bc.fillStyle = bc.createPattern(grain(), 'repeat'); bc.translate(-(R.x % 128), -(R.y % 128)); bc.fillRect(R.x % 128, R.y % 128, R.w, R.h);
   bc.setTransform(1, 0, 0, 1, 0, 0);
-  const c = layers.color.ctx;
+  const L = layers[st.layer], c = L.ctx;
   c.save();
   c.beginPath(); c.rect(R.x, R.y, R.w, R.h); c.clip();          // 'copy' borraría todo lo que queda fuera
-  c.globalCompositeOperation = 'copy'; c.drawImage(layers.color.bak, R.x, R.y, R.w, R.h, R.x, R.y, R.w, R.h);
+  c.globalCompositeOperation = 'copy'; c.drawImage(L.bak, R.x, R.y, R.w, R.h, R.x, R.y, R.w, R.h);
   c.globalCompositeOperation = 'source-over';
   c.globalAlpha = st.alpha; c.drawImage(body, R.x, R.y);
   c.globalCompositeOperation = 'multiply'; c.globalAlpha = 0.9; c.drawImage(edge, R.x, R.y);
@@ -2096,23 +2156,46 @@ function loadTemplate(id) {
 function setMode(m) {
   cancelGesture(); hidePop();
   if (m !== state.mode) flattenObjs();
+  if (m !== state.mode) setPicking(false);
   state.mode = m;
   document.body.classList.toggle('mode-draw', m === 'draw');
   document.body.classList.toggle('mode-color', m === 'color');
   $('#tabDraw').classList.toggle('on', m === 'draw');
   $('#tabColor').classList.toggle('on', m === 'color');
+  refreshColorUI();
   updateCursor();
   layout();
   requestAnimationFrame(layout);
 }
-function updateCursor() { paper.className = 'c-' + (objMode ? 'obj' : currentTool()); }
+function updateCursor() { paper.className = 'c-' + (objMode ? 'obj' : state.picking ? 'pick' : currentTool()); }
 $('#tabDraw').onclick = () => { flattenObjs(); setMode('draw'); };
 $('#tabColor').onclick = () => { flattenObjs(); setMode('color'); };
-function pickTool() { flattenObjs(); if (state.panTool) setPanTool(false); }
+function pickTool() { flattenObjs(); if (state.panTool) setPanTool(false); setPicking(false); }
 $$('#drawTools .tool').forEach((b) => b.onclick = () => {
+  if (b.dataset.pop && b.classList.contains('on') && !state.picking) {     // Marcador: tocar otra vez abre / cierra los tipos
+    if (openPop && openPop.anchor === b) hidePop(); else showPop(b.dataset.pop, b);
+    return;
+  }
   pickTool();
   state.drawTool = b.dataset.tool;
   $$('#drawTools .tool').forEach((x) => x.classList.toggle('on', x === b)); updateCursor();
+  if (b.id === 'markBtn' && !state.markSeen) { state.markSeen = true; toast('Toca otra vez “Marcador” para elegir: liso, acrílico, de agua o de alcohol', 3200); }
+});
+// Tipo de marcador de Dibujar (liso, acrílico, de agua, de alcohol)
+const MARK_NAMES = { crayon: 'liso', acrylic: 'acrílico', water: 'de agua', alcohol: 'de alcohol' };
+function setDrawBrush(b) {
+  if (!(b in MARK_NAMES)) b = 'crayon';
+  state.drawBrush = b;
+  const btn = $('#markBtn');
+  btn.querySelector('use').setAttribute('href', '#' + (b === 'crayon' ? 'i-marker' : BRUSH_ICONS[b]));
+  btn.setAttribute('aria-label', 'Marcador ' + MARK_NAMES[b] + ' (toca otra vez para cambiar el tipo)');
+  $$('#markPop [data-mark]').forEach((x) => x.classList.toggle('on', x.dataset.mark === b));
+}
+$$('#markPop [data-mark]').forEach((b) => b.onclick = () => {
+  pickTool(); setDrawBrush(b.dataset.mark); state.markSeen = true;
+  state.drawTool = 'marker';
+  $$('#drawTools .tool').forEach((x) => x.classList.toggle('on', x.id === 'markBtn')); updateCursor();
+  hidePop(); toast('Marcador ' + MARK_NAMES[state.drawBrush] + ' ✓');
 });
 const isBrush = (t) => t in BRUSHES;
 function setColorTool(t) {
@@ -2232,12 +2315,24 @@ $('#gMore').onclick = () => {
 $('#gSwap').onclick = () => { const c = state.color; state.gradPreset = 'custom'; setColor(state.color2); state.color2 = c; updateGradUI(); };
 $$('#gType [data-gt]').forEach((b) => b.onclick = () => { state.gradType = b.dataset.gt; updateGradUI(); });
 $$('#gDir [data-gd]').forEach((b) => b.onclick = () => { state.gradDir = b.dataset.gd; updateGradUI(); });
+// Cada modo recuerda su color: Dibujar (lápiz, marcador y figuras; empieza en negro) y Colorear
+const curColor = () => (state.mode === 'draw' ? state.drawColor : state.color);
+function refreshColorUI() {
+  const cur = curColor();
+  // "Negro" de los colores rápidos: negro puro en Dibujar (como el lápiz de siempre), #333333 en Colorear
+  const blk = $('#palette .sw[data-black]');
+  if (blk) { const c = state.mode === 'draw' ? '#000000' : '#333333'; blk.dataset.c = c; blk.style.background = c; }
+  $$('#palette .sw, .recent .sw, #cList .sw').forEach((s) => s.classList.toggle('on', s.dataset.c === cur));
+  const tint = (c) => (c === '#FFFFFF' ? '' : c);
+  $$('#colorTools [data-ctool="fill"] svg, #brushBtn svg').forEach((s) => { s.style.color = tint(state.color); });
+  $$('#drawTools [data-tool="pen"] svg, #markBtn svg').forEach((s) => { s.style.color = tint(state.drawColor); });
+}
 function setColor(hex) {
-  state.color = hex.toUpperCase();
-  $$('#palette .sw, .recent .sw, #cList .sw').forEach((s) => s.classList.toggle('on', s.dataset.c === state.color));
+  hex = String(hex).toUpperCase();
+  if (state.mode === 'draw') { state.drawColor = hex; refreshColorUI(); return; }
+  state.color = hex;
+  refreshColorUI();
   if (state.colorTool === 'grad' && !gradUsesColor()) state.gradPreset = 'mine';   // eligió un color con el degradado: usar "Mi color"
-  const tint = state.color === '#FFFFFF' ? '' : state.color;
-  $$('#colorTools [data-ctool="fill"] svg, #brushBtn svg').forEach((s) => { s.style.color = tint; });
   if (state.colorTool === 'cerase') setColorTool('fill');
   else if (state.colorTool === 'blend') setColorTool(state.brush);    // eligió un color: quiere pintar
   updateGradUI();
@@ -2247,7 +2342,8 @@ function setColor(hex) {
   for (const c of PALETTE) {
     const b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.dataset.c = c;
     b.setAttribute('aria-label', 'Color ' + COLOR_NAME[c]); b.title = COLOR_NAME[c];
-    b.onclick = () => setColor(c); p.append(b);
+    if (c === '#333333') b.dataset.black = '1';
+    b.onclick = () => setColor(b.dataset.c); p.append(b);
   }
 })();
 $('#customColor').addEventListener('input', (e) => setColor(e.target.value));
@@ -2268,7 +2364,7 @@ function renderRecent() {
     box.textContent = '';
     if (!recentColors.length) { const n = document.createElement('span'); n.className = 'none'; n.textContent = 'Aquí verás tus últimos colores'; box.append(n); continue; }
     for (const c of recentColors) {
-      const b = document.createElement('button'); b.className = 'sw' + (c === state.color ? ' on' : ''); b.style.background = c; b.dataset.c = c;
+      const b = document.createElement('button'); b.className = 'sw' + (c === curColor() ? ' on' : ''); b.style.background = c; b.dataset.c = c;
       const nm = COLOR_NAME[c] || 'Color ' + c; b.title = nm + ' (reciente)'; b.setAttribute('aria-label', 'Color reciente: ' + nm);
       b.onclick = () => { setColor(c); if (box.id === 'cRecent') closeSheet('#colorsSheet'); };
       box.append(b);
@@ -2278,8 +2374,7 @@ function renderRecent() {
 /* ---------- Más colores: 360 colores por familias ---------- */
 function pickSheetColor(c) {
   setColor(c); addRecent(c); closeSheet('#colorsSheet');
-  if (state.mode !== 'color') setMode('color');
-  toast((COLOR_NAME[c] || 'Color') + ' ✓ Toca el dibujo para pintar');
+  toast((COLOR_NAME[c] || 'Color') + (state.mode === 'draw' ? ' ✓ Toca la hoja para dibujar' : ' ✓ Toca el dibujo para pintar'), 2400, c);
 }
 (function buildColorSheet() {
   const tabs = $('#cTabs'), list = $('#cList');
@@ -2328,8 +2423,36 @@ $('#moreColors').onclick = () => {
   else { sc.scrollTop = 0; setFamTab('recientes'); }
 };
 $('#customColor2').addEventListener('input', (e) => setColor(e.target.value));
-$('#customColor2').addEventListener('change', (e) => { setColor(e.target.value); addRecent(e.target.value); closeSheet('#colorsSheet'); toast('Color elegido ✓ Toca el dibujo para pintar'); });
+$('#customColor2').addEventListener('change', (e) => { setColor(e.target.value); addRecent(e.target.value); closeSheet('#colorsSheet'); toast(state.mode === 'draw' ? 'Color elegido ✓ Toca la hoja para dibujar' : 'Color elegido ✓ Toca el dibujo para pintar', 2400, e.target.value); });
 renderRecent();
+/* ---------- Copiar color (gotero): toca el botón y luego cualquier color del dibujo o de la foto ---------- */
+function setPicking(on) {
+  state.picking = !!on;
+  const b = $('#pickColor');
+  if (b) { b.classList.toggle('on', state.picking); b.setAttribute('aria-pressed', String(state.picking)); }
+  updateCursor();
+}
+// Color que se ve en ese punto: la capa del dibujo encima de la de color
+function colorAt(x, y) {
+  x = clamp(Math.floor(x), 0, W - 1); y = clamp(Math.floor(y), 0, H - 1);
+  const c = layers.color.ctx.getImageData(x, y, 1, 1).data, l = layers.line.ctx.getImageData(x, y, 1, 1).data;
+  const a = l[3] / 255, ca = c[3] / 255;
+  const h = (i) => Math.round(l[i] * a + (c[i] * ca + 255 * (1 - ca)) * (1 - a)).toString(16).padStart(2, '0');
+  return ('#' + h(0) + h(1) + h(2)).toUpperCase();
+}
+function pickColorAt(p) {
+  if (!p || p.x < 0 || p.y < 0 || p.x >= W || p.y >= H) { toast('Toca dentro de la hoja para copiar un color'); return null; }
+  const hex = colorAt(p.x, p.y);
+  setPicking(false);
+  setColor(hex); addRecent(hex);
+  toast('✓ Color copiado', 2600, hex);
+  return hex;
+}
+$('#pickColor').onclick = () => {
+  if (state.picking) { setPicking(false); toast('Copiar color cancelado'); return; }
+  pickTool(); hidePop(); setPicking(true);
+  toast('Toca el color que quieres copiar 👆', 3000);
+};
 $('#btnUndo').onclick = undo;
 $('#btnRedo').onclick = redo;
 document.addEventListener('keydown', (e) => {
@@ -2374,7 +2497,15 @@ function endConfirm(v) { closeSheet('#confirmDlg'); if (confirmResolve) { const 
 $('#confirmYes').onclick = () => endConfirm(true);
 $('#confirmNo').onclick = () => endConfirm(false);
 let toastT = 0;
-function toast(msg, ms = 2400) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), ms); }
+function toast(msg, ms = 2400, swatch) {
+  const t = $('#toast'); t.textContent = '';
+  if (swatch) { const i = document.createElement('i'); i.className = 'tsw'; i.style.background = swatch; t.append(i); }
+  t.append(msg);
+  // encima de la barra de herramientas (en Dibujar es más alta), para no tapar los botones
+  const f = document.querySelector('footer.tools').getBoundingClientRect();
+  t.style.bottom = f.top > innerHeight * 0.4 && f.bottom >= innerHeight - 2 ? Math.round(innerHeight - f.top + 12) + 'px' : '';
+  t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), ms);
+}
 
 $('#btnMenu').onclick = () => openSheet('#menuSheet');
 $('#mPhoto').onclick = () => { closeSheet('#menuSheet'); openSheet('#photoSheet'); };
@@ -3374,12 +3505,17 @@ function showHint() {
   if (isStandalone()) html = '<p>¡La app ya está instalada! Ábrela desde el ícono en tu pantalla de inicio. Funciona sin internet.</p>';
   else if (isIOS()) html = '<p><b>iPhone / iPad (Safari):</b> toca <span class="kbd">Compartir</span> (el cuadrito con la flecha ↑) y luego <span class="kbd">Agregar a pantalla de inicio</span>.</p>';
   else html = '<p><b>Android (Chrome):</b> toca el menú <span class="kbd">⋮</span> y luego <span class="kbd">Instalar app</span> o <span class="kbd">Agregar a pantalla de inicio</span></p><p><b>iPhone (Safari):</b> <span class="kbd">Compartir</span> → <span class="kbd">Agregar a pantalla de inicio</span>.</p>';
-  html += '<p style="color:var(--muted);font-size:13px">Consejo: en el menú ☰ encontrarás <b>Plantillas</b> y <b>Subir foto</b> para colorear páginas de tus libros. En <b>Colorear</b> tienes crayón, marcadores (acrílico, de agua y de alcohol), degradados listos, difuminar y <b>Más colores</b> (360 colores).</p>';
+  html += '<p style="color:var(--muted);font-size:13px">Consejo: en el menú ☰ encontrarás <b>Plantillas</b> y <b>Subir foto</b> para colorear páginas de tus libros. En <b>Colorear</b> tienes crayón, marcadores (acrílico, de agua y de alcohol), degradados listos, difuminar y <b>Más colores</b> (360 colores). Con <b>Copiar color</b> tomas cualquier color del dibujo o de una foto.</p>';
   $('#hintBody').innerHTML = html;
   $('#hintInstall').style.display = deferredPrompt ? '' : 'none';
   $('#hint').classList.add('show');
 }
-const NEWS_HTML = '<p><b>Nuevo en la versión 3.1</b> (en <b>Colorear</b>):</p>' +
+const NEWS_HTML = '<p><b>Nuevo en la versión 3.2</b>:</p>' +
+  '<p>🖊️ <b>Marcador en Dibujar</b>, al lado del <b>Lápiz</b>. Toca <span class="kbd">Marcador</span> otra vez para elegirlo <b>liso</b>, <b>acrílico</b>, <b>de agua</b> o <b>de alcohol</b>.</p>' +
+  '<p>🎨 <b>Todos los colores en Dibujar</b>: el lápiz, el marcador y las figuras usan el color que elijas: colores rápidos, <span class="kbd">Más colores</span> (360), tus <b>Recientes</b> o cualquier otro color.</p>' +
+  '<p>💧 <b>Copiar color</b> (gotero): toca <span class="kbd">Copiar color</span> y luego toca cualquier parte del dibujo o de tu foto. Ese color queda elegido y se guarda en <b>Recientes</b>.</p>' +
+  '<p>✏️ <b>Súper fina</b> ahora es una línea finita de verdad, para los detalles (lápiz, marcador y crayón).</p>' +
+  '<p style="margin-top:12px"><b>En la versión 3.1</b> (en <b>Colorear</b>):</p>' +
   '<p>🎨 <b>360 colores</b> listos para tocar: abre <span class="kbd">Más colores</span> (debajo de las herramientas) y elige por familias: rojos, verdes, azules, tonos de piel, pastel, neón… Cada fila va de claro a oscuro.</p>' +
   '<p>🕘 <b>Colores recientes</b>: los últimos que usaste quedan a la mano, al lado de <b>Más colores</b>.</p>' +
   '<p>🌈 <b>Degradado más fácil</b>: elige uno listo (<b>Atardecer</b>, <b>Mar</b>, <b>Arcoíris</b>, <b>Bosque</b>…) o <b>Mi color</b>, y toca una zona. ¡Así de fácil! El segundo color, circular y la dirección siguen en <b>Más opciones</b>.</p>' +
@@ -3458,7 +3594,7 @@ if ('serviceWorker' in navigator) {
 
 /* ---------- inicio ---------- */
 buildTemplateGrid();
-setColor(state.color);
+refreshColorUI(); updateGradUI();
 setAddTab('stk');
 layout();
 updateUndoButtons();
@@ -3475,7 +3611,7 @@ restore().then(async (restored) => {
 window.__colorear = {
   layers, state, view, floodFill, loadTemplate, undo, redo, saveToGallery, openGallery, exportPng, buildExport, shareDrawing, undoStack, redoStack, tx,
   processLineArt, importImageFile, readPngText, addObject, flattenObjs, zoomAt, zoomFit, adj,
-  gradientFill, regionMask, setColorTool, setColorSize, setColor, showNews, templates: TEMPLATES, COLOR_FAMILIES, ALL_COLORS, GRAD_PRESETS, gradStops, lighterOf,
+  gradientFill, regionMask, setColorTool, setColorSize, setColor, showNews, setMode, setDrawBrush, setPicking, colorAt, pickColorAt, thinLW, sizeLW, templates: TEMPLATES, COLOR_FAMILIES, ALL_COLORS, GRAD_PRESETS, gradStops, lighterOf,
   get recentColors() { return recentColors.slice(); },
   get W() { return W; }, get H() { return H; }, get objs() { return objs; }, get objMode() { return objMode; }, version: APP_VERSION,
 };
