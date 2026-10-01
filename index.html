@@ -82,7 +82,7 @@ header.top{
 #paper canvas{position:absolute;left:0;top:0;width:100%;height:100%;touch-action:none}
 #paper.c-pen,#paper.c-marker,#paper.c-line,#paper.c-ellipse,#paper.c-rect,#paper.c-star,#paper.c-heart{cursor:crosshair}
 #paper.c-fill,#paper.c-grad{cursor:cell}
-#paper.c-crayon,#paper.c-acrylic,#paper.c-water,#paper.c-alcohol,#paper.c-cerase,#paper.c-blend{cursor:crosshair}
+#paper.c-crayon,#paper.c-acrylic,#paper.c-water,#paper.c-alcohol,#paper.c-cerase,#paper.c-blend,#paper.c-blender0,#paper.c-cpencil,#paper.c-gel,#paper.c-agrad{cursor:crosshair}
 #paper.c-obj{cursor:move}
 #paper.c-pick{cursor:copy}
 #stage.pan-tool #paper,#stage.panning #paper{cursor:inherit}
@@ -589,6 +589,56 @@ body.ui-hidden.obj-mode #miniBar{display:none}
 /* grosor "Detalle": en pantallas angostas los 5 grosores caben junto a Limpiar */
 @media (max-width:430px){ #drawSizes .size,#colorSizes .size{flex:0 0 46px;width:46px;min-width:46px;font-size:10px;letter-spacing:-.3px} }
 @media (max-width:340px){ #drawSizes .size,#colorSizes .size{flex:0 0 43px;width:43px;min-width:43px;font-size:9.5px} }
+/* 3.6: lápices de colores, gel, Mezclador 0 y degradado avanzado */
+.row.art{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;overflow:visible}
+#drawArt.row.art{grid-template-columns:repeat(2,minmax(0,1fr))}
+.row.art .tool{min-width:0;height:auto;min-height:58px;padding:5px 4px;font-size:11px;line-height:1.12;text-align:center}
+.row.art .tool span{display:block;max-width:100%;overflow-wrap:break-word}
+.pop .gtoadv{display:flex;align-items:center;justify-content:center;gap:8px;padding:4px 10px;line-height:1.2}
+.pop .gtoadv svg{width:22px;height:22px;flex:0 0 auto}
+#agradPop,#gelPop{width:340px;overflow-y:auto;overscroll-behavior:contain}
+.aghead{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.aghead h4{margin:2px 4px 4px}
+#agBasic{flex:0 0 auto;display:flex;align-items:center;gap:6px;border:0;border-radius:12px;background:#f1eaf7;min-height:40px;padding:0 10px 0 6px;font-weight:700;font-size:13px;color:var(--accent2);white-space:nowrap}
+#agBasic .gswatch{width:24px;height:20px;border-radius:6px}
+.agbar{position:relative;height:46px;margin:2px 17px 0;touch-action:none;cursor:copy}
+.agtrack{position:absolute;left:-4px;right:-4px;top:10px;height:26px;border-radius:13px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
+.agh{position:absolute;top:0;width:34px;height:46px;margin-left:-17px;border:0;padding:0;background:transparent;touch-action:none;cursor:grab}
+.agh i{display:block;width:26px;height:26px;margin:10px auto 0;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1.5px rgba(0,0,0,.5),0 2px 5px rgba(0,0,0,.3)}
+.agh.on i{box-shadow:0 0 0 3px var(--accent2),0 2px 6px rgba(0,0,0,.35)}
+.agh.on::after{content:"";position:absolute;left:50%;top:-3px;margin-left:-6px;border:6px solid transparent;border-top-color:var(--accent2)}
+.agrow{display:flex;align-items:center;gap:6px;margin-top:6px;min-width:0}
+.agrow button{flex:0 0 auto;border:0;border-radius:12px;background:#f1eaf7;min-height:42px;padding:0 10px;font-weight:700;font-size:13.5px;color:var(--ink)}
+.agrow button:disabled{opacity:.4}
+.agcur{flex:1 1 auto;display:flex;align-items:center;justify-content:flex-end;gap:6px;min-width:0;font-size:12.5px;font-weight:700;color:var(--muted);text-align:right;line-height:1.15}
+.agcur i{flex:0 0 auto;width:28px;height:28px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)}
+.agrec .rlbl{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap}
+.agrec .recent{padding:4px 2px}
+.ag2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:6px}
+.ag2 button{display:flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:12px;background:#f1eaf7;min-height:42px;padding:0 6px;font-weight:800;font-size:13px;color:var(--accent2);min-width:0;line-height:1.1}
+.ag2 .rainbow{flex:0 0 auto;width:22px;height:22px;border-radius:50%;background:conic-gradient(#ff3b30,#ff9500,#ffcc00,#34c759,#00c7be,#007aff,#5856d6,#af52de,#ff2d92,#ff3b30)}
+.agop{display:grid;grid-template-columns:minmax(0,1fr) 48px;align-items:center;column-gap:6px;margin:8px 4px 0;font-size:12.5px;font-weight:700;color:var(--muted)}
+.agop span{grid-column:1 / -1}
+.agop input{min-width:0;height:32px;margin:0;accent-color:var(--accent2)}
+.agop b{text-align:right;color:var(--ink)}
+.pop .aglbl{margin:10px 4px 4px;font-size:12px;font-weight:800;color:var(--muted)}
+.agchips{display:grid;gap:6px}
+.agchips.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.agchips.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.agchips button{min-width:0;min-height:42px;border:0;border-radius:12px;background:#f1eaf7;font-weight:700;font-size:13px;line-height:1.15;padding:4px 5px;color:var(--ink);overflow-wrap:break-word}
+.agchips button.on{background:var(--sel);color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent)}
+.agchips button:disabled{opacity:.35}
+.agpre{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:5px}
+.agpre button{height:30px;min-width:0;border:0;border-radius:8px;padding:0;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+.agpre button:active,.agchips button:active,.agrow button:active,.ag2 button:active{transform:scale(.96)}
+.pop .pbtn .gk{width:28px;height:28px;border-radius:50%;flex:0 0 auto;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
+.gk-normal{background:radial-gradient(circle at 35% 30%,#fff 0 12%,#ff6f9a 30%,#c2185b 100%)}
+.gk-white{background:radial-gradient(circle at 50% 50%,#fff 0 34%,#2b2b3a 38%)}
+.gk-metal{background:linear-gradient(135deg,#8a6d1d,#f8e27a 38%,#b8912f 55%,#fff6c8 70%,#9c7a22)}
+.gk-glitter{background:radial-gradient(circle at 30% 30%,#fff 0 7%,transparent 9%),radial-gradient(circle at 68% 42%,#fff 0 6%,transparent 8%),radial-gradient(circle at 45% 72%,#fff 0 6%,transparent 8%),linear-gradient(135deg,#7b4dff,#d94cff)}
+.gelm{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.gelm button{min-width:0;min-height:42px;border:0;border-radius:12px;padding:3px;font-weight:800;font-size:12px;line-height:1.1;color:#2d2010;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18);overflow-wrap:break-word}
+.gelm button.on{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--accent2)}
 @media print{
   @page{size:auto;margin:10mm}
   html,body{height:auto;overflow:visible;background:#fff}
@@ -656,6 +706,10 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <symbol id="i-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M14 4h6v6M20 4l-6.5 6.5M10 20H4v-6M4 20l6.5-6.5"/></symbol>
     <symbol id="i-shrink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M20 10h-6V4M14 10l6.5-6.5M4 14h6v6M10 14l-6.5 6.5"/></symbol>
     <symbol id="i-grip" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.8"/><circle cx="15" cy="6" r="1.8"/><circle cx="9" cy="12" r="1.8"/><circle cx="15" cy="12" r="1.8"/><circle cx="9" cy="18" r="1.8"/><circle cx="15" cy="18" r="1.8"/></symbol>
+    <symbol id="i-cpencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M5.2 15.6L15.8 5l3.2 3.2L8.4 18.8z"/><path d="M5.2 15.6L3.6 20.4l4.8-1.6"/><path d="M3.6 20.4l1.9-.6-1.3-1.3z" fill="currentColor"/><path d="M13.6 7.2l3.2 3.2"/><path d="M14 21l1.2-.6M16.6 20.4l1.4-.5M19.4 19.8l1.2-.4" stroke-width="1.6"/></symbol>
+    <symbol id="i-gel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M7.5 16.5L16.3 7.7l2.4 2.4-8.8 8.8z"/><path d="M16.3 7.7l1.6-1.6a1.7 1.7 0 012.4 2.4l-1.6 1.6"/><path d="M7.5 16.5l-1.6 3.2 3.2-1.6"/><circle cx="4.6" cy="20.3" r="1.3" fill="currentColor"/><path d="M10.2 14.6l3.6-3.6" stroke-width="1.2" stroke-opacity=".55"/><path d="M5 5.5v3M3.5 7h3" stroke-width="1.6"/></symbol>
+    <symbol id="i-blender0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M8 16l-3 3.5M11 13l7.5-7.5 2 2L13 15z"/><path d="M11 13l-2 1-1 2 2 0 1-1 2-2"/><ellipse cx="6.5" cy="7.5" rx="2.9" ry="4"/></symbol>
+    <symbol id="i-agrad" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><rect x="3" y="3.5" width="18" height="17" rx="3"/><path d="M7 16.5l10-9" stroke-dasharray="1.6 2.4"/><circle cx="7" cy="16.5" r="2.3" fill="currentColor"/><circle cx="17" cy="7.5" r="2.3"/><circle cx="12" cy="12" r="1.5" fill="currentColor" fill-opacity=".5"/></symbol>
   </defs>
 </svg>
 
@@ -733,12 +787,21 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <button class="tool" data-tool="heart" title="Corazón: toca o arrastra"><svg><use href="#i-heart"/></svg>Corazón</button>
     <button class="tool" data-tool="erase" title="Borrador de líneas"><svg><use href="#i-eraser"/></svg>Borrador</button>
   </div>
+  <div class="row only-draw art" id="drawArt" aria-label="Más herramientas de arte">
+    <button class="tool" data-tool="cpencil" title="Lápices de colores: con textura de papel; repasa para dar más color y mezclar"><svg><use href="#i-cpencil"/></svg><span>Lápices de colores</span></button>
+    <button class="tool has-pop" data-tool="gel" data-pop="gelPop" title="Bolígrafo de gel: tinta opaca y brillante. Toca otra vez para elegir normal, blanco, metálico o brillantina" aria-label="Bolígrafo de gel (toca otra vez para elegir el tipo)"><svg><use href="#i-gel"/></svg><span class="gl">Gel</span></button>
+  </div>
   <div class="row only-color" id="colorTools">
     <button class="tool on" data-ctool="fill" title="Bote: toca una zona para rellenarla de color" aria-label="Bote de pintura"><svg><use href="#i-fill"/></svg>Bote</button>
     <button class="tool has-pop" id="brushBtn" data-ctool="crayon" data-pop="brushPop" aria-label="Crayón y marcadores" title="Pinta con el dedo. Toca otra vez para elegir crayón o marcador"><svg><use href="#i-crayon"/></svg><span class="bl">Crayón</span></button>
     <button class="tool has-pop" id="gradBtn" data-ctool="grad" data-pop="gradPop" aria-label="Degradado" title="Degradado: toca una zona y se pinta con colores que se mezclan"><span class="gswatch"></span>Degradado</button>
     <button class="tool" data-ctool="blend" aria-label="Difuminar" title="Difuminar: pasa el dedo para mezclar los colores"><svg><use href="#i-blend"/></svg>Difuminar</button>
     <button class="tool" data-ctool="cerase" title="Borrar color (las líneas no se borran)" aria-label="Borrar color"><svg><use href="#i-eraser"/></svg><span data-i18n="tool.cerase.short">Borrar</span></button>
+  </div>
+  <div class="row only-color art" id="colorArt" aria-label="Más herramientas de arte">
+    <button class="tool" data-ctool="cpencil" title="Lápices de colores: con textura de papel; repasa para dar más color y mezclar"><svg><use href="#i-cpencil"/></svg><span>Lápices de colores</span></button>
+    <button class="tool has-pop" data-ctool="gel" data-pop="gelPop" title="Bolígrafo de gel: tinta opaca y brillante. Toca otra vez para elegir normal, blanco, metálico o brillantina" aria-label="Bolígrafo de gel (toca otra vez para elegir el tipo)"><svg><use href="#i-gel"/></svg><span class="gl">Gel</span></button>
+    <button class="tool has-pop" data-ctool="agrad" data-pop="agradPop" id="agradBtn" title="Degradado avanzado: arrastra donde quieras, con varios colores, opacidad y mezcla" aria-label="Degradado avanzado"><svg><use href="#i-agrad"/></svg><span>Degradado avanzado</span></button>
   </div>
   </div>
   <div class="grp" data-grp="colors">
@@ -789,6 +852,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <button class="pbtn" data-brush="acrylic"><svg><use href="#i-acrylic"/></svg><div>Marcador acrílico<small>Tapa todo, color fuerte y mate</small></div></button>
     <button class="pbtn" data-brush="water"><svg><use href="#i-water"/></svg><div>Marcador de agua<small>Acuarela suave: se nota más al repasar</small></div></button>
     <button class="pbtn" data-brush="alcohol"><svg><use href="#i-alcohol"/></svg><div>Marcador de alcohol<small>Transparente y parejo; se oscurece al repasar</small></div></button>
+    <button class="pbtn" data-brush="blender0"><svg><use href="#i-blender0"/></svg><div>Mezclador 0<small>Sin color: mezcla, suaviza bordes y aclara un poco</small></div></button>
   </div>
 </div>
 <div class="pop" id="markPop" role="menu" aria-label="Tipo de marcador">
@@ -798,6 +862,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <button class="pbtn" data-mark="acrylic"><svg><use href="#i-acrylic"/></svg><div>Marcador acrílico<small>Tapa todo, color fuerte y mate</small></div></button>
     <button class="pbtn" data-mark="water"><svg><use href="#i-water"/></svg><div>Marcador de agua<small>Suave como acuarela: se nota más al repasar</small></div></button>
     <button class="pbtn" data-mark="alcohol"><svg><use href="#i-alcohol"/></svg><div>Marcador de alcohol<small>Transparente y parejo; se oscurece al repasar</small></div></button>
+    <button class="pbtn" data-mark="blender0"><svg><use href="#i-blender0"/></svg><div>Mezclador 0<small>Sin color: mezcla, suaviza bordes y aclara un poco</small></div></button>
   </div>
 </div>
 <div class="pop" id="gradPop" role="dialog" aria-label="Opciones de degradado">
@@ -820,6 +885,40 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     </div>
     <p class="ptip" data-i18n-html="grad.drag.html">Con estas opciones abiertas también puedes <b>arrastrar</b> dentro de una zona para elegir la dirección (empieza con el primer color y termina con el último).</p>
   </div>
+  <button class="gmore gtoadv" id="gToAdv" title="Degradado avanzado: arrastra donde quieras, con varios colores, opacidad y mezcla"><svg><use href="#i-agrad"/></svg><span>Degradado avanzado: para expertos</span></button>
+</div>
+<div class="pop" id="agradPop" role="dialog" aria-label="Degradado avanzado">
+  <div class="aghead"><h4>Degradado avanzado</h4><button id="agBasic" title="Volver al Degradado básico (degradados listos)" aria-label="Volver al Degradado básico (degradados listos)"><span class="gswatch" aria-hidden="true"></span><span>Básico</span></button></div>
+  <p class="ghint">Arrastra en la hoja donde quieras: del primer color al último 👆</p>
+  <div class="agbar" id="agBar" role="group" aria-label="Colores del degradado: toca la barra para añadir un color y arrastra los círculos para moverlos"><div class="agtrack" id="agTrack"></div></div>
+  <div class="agrow">
+    <button id="agAdd" title="Añadir un color (hasta 5)">+ Añadir</button><button id="agDel" title="Quitar el color elegido (quedan al menos 2)">− Quitar</button>
+    <span class="agcur"><i id="agCur"></i><span id="agSelTxt"></span></span>
+  </div>
+  <div class="gpal" id="agPal" style="margin-top:8px"></div>
+  <div class="agrow agrec"><span class="rlbl">Recientes</span><div class="recent" id="agRecent" aria-label="Colores recientes"></div></div>
+  <div class="ag2"><button id="agMoreC" title="Más colores: 360 colores para elegir con un toque"><span class="rainbow"></span><span>Más colores</span></button><button id="agOther" title="Otro color: elige cualquier color en la rueda de colores"><span class="rainbow"></span><span>Otro</span></button></div>
+  <label class="agop"><span>Opacidad de este color</span><input type="range" id="agStopOp" min="0" max="100" value="100" aria-label="Opacidad de este color"><b id="agStopOpV">100 %</b></label>
+  <label class="agop"><span>Opacidad total</span><input type="range" id="agOp" min="5" max="100" value="100" aria-label="Opacidad total"><b id="agOpV">100 %</b></label>
+  <p class="aglbl">Tipo</p>
+  <div class="agchips c3" id="agType"><button data-at="linear" title="De un lado a otro">Lineal</button><button data-at="radial" title="Del centro hacia afuera">Circular</button><button data-at="angular" title="Gira alrededor del punto donde empiezas">Angular</button></div>
+  <p class="aglbl">Hasta dónde llega</p>
+  <div class="agchips c2" id="agExt"><button data-ae="free" title="El degradado llega a toda la hoja, también por encima de las líneas">Libre: cruza las líneas</button><button data-ae="zone" title="Solo dentro de la zona donde empiezas a arrastrar">Dentro de la zona</button></div>
+  <p class="aglbl">Mezcla con lo de abajo</p>
+  <div class="agchips c2" id="agBlend"><button data-ab="normal" title="Pinta encima">Normal</button><button data-ab="multiply" title="Oscurece y mezcla, como un marcador encima">Multiplicar</button><button data-ab="screen" title="Aclara, como una luz">Trama</button><button data-ab="overlay" title="Más contraste y color">Superponer</button></div>
+  <p class="aglbl">Empezar con:</p>
+  <div class="agpre" id="agPre"></div>
+</div>
+<div class="pop" id="gelPop" role="menu" aria-label="Bolígrafo de gel…">
+  <h4>Bolígrafo de gel…</h4>
+  <div class="pgrid">
+    <button class="pbtn on" data-gel="normal"><span class="gk gk-normal" aria-hidden="true"></span><div>Gel de color<small>Tu color: opaco, brillante y con relieve</small></div></button>
+    <button class="pbtn" data-gel="white"><span class="gk gk-white" aria-hidden="true"></span><div>Gel blanco<small>Para brillos: se ve encima de colores oscuros</small></div></button>
+    <button class="pbtn" data-gel="metal"><span class="gk gk-metal" aria-hidden="true"></span><div>Metálico<small>Oro, plata, cobre… con reflejos</small></div></button>
+    <button class="pbtn" data-gel="glitter"><span class="gk gk-glitter" aria-hidden="true"></span><div>Brillantina<small>Con puntitos que brillan</small></div></button>
+  </div>
+  <p class="aglbl">Colores metálicos:</p>
+  <div class="gelm" id="gelMetals"></div>
 </div>
 
 <div class="pop mini" id="mToolPop" role="menu" aria-label="Elegir herramienta"><h4>Herramienta</h4><div class="pgrid" id="mTools"></div><div class="mmode" id="mMode"><button data-m="draw">Dibujar</button><button data-m="color">Colorear</button></div></div>
@@ -876,7 +975,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
         </div>
       </div>
       <div class="menu-foot">
-        <span id="versionText">Colorear · Versión 3.5</span>
+        <span id="versionText">Colorear · Versión 3.6</span>
         <a href="privacidad.html" target="_blank" rel="noopener" id="mPrivacy">Política de privacidad</a>
       </div>
     </div>
@@ -1096,7 +1195,7 @@ setDocLang(); translateStatic();
 /* Colorear v3.3: crea dibujos para colorear, sube fotos de tus libros y coloréalos
    (lápiz y marcador de colores, crayón, marcadores acrílico / de agua / de alcohol, degradados, difuminar, copiar color,
    capas, ocultar botones, punta Detalle y rueda de colores con opacidad) */
-const APP_VERSION = '3.5';
+const APP_VERSION = '3.6';
 const PORTRAIT = [1200, 1600], LANDSCAPE = [1600, 1200];
 let W = 1200, H = 1600;                       // tamaño de la hoja (px internos); vertical u horizontal
 /* Grosores en píxeles de la hoja (1200×1600). "Súper fina" (xs) y "Detalle" (xxs) no son fijas: se calculan
@@ -1121,8 +1220,13 @@ function sizeLW(kind, size) {           // kind: 'draw' | 'mark' | 'color'
 }
 const isThin = (size) => size === 'xs' || size === 'xxs';
 const SIZE_NAMES = { get xxs() { return tt('size.xxs'); }, get xs() { return tt('size.xs'); }, get 0() { return tt('size.0'); }, get 1() { return tt('size.1'); }, get 2() { return tt('size.2'); } };
-const BRUSHES = { get crayon() { return tt('brush.short.crayon'); }, get acrylic() { return tt('brush.short.acrylic'); }, get water() { return tt('brush.short.water'); }, get alcohol() { return tt('brush.short.alcohol'); } };
-const BRUSH_ICONS = { crayon: 'i-crayon', acrylic: 'i-acrylic', water: 'i-water', alcohol: 'i-alcohol' };
+const BRUSHES = { get crayon() { return tt('brush.short.crayon'); }, get acrylic() { return tt('brush.short.acrylic'); }, get water() { return tt('brush.short.water'); }, get alcohol() { return tt('brush.short.alcohol'); }, get blender0() { return tt('brush.short.blender0'); } };
+const BRUSH_ICONS = { crayon: 'i-crayon', acrylic: 'i-acrylic', water: 'i-water', alcohol: 'i-alcohol', blender0: 'i-blender0' };
+// 3.6: lápices de colores y bolígrafos de gel (en Colorear y en Dibujar); Mezclador 0 = blender sin color
+const PENCIL_SIZES = { draw: { 0: 5, 1: 9, 2: 16 }, color: { 0: 8, 1: 18, 2: 34 } };
+const GEL_SIZES = { 0: 5, 1: 8, 2: 12 };
+const GEL_KINDS = ['normal', 'white', 'metal', 'glitter'];
+const GEL_METALS = [['gold', '#D4AF37'], ['silver', '#C0C2C9'], ['copper', '#B87333'], ['rose', '#E0A3A0']];
 const ZMIN = 1, ZMAX = 6;
 const PALETTE = ['#FF3B30','#FF6F61','#FF9500','#FFCC00','#FFE66D','#A8E063','#34C759','#0B8F3C',
   '#00C7BE','#5AC8FA','#007AFF','#1E3A8A','#5856D6','#AF52DE','#D291FF','#FF2D92',
@@ -1217,6 +1321,7 @@ const state = {
   color2: '#FFE66D', gradType: 'linear', gradDir: 'down', gradPreset: 'mine', gradAdv: false,
   currentId: null, dirty: false, panTool: false,
   alpha: 1, drawAlpha: 1, activeLayer: 'color', uiHidden: false, pickToPicker: false,
+  gelKind: 'normal',
 };
 
 /* ---------- vista: ajuste a la pantalla, zoom y desplazamiento ---------- */
@@ -1449,6 +1554,13 @@ function strokeStyleFor(tool) {
   if (tool === 'erase') return { layer: dl, color: '#000', comp: 'destination-out', lw: ERASE_SIZES[state.drawSize] || 18 };
   if (tool === 'marker') return withAlpha(brushStyle(state.drawBrush, dl, state.drawColor, sizeLW('mark', state.drawSize), isThin(state.drawSize)), state.drawAlpha);
   if (isBrush(tool)) return withAlpha(brushStyle(tool, pl, state.color, sizeLW('color', state.colorSize), isThin(state.colorSize)), state.alpha);
+  if (tool === 'cpencil' || tool === 'gel') {
+    const draw = state.mode === 'draw', sz = draw ? state.drawSize : state.colorSize;
+    const lw = isThin(sz) ? sizeLW('color', sz) : tool === 'gel' ? GEL_SIZES[sz] || 8 : PENCIL_SIZES[draw ? 'draw' : 'color'][sz] || 12;
+    const st = tool === 'gel' ? gelStyle(draw ? dl : pl, draw ? state.drawColor : state.color, lw, isThin(sz))
+      : { layer: draw ? dl : pl, color: draw ? state.drawColor : state.color, comp: 'source-over', lw, buf: 'art', art: 'pencil', alpha: 0.6, tex: isThin(sz) ? 0.55 : 1 };
+    return withAlpha(st, draw ? state.drawAlpha : state.alpha);
+  }
   if (tool === 'cerase') return pl === 'color' ? { layer: 'color', color: '#FFFFFF', comp: 'source-over', lw: sizeLW('color', state.colorSize) }
     : { layer: pl, color: '#000', comp: 'destination-out', lw: sizeLW('color', state.colorSize) };   // en otra capa, borra de verdad (queda transparente)
   return null;
@@ -1501,8 +1613,16 @@ function startSingle(e) {
   const tool = currentTool();
   const tgt = layers[toolTarget(tool)];
   if (tgt && !tgt.vis) { toast(tt('toast.hiddenlayer'), 2800); return; }
-  if (state.mode === 'color' && (tool === 'fill' || isBrush(tool) || (tool === 'grad' && gradUsesColor()))) addRecent(state.color);
-  if (state.mode === 'draw' && tool !== 'erase' && state.drawColor !== '#000000') addRecent(state.drawColor);   // el negro de siempre ya está en los colores rápidos
+  const isB0 = tool === 'blender0' || (state.mode === 'draw' && tool === 'marker' && state.drawBrush === 'blender0');
+  if (state.mode === 'color' && !isB0 && (tool === 'fill' || isBrush(tool) || tool === 'cpencil' || (tool === 'gel' && state.gelKind !== 'white') || (tool === 'grad' && gradUsesColor()))) addRecent(state.color);
+  if (state.mode === 'draw' && tool !== 'erase' && !isB0 && !(tool === 'gel' && state.gelKind === 'white') && state.drawColor !== '#000000') addRecent(state.drawColor);   // el negro de siempre ya está en los colores rápidos
+  if (tool === 'agrad') { g = Object.assign(base, { kind: 'agrad', layer: paintTarget() }); agBegin(g); return; }
+  if (isB0) {             // 3.6: Mezclador 0: mezcla lo que ya hay (en la capa elegida), sin color propio
+    const lw = (state.mode === 'draw' ? sizeLW('mark', state.drawSize) : sizeLW('color', state.colorSize)) * 1.1;
+    g = Object.assign(base, { kind: 'blend', b0: true, layer: paintTarget(), lw, box: { x1: Infinity, y1: Infinity, x2: -Infinity, y2: -Infinity } });
+    b0Start(g, p);
+    return;
+  }
   if (tool === 'fill') { g = Object.assign(base, { kind: 'fill' }); return; }
   if (tool === 'grad') { g = Object.assign(base, { kind: 'grad' }); return; }
   if (tool === 'blend') {
@@ -1513,8 +1633,9 @@ function startSingle(e) {
   const st = strokeStyleFor(tool);
   if (st) {
     g = Object.assign(base, { kind: 'stroke', st, box: { x1: Infinity, y1: Infinity, x2: -Infinity, y2: -Infinity } });
-    bboxAdd(g.box, p.x, p.y, st.lw);
-    if (st.buf) { bufBegin(); dot(bufCtx, st, p); bufShow(st, p.x - st.lw, p.y - st.lw, p.x + st.lw, p.y + st.lw); }
+    bboxAdd(g.box, p.x, p.y, st.lw + 2);
+    if (st.art) { if (e.pointerType === 'pen' && e.pressure > 0) st.alpha = clamp(st.alpha * (0.55 + 0.9 * e.pressure), 0.05, 0.98); artBegin(st, p); }
+    else if (st.buf) { bufBegin(); dot(bufCtx, st, p); bufShow(st, p.x - st.lw, p.y - st.lw, p.x + st.lw, p.y + st.lw); }
     else dot(layers[st.layer].ctx, st, p);
     return;
   }
@@ -1540,6 +1661,7 @@ function onMove(e) {
     if (state.gradAdv && g.travel >= 14) drawGradArrow(pctx, g.start, g.last);
     return;
   }
+  if (g.kind === 'agrad') { g.last = toDoc(e); if (g.travel >= 14) agSchedule(g); return; }
   const co = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
   const evs = co && co.length ? co : [e];
   for (const ev of evs) {
@@ -1548,10 +1670,10 @@ function onMove(e) {
       if (Math.hypot(p.x - g.last.x, p.y - g.last.y) < 1.5) continue;
       const mid = { x: (g.last.x + p.x) / 2, y: (g.last.y + p.y) / 2 };
       strokeSeg(g, g.mid, g.last, mid);
-      bboxAdd(g.box, p.x, p.y, g.st.lw);
+      bboxAdd(g.box, p.x, p.y, g.st.lw + 2);
       g.mid = mid; g.last = p;
     } else if (g.kind === 'blend') {
-      blendTo(g, p);
+      if (g.b0) b0To(g, p); else blendTo(g, p);
     } else {
       g.last = p;
     }
@@ -1583,6 +1705,8 @@ function endSingle(cancelled) {
   } else if (cur.kind === 'grad') {
     pctx.clearRect(0, 0, W, H);
     if (!cancelled) gradientFill(cur.start, state.gradAdv && cur.travel >= 14 ? cur.last : null);
+  } else if (cur.kind === 'agrad') {
+    agEnd(cur, cancelled);
   } else if (cur.kind === 'blend') {
     commit([capturePart(cur.layer || 'color', rectOf(cur.box))]);
   } else if (cur.kind === 'stroke') {
@@ -1621,6 +1745,8 @@ function abortSingle() {
     }
   } else if (cur.kind === 'shape' || cur.kind === 'grad') {
     pctx.clearRect(0, 0, W, H);
+  } else if (cur.kind === 'agrad') {
+    agEnd(cur, true);
   } else if (cur.kind === 'obj') {
     if (cur.action !== 'move' && cur.action !== 'scale') objUp(cur, true);
   }
@@ -1705,7 +1831,7 @@ let bufCv = null, bufCtx = null;            // capa temporal del trazo actual (m
 let grainCv = null;                          // textura de papel (acuarela y acrílico mate)
 const hasCtxFilter = (() => { try { const c = document.createElement('canvas').getContext('2d'); c.filter = 'blur(2px)'; return c.filter === 'blur(2px)'; } catch (_) { return false; } })();
 function bufBegin() {
-  if (!bufCv || bufCv.width !== W || bufCv.height !== H) { bufCv = mkCanvas(); bufCtx = bufCv.getContext('2d'); }
+  if (!bufCv || bufCv.width !== W || bufCv.height !== H) { bufCv = mkCanvas(); bufCtx = ctx2d(bufCv); }   // 3.6: se lee píxel a píxel (lápices, gel, alcohol)
   bufCtx.clearRect(0, 0, W, H);
 }
 function grain() {
@@ -1727,6 +1853,7 @@ function grain() {
 }
 function strokeSeg(gg, p0, p1, p2) {
   const st = gg.st;
+  if (st.art) { artSeg(st, p0, p1, p2); return; }
   if (!st.buf) { segment(layers[st.layer].ctx, st, p0, p1, p2); return; }
   segment(bufCtx, st, p0, p1, p2);
   const pad = st.lw;
@@ -1734,6 +1861,7 @@ function strokeSeg(gg, p0, p1, p2) {
 }
 // Vista previa mientras se pinta: lo que había antes + el trazo translúcido encima (sin acumularse dentro del mismo trazo)
 function bufShow(st, x1, y1, x2, y2) {
+  if (st.buf === 'alcohol') { alcoholShow(st, x1, y1, x2, y2); return; }
   const blur = st.buf === 'water' ? Math.max(1, st.lw * 0.08) : 0;
   const r = clampRect({ x: x1 - blur * 2, y: y1 - blur * 2, w: x2 - x1 + blur * 4, h: y2 - y1 + blur * 4 }); if (!r) return;
   const L = layers[st.layer], c = L.ctx;
@@ -1848,6 +1976,340 @@ function blendTo(gg, p) {
   cc.putImageData(img, rx, ry);
   bboxAdd(gg.box, rx, ry, 0); bboxAdd(gg.box, rx + rw, ry + rh, 0);
   gg.lastDab = { x: ex, y: ey };
+}
+
+/* ---------- 3.6: lápices de colores, bolígrafos de gel, Mezclador 0 (blender) y alcohol más suave ---------- */
+let scratchCv = null;
+function scratch(w, h) {                        // lienzo de trabajo (se reutiliza)
+  if (!scratchCv) scratchCv = document.createElement('canvas');
+  if (scratchCv.width < w || scratchCv.height < h) { scratchCv.width = Math.max(scratchCv.width, w); scratchCv.height = Math.max(scratchCv.height, h); }
+  const c = scratchCv.getContext('2d', { willReadFrequently: true });
+  c.setTransform(1, 0, 0, 1, 0, 0); c.globalCompositeOperation = 'source-over'; c.globalAlpha = 1; c.filter = 'none';
+  c.clearRect(0, 0, w, h);
+  return c;
+}
+// Diente del papel: una textura fija sobre la hoja. Los trazos repetidos caen en los mismos granos y van llenando los huecos.
+const TOOTH_N = 256;
+let toothT = null;
+function tooth() {
+  if (toothT) return toothT;
+  const N = TOOTH_N, t = new Float32Array(N * N);
+  let seed = 4242;
+  const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const C1 = 64, C2 = 16, co = new Float32Array(C1 * C1).map(rnd), co2 = new Float32Array(C2 * C2).map(rnd);
+  const bil = (arr, n, cx, cy) => {
+    const ix = Math.floor(cx), iy = Math.floor(cy), fx = cx - ix, fy = cy - iy, x0 = ix % n, y0 = iy % n, x1 = (x0 + 1) % n, y1 = (y0 + 1) % n;
+    return (arr[y0 * n + x0] * (1 - fx) + arr[y0 * n + x1] * fx) * (1 - fy) + (arr[y1 * n + x0] * (1 - fx) + arr[y1 * n + x1] * fx) * fy;
+  };
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+    // grano fino + grano mediano (estirado un poco, como las fibras del papel) + ondas grandes
+    t[y * N + x] = 0.44 * rnd() + 0.36 * bil(co, C1, x / 4, y / 5) + 0.2 * bil(co2, C2, x / 16, y / 16);
+  }
+  return (toothT = t);
+}
+function hash2(x, y) { let h = (Math.imul(x, 374761393) + Math.imul(y, 668265263)) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); h ^= h >>> 16; return (h >>> 0) / 4294967296; }
+// Bolígrafo de gel: cuerpo (borde un poco más oscuro), centro con el color y una línea de brillo hacia arriba a la izquierda (se ve en relieve)
+function gelStyle(layer, color, lw, thin) {
+  const k = state.gelKind;
+  const c = k === 'white' ? '#FFFFFF' : color, [r, g, b] = hexToRgb(c);
+  const dk = k === 'white' ? 0.9 : k === 'metal' ? 0.58 : k === 'glitter' ? 0.78 : 0.72;
+  const st = { layer, color: c, comp: 'source-over', lw, buf: 'art', art: 'gel', gel: k, alpha: k === 'white' ? 0.97 : 0.98,
+    rgb: [r, g, b], rim: [r * dk, g * dk, b * dk], coreW: lw, hiW: 0, hiA: 0 };
+  if (!thin && lw >= 4) {
+    st.coreW = lw * 0.62; st.hiW = Math.max(1, lw * 0.24);
+    st.hiA = k === 'white' ? 0.2 : k === 'metal' ? 0.85 : k === 'glitter' ? 0.45 : 0.55;
+    st.hiOff = { x: -lw * 0.13, y: -lw * 0.16 };
+  }
+  return st;
+}
+let gelCv = null, gelCtx = null, hiCv = null, hiCtx = null;
+const PEN = { comp: 'source-over', color: '#000' };
+function artBegin(st, p) {
+  bufBegin();
+  if (st.art === 'gel') {
+    if (!gelCv || gelCv.width !== W || gelCv.height !== H) { gelCv = mkCanvas(); gelCtx = ctx2d(gelCv); hiCv = mkCanvas(); hiCtx = ctx2d(hiCv); }
+    gelCtx.clearRect(0, 0, W, H); hiCtx.clearRect(0, 0, W, H);
+  }
+  st.segs = [];
+  artSeg(st, p, p, { x: p.x + 0.01, y: p.y });
+}
+// Cada vez se repinta (recortado al tramo nuevo) el camino entero como UN solo trazo: así las uniones entre tramos
+// no se acumulan en el borde suavizado y la línea fina queda pareja, sin puntitos más oscuros.
+function artPaint(ctx, st, lw, o, r) {
+  const m = lw / 2 + 2, ox = o ? o.x : 0, oy = o ? o.y : 0;
+  ctx.save(); ctx.beginPath(); ctx.rect(r.x, r.y, r.w, r.h); ctx.clip(); ctx.clearRect(r.x, r.y, r.w, r.h);
+  ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1; ctx.strokeStyle = '#000';
+  ctx.lineWidth = lw; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.beginPath();
+  for (const g of st.segs) {
+    if (g.x2 + ox + m < r.x || g.x1 + ox - m > r.x + r.w || g.y2 + oy + m < r.y || g.y1 + oy - m > r.y + r.h) continue;
+    ctx.moveTo(g.a.x + ox, g.a.y + oy); ctx.quadraticCurveTo(g.b.x + ox, g.b.y + oy, g.c.x + ox, g.c.y + oy);
+  }
+  ctx.stroke(); ctx.restore();
+}
+function artSeg(st, p0, p1, p2) {
+  st.segs.push({ a: p0, b: p1, c: p2, x1: Math.min(p0.x, p1.x, p2.x), y1: Math.min(p0.y, p1.y, p2.y), x2: Math.max(p0.x, p1.x, p2.x), y2: Math.max(p0.y, p1.y, p2.y) });
+  const g = st.segs[st.segs.length - 1], pad = st.lw + 2;
+  const r = clampRect({ x: Math.floor(g.x1 - pad), y: Math.floor(g.y1 - pad), w: Math.ceil(g.x2 - g.x1 + 2 * pad), h: Math.ceil(g.y2 - g.y1 + 2 * pad) }); if (!r) return;
+  artPaint(bufCtx, st, st.lw, null, r);
+  if (st.art === 'gel') {
+    artPaint(gelCtx, st, st.coreW, null, r);
+    if (st.hiW) artPaint(hiCtx, st, st.hiW, st.hiOff, r);
+  }
+  artShow(st, r.x, r.y, r.x + r.w, r.y + r.h);
+}
+// Se vuelve a calcular desde lo de antes del trazo (L.bak): dentro de un mismo trazo no se acumula
+function artShow(st, x1, y1, x2, y2) {
+  const r = clampRect({ x: x1, y: y1, w: x2 - x1, h: y2 - y1 }); if (!r) return;
+  const L = layers[st.layer], img = L.bctx.getImageData(r.x, r.y, r.w, r.h), d = img.data;
+  const m = bufCtx.getImageData(r.x, r.y, r.w, r.h).data;
+  const T = tooth(), N = TOOTH_N;
+  if (st.art === 'pencil') {
+    const [cr, cg, cb] = hexToRgb(st.color), A = st.alpha, tex = st.tex;
+    for (let y = 0; y < r.h; y++) {
+      const ty = ((r.y + y) % N) * N;
+      for (let x = 0; x < r.w; x++) {
+        const k = (y * r.w + x) * 4, cov = m[k + 3]; if (!cov) continue;
+        const t = T[ty + ((r.x + x) % N)];
+        // el pigmento se queda en los granos altos del papel; repasando se llenan también los huecos
+        const dep = clamp((t - 0.18) * 1.9, 0.05, 1);
+        overPx(d, k, cr, cg, cb, (cov / 255) * A * (1 - tex + tex * dep));
+      }
+    }
+  } else {
+    const core = gelCtx.getImageData(r.x, r.y, r.w, r.h).data, hi = st.hiW ? hiCtx.getImageData(r.x, r.y, r.w, r.h).data : null;
+    const [cr, cg, cb] = st.rgb, [rr, rg, rb] = st.rim, K = st.gel, A = st.alpha, hiA = st.hiA;
+    const lr = cr + (255 - cr) * 0.55, lg = cg + (255 - cg) * 0.55, lb = cb + (255 - cb) * 0.55;
+    for (let y = 0; y < r.h; y++) {
+      const Y = r.y + y;
+      for (let x = 0; x < r.w; x++) {
+        const k = (y * r.w + x) * 4, cov = m[k + 3]; if (!cov) continue;
+        const X = r.x + x, cc = core[k + 3] / 255;
+        let R = rr + (cr - rr) * cc, G = rg + (cg - rg) * cc, B = rb + (cb - rb) * cc;
+        if (K === 'metal') {               // reflejos metálicos: bandas de luz y sombra a lo largo del trazo
+          const t = T[((Y >> 1) % N) * N + ((X >> 1) % N)], f = 0.66 + 0.75 * t;
+          R *= f; G *= f; B *= f;
+        } else if (K === 'glitter') {      // brillantina: puntitos que brillan
+          const h = hash2(X >> 1, Y >> 1);
+          if (h > 0.95) { R += (255 - R) * 0.92; G += (255 - G) * 0.92; B += (255 - B) * 0.92; }
+          else if (h > 0.89) { R = R + (lr - R) * 0.7; G = G + (lg - G) * 0.7; B = B + (lb - B) * 0.7; }
+        }
+        if (hi) { const a = hi[k + 3] / 255 * hiA; if (a) { R += (255 - R) * a; G += (255 - G) * a; B += (255 - B) * a; } }
+        overPx(d, k, clamp(Math.round(R), 0, 255), clamp(Math.round(G), 0, 255), clamp(Math.round(B), 0, 255), (cov / 255) * A);
+      }
+    }
+  }
+  L.ctx.putImageData(img, r.x, r.y);
+}
+// Marcador de alcohol (3.6): bordes suaves y, al repasar con el mismo color, se oscurece solo un poco.
+// Con otro color encima se mezcla como antes (multiplicar, como la tinta transparente).
+function alcoholShow(st, x1, y1, x2, y2) {
+  const fr = clamp(st.lw * 0.01, 0.4, 0.8);
+  const r = clampRect({ x: x1 - 2, y: y1 - 2, w: x2 - x1 + 4, h: y2 - y1 + 4 }); if (!r) return;
+  const Mg = Math.ceil(fr * 3) + 1;
+  const sx = Math.max(0, r.x - Mg), sy = Math.max(0, r.y - Mg), sw = Math.min(W, r.x + r.w + Mg) - sx, sh = Math.min(H, r.y + r.h + Mg) - sy;
+  const sc = scratch(sw, sh);
+  if (hasCtxFilter) sc.filter = `blur(${fr.toFixed(2)}px)`;
+  sc.drawImage(bufCv, sx, sy, sw, sh, 0, 0, sw, sh); sc.filter = 'none';
+  const m = sc.getImageData(r.x - sx, r.y - sy, r.w, r.h).data;
+  const L = layers[st.layer], img = L.bctx.getImageData(r.x, r.y, r.w, r.h), d = img.data;
+  const [cr, cg, cb] = hexToRgb(st.color), Sr = cr / 255, Sg = cg / 255, Sb = cb / 255;
+  const vr = 1 - Sr, vg = 1 - Sg, vb = 1 - Sb, vn = Math.hypot(vr, vg, vb) || 1, A = st.alpha;
+  for (let k = 0; k < d.length; k += 4) {
+    const cov = m[k + 3]; if (!cov) continue;
+    const ad = d[k + 3] / 255, Dr = d[k] / 255, Dg = d[k + 1] / 255, Db = d[k + 2] / 255;
+    let as = A * cov / 255;
+    // tinta que ya hay (vista sobre papel blanco): si es del mismo color, el repaso oscurece menos
+    const ur = ad * (1 - Dr), ug = ad * (1 - Dg), ub = ad * (1 - Db), un = Math.hypot(ur, ug, ub);
+    if (un > 0.02) { const cos = (ur * vr + ug * vg + ub * vb) / (un * vn); as *= 1 - 0.45 * clamp((cos - 0.86) / 0.12, 0, 1) * Math.min(1, un * 4); }
+    const ao = as + ad - as * ad; if (ao <= 0) continue;
+    d[k] = Math.round(((1 - ad) * as * Sr + (1 - as) * ad * Dr + as * ad * Sr * Dr) / ao * 255);
+    d[k + 1] = Math.round(((1 - ad) * as * Sg + (1 - as) * ad * Dg + as * ad * Sg * Dg) / ao * 255);
+    d[k + 2] = Math.round(((1 - ad) * as * Sb + (1 - as) * ad * Db + as * ad * Sb * Db) / ao * 255);
+    d[k + 3] = Math.round(ao * 255);
+  }
+  L.ctx.putImageData(img, r.x, r.y);
+}
+// Mezclador 0 (como el blender incoloro de los marcadores de alcohol): no tiene color. Promedia los colores de alrededor
+// (mezcla y suaviza el borde entre dos colores), arrastra un poco el pigmento y aclara apenas. Las líneas no se tocan ni se mezclan.
+function b0Start(gg, p) {
+  gg.R = Math.max(3, Math.round(gg.lw / 2)); gg.carry = null; gg.lastDab = p;
+  b0Dabs(gg, [p]);
+}
+function b0To(gg, p) {
+  const a = gg.lastDab, dist = Math.hypot(p.x - a.x, p.y - a.y), step = Math.max(1.5, gg.R * 0.25);
+  if (dist < step) return;
+  const n = Math.floor(dist / step), pts = [];
+  for (let k = 1; k <= n; k++) { const t = k * step / dist; pts.push({ x: a.x + (p.x - a.x) * t, y: a.y + (p.y - a.y) * t }); }
+  b0Dabs(gg, pts);
+  gg.lastDab = pts[pts.length - 1];
+}
+function b0Dabs(gg, pts) {
+  const R = gg.R, rb = Math.max(2, Math.round(R * 0.5)), Mg = R + rb + 1;
+  let x1 = Infinity, y1 = Infinity, x2 = -Infinity, y2 = -Infinity;
+  for (const q of pts) { x1 = Math.min(x1, q.x); y1 = Math.min(y1, q.y); x2 = Math.max(x2, q.x); y2 = Math.max(y2, q.y); }
+  const rr = clampRect({ x: x1 - Mg, y: y1 - Mg, w: x2 - x1 + 2 * Mg, h: y2 - y1 + 2 * Mg }); if (!rr) return;
+  const { x: rx, y: ry, w: rw, h: rh } = rr;
+  const L = layers[gg.layer || 'color'], img = L.ctx.getImageData(rx, ry, rw, rh), d = img.data;
+  const la = layers.line.ctx.getImageData(rx, ry, rw, rh).data;
+  const opaque = (gg.layer || 'color') === 'color';
+  const ok = new Uint8Array(rw * rh);
+  for (let i = 0; i < rw * rh; i++) {
+    const b = i * 4;
+    ok[i] = la[b + 3] < LINE_T && !(d[b + 3] > 200 && d[b] < 40 && d[b + 1] < 40 && d[b + 2] < 40) ? 1 : 0;   // líneas y negro: se respetan
+  }
+  const S = 2 * (R + rb) + 1, S1 = S + 1, I = new Float64Array(S1 * S1 * 5);
+  const STR = 0.34, PUSH = 0.1, LIFT = 0.0035;
+  const conn = new Uint8Array(S * S), qs = new Int32Array(S * S);
+  for (const q of pts) {
+    const cx = Math.round(q.x), cy = Math.round(q.y), ox = cx - R - rb - rx, oy = cy - R - rb - ry;
+    // solo se mezcla lo que está del mismo lado de las líneas que la punta (no pasa color a través de una línea)
+    conn.fill(0);
+    const okAt = (i, j) => { const xx = ox + i, yy = oy + j; return xx >= 0 && yy >= 0 && xx < rw && yy < rh && ok[yy * rw + xx]; };
+    const c0 = R + rb;
+    if (!okAt(c0, c0)) { gg.carry = null; continue; }
+    let qh = 0, qt = 0; qs[qt++] = c0 * S + c0; conn[c0 * S + c0] = 1;
+    while (qh < qt) {
+      const v = qs[qh++], i = v % S, j = (v - i) / S;
+      if (i > 0 && !conn[v - 1] && okAt(i - 1, j)) { conn[v - 1] = 1; qs[qt++] = v - 1; }
+      if (i < S - 1 && !conn[v + 1] && okAt(i + 1, j)) { conn[v + 1] = 1; qs[qt++] = v + 1; }
+      if (j > 0 && !conn[v - S] && okAt(i, j - 1)) { conn[v - S] = 1; qs[qt++] = v - S; }
+      if (j < S - 1 && !conn[v + S] && okAt(i, j + 1)) { conn[v + S] = 1; qs[qt++] = v + S; }
+    }
+    // tabla de sumas (premultiplicado) para promediar rápido cualquier cuadrito alrededor
+    I.fill(0);
+    for (let j = 0; j < S; j++) {
+      const yy = oy + j;
+      for (let i = 0; i < S; i++) {
+        const xx = ox + i, o = ((j + 1) * S1 + (i + 1)) * 5, up = (j * S1 + (i + 1)) * 5, lf = ((j + 1) * S1 + i) * 5, ul = (j * S1 + i) * 5;
+        let vr = 0, vg = 0, vb = 0, va = 0, vw = 0;
+        if (conn[j * S + i]) {
+          const b = (yy * rw + xx) * 4, a = d[b + 3] / 255; vr = d[b] * a; vg = d[b + 1] * a; vb = d[b + 2] * a; va = a; vw = 1;
+        }
+        I[o] = vr + I[up] - I[ul] + I[lf]; I[o + 1] = vg + I[up + 1] - I[ul + 1] + I[lf + 1]; I[o + 2] = vb + I[up + 2] - I[ul + 2] + I[lf + 2];
+        I[o + 3] = va + I[up + 3] - I[ul + 3] + I[lf + 3]; I[o + 4] = vw + I[up + 4] - I[ul + 4] + I[lf + 4];
+      }
+    }
+    const box = (i0, j0, i1, j1, c) => I[(j1 * S1 + i1) * 5 + c] - I[(j0 * S1 + i1) * 5 + c] - I[(j1 * S1 + i0) * 5 + c] + I[(j0 * S1 + i0) * 5 + c];
+    // color que se lleva el mezclador (lo que había bajo la punta en el toque anterior)
+    const cw = box(rb, rb, rb + 2 * R + 1, rb + 2 * R + 1, 4);
+    const now = cw > 0 ? [0, 1, 2, 3].map((c) => box(rb, rb, rb + 2 * R + 1, rb + 2 * R + 1, c) / cw) : null;
+    const carry = gg.carry;
+    for (let dy = -R; dy <= R; dy++) {
+      const yy = cy + dy - ry; if (yy < 0 || yy >= rh) continue;
+      for (let dx = -R; dx <= R; dx++) {
+        const xx = cx + dx - rx; if (xx < 0 || xx >= rw) continue;
+        const qd = (dx * dx + dy * dy) / (R * R); if (qd >= 1) continue;
+        const pi = yy * rw + xx, i = dx + R + rb, j = dy + R + rb; if (!conn[j * S + i]) continue;
+        const wsum = box(i - rb, j - rb, i + rb + 1, j + rb + 1, 4); if (wsum < 1) continue;
+        const f0 = 1 - qd, f = f0 * f0 * (3 - 2 * f0), kk = STR * f, b = pi * 4, a0 = d[b + 3] / 255;
+        let pr = d[b] * a0, pg = d[b + 1] * a0, pb = d[b + 2] * a0, pa = a0;
+        pr += (box(i - rb, j - rb, i + rb + 1, j + rb + 1, 0) / wsum - pr) * kk; pg += (box(i - rb, j - rb, i + rb + 1, j + rb + 1, 1) / wsum - pg) * kk;
+        pb += (box(i - rb, j - rb, i + rb + 1, j + rb + 1, 2) / wsum - pb) * kk; pa += (box(i - rb, j - rb, i + rb + 1, j + rb + 1, 3) / wsum - pa) * kk;
+        if (carry) { const kc = PUSH * f; pr += (carry[0] - pr) * kc; pg += (carry[1] - pg) * kc; pb += (carry[2] - pb) * kc; pa += (carry[3] - pa) * kc; }
+        if (opaque) { const kl = LIFT * f; pr += (255 * pa - pr) * kl; pg += (255 * pa - pg) * kl; pb += (255 * pa - pb) * kl; pa = 1; }
+        else { const kl = 1 - LIFT * 1.5 * f; pr *= kl; pg *= kl; pb *= kl; pa *= kl; }
+        if (pa <= 0.002) { d[b] = d[b + 1] = d[b + 2] = d[b + 3] = 0; continue; }
+        d[b] = clamp(Math.round(pr / pa), 0, 255); d[b + 1] = clamp(Math.round(pg / pa), 0, 255); d[b + 2] = clamp(Math.round(pb / pa), 0, 255); d[b + 3] = clamp(Math.round(pa * 255), 0, 255);
+      }
+    }
+    if (now) gg.carry = carry ? carry.map((v, c) => v + (now[c] - v) * 0.5) : now;
+  }
+  L.ctx.putImageData(img, rx, ry);
+  bboxAdd(gg.box, rx, ry, 0); bboxAdd(gg.box, rx + rw, ry + rh, 0);
+}
+
+/* ---------- 3.6: degradado avanzado (para expertos): arrastra donde quieras, 2 a 5 colores, opacidad, tipos y mezclas ---------- */
+const AG = { stops: [{ c: '#FF9500', a: 1, p: 0 }, { c: '#AF52DE', a: 1, p: 1 }], sel: 0, type: 'linear', ext: 'free', blend: 'normal', op: 1 };
+const AG_BLEND = { normal: 'source-over', multiply: 'multiply', screen: 'screen', overlay: 'overlay' };
+const hasConic = typeof CanvasRenderingContext2D !== 'undefined' && typeof CanvasRenderingContext2D.prototype.createConicGradient === 'function';
+function rgbaOf(hex, a) { const [r, g, b] = hexToRgb(hex); return `rgba(${r},${g},${b},${+clamp(a == null ? 1 : a, 0, 1).toFixed(3)})`; }
+const agSorted = (stops) => stops.slice().sort((x, y) => x.p - y.p);
+function agGradient(c, a, b, o) {
+  const len = Math.max(1, Math.hypot(b.x - a.x, b.y - a.y));
+  let gr;
+  if (o.type === 'radial') gr = c.createRadialGradient(a.x, a.y, 0, a.x, a.y, len);
+  else if (o.type === 'angular' && hasConic) gr = c.createConicGradient(Math.atan2(b.y - a.y, b.x - a.x), a.x, a.y);
+  else gr = c.createLinearGradient(a.x, a.y, b.x, b.y);
+  for (const s of agSorted(o.stops)) gr.addColorStop(clamp(+s.p || 0, 0, 1), rgbaOf(s.c, s.a));
+  return gr;
+}
+// Prepara el gesto: "Libre" usa toda la hoja; "Dentro de la zona" usa la zona donde empieza el dedo
+function agBegin(gg, o = AG) {
+  gg.o = o;
+  if (o.ext === 'zone') {
+    const reg = regionMask(gg.start.x, gg.start.y);
+    if (!reg) { gg.noZone = true; return; }
+    const { mask, minX, minY, maxX, maxY } = reg, w = maxX - minX + 1, h = maxY - minY + 1;
+    const mc = mkCanvas(w, h), mx = mc.getContext('2d'), im = mx.createImageData(w, h);
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (mask[(y + minY) * W + x + minX]) im.data[(y * w + x) * 4 + 3] = 255;
+    mx.putImageData(im, 0, 0);
+    gg.mask = mc; gg.tmp = mkCanvas(w, h); gg.rect = { x: minX, y: minY, w, h };
+  } else gg.rect = { x: 0, y: 0, w: W, h: H };
+}
+function agRestore(gg) {
+  const L = layers[gg.layer], c = L.ctx, R = gg.rect; if (!R) return;
+  c.save(); c.beginPath(); c.rect(R.x, R.y, R.w, R.h); c.clip();
+  c.globalCompositeOperation = 'copy'; c.drawImage(L.bak, R.x, R.y, R.w, R.h, R.x, R.y, R.w, R.h);
+  c.restore();
+}
+function agRender(gg, b) {
+  const L = layers[gg.layer], c = L.ctx, R = gg.rect, o = gg.o || AG;
+  agRestore(gg);
+  c.save(); c.beginPath(); c.rect(R.x, R.y, R.w, R.h); c.clip();
+  c.globalCompositeOperation = AG_BLEND[o.blend] || 'source-over'; c.globalAlpha = clamp(+o.op || 0, 0, 1);
+  if (!gg.mask) { c.fillStyle = agGradient(c, gg.start, b, o); c.fillRect(R.x, R.y, R.w, R.h); }
+  else {
+    const tc = gg.tmp.getContext('2d');
+    tc.setTransform(1, 0, 0, 1, 0, 0); tc.globalCompositeOperation = 'copy'; tc.drawImage(gg.mask, 0, 0);
+    tc.globalCompositeOperation = 'source-in'; tc.setTransform(1, 0, 0, 1, -R.x, -R.y);
+    tc.fillStyle = agGradient(tc, gg.start, b, o); tc.fillRect(R.x, R.y, R.w, R.h);
+    tc.setTransform(1, 0, 0, 1, 0, 0);
+    c.drawImage(gg.tmp, R.x, R.y);
+  }
+  c.restore();
+  gg.shown = true;
+}
+// Vista previa en vivo (una vez por cuadro) + flecha con los colores
+function agSchedule(gg) {
+  if (gg.noZone || gg.raf) return;
+  gg.raf = requestAnimationFrame(() => {
+    gg.raf = 0; if (g !== gg) return;
+    agRender(gg, gg.last);
+    pctx.clearRect(0, 0, W, H); agArrow(pctx, gg.start, gg.last, gg.o || AG);
+  });
+}
+function agArrow(c, a, b, o) {
+  const lw = Math.max(4, 3 * docPerCss()), st = agSorted(o.stops), len = Math.hypot(b.x - a.x, b.y - a.y);
+  c.save(); c.lineCap = 'round';
+  if (o.type !== 'linear') { c.beginPath(); c.arc(a.x, a.y, len, 0, Math.PI * 2); c.setLineDash([lw * 3, lw * 2]); c.lineWidth = lw * 0.8; c.strokeStyle = 'rgba(40,28,60,.7)'; c.stroke(); c.setLineDash([]); }
+  c.beginPath(); c.moveTo(a.x, a.y); c.lineTo(b.x, b.y); c.lineWidth = lw * 2.4; c.strokeStyle = 'rgba(255,255,255,.9)'; c.stroke();
+  c.lineWidth = lw * 0.9; c.strokeStyle = 'rgba(40,28,60,.75)'; c.stroke();
+  for (const s of st) {
+    const x = a.x + (b.x - a.x) * s.p, y = a.y + (b.y - a.y) * s.p;
+    c.beginPath(); c.arc(x, y, lw * 1.7, 0, Math.PI * 2); c.fillStyle = s.c; c.fill(); c.lineWidth = lw * 0.6; c.strokeStyle = '#fff'; c.stroke();
+  }
+  c.restore();
+}
+function agEnd(gg, cancelled) {
+  if (gg.raf) { cancelAnimationFrame(gg.raf); gg.raf = 0; }
+  pctx.clearRect(0, 0, W, H);
+  if (gg.noZone) { if (!cancelled) toast(tt('ag.toast.zone'), 2600); return false; }
+  if (cancelled || gg.travel < 14 || !gg.last) {
+    if (gg.shown) agRestore(gg);
+    if (!cancelled && gg.travel < 14) toast(tt('ag.toast.drag'), 2400);
+    return false;
+  }
+  agRender(gg, gg.last);
+  commit([capturePart(gg.layer, gg.rect)]);
+  return true;
+}
+// Para pruebas y atajos: pinta un degradado avanzado de a hasta b (opts: stops, type, ext, blend, op)
+function agApply(a, b, opts) {
+  const o = Object.assign({}, AG, opts || {}); o.stops = (opts && opts.stops) || AG.stops;
+  const gg = { start: a, last: b, travel: 99, layer: paintTarget() };
+  agBegin(gg, o);
+  return agEnd(gg, false);
 }
 
 /* ---------- bote de pintura ---------- */
@@ -2592,18 +3054,19 @@ function updateCursor() { paper.className = 'c-' + (objMode ? 'obj' : state.pick
 $('#tabDraw').onclick = () => { flattenObjs(); setMode('draw'); };
 $('#tabColor').onclick = () => { flattenObjs(); setMode('color'); };
 function pickTool() { flattenObjs(); if (state.panTool) setPanTool(false); setPicking(false); }
-$$('#drawTools .tool').forEach((b) => b.onclick = () => {
-  if (b.dataset.pop && b.classList.contains('on') && !state.picking) {     // Marcador: tocar otra vez abre / cierra los tipos
+$$('#drawTools .tool, #drawArt .tool').forEach((b) => b.onclick = () => {
+  if (b.dataset.pop && b.classList.contains('on') && !state.picking) {     // Marcador / Gel: tocar otra vez abre / cierra los tipos
     if (openPop && openPop.anchor === b) hidePop(); else showPop(b.dataset.pop, b);
     return;
   }
   pickTool();
   setDrawTool(b.dataset.tool);
   if (b.id === 'markBtn' && !state.markSeen) { state.markSeen = true; toast(tt('toast.markhint'), 3200); }
+  else if (b.dataset.tool === 'gel' && !state.gelSeen) { state.gelSeen = true; showPop('gelPop', b); }
 });
-function setDrawTool(t) { state.drawTool = t; $$('#drawTools .tool').forEach((x) => x.classList.toggle('on', x.dataset.tool === t)); updateCursor(); }
+function setDrawTool(t) { state.drawTool = t; $$('#drawTools .tool, #drawArt .tool').forEach((x) => x.classList.toggle('on', x.dataset.tool === t)); updateCursor(); }
 // Tipo de marcador de Dibujar (liso, acrílico, de agua, de alcohol)
-const MARK_NAMES = { get crayon() { return tt('mark.k.crayon'); }, get acrylic() { return tt('mark.k.acrylic'); }, get water() { return tt('mark.k.water'); }, get alcohol() { return tt('mark.k.alcohol'); } };
+const MARK_NAMES = { get crayon() { return tt('mark.k.crayon'); }, get acrylic() { return tt('mark.k.acrylic'); }, get water() { return tt('mark.k.water'); }, get alcohol() { return tt('mark.k.alcohol'); }, get blender0() { return tt('mark.k.blender0'); } };
 function setDrawBrush(b) {
   if (!(b in MARK_NAMES)) b = 'crayon';
   state.drawBrush = b;
@@ -2615,16 +3078,19 @@ function setDrawBrush(b) {
 $$('#markPop [data-mark]').forEach((b) => b.onclick = () => {
   pickTool(); setDrawBrush(b.dataset.mark); state.markSeen = true;
   state.drawTool = 'marker';
-  $$('#drawTools .tool').forEach((x) => x.classList.toggle('on', x.id === 'markBtn')); updateCursor();
+  $$('#drawTools .tool, #drawArt .tool').forEach((x) => x.classList.toggle('on', x.id === 'markBtn')); updateCursor();
   hidePop(); toast(tt('mark.n.' + state.drawBrush) + ' ✓');
 });
 const isBrush = (t) => t in BRUSHES;
 function setColorTool(t) {
   if (isBrush(t)) setBrush(t);
+  const wasAg = state.colorTool === 'agrad';
   state.colorTool = t;
-  $$('#colorTools [data-ctool]').forEach((x) => x.classList.toggle('on', x.dataset.ctool === t || (x.id === 'brushBtn' && isBrush(t))));
+  $$('#colorTools [data-ctool], #colorArt [data-ctool]').forEach((x) => x.classList.toggle('on', x.dataset.ctool === t || (x.id === 'brushBtn' && isBrush(t))));
+  if (wasAg !== (t === 'agrad')) { refreshColorUI(); renderRecent(); }   // con el degradado avanzado, el color elegido es el del punto del degradado
   updateCursor();
 }
+const paintBrush = () => (state.brush === 'blender0' ? 'alcohol' : state.brush);   // un pincel que pinta (el Mezclador 0 no tiene color)
 // El botón de crayón/marcadores muestra el que se está usando; la lista completa está en su submenú
 function setBrush(b) {
   state.brush = b;
@@ -2672,7 +3138,7 @@ document.addEventListener('pointerdown', (e) => {
   if (onPaper) { e.stopPropagation(); e.preventDefault(); }   // tocar la hoja solo cierra el submenú
 }, true);
 window.addEventListener('resize', hidePop);
-$$('#colorTools [data-ctool]').forEach((b) => b.onclick = () => {
+$$('#colorTools [data-ctool], #colorArt [data-ctool]').forEach((b) => b.onclick = () => {
   const t = b.dataset.ctool, wasOn = b.classList.contains('on');
   if (b.dataset.pop && (wasOn || openPop)) {                   // tocar otra vez: abrir / cerrar opciones
     if (openPop && openPop.anchor === b) hidePop(); else showPop(b.dataset.pop, b);
@@ -2680,6 +3146,8 @@ $$('#colorTools [data-ctool]').forEach((b) => b.onclick = () => {
   }
   pickTool(); setColorTool(t);
   if (t === 'grad' && !state.gradSeen) { state.gradSeen = true; showPop('gradPop', b); }
+  else if (t === 'agrad') { state.agSeen = true; renderAg(); showPop('agradPop', b); }
+  else if (t === 'gel' && !state.gelSeen) { state.gelSeen = true; showPop('gelPop', b); }
   else if (b.id === 'brushBtn' && !state.brushSeen) { state.brushSeen = true; toast(tt('toast.brushhint')); }
 });
 $$('#brushPop [data-brush]').forEach((b) => b.onclick = () => { pickTool(); setColorTool(b.dataset.brush); state.brushSeen = true; hidePop(); });
@@ -2692,7 +3160,7 @@ function setDrawSize(k) { state.drawSize = String(k); $$('#drawSizes .size').for
 $$('#drawSizes .size').forEach((b) => b.onclick = () => setDrawSize(b.dataset.size));
 $$('#colorSizes .size').forEach((b) => b.onclick = () => {
   setColorSize(b.dataset.size); hidePop();
-  if (state.colorTool === 'fill' || state.colorTool === 'grad') { pickTool(); setColorTool(state.brush); }   // el grosor es para pintar a mano
+  if (state.colorTool === 'fill' || state.colorTool === 'grad' || state.colorTool === 'agrad') { pickTool(); setColorTool(paintBrush()); }   // el grosor es para pintar a mano
 });
 /* opciones del degradado: degradados listos + "Más opciones" */
 const cssGrad = (stops, ang) => stops.length > 1 ? `linear-gradient(${ang}, ${stops.join(', ')})` : stops[0];
@@ -2743,9 +3211,182 @@ $('#gMore').onclick = () => {
 $('#gSwap').onclick = () => { const c = state.color; state.gradPreset = 'custom'; setColor(state.color2); state.color2 = c; updateGradUI(); };
 $$('#gType [data-gt]').forEach((b) => b.onclick = () => { state.gradType = b.dataset.gt; updateGradUI(); });
 $$('#gDir [data-gd]').forEach((b) => b.onclick = () => { state.gradDir = b.dataset.gd; updateGradUI(); });
+/* ---------- 3.6: bolígrafo de gel (normal, blanco, metálico, brillantina) ---------- */
+const GEL_NAME_KEY = { normal: 'tool.gel', white: 'gel.white', metal: 'gel.metal', glitter: 'gel.glitter' };
+const gelName = () => tt(GEL_NAME_KEY[state.gelKind] || 'tool.gel');
+function setGelKind(k, quiet) {
+  if (!GEL_KINDS.includes(k)) k = 'normal';
+  state.gelKind = k;
+  $$('#gelPop [data-gel]').forEach((x) => x.classList.toggle('on', x.dataset.gel === k));
+  $$('[data-tool="gel"] .gl, [data-ctool="gel"] .gl').forEach((x) => { x.textContent = gelName(); });
+  $$('[data-tool="gel"], [data-ctool="gel"]').forEach((x) => x.setAttribute('aria-label', gelName() + ' · ' + tt('tool.gel.aria')));
+  $$('#gelMetals [data-mc]').forEach((x) => x.classList.toggle('on', k === 'metal' && x.dataset.mc === curColor()));
+  if (!quiet) refreshColorUI();
+}
+function pickGelTool() {
+  pickTool();
+  if (state.mode === 'draw') setDrawTool('gel'); else setColorTool('gel');
+}
+$$('#gelPop [data-gel]').forEach((b) => b.onclick = () => {
+  pickGelTool(); setGelKind(b.dataset.gel); state.gelSeen = true; hidePop();
+  toast(gelName() + ' ✓', 1800);
+});
+(function buildGelMetals() {
+  const box = $('#gelMetals');
+  for (const [id, c] of GEL_METALS) {
+    const b = document.createElement('button'); b.dataset.mc = c; b.dataset.mid = id;
+    b.style.background = `linear-gradient(135deg, ${c}, #fff 45%, ${c} 62%, ${rgbHexSafe(c, 0.7)})`;
+    b.onclick = () => { pickGelTool(); setGelKind('metal'); setColor(c); setGelKind('metal'); addRecent(c); hidePop(); toast(gelName() + ' · ' + tt('gel.m.' + id) + ' ✓', 1800, c); };
+    box.append(b);
+  }
+})();
+function rgbHexSafe(hex, k) { const [r, g, b] = hexToRgb(hex); return '#' + [r, g, b].map((v) => Math.round(v * k).toString(16).padStart(2, '0')).join(''); }
+function relabelGel() {
+  $$('#gelMetals [data-mc]').forEach((b) => { const n = tt('gel.m.' + b.dataset.mid); b.textContent = n; b.setAttribute('aria-label', tt('gel.m.aria', { name: n })); b.title = n; });
+  setGelKind(state.gelKind, true);
+}
+relabelGel();
+
+/* ---------- 3.6: degradado avanzado: barra de colores (2 a 5), opacidades, tipo, alcance y mezcla ---------- */
+const agSel = () => AG.stops[clamp(AG.sel, 0, AG.stops.length - 1)];
+const agRank = (s) => agSorted(AG.stops).indexOf(s) + 1;
+function agCss(stops) { return 'linear-gradient(90deg, ' + agSorted(stops).map((s) => rgbaOf(s.c, s.a) + ' ' + (s.p * 100).toFixed(1) + '%').join(', ') + ')'; }
+function agColorAt(p) {            // color del degradado en la posición p (0 a 1)
+  const st = agSorted(AG.stops);
+  if (p <= st[0].p) return { c: st[0].c, a: st[0].a };
+  for (let i = 1; i < st.length; i++) if (p <= st[i].p) {
+    const a = st[i - 1], b = st[i], f = (p - a.p) / Math.max(1e-6, b.p - a.p), A = hexToRgb(a.c), B = hexToRgb(b.c);
+    return { c: rgbHex(A[0] + (B[0] - A[0]) * f, A[1] + (B[1] - A[1]) * f, A[2] + (B[2] - A[2]) * f), a: a.a + (b.a - a.a) * f };
+  }
+  const l = st[st.length - 1]; return { c: l.c, a: l.a };
+}
+function agAddStop(p) {
+  if (AG.stops.length >= 5) { toast(tt('ag.toast.max'), 1800); return false; }
+  if (p == null) {                  // en el hueco más grande
+    const st = agSorted(AG.stops); let best = 0, at = 0.5;
+    for (let i = 1; i < st.length; i++) if (st[i].p - st[i - 1].p > best) { best = st[i].p - st[i - 1].p; at = (st[i].p + st[i - 1].p) / 2; }
+    p = at;
+  }
+  const c = agColorAt(p), s = { c: c.c, a: Math.round(c.a * 100) / 100, p: clamp(p, 0, 1) };
+  AG.stops.push(s); AG.sel = AG.stops.length - 1;
+  refreshColorUI(); renderAg(); return true;
+}
+function agDelStop() {
+  if (AG.stops.length <= 2) { toast(tt('ag.toast.min'), 1800); return false; }
+  AG.stops.splice(AG.sel, 1); AG.sel = clamp(AG.sel, 0, AG.stops.length - 1);
+  refreshColorUI(); renderAg(); return true;
+}
+function agSelect(i) { AG.sel = clamp(i, 0, AG.stops.length - 1); refreshColorUI(); renderAg(); }
+function agSetPreset(id) {
+  const g = GRAD_PRESETS.find((x) => x.id === id); if (!g) return;
+  let cols = g.s ? g.s.slice() : [state.color, lighterOf(state.color)];
+  if (cols.length > 5) cols = [0, 1, 2, 3, 4].map((i) => cols[Math.round(i * (cols.length - 1) / 4)]);
+  AG.stops = cols.map((c, i) => ({ c, a: 1, p: i / (cols.length - 1) })); AG.sel = 0;
+  refreshColorUI(); renderAg();
+}
+function renderAg() {
+  const pop = $('#agradPop'); if (!pop) return;
+  const sel = agSel(), n = AG.stops.length;
+  $('#agTrack').style.background = agCss(AG.stops) + ', repeating-conic-gradient(#ddd 0 25%, #fff 0 50%) 0 0/10px 10px';
+  const bar = $('#agBar');
+  let hs = Array.from(bar.querySelectorAll('.agh'));
+  while (hs.length < n) { const h = document.createElement('button'); h.className = 'agh'; h.innerHTML = '<i></i>'; bar.append(h); hs.push(h); }
+  while (hs.length > n) hs.pop().remove();
+  AG.stops.forEach((s, i) => {
+    const h = hs[i]; h.dataset.i = i; h.classList.toggle('on', i === AG.sel); h.style.left = (s.p * 100) + '%';
+    h.querySelector('i').style.background = rgbaOf(s.c, Math.max(0.25, s.a));
+    h.setAttribute('aria-label', tt('ag.stop.aria', { n: agRank(s), t: n, name: COLOR_NAME[s.c] || s.c, p: Math.round(s.p * 100) }));
+    h.setAttribute('aria-pressed', String(i === AG.sel));
+  });
+  $('#agCur').style.background = rgbaOf(sel.c, sel.a) + ', repeating-conic-gradient(#ddd 0 25%, #fff 0 50%) 0 0/8px 8px';
+  $('#agCur').style.background = `linear-gradient(${rgbaOf(sel.c, sel.a)}, ${rgbaOf(sel.c, sel.a)}), repeating-conic-gradient(#ddd 0 25%, #fff 0 50%) 0 0/8px 8px`;
+  $('#agSelTxt').textContent = tt('ag.sel', { n: agRank(sel), t: n });
+  $('#agAdd').disabled = n >= 5; $('#agDel').disabled = n <= 2;
+  $('#agStopOp').value = Math.round(sel.a * 100); $('#agStopOpV').textContent = Math.round(sel.a * 100) + ' %';
+  $('#agOp').value = Math.round(AG.op * 100); $('#agOpV').textContent = Math.round(AG.op * 100) + ' %';
+  $$('#agType [data-at]').forEach((x) => { x.classList.toggle('on', x.dataset.at === AG.type); if (x.dataset.at === 'angular') x.disabled = !hasConic; });
+  $$('#agExt [data-ae]').forEach((x) => x.classList.toggle('on', x.dataset.ae === AG.ext));
+  $$('#agBlend [data-ab]').forEach((x) => x.classList.toggle('on', x.dataset.ab === AG.blend));
+  $$('#agPal .sw').forEach((x) => x.classList.toggle('on', x.dataset.c === sel.c));
+  const ab = $('#agBasic .gswatch'); if (ab) ab.style.background = $('#gradBtn .gswatch').style.background || '';
+}
+function agAnchor() {
+  const b = $('#agradBtn');
+  return b && b.getClientRects().length ? b : $('#tbTools');
+}
+function agReopen() {
+  if (state.uiHidden) showMiniPop('agradPop', $('#mbTool')); else showPop('agradPop', agAnchor());
+  renderAg();
+}
+(function agEvents() {
+  const bar = $('#agBar'); let drag = null;
+  const posOf = (e) => { const r = bar.getBoundingClientRect(); return clamp((e.clientX - r.left) / Math.max(1, r.width), 0, 1); };
+  bar.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    e.preventDefault();
+    const h = e.target.closest('.agh');
+    if (h) { agSelect(+h.dataset.i); drag = { id: e.pointerId, i: +h.dataset.i, x0: e.clientX, moved: false }; try { bar.setPointerCapture(e.pointerId); } catch (_) {} return; }
+    agAddStop(posOf(e));
+  });
+  bar.addEventListener('pointermove', (e) => {
+    if (!drag || drag.id !== e.pointerId) return;
+    if (!drag.moved && Math.abs(e.clientX - drag.x0) < 3) return;
+    drag.moved = true; const s = AG.stops[drag.i]; if (!s) return;
+    s.p = Math.round(posOf(e) * 1000) / 1000; renderAg();
+  });
+  const end = (e) => { if (drag && drag.id === e.pointerId) drag = null; };
+  bar.addEventListener('pointerup', end); bar.addEventListener('pointercancel', end);
+  ['touchstart', 'touchmove'].forEach((t) => bar.addEventListener(t, (e) => { if (e.cancelable) e.preventDefault(); }, { passive: false }));
+  bar.addEventListener('keydown', (e) => {          // teclado: flechas mueven el color elegido
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    e.preventDefault(); const s = agSel(); s.p = clamp(s.p + (e.key === 'ArrowRight' ? 0.02 : -0.02), 0, 1); renderAg();
+  });
+  $('#agAdd').onclick = () => agAddStop();
+  $('#agDel').onclick = () => agDelStop();
+  $('#agStopOp').addEventListener('input', (e) => { agSel().a = clamp(+e.target.value / 100, 0, 1); refreshColorUI(); renderAg(); });
+  $('#agOp').addEventListener('input', (e) => { AG.op = clamp(+e.target.value / 100, 0.05, 1); renderAg(); });
+  $$('#agType [data-at]').forEach((b) => b.onclick = () => { AG.type = b.dataset.at; renderAg(); });
+  $$('#agExt [data-ae]').forEach((b) => b.onclick = () => { AG.ext = b.dataset.ae; renderAg(); });
+  $$('#agBlend [data-ab]').forEach((b) => b.onclick = () => { AG.blend = b.dataset.ab; renderAg(); });
+  $('#agMoreC').onclick = () => { if (!agOn()) { pickTool(); setColorTool('agrad'); } openColorsSheet(); agReturn = true; };
+  $('#agOther').onclick = () => { if (!agOn()) { pickTool(); setColorTool('agrad'); } openPicker('agstop'); };
+  $('#agBasic').onclick = () => {
+    const anc = openPop ? openPop.anchor : $('#gradBtn');
+    pickTool(); setColorTool('grad'); state.gradSeen = true; hidePop(); updateGradUI();
+    if (state.uiHidden) showMiniPop('gradPop', $('#mbTool')); else showPop('gradPop', $('#gradBtn').getClientRects().length ? $('#gradBtn') : anc);
+  };
+  $('#gToAdv').onclick = () => {
+    const anc = openPop ? openPop.anchor : agAnchor();
+    pickTool(); setColorTool('agrad'); state.agSeen = true; hidePop(); renderAg();
+    if (state.uiHidden) showMiniPop('agradPop', $('#mbTool')); else showPop('agradPop', $('#agradBtn').getClientRects().length ? $('#agradBtn') : anc);
+  };
+  const pal = $('#agPal');
+  for (const c of ['#FFFFFF', '#FFE66D', '#FFCC00', '#FF9500', '#FF3B30', '#FF2D92', '#AF52DE', '#5856D6',
+                   '#007AFF', '#5AC8FA', '#00C7BE', '#34C759', '#A8E063', '#8B4513', '#9E9E9E', '#333333']) {
+    const b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.dataset.c = c;
+    b.onclick = () => { if (!agOn()) { pickTool(); setColorTool('agrad'); } setColor(c); };
+    pal.append(b);
+  }
+})();
+function buildAgPresets() {
+  const box = $('#agPre'); box.textContent = '';
+  for (const g of GRAD_PRESETS) {
+    const b = document.createElement('button'); b.dataset.agp = g.id;
+    b.style.background = cssGrad(g.s || [state.color, lighterOf(state.color)], '90deg');
+    b.title = g.id === 'mine' ? tt('grad.mine.tip') : tt('grad.preset.tip', { name: g.n }); b.setAttribute('aria-label', b.title);
+    b.onclick = () => agSetPreset(g.id);
+    box.append(b);
+  }
+}
+function relabelAg() {
+  $$('#agPal .sw').forEach((b) => { const c = b.dataset.c; b.setAttribute('aria-label', tt('color.aria', { name: COLOR_NAME[c] || c })); b.title = COLOR_NAME[c] || c; });
+  buildAgPresets(); renderAg();
+}
+relabelAg();
 // Cada modo recuerda su color: Dibujar (lápiz, marcador y figuras; empieza en negro) y Colorear
-const curColor = () => (state.mode === 'draw' ? state.drawColor : state.color);
-const curAlpha = () => (state.mode === 'draw' ? state.drawAlpha : state.alpha);
+const agOn = () => state.mode === 'color' && state.colorTool === 'agrad';
+const curColor = () => (state.mode === 'draw' ? state.drawColor : agOn() ? agSel().c : state.color);
+const curAlpha = () => (state.mode === 'draw' ? state.drawAlpha : agOn() ? agSel().a : state.alpha);
 function refreshColorUI() {
   const cur = curColor();
   // "Negro" de los colores rápidos: negro puro en Dibujar (como el lápiz de siempre), #333333 en Colorear
@@ -2754,8 +3395,11 @@ function refreshColorUI() {
   $$('#cQuick .sw[data-black]').forEach((q) => { const c = state.mode === 'draw' ? '#000000' : '#333333'; q.dataset.c = c; q.style.background = c; });
   $$('#palette .sw, .recent .sw, #cList .sw, #cQuick .sw').forEach((s) => s.classList.toggle('on', s.dataset.c === cur));
   const tint = (c) => (c === '#FFFFFF' ? '' : c);
-  $$('#colorTools [data-ctool="fill"] svg, #brushBtn svg').forEach((s) => { s.style.color = tint(state.color); });
-  $$('#drawTools [data-tool="pen"] svg, #markBtn svg').forEach((s) => { s.style.color = tint(state.drawColor); });
+  $$('#colorTools [data-ctool="fill"] svg, #brushBtn svg, #colorArt [data-ctool="cpencil"] svg, #colorArt [data-ctool="gel"] svg').forEach((s) => { s.style.color = tint(state.color); });
+  $$('#drawTools [data-tool="pen"] svg, #markBtn svg, #drawArt .tool svg').forEach((s) => { s.style.color = tint(state.drawColor); });
+  if (state.brush === 'blender0') $('#brushBtn svg').style.color = '';
+  if (state.drawBrush === 'blender0') $('#markBtn svg').style.color = '';
+  if (state.gelKind === 'white') $$('[data-tool="gel"] svg, [data-ctool="gel"] svg').forEach((s) => { s.style.color = ''; });
   const a = curAlpha(), chip = $('#alphaChip');
   chip.hidden = a >= 0.999; chip.textContent = Math.round(a * 100) + ' %';
   chip.setAttribute('aria-label', tt('alpha.aria', { n: Math.round(a * 100) }));
@@ -2765,12 +3409,22 @@ function refreshColorUI() {
 function setColor(hex, alpha) {
   hex = String(hex).toUpperCase();
   const a = alpha == null ? 1 : clamp(+alpha || 0, 0.05, 1);
-  if (state.mode === 'draw') { state.drawColor = hex; state.drawAlpha = a; refreshColorUI(); return; }
+  if (state.mode === 'draw') {
+    state.drawColor = hex; state.drawAlpha = a;
+    if (state.drawTool === 'marker' && state.drawBrush === 'blender0') setDrawBrush('alcohol');   // eligió un color: quiere pintar
+    if (state.drawTool === 'gel' && state.gelKind === 'white') setGelKind('normal');
+    refreshColorUI(); return;
+  }
+  if (agOn()) {                // degradado avanzado: el color va al punto elegido del degradado
+    const st = agSel(); st.c = hex; if (alpha != null) st.a = a;
+    refreshColorUI(); renderAg(); return;
+  }
   state.color = hex; state.alpha = a;
   refreshColorUI();
   if (state.colorTool === 'grad' && !gradUsesColor()) state.gradPreset = 'mine';   // eligió un color con el degradado: usar "Mi color"
   if (state.colorTool === 'cerase') setColorTool('fill');
-  else if (state.colorTool === 'blend') setColorTool(state.brush);    // eligió un color: quiere pintar
+  else if (state.colorTool === 'blend' || state.colorTool === 'blender0') setColorTool(paintBrush());    // eligió un color: quiere pintar
+  else if (state.colorTool === 'gel' && state.gelKind === 'white') setGelKind('normal');
   updateGradUI();
 }
 (function buildPalette() {
@@ -2810,6 +3464,7 @@ function renderRecent() {
 /* ---------- Más colores: 360 colores por familias ---------- */
 function pickSheetColor(c) {
   setColor(c); addRecent(c); closeSheet('#colorsSheet');
+  if (agReturn && agOn()) { agReturn = false; agReopen(); return; }
   toast(colorLabel(c) + ' ✓ ' + (state.mode === 'draw' ? tt('toast.tapdraw') : tt('toast.tappaint')), 2600, c);
 }
 function buildColorSheet() {
@@ -2898,8 +3553,9 @@ $('#cScroll').addEventListener('scroll', () => {
     const on = $('#cTabs .on'); if (!on || on.dataset.fam !== cur) setFamTab(cur);
   });
 }, { passive: true });
+let agReturn = false;          // 3.6: se abrió desde el degradado avanzado: al elegir, volver a él
 function openColorsSheet() {
-  hidePop(); $('#toast').classList.remove('show'); renderRecent(); refreshColorUI(); $('#colorsSheet').classList.remove('tall'); openSheet('#colorsSheet');
+  agReturn = false; hidePop(); $('#toast').classList.remove('show'); renderRecent(); refreshColorUI(); $('#colorsSheet').classList.remove('tall'); openSheet('#colorsSheet');
   const sel = $('#cList .sw.on');
   const sc = $('#cScroll');
   if (sel) { const sec = sel.closest('.cfam'); const id = sec.id.slice(4); setFamOpen(id, true); sc.scrollTop = Math.max(0, sec.offsetTop - 4); setFamTab(id); }
@@ -2936,6 +3592,7 @@ function pickColorAt(p) {
   setPicking(false);
   setColor(hex); addRecent(hex);
   if (back) { const a = pk.a; openPicker(pk.from); pk.a = a; pkUpdate(); toast(tt('toast.picked.back'), 2600, hex); }
+  else if (agOn()) { agReopen(); toast(tt('toast.picked'), 2600, hex); }
   else toast(tt('toast.picked'), 2600, hex);
   return hex;
 }
@@ -3229,19 +3886,20 @@ try {
   if (s0 && ['left', 'right', 'top', 'bottom'].includes(s0.edge)) { MINI.edge = s0.edge; MINI.pos = clamp(+s0.pos || 0.5, 0, 1); MINI.folded = !!s0.folded; }
 } catch (_) {}
 function saveMini() { try { localStorage.setItem(MINI_KEY, JSON.stringify(MINI)); } catch (_) {} }
-const TOOL_ICON = { pen: 'i-pen', line: 'i-line', ellipse: 'i-ellipse', rect: 'i-rect', star: 'i-star', heart: 'i-heart', erase: 'i-eraser', fill: 'i-fill', blend: 'i-blend', cerase: 'i-eraser' };
+const TOOL_ICON = { pen: 'i-pen', line: 'i-line', ellipse: 'i-ellipse', rect: 'i-rect', star: 'i-star', heart: 'i-heart', erase: 'i-eraser', fill: 'i-fill', blend: 'i-blend', cerase: 'i-eraser', cpencil: 'i-cpencil', gel: 'i-gel', agrad: 'i-agrad' };
 const TOOL_NAME = {};
-for (const k of ['pen', 'line', 'ellipse', 'rect', 'star', 'heart', 'erase', 'fill', 'grad', 'blend', 'cerase', 'crayon']) Object.defineProperty(TOOL_NAME, k, { get: () => tt('tool.' + k), enumerable: true });
-for (const k of ['acrylic', 'water', 'alcohol']) Object.defineProperty(TOOL_NAME, k, { get: () => tt('mark.n.' + k), enumerable: true });
+for (const k of ['pen', 'line', 'ellipse', 'rect', 'star', 'heart', 'erase', 'fill', 'grad', 'blend', 'cerase', 'crayon', 'cpencil', 'agrad']) Object.defineProperty(TOOL_NAME, k, { get: () => tt('tool.' + k), enumerable: true });
+for (const k of ['acrylic', 'water', 'alcohol', 'blender0']) Object.defineProperty(TOOL_NAME, k, { get: () => tt('mark.n.' + k), enumerable: true });
+Object.defineProperty(TOOL_NAME, 'gel', { get: () => gelName(), enumerable: true });
 const SIZE_DOT = { xxs: 2, xs: 3, 0: 6, 1: 11, 2: 18 };
 function miniToolInfo() {
   const t = currentTool();
   if (state.mode === 'draw') {
-    if (t === 'marker') return { icon: state.drawBrush === 'crayon' ? 'i-marker' : BRUSH_ICONS[state.drawBrush], name: tt('mark.n.' + state.drawBrush), tint: true };
-    return { icon: TOOL_ICON[t] || 'i-pen', name: TOOL_NAME[t] || t, tint: t !== 'erase' };
+    if (t === 'marker') return { icon: state.drawBrush === 'crayon' ? 'i-marker' : BRUSH_ICONS[state.drawBrush], name: tt('mark.n.' + state.drawBrush), tint: state.drawBrush !== 'blender0' };
+    return { icon: TOOL_ICON[t] || 'i-pen', name: TOOL_NAME[t] || t, tint: t !== 'erase' && !(t === 'gel' && state.gelKind === 'white') };
   }
-  if (isBrush(t)) return { icon: BRUSH_ICONS[t], name: TOOL_NAME[t], tint: true };
-  return { icon: TOOL_ICON[t], name: TOOL_NAME[t] || t, tint: t === 'fill', grad: t === 'grad' };
+  if (isBrush(t)) return { icon: BRUSH_ICONS[t], name: TOOL_NAME[t], tint: t !== 'blender0' };
+  return { icon: TOOL_ICON[t], name: TOOL_NAME[t] || t, tint: t === 'fill' || t === 'cpencil' || (t === 'gel' && state.gelKind !== 'white'), grad: t === 'grad' };
 }
 function refreshMini() {
   const bar = document.getElementById('miniBar'); if (!bar) return;
@@ -3346,9 +4004,10 @@ function showMiniPop(id, anchor) {
 const mtl = (a, b) => tt(a) + (b ? '<small>' + tt(b) + '</small>' : '');
 const MINI_TOOLS = {
   get color() { return [['fill', mtl('tool.fill'), 'i-fill'], ['crayon', mtl('tool.crayon', 'mt.crayon.sub'), 'i-crayon'], ['acrylic', mtl('tool.marker', 'mark.k.acrylic'), 'i-acrylic'], ['water', mtl('tool.marker', 'mark.k.water'), 'i-water'],
-          ['alcohol', mtl('tool.marker', 'mark.k.alcohol'), 'i-alcohol'], ['grad', mtl('tool.grad'), null], ['blend', mtl('tool.blend'), 'i-blend'], ['cerase', mtl('tool.erase', 'mt.eraser.sub'), 'i-eraser']]; },
+          ['alcohol', mtl('tool.marker', 'mark.k.alcohol'), 'i-alcohol'], ['blender0', mtl('mark.n.blender0'), 'i-blender0'], ['cpencil', mtl('tool.cpencil'), 'i-cpencil'], ['gel', mtl('tool.gel'), 'i-gel'],
+          ['grad', mtl('tool.grad'), null], ['agrad', mtl('tool.agrad'), 'i-agrad'], ['blend', mtl('tool.blend'), 'i-blend'], ['cerase', mtl('tool.erase', 'mt.eraser.sub'), 'i-eraser']]; },
   get draw() { return [['pen', mtl('tool.pen'), 'i-pen'], ['m-crayon', mtl('tool.marker', 'mark.k.crayon'), 'i-marker'], ['m-acrylic', mtl('tool.marker', 'mark.k.acrylic'), 'i-acrylic'], ['m-water', mtl('tool.marker', 'mark.k.water'), 'i-water'],
-         ['m-alcohol', mtl('tool.marker', 'mark.k.alcohol'), 'i-alcohol'], ['erase', mtl('tool.erase'), 'i-eraser']]; },
+         ['m-alcohol', mtl('tool.marker', 'mark.k.alcohol'), 'i-alcohol'], ['m-blender0', mtl('mark.n.blender0'), 'i-blender0'], ['cpencil', mtl('tool.cpencil'), 'i-cpencil'], ['gel', mtl('tool.gel'), 'i-gel'], ['erase', mtl('tool.erase'), 'i-eraser']]; },
 };
 function miniToolOn(k) {
   const t = currentTool();
@@ -3378,6 +4037,8 @@ function pickMiniTool(k) {
     setColorTool(k);
   }
   hidePop(); toast(miniToolInfo().name + ' ✓', 1800);
+  if (k === 'agrad') { renderAg(); showMiniPop('agradPop', $('#mbTool')); }
+  else if (k === 'gel' && !state.gelSeen) { state.gelSeen = true; showMiniPop('gelPop', $('#mbTool')); }
 }
 function buildMiniSizes() {
   const box = $('#mSizes'); box.textContent = '';
@@ -3393,7 +4054,7 @@ function setMiniSize(k) {
   if (state.mode === 'draw') setDrawSize(k);
   else {
     setColorSize(k);
-    if (state.colorTool === 'fill' || state.colorTool === 'grad') { pickTool(); setColorTool(state.brush); }   // el grosor es para pintar a mano
+    if (state.colorTool === 'fill' || state.colorTool === 'grad' || state.colorTool === 'agrad') { pickTool(); setColorTool(paintBrush()); }   // el grosor es para pintar a mano
   }
   hidePop(); toast(tt('toast.size', { name: SIZE_NAMES[k] }), 1800);
 }
@@ -3622,6 +4283,7 @@ $('#pkOk').onclick = () => {
   closePicker();
   if (from === 'sheet') closeSheet('#colorsSheet');
   setColor(hex, a); addRecent(hex);
+  if (from === 'agstop' && agOn()) { agReopen(); return; }
   const tip = state.mode === 'draw' ? tt('toast.tapdraw') : tt('toast.tappaint');
   toast((a < 0.999 ? tt('toast.chosen.op', { n: Math.round(a * 100) }) : tt('toast.chosen')) + ' ' + tip, 2600, hex);
 };
@@ -4783,7 +5445,7 @@ function applyLang() {
   setDocLang(); buildColorNames(); translateStatic(); refreshLangButtons();
   relabelSwatches();
   buildColorSheet(); buildGradPresets(); buildMiniSizes(); buildTemplateGrid();
-  setBrush(state.brush); setDrawBrush(state.drawBrush);
+  setBrush(state.brush); setDrawBrush(state.drawBrush); relabelGel(); relabelAg();
   updateGradUI(); refreshColorUI(); renderRecent(); refreshLayersUI(); updateObjBar(); renderSlots();
   setAddTab(lastAddTab); buildAddGrids();
   $('#txtAdd').textContent = editingText ? tt('txt.change') : tt('txt.add');
@@ -4830,6 +5492,7 @@ window.__colorear = {
   paint, addLayer, deleteLayer, moveLayer, selectLayer, setLayerVisible, setLayerOpacity, composite, setUIHidden, openPicker, pk, pkSetHex, hsvToRgb, rgbToHsv, docPerScreenPx,
   get mySlots() { return mySlots.slice(); }, COLOR_CODE, placeMini, showPanel, hidePanel, get openPanel() { return openGrp; }, setMiniPos, setMiniFolded, get mini() { return { ...MINI }; }, setFamOpen, openColorsSheet, get activeLayer() { return paintTarget(); },
   get W() { return W; }, get lang() { return LANG; }, setLang, tt, LANGS, get H() { return H; }, get objs() { return objs; }, get objMode() { return objMode; }, version: APP_VERSION,
+  AG, agApply, agAddStop, agDelStop, agSelect, agSetPreset, renderAg, setGelKind, setDrawTool, tooth, hasConic,
 };
 </script>
 </body>
