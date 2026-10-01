@@ -2,35 +2,140 @@
   "id": ".",
   "name": "Colorear – Crea y colorea dibujos",
   "short_name": "Colorear",
-  "description": "Crea tus propios dibujos para colorear, toma fotos de tus libros de colorear y coloréalos con el dedo: crayón, marcadores (acrílico, de agua y de alcohol), degradados y difuminar. 24 plantillas (animales, mandalas, Puerto Rico…), stickers, texto, zoom y funciona sin internet. Todo se guarda solo en tu dispositivo.",
+  "description": "Crea tus propios dibujos para colorear, toma fotos de tus libros de colorear y coloréalos con el dedo: crayón, marcadores (acrílico, de agua y de alcohol), degradados y difuminar. 24 plantillas (animales, mandalas, Puerto Rico…), stickers, texto, zoom y funciona sin internet. Todo se guarda solo en tu dispositivo. En español, English, português y français.",
   "lang": "es",
   "dir": "ltr",
+  "translations": {
+    "en": {
+      "name": "Colorear – Create and color drawings",
+      "short_name": "Colorear",
+      "description": "Create your own coloring pages, take photos of your coloring books and color them with your finger: crayon, markers (acrylic, watercolor and alcohol), gradients and blending. 24 templates, stickers, text, zoom, and it works offline. Everything stays on your device."
+    },
+    "pt-BR": {
+      "name": "Colorear – Crie e pinte desenhos",
+      "short_name": "Colorear",
+      "description": "Crie seus próprios desenhos para colorir, fotografe seus livros de colorir e pinte com o dedo: giz de cera, marcadores (acrílico, aquarela e álcool), degradês e esfumado. 24 modelos, adesivos, texto, zoom e funciona sem internet. Tudo fica só no seu aparelho."
+    },
+    "fr": {
+      "name": "Colorear – Crée et colorie des dessins",
+      "short_name": "Colorear",
+      "description": "Crée tes propres coloriages, prends en photo tes cahiers de coloriage et colorie-les du bout du doigt : pastel gras, feutres (acrylique, aquarelle et alcool), dégradés et estompe. 24 modèles, autocollants, texte, zoom, et ça marche sans internet. Tout reste sur ton appareil."
+    }
+  },
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
   "orientation": "any",
   "background_color": "#FFF6EC",
   "theme_color": "#FF6F61",
-  "categories": ["kids", "entertainment", "education"],
+  "categories": [
+    "kids",
+    "entertainment",
+    "education"
+  ],
   "icons": [
-    {"src": "icon-48.png", "sizes": "48x48", "type": "image/png", "purpose": "any"},
-    {"src": "icon-72.png", "sizes": "72x72", "type": "image/png", "purpose": "any"},
-    {"src": "icon-96.png", "sizes": "96x96", "type": "image/png", "purpose": "any"},
-    {"src": "icon-128.png", "sizes": "128x128", "type": "image/png", "purpose": "any"},
-    {"src": "icon-144.png", "sizes": "144x144", "type": "image/png", "purpose": "any"},
-    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
-    {"src": "icon-256.png", "sizes": "256x256", "type": "image/png", "purpose": "any"},
-    {"src": "icon-384.png", "sizes": "384x384", "type": "image/png", "purpose": "any"},
-    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
-    {"src": "icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable"},
-    {"src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"},
-    {"src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any"}
+    {
+      "src": "icon-48.png",
+      "sizes": "48x48",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-256.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
   ],
   "screenshots": [
-    { "src": "screenshots/telefono-1.png", "sizes": "1170x2532", "type": "image/png", "form_factor": "narrow", "label": "Colorea con el bote de pintura" },
-    { "src": "screenshots/telefono-2.png", "sizes": "1170x2532", "type": "image/png", "form_factor": "narrow", "label": "Sube una foto de tu libro de colorear" },
-    { "src": "screenshots/telefono-3.png", "sizes": "1170x2532", "type": "image/png", "form_factor": "narrow", "label": "Añade stickers y texto" },
-    { "src": "screenshots/escritorio-1.png", "sizes": "1280x800", "type": "image/png", "form_factor": "wide", "label": "Colorear en la computadora" }
+    {
+      "src": "screenshots/telefono-1.png",
+      "sizes": "1170x2532",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Colorea con el bote de pintura"
+    },
+    {
+      "src": "screenshots/telefono-2.png",
+      "sizes": "1170x2532",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Sube una foto de tu libro de colorear"
+    },
+    {
+      "src": "screenshots/telefono-3.png",
+      "sizes": "1170x2532",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Añade stickers y texto"
+    },
+    {
+      "src": "screenshots/escritorio-1.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Colorear en la computadora"
+    }
   ],
   "share_target": {
     "action": "compartir-destino",
@@ -39,7 +144,18 @@
     "params": {
       "title": "titulo",
       "text": "texto",
-      "files": [ { "name": "imagen", "accept": ["image/*", ".png", ".jpg", ".jpeg", ".webp"] } ]
+      "files": [
+        {
+          "name": "imagen",
+          "accept": [
+            "image/*",
+            ".png",
+            ".jpg",
+            ".jpeg",
+            ".webp"
+          ]
+        }
+      ]
     }
   }
 }

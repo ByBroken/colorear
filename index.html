@@ -12,6 +12,10 @@
 <meta name="apple-mobile-web-app-title" content="Colorear">
 <meta name="format-detection" content="telephone=no">
 <link rel="manifest" href="manifest.webmanifest">
+<script src="i18n/es.js"></script>
+<script src="i18n/en.js"></script>
+<script src="i18n/pt-BR.js"></script>
+<script src="i18n/fr.js"></script>
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -321,7 +325,7 @@ body.mode-color .only-draw{display:none!important}
 .sheet h2{margin:0;font-size:20px;flex:1}
 .sheet-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .sheet .scroll{overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;min-height:0}
-.menu-list{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.menu-list{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
 .mbtn{
   border:0;border-radius:16px;background:#faf6f1;min-height:64px;padding:10px 12px;
   display:flex;align-items:center;gap:10px;font-size:16px;font-weight:700;text-align:left;
@@ -330,6 +334,19 @@ body.mode-color .only-draw{display:none!important}
 .mbtn:active{transform:scale(.97)}
 .mbtn small{display:block;font-weight:500;font-size:13px;color:var(--muted);margin-top:2px}
 .mbtn.big{min-height:76px}
+.langbox{margin-top:14px;padding:10px;border-radius:16px;background:#f6f3ff}
+.langlbl{font-weight:800;font-size:14px;margin:0 2px 8px;color:var(--ink,#333)}
+.langs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.langs button{min-height:44px;padding:6px 4px;border:2px solid transparent;border-radius:12px;background:#fff;font:inherit;font-weight:700;font-size:14px;color:inherit;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow-wrap:anywhere}
+.langs button[aria-pressed="true"]{border-color:var(--accent2);color:var(--accent2)}
+@media (max-width:440px){.langs{grid-template-columns:1fr 1fr}}
+/* 3.5: textos más largos en inglés, portugués y francés */
+html:not([lang="es"]) #pickColor span{display:inline-block;max-width:64px}
+html:not([lang="es"]) #recentRow{flex-wrap:wrap;row-gap:6px}
+.lyr .lsel small{white-space:normal;overflow-wrap:anywhere;line-height:1.2}
+@media (max-width:340px){ html:not([lang="es"]) header .seg button{font-size:12.5px;padding:0 1px} }
+@media (max-width:374px){ html:not([lang="es"]) .menu-list>.mbtn{font-size:14px;padding:10px 8px;gap:6px} html:not([lang="es"]) .menu-list>.mbtn svg{width:22px;height:22px} }
+.menu-list>.mbtn{min-width:0;overflow-wrap:break-word;hyphens:auto}
 .menu-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px;padding:4px 4px 0;font-size:14px;color:var(--muted)}
 .menu-foot a{color:var(--accent2);font-weight:700;text-decoration:none;padding:10px 4px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
@@ -721,7 +738,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <button class="tool has-pop" id="brushBtn" data-ctool="crayon" data-pop="brushPop" aria-label="Crayón y marcadores" title="Pinta con el dedo. Toca otra vez para elegir crayón o marcador"><svg><use href="#i-crayon"/></svg><span class="bl">Crayón</span></button>
     <button class="tool has-pop" id="gradBtn" data-ctool="grad" data-pop="gradPop" aria-label="Degradado" title="Degradado: toca una zona y se pinta con colores que se mezclan"><span class="gswatch"></span>Degradado</button>
     <button class="tool" data-ctool="blend" aria-label="Difuminar" title="Difuminar: pasa el dedo para mezclar los colores"><svg><use href="#i-blend"/></svg>Difuminar</button>
-    <button class="tool" data-ctool="cerase" title="Borrar color (las líneas no se borran)" aria-label="Borrar color"><svg><use href="#i-eraser"/></svg>Borrar</button>
+    <button class="tool" data-ctool="cerase" title="Borrar color (las líneas no se borran)" aria-label="Borrar color"><svg><use href="#i-eraser"/></svg><span data-i18n="tool.cerase.short">Borrar</span></button>
   </div>
   </div>
   <div class="grp" data-grp="colors">
@@ -801,7 +818,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <div class="chips" id="gDir" style="margin-top:6px">
       <button data-gd="down" class="on" aria-label="De arriba a abajo" title="De arriba a abajo">↓</button><button data-gd="right" aria-label="De izquierda a derecha" title="De izquierda a derecha">→</button><button data-gd="diag" aria-label="En diagonal hacia abajo" title="En diagonal hacia abajo">↘</button><button data-gd="up" aria-label="En diagonal hacia arriba" title="En diagonal hacia arriba">↗</button>
     </div>
-    <p class="ptip">Con estas opciones abiertas también puedes <b>arrastrar</b> dentro de una zona para elegir la dirección (empieza con el primer color y termina con el último).</p>
+    <p class="ptip" data-i18n-html="grad.drag.html">Con estas opciones abiertas también puedes <b>arrastrar</b> dentro de una zona para elegir la dirección (empieza con el primer color y termina con el último).</p>
   </div>
 </div>
 
@@ -852,8 +869,14 @@ body.ui-hidden.obj-mode #miniBar{display:none}
         <button class="mbtn" id="mInstall"><svg><use href="#i-phone"/></svg>Instalar en el teléfono</button>
         <button class="mbtn" id="mNews"><svg><use href="#i-sticker"/></svg>Novedades y ayuda</button>
       </div>
+      <div class="langbox" role="group" aria-labelledby="langLbl">
+        <div class="langlbl" id="langLbl"><span aria-hidden="true">🌐</span> Idioma · Language</div>
+        <div class="langs" id="langList" data-i18n-skip>
+          <button data-lang="es" lang="es">Español</button><button data-lang="en" lang="en">English</button><button data-lang="pt-BR" lang="pt-BR">Português</button><button data-lang="fr" lang="fr">Français</button>
+        </div>
+      </div>
       <div class="menu-foot">
-        <span id="versionText">Colorear · Versión 3.4</span>
+        <span id="versionText">Colorear · Versión 3.5</span>
         <a href="privacidad.html" target="_blank" rel="noopener" id="mPrivacy">Política de privacidad</a>
       </div>
     </div>
@@ -913,7 +936,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
         <button class="mbtn big" id="shOutline"><svg><use href="#i-tpl"/></svg><div>Solo el dibujo (para colorear)<small>Envía las líneas en blanco y negro para que otra persona lo coloree</small></div></button>
         <button class="mbtn big" id="shColor"><svg><use href="#i-brush"/></svg><div>Con mis colores<small>Envía el dibujo tal como está</small></div></button>
       </div>
-      <p class="tip">Quien lo reciba puede abrirlo en su app Colorear con <b>Subir foto</b> → <b>Elegir imagen</b>.</p>
+      <p class="tip" data-i18n-html="share.tip.html">Quien lo reciba puede abrirlo en su app Colorear con <b>Subir foto</b> → <b>Elegir imagen</b>.</p>
     </div>
   </div>
 </div>
@@ -999,10 +1022,81 @@ body.ui-hidden.obj-mode #miniBar{display:none}
 <div id="printArea"><img id="printImg" alt="Dibujo para colorear"></div>
 <script>
 'use strict';
+
+/* ---------- idiomas (3.5): es (principal), en, pt-BR, fr. Los textos están en i18n/*.js ---------- */
+const I18N = window.COLOREAR_I18N || {};
+const LANGS = ['es', 'en', 'pt-BR', 'fr'];
+const LANG_KEY = 'colorear.idioma';
+function detectLang() {
+  let saved = null; try { saved = localStorage.getItem(LANG_KEY); } catch (_) {}
+  if (saved && LANGS.includes(saved) && I18N[saved]) return saved;
+  const list = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || 'es'];
+  for (const l of list) {
+    const m = { es: 'es', en: 'en', pt: 'pt-BR', fr: 'fr' }[String(l || '').toLowerCase().split(/[-_]/)[0]];
+    if (m && I18N[m]) return m;
+  }
+  return 'es';
+}
+let LANG = detectLang();
+// tt('clave', { nombre: valor }): texto en el idioma actual (si falta, en español)
+function tt(key, vars) {
+  let s = I18N[LANG] && I18N[LANG][key];
+  if (s == null) s = I18N.es && I18N.es[key];
+  if (s == null) return key;
+  if (vars) s = s.replace(/\{(\w+)\}/g, (m, k) => {
+    if (k in vars) return String(vars[k]);
+    const lk = k.charAt(0).toLowerCase() + k.slice(1);
+    if (lk !== k && lk in vars) { const v = String(vars[lk]); return v.charAt(0).toUpperCase() + v.slice(1); }
+    if (k.endsWith('_lc') && k.slice(0, -3) in vars) return String(vars[k.slice(0, -3)]).toLowerCase();
+    return m;
+  });
+  return s;
+}
+const slugKey = (s) => String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+const cnName = (es) => tt('cn.' + slugKey(es)) === 'cn.' + slugKey(es) ? es : tt('cn.' + slugKey(es));
+// Textos fijos del HTML: se traducen buscando el texto español en es.js (se guarda el original para cambiar otra vez)
+const I18N_ATTRS = ['title', 'aria-label', 'placeholder', 'alt'];
+const i18nOrig = new WeakMap();
+let i18nRev = null;
+function revKey(s) {
+  if (!i18nRev) { i18nRev = Object.create(null); const es = I18N.es || {}; for (const k in es) if (!(es[k] in i18nRev)) i18nRev[es[k]] = k; }
+  return i18nRev[s];
+}
+function translateStatic(root = document.body) {
+  for (const el of root.querySelectorAll('[data-i18n-html]')) el.innerHTML = tt(el.dataset.i18nHtml);
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: (n) => {
+    const p = n.parentElement;
+    if (!p || p.closest('script,style,svg,[data-i18n-html],[data-i18n-skip]')) return NodeFilter.FILTER_REJECT;
+    return /\S/.test(n.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+  } });
+  const nodes = []; while (w.nextNode()) nodes.push(w.currentNode);
+  for (const n of nodes) {
+    let o = i18nOrig.get(n); if (o == null) { o = n.nodeValue; i18nOrig.set(n, o); }
+    const p = n.parentElement, txt = o.replace(/\s+/g, ' ').trim();
+    const key = (p.dataset.i18n && n === Array.from(p.childNodes).find((c) => c.nodeType === 3 && /\S/.test(c.nodeValue))) ? p.dataset.i18n : revKey(txt);
+    if (!key) continue;
+    const lead = o.match(/^\s*/)[0], trail = o.match(/\s*$/)[0];
+    n.nodeValue = lead + tt(key) + trail;
+  }
+  for (const el of root.querySelectorAll(I18N_ATTRS.map((a) => '[' + a + ']').join(','))) {
+    if (el.closest('svg,[data-i18n-skip]')) continue;
+    let o = i18nOrig.get(el); if (!o) { o = {}; i18nOrig.set(el, o); }
+    for (const a of I18N_ATTRS) {
+      if (!el.hasAttribute(a)) continue;
+      if (!(a in o)) o[a] = el.getAttribute(a);
+      const key = revKey(o[a].replace(/\s+/g, ' ').trim()); if (key) el.setAttribute(a, tt(key));
+    }
+  }
+}
+function setDocLang() {
+  document.documentElement.lang = LANG;
+  const md = document.querySelector('meta[name="description"]'); if (md) md.setAttribute('content', tt('meta.desc'));
+}
+setDocLang(); translateStatic();
 /* Colorear v3.3: crea dibujos para colorear, sube fotos de tus libros y coloréalos
    (lápiz y marcador de colores, crayón, marcadores acrílico / de agua / de alcohol, degradados, difuminar, copiar color,
    capas, ocultar botones, punta Detalle y rueda de colores con opacidad) */
-const APP_VERSION = '3.4';
+const APP_VERSION = '3.5';
 const PORTRAIT = [1200, 1600], LANDSCAPE = [1600, 1200];
 let W = 1200, H = 1600;                       // tamaño de la hoja (px internos); vertical u horizontal
 /* Grosores en píxeles de la hoja (1200×1600). "Súper fina" (xs) y "Detalle" (xxs) no son fijas: se calculan
@@ -1026,8 +1120,8 @@ function sizeLW(kind, size) {           // kind: 'draw' | 'mark' | 'color'
   return (kind === 'draw' ? DRAW_SIZES : kind === 'mark' ? MARK_SIZES : COLOR_SIZES)[size] || 12;
 }
 const isThin = (size) => size === 'xs' || size === 'xxs';
-const SIZE_NAMES = { xxs: 'Detalle', xs: 'Súper fina', 0: 'Fina', 1: 'Mediana', 2: 'Gruesa' };
-const BRUSHES = { crayon: 'Crayón', acrylic: 'Acrílico', water: 'Acuarela', alcohol: 'Alcohol' };
+const SIZE_NAMES = { get xxs() { return tt('size.xxs'); }, get xs() { return tt('size.xs'); }, get 0() { return tt('size.0'); }, get 1() { return tt('size.1'); }, get 2() { return tt('size.2'); } };
+const BRUSHES = { get crayon() { return tt('brush.short.crayon'); }, get acrylic() { return tt('brush.short.acrylic'); }, get water() { return tt('brush.short.water'); }, get alcohol() { return tt('brush.short.alcohol'); } };
 const BRUSH_ICONS = { crayon: 'i-crayon', acrylic: 'i-acrylic', water: 'i-water', alcohol: 'i-alcohol' };
 const ZMIN = 1, ZMAX = 6;
 const PALETTE = ['#FF3B30','#FF6F61','#FF9500','#FFCC00','#FFE66D','#A8E063','#34C759','#0B8F3C',
@@ -1043,15 +1137,25 @@ const GREY_NAMES = [['Blanco', 'Gris perla', 'Gris nube', 'Gris plata', 'Gris cl
 const ALL_COLORS = [], COLOR_NAME = {}, COLOR_CODE = {};
 // 3.4: códigos propios (letra de la familia + número, de claro a oscuro fila por fila). No son códigos de ninguna marca.
 const FAM_CODES = { rojos: 'R', naranjas: 'N', amarillos: 'AM', verdes: 'V', azules: 'A', morados: 'M', rosas: 'RS', piel: 'P', tierra: 'T', grises: 'G', pastel: 'PA', neon: 'NE' };
-PALETTE.forEach((c, i) => { COLOR_NAME[c] = PALETTE_NAMES[i]; });
+// los nombres se guardan en español (fuente) y se traducen con buildColorNames(); los códigos (R3, A5…) no cambian
+const COLOR_SRC = {};
+PALETTE.forEach((c, i) => { COLOR_SRC[c] = { n: PALETTE_NAMES[i] }; });
 for (const f of COLOR_FAMILIES) f.rows.forEach(([rn, hexes], ri) => hexes.split(' ').forEach((h, i) => {
   const c = '#' + h; ALL_COLORS.push(c);
-  COLOR_NAME[c] = f.id === 'grises' && ri < 2 ? GREY_NAMES[ri][i] : rn + ' ' + TONE_NAMES[i];
+  COLOR_SRC[c] = f.id === 'grises' && ri < 2 ? { n: GREY_NAMES[ri][i] } : { n: rn, tone: i };
   COLOR_CODE[c] = (FAM_CODES[f.id] || f.id.slice(0, 2).toUpperCase()) + (ri * 6 + i + 1);
 }));
+function buildColorNames() {
+  for (const c in COLOR_SRC) {
+    const s = COLOR_SRC[c];
+    COLOR_NAME[c] = s.tone == null ? cnName(s.n) : tt('color.fmt', { name: cnName(s.n), tone: tt('tone.' + s.tone) });
+  }
+}
+buildColorNames();
+for (const f of COLOR_FAMILIES) Object.defineProperty(f, 'n', { get: () => tt('fam.' + f.id), enumerable: true });
 // tonos que se ven en la fila compacta de cada familia (el tono medio de cada fila; en grises también blanco y negro)
 const famReps = (f) => f.id === 'grises' ? [[0, 0], [0, 3], [1, 0], [1, 5], [2, 3], [3, 3]] : f.rows.map((_, ri) => [ri, 3]);
-const colorLabel = (c) => (COLOR_CODE[c] ? COLOR_CODE[c] + ' · ' : '') + (COLOR_NAME[c] || 'Color');
+const colorLabel = (c) => (COLOR_CODE[c] ? COLOR_CODE[c] + ' · ' : '') + (COLOR_NAME[c] || tt('qs.cur'));
 /* degradados listos (de arriba a abajo) */
 const GRAD_PRESETS = [
   { id: 'mine', n: 'Mi color' },
@@ -1064,6 +1168,7 @@ const GRAD_PRESETS = [
   { id: 'cielo', n: 'Cielo', s: ['#1F6FD9', '#56CCF2', '#DDF5FF'] },
   { id: 'lavanda', n: 'Lavanda', s: ['#F5EDFF', '#CDB2F5', '#9270D6'] },
 ];
+for (const g of GRAD_PRESETS) Object.defineProperty(g, 'n', { get: () => tt('grad.' + g.id), enumerable: true });
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => Array.from(document.querySelectorAll(s));
@@ -1395,7 +1500,7 @@ function startSingle(e) {
   if (state.picking) { g = Object.assign(base, { kind: 'pick' }); return; }     // Copiar color: se copia al soltar
   const tool = currentTool();
   const tgt = layers[toolTarget(tool)];
-  if (tgt && !tgt.vis) { toast('Esta capa está oculta 🙈 Ábrela en “Capas” y toca el ojito', 2800); return; }
+  if (tgt && !tgt.vis) { toast(tt('toast.hiddenlayer'), 2800); return; }
   if (state.mode === 'color' && (tool === 'fill' || isBrush(tool) || (tool === 'grad' && gradUsesColor()))) addRecent(state.color);
   if (state.mode === 'draw' && tool !== 'erase' && state.drawColor !== '#000000') addRecent(state.drawColor);   // el negro de siempre ya está en los colores rápidos
   if (tool === 'fill') { g = Object.assign(base, { kind: 'fill' }); return; }
@@ -2427,11 +2532,12 @@ function renderTemplate(c, t, w, h) {
   t.draw(c);
   c.restore();
 }
+for (const tp of TEMPLATES) Object.defineProperty(tp, 'name', { get: () => tt('tpl.' + tp.id), enumerable: true });
 function buildTemplateGrid() {
   const grid = $('#tplGrid'); grid.innerHTML = '';
   // primera tarjeta: subir una foto de un libro para colorear
   const ph = document.createElement('button'); ph.className = 'card tplPhoto'; ph.id = 'tplPhoto'; ph.style.border = '0'; ph.style.padding = '8px';
-  ph.innerHTML = '<div class="ph"><svg><use href="#i-camera"/></svg><span>Foto de tu libro para colorear</span></div><div class="name">Subir foto</div>';
+  ph.innerHTML = '<div class="ph"><svg><use href="#i-camera"/></svg><span></span></div><div class="name"></div>'; ph.querySelector('span').textContent = tt('tpl.photo.card'); ph.querySelector('.name').textContent = tt('menu.photo');
   grid.append(ph);
   const head = (key, label) => { const h = document.createElement('h3'); h.className = 'tplcat'; h.dataset.cat = key; h.textContent = label; grid.append(h); };
   const mk = (id, name, t) => {
@@ -2441,14 +2547,14 @@ function buildTemplateGrid() {
     const n = document.createElement('div'); n.className = 'name'; n.textContent = name;
     b.append(cv, n); grid.append(b);
   };
-  for (const [key, label] of TEMPLATE_CATS) {
-    head(key, label);
+  for (const [key] of TEMPLATE_CATS) {
+    head(key, tt('tplcat.' + key));
     for (const t of TEMPLATES) if (t.cat === key) mk(t.id, t.name, t);
-    if (key === 'cosas') mk('blank', 'Hoja en blanco', null);
+    if (key === 'cosas') mk('blank', tt('tpl.blank'), null);
   }
   const tabs = $('#tplTabs'); tabs.innerHTML = '';
-  for (const [key, label] of [['all', 'Todas'], ...TEMPLATE_CATS]) {
-    const b = document.createElement('button'); b.dataset.tcat = key; b.textContent = label; b.classList.toggle('on', key === 'all');
+  for (const [key] of [['all'], ...TEMPLATE_CATS]) {
+    const b = document.createElement('button'); b.dataset.tcat = key; b.textContent = key === 'all' ? tt('tpl.all') : tt('tplcat.' + key); b.classList.toggle('on', key === 'all');
     b.onclick = () => {
       $$('#tplTabs button').forEach((x) => x.classList.toggle('on', x === b));
       $$('#tplGrid [data-cat]').forEach((el) => { el.hidden = key !== 'all' && el.dataset.cat !== key; });
@@ -2464,7 +2570,7 @@ function loadTemplate(id) {
   replaceSheet(PORTRAIT[0], PORTRAIT[1], (lc) => { if (t) renderTemplate(lc, t, W, H); });
   state.currentId = null;
   setMode(t ? 'color' : 'draw');
-  toast(t ? `Plantilla “${t.name}” lista. ¡A colorear!` : 'Hoja nueva (puedes deshacer)');
+  toast(t ? tt('toast.tpl', { name: t.name }) : tt('toast.newsheet'));
 }
 
 /* ---------- modos y herramientas ---------- */
@@ -2493,24 +2599,24 @@ $$('#drawTools .tool').forEach((b) => b.onclick = () => {
   }
   pickTool();
   setDrawTool(b.dataset.tool);
-  if (b.id === 'markBtn' && !state.markSeen) { state.markSeen = true; toast('Toca otra vez “Marcador” para elegir: liso, acrílico, de agua o de alcohol', 3200); }
+  if (b.id === 'markBtn' && !state.markSeen) { state.markSeen = true; toast(tt('toast.markhint'), 3200); }
 });
 function setDrawTool(t) { state.drawTool = t; $$('#drawTools .tool').forEach((x) => x.classList.toggle('on', x.dataset.tool === t)); updateCursor(); }
 // Tipo de marcador de Dibujar (liso, acrílico, de agua, de alcohol)
-const MARK_NAMES = { crayon: 'liso', acrylic: 'acrílico', water: 'de agua', alcohol: 'de alcohol' };
+const MARK_NAMES = { get crayon() { return tt('mark.k.crayon'); }, get acrylic() { return tt('mark.k.acrylic'); }, get water() { return tt('mark.k.water'); }, get alcohol() { return tt('mark.k.alcohol'); } };
 function setDrawBrush(b) {
   if (!(b in MARK_NAMES)) b = 'crayon';
   state.drawBrush = b;
   const btn = $('#markBtn');
   btn.querySelector('use').setAttribute('href', '#' + (b === 'crayon' ? 'i-marker' : BRUSH_ICONS[b]));
-  btn.setAttribute('aria-label', 'Marcador ' + MARK_NAMES[b] + ' (toca otra vez para cambiar el tipo)');
+  btn.setAttribute('aria-label', tt('mark.aria', { name: tt('mark.n.' + b) }));
   $$('#markPop [data-mark]').forEach((x) => x.classList.toggle('on', x.dataset.mark === b));
 }
 $$('#markPop [data-mark]').forEach((b) => b.onclick = () => {
   pickTool(); setDrawBrush(b.dataset.mark); state.markSeen = true;
   state.drawTool = 'marker';
   $$('#drawTools .tool').forEach((x) => x.classList.toggle('on', x.id === 'markBtn')); updateCursor();
-  hidePop(); toast('Marcador ' + MARK_NAMES[state.drawBrush] + ' ✓');
+  hidePop(); toast(tt('mark.n.' + state.drawBrush) + ' ✓');
 });
 const isBrush = (t) => t in BRUSHES;
 function setColorTool(t) {
@@ -2526,7 +2632,7 @@ function setBrush(b) {
   btn.dataset.ctool = b;
   btn.querySelector('use').setAttribute('href', '#' + BRUSH_ICONS[b]);
   btn.querySelector('.bl').textContent = BRUSHES[b];
-  btn.setAttribute('aria-label', BRUSHES[b] + ' (toca otra vez para cambiar de marcador)');
+  btn.setAttribute('aria-label', tt('brush.aria', { name: BRUSHES[b] }));
   $$('#brushPop [data-brush]').forEach((x) => x.classList.toggle('on', x.dataset.brush === b));
 }
 /* submenús flotantes (marcadores, grosor, degradado) */
@@ -2574,7 +2680,7 @@ $$('#colorTools [data-ctool]').forEach((b) => b.onclick = () => {
   }
   pickTool(); setColorTool(t);
   if (t === 'grad' && !state.gradSeen) { state.gradSeen = true; showPop('gradPop', b); }
-  else if (b.id === 'brushBtn' && !state.brushSeen) { state.brushSeen = true; toast('Toca otra vez para elegir marcador: acrílico, de agua o de alcohol'); }
+  else if (b.id === 'brushBtn' && !state.brushSeen) { state.brushSeen = true; toast(tt('toast.brushhint')); }
 });
 $$('#brushPop [data-brush]').forEach((b) => b.onclick = () => { pickTool(); setColorTool(b.dataset.brush); state.brushSeen = true; hidePop(); });
 function setColorSize(k) {
@@ -2603,24 +2709,25 @@ function updateGradUI() {
   $$('#gType [data-gt]').forEach((x) => x.classList.toggle('on', x.dataset.gt === state.gradType));
   $$('#gDir [data-gd]').forEach((x) => { x.classList.toggle('on', x.dataset.gd === state.gradDir); x.disabled = radial; });
   const more = $('#gMore'); more.setAttribute('aria-expanded', String(state.gradAdv)); $('#gAdv').hidden = !state.gradAdv;
-  more.firstChild.textContent = state.gradAdv ? 'Menos opciones ' : 'Más opciones ';
+  more.firstChild.textContent = (state.gradAdv ? tt('less.options') : tt('more.options')) + ' ';
 }
-(function buildGradPresets() {
-  const p = $('#gPresets');
+function buildGradPresets() {
+  const p = $('#gPresets'); p.textContent = '';
   for (const g of GRAD_PRESETS) {
     const b = document.createElement('button'); b.dataset.gp = g.id;
-    b.title = g.id === 'mine' ? 'Mi color: del color elegido a uno más claro' : 'Degradado ' + g.n;
+    b.title = g.id === 'mine' ? tt('grad.mine.tip') : tt('grad.preset.tip', { name: g.n });
     b.setAttribute('aria-label', b.title);
     b.innerHTML = '<i></i>' + g.n;
     if (g.s) b.querySelector('i').style.background = cssGrad(g.s, '180deg');
     b.onclick = () => {
       state.gradPreset = g.id; state.gradSeen = true;
       pickTool(); setColorTool('grad'); updateGradUI(); hidePop();
-      toast('Toca una zona para pintar con degradado');
+      toast(tt('toast.gradtap'));
     };
     p.append(b);
   }
-})();
+}
+buildGradPresets();
 $('#gMore').onclick = () => {
   state.gradAdv = !state.gradAdv; updateGradUI();
   if (openPop && openPop.pop.id === 'gradPop') { showPop('gradPop', openPop.anchor); if (state.gradAdv) $('#gradPop').scrollTop = $('#gradPop').scrollHeight; }
@@ -2629,7 +2736,7 @@ $('#gMore').onclick = () => {
   const p = $('#gPal');
   for (const c of ['#FFFFFF', '#FFE66D', '#FFCC00', '#FF9500', '#FF3B30', '#FF2D92', '#AF52DE', '#5856D6',
                    '#007AFF', '#5AC8FA', '#00C7BE', '#34C759', '#A8E063', '#8B4513', '#9E9E9E', '#333333']) {
-    const b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.dataset.c = c; b.setAttribute('aria-label', 'Segundo color: ' + (COLOR_NAME[c] || c)); b.title = COLOR_NAME[c] || c;
+    const b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.dataset.c = c; b.setAttribute('aria-label', tt('grad.second.aria', { name: COLOR_NAME[c] || c })); b.title = COLOR_NAME[c] || c;
     b.onclick = () => { state.color2 = c; state.gradPreset = 'custom'; updateGradUI(); }; p.append(b);
   }
 })();
@@ -2651,7 +2758,7 @@ function refreshColorUI() {
   $$('#drawTools [data-tool="pen"] svg, #markBtn svg').forEach((s) => { s.style.color = tint(state.drawColor); });
   const a = curAlpha(), chip = $('#alphaChip');
   chip.hidden = a >= 0.999; chip.textContent = Math.round(a * 100) + ' %';
-  chip.setAttribute('aria-label', 'Opacidad del color: ' + Math.round(a * 100) + ' %. Toca para cambiarla');
+  chip.setAttribute('aria-label', tt('alpha.aria', { n: Math.round(a * 100) }));
   refreshMini();
 }
 // alpha: opacidad (solo la da la rueda de colores; cualquier otro color vuelve a 100 %)
@@ -2670,7 +2777,7 @@ function setColor(hex, alpha) {
   const p = $('#palette');
   for (const c of PALETTE) {
     const b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.dataset.c = c;
-    b.setAttribute('aria-label', 'Color ' + COLOR_NAME[c]); b.title = COLOR_NAME[c];
+    b.setAttribute('aria-label', tt('color.aria', { name: COLOR_NAME[c] })); b.title = COLOR_NAME[c];
     if (c === '#333333') b.dataset.black = '1';
     b.onclick = () => setColor(b.dataset.c); p.append(b);
   }
@@ -2691,10 +2798,10 @@ function addRecent(c) {
 function renderRecent() {
   for (const box of $$('.recent')) {
     box.textContent = '';
-    if (!recentColors.length) { const n = document.createElement('span'); n.className = 'none'; n.textContent = 'Aquí verás tus últimos colores'; box.append(n); continue; }
+    if (!recentColors.length) { const n = document.createElement('span'); n.className = 'none'; n.textContent = tt('recent.none'); box.append(n); continue; }
     for (const c of recentColors) {
       const b = document.createElement('button'); b.className = 'sw' + (c === curColor() ? ' on' : ''); b.style.background = c; b.dataset.c = c;
-      const nm = COLOR_NAME[c] || 'Color ' + c; b.title = nm + ' (reciente)'; b.setAttribute('aria-label', 'Color reciente: ' + nm);
+      const nm = COLOR_NAME[c] || c; b.title = tt('recent.tip', { name: nm }); b.setAttribute('aria-label', tt('recent.aria2', { name: nm }));
       b.onclick = () => { if (box.id === 'cRecent') pickSheetColor(c); else setColor(c); };
       box.append(b);
     }
@@ -2703,25 +2810,25 @@ function renderRecent() {
 /* ---------- Más colores: 360 colores por familias ---------- */
 function pickSheetColor(c) {
   setColor(c); addRecent(c); closeSheet('#colorsSheet');
-  toast(colorLabel(c) + (state.mode === 'draw' ? ' ✓ Toca la hoja para dibujar' : ' ✓ Toca el dibujo para pintar'), 2600, c);
+  toast(colorLabel(c) + ' ✓ ' + (state.mode === 'draw' ? tt('toast.tapdraw') : tt('toast.tappaint')), 2600, c);
 }
-(function buildColorSheet() {
-  const tabs = $('#cTabs'), list = $('#cList');
+function buildColorSheet() {
+  const tabs = $('#cTabs'), list = $('#cList'); tabs.textContent = ''; list.querySelectorAll('.cfam.fam').forEach((s) => s.remove());
   const mkTab = (id, name, dot) => {
     const t = document.createElement('button'); t.dataset.fam = id; t.setAttribute('role', 'tab');
     t.innerHTML = '<i></i>'; t.querySelector('i').style.background = dot; t.append(name);
     t.onclick = () => { if (id !== 'recientes') setFamOpen(id, true); const sc = $('#cScroll'), sec = $('#fam-' + id); sc.scrollTo({ top: sec.offsetTop - 4, behavior: 'smooth' }); setFamTab(id); };
     tabs.append(t);
   };
-  mkTab('recientes', 'Recientes', 'conic-gradient(#ff3b30,#ffcc00,#34c759,#007aff,#af52de,#ff3b30)');
+  mkTab('recientes', tt('recent'), 'conic-gradient(#ff3b30,#ffcc00,#34c759,#007aff,#af52de,#ff3b30)');
   for (const f of COLOR_FAMILIES) {
     const hexes = f.rows.map((r) => r[1].split(' '));
     mkTab(f.id, f.n, '#' + hexes[Math.min(2, hexes.length - 1)][3]);
     const sec = document.createElement('section'); sec.className = 'cfam fam'; sec.id = 'fam-' + f.id;
     const n = hexes.length * 6, code = FAM_CODES[f.id];
     const h = document.createElement('button'); h.className = 'cfh'; h.setAttribute('aria-expanded', 'false'); h.setAttribute('aria-controls', 'grid-' + f.id);
-    h.title = 'Ver todos los tonos de ' + f.n.toLowerCase() + ' (' + code + '1–' + code + n + ')';
-    h.innerHTML = '<span></span><small></small><b>▾</b>'; h.querySelector('span').textContent = f.n; h.querySelector('small').textContent = n + ' tonos · ' + code + '1–' + code + n;
+    h.title = tt('fam.tip', { fam: f.n.toLowerCase(), a: code + '1', b: code + n });
+    h.innerHTML = '<span></span><small></small><b>▾</b>'; h.querySelector('span').textContent = f.n; h.querySelector('small').textContent = tt('fam.count', { n, a: code + '1', b: code + n });
     h.onclick = (e) => { e.stopPropagation(); const open = !sec.classList.contains('open'); setFamOpen(f.id, open); if (open) showFam(f.id); };
     sec.append(h);
     const grid = document.createElement('div'); grid.className = 'cgrid'; grid.id = 'grid-' + f.id;
@@ -2730,14 +2837,15 @@ function pickSheetColor(c) {
       const c = '#' + h6, b = document.createElement('button'); b.className = 'sw' + (reps.has(ri * 6 + i) ? ' rep' : ''); b.style.background = c; b.dataset.c = c;
       const nv = parseInt(h6, 16), lum = 0.299 * (nv >> 16 & 255) + 0.587 * (nv >> 8 & 255) + 0.114 * (nv & 255);
       if (lum < 150) b.classList.add('dk');
-      b.title = COLOR_NAME[c] + ' · ' + COLOR_CODE[c]; b.setAttribute('aria-label', COLOR_NAME[c] + ', código ' + COLOR_CODE[c]);
+      b.title = COLOR_NAME[c] + ' · ' + COLOR_CODE[c]; b.setAttribute('aria-label', tt('code.aria', { name: COLOR_NAME[c], code: COLOR_CODE[c] }));
       const cc = document.createElement('span'); cc.className = 'cc'; cc.textContent = COLOR_CODE[c]; b.append(cc);
       b.onclick = (e) => { e.stopPropagation(); pickSheetColor(c); }; grid.append(b);
     }));
     sec.addEventListener('click', () => { if (!sec.classList.contains('open')) { setFamOpen(f.id, true); showFam(f.id); } });   // tocar la fila la abre
     sec.append(grid); list.append(sec);
   }
-})();
+}
+buildColorSheet();
 // Acordeón: solo una familia abierta a la vez
 function setFamOpen(id, on) {
   $$('#cList .cfam.fam').forEach((s) => { const o = on && s.id === 'fam-' + id; s.classList.toggle('open', o); s.querySelector('.cfh').setAttribute('aria-expanded', String(o)); });
@@ -2752,9 +2860,9 @@ function showFam(id) {
   const q = $('#cQuick');
   for (const c of PALETTE) {
     const b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.dataset.c = c;
-    b.setAttribute('aria-label', 'Color ' + COLOR_NAME[c]); b.title = COLOR_NAME[c];
+    b.setAttribute('aria-label', tt('color.aria', { name: COLOR_NAME[c] })); b.title = COLOR_NAME[c];
     if (c === '#333333') b.dataset.black = '1';
-    b.onclick = () => { const x = b.dataset.c; setColor(x); closeSheet('#colorsSheet'); toast((COLOR_NAME[x] || 'Color') + ' ✓', 2000, x); };
+    b.onclick = () => { const x = b.dataset.c; setColor(x); closeSheet('#colorsSheet'); toast((COLOR_NAME[x] || tt('qs.cur')) + ' ✓', 2000, x); };
     q.append(b);
   }
 })();
@@ -2823,18 +2931,18 @@ function colorAt(x, y) {
   return ('#' + c.map((v) => Math.round(v).toString(16).padStart(2, '0')).join('')).toUpperCase();
 }
 function pickColorAt(p) {
-  if (!p || p.x < 0 || p.y < 0 || p.x >= W || p.y >= H) { toast('Toca dentro de la hoja para copiar un color'); return null; }
+  if (!p || p.x < 0 || p.y < 0 || p.x >= W || p.y >= H) { toast(tt('toast.pickout')); return null; }
   const hex = colorAt(p.x, p.y), back = state.pickToPicker;
   setPicking(false);
   setColor(hex); addRecent(hex);
-  if (back) { const a = pk.a; openPicker(pk.from); pk.a = a; pkUpdate(); toast('✓ Color copiado. Toca “Listo” para usarlo', 2600, hex); }
-  else toast('✓ Color copiado', 2600, hex);
+  if (back) { const a = pk.a; openPicker(pk.from); pk.a = a; pkUpdate(); toast(tt('toast.picked.back'), 2600, hex); }
+  else toast(tt('toast.picked'), 2600, hex);
   return hex;
 }
 $('#pickColor').onclick = () => {
-  if (state.picking) { setPicking(false); toast('Copiar color cancelado'); return; }
+  if (state.picking) { setPicking(false); toast(tt('toast.pickcancel')); return; }
   pickTool(); hidePop(); setPicking(true);
-  toast('Toca el color que quieres copiar 👆', 3000);
+  toast(tt('toast.picktap'), 3000);
 };
 $('#btnUndo').onclick = undo;
 $('#btnRedo').onclick = redo;
@@ -2858,7 +2966,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 async function clearSheet() {
-  if (!(await confirmBox('¿Limpiar toda la hoja? (Puedes deshacer)', 'Limpiar'))) return;
+  if (!(await confirmBox(tt('confirm.clear'), tt('clear')))) return;
   cancelGesture();
   objs = []; selId = null; exitObjMode(); renderObjs();
   replaceSheet(W, H, null);
@@ -2878,7 +2986,13 @@ function newLayer(name) {
 }
 function nextLayerName() {
   const nums = paint.map((L) => +((/(\d+)\s*$/.exec(L.name) || [])[1] || 0));
-  return 'Capa ' + (Math.max(1, ...nums) + 1);
+  return 'Capa ' + (Math.max(1, ...nums) + 1);     // el nombre se guarda en español; se muestra traducido con layerName()
+}
+function layerName(L) {
+  if (!L) return '';
+  if (L.id === 'line') return tt('layers.lines');
+  const m = /^Capa (\d+)$/.exec(L.name || '');
+  return m ? tt('layer.n', { n: m[1] }) : (L.name || '');
 }
 // Quita de la memoria las capas borradas que ya no se pueden recuperar con "Deshacer"
 function purgeDeadLayers() {
@@ -2919,14 +3033,14 @@ function applyLayerOp(op, which) {
   mountLayers();
 }
 function addLayer() {
-  if (paint.length >= MAX_LAYERS) { toast(`Puedes tener hasta ${MAX_LAYERS} capas`); return null; }
+  if (paint.length >= MAX_LAYERS) { toast(tt('toast.maxlayers', { n: MAX_LAYERS })); return null; }
   cancelGesture(); flattenObjs();
   const L = newLayer(nextLayerName());
   const index = paint.indexOf(layers[paintTarget()]) + 1;          // encima de la capa elegida
   paint.splice(index, 0, L); state.activeLayer = L.id;
   mountLayers();
   pushEntry({ parts: [], layerOp: { type: 'add', id: L.id, index } });
-  toast(`${L.name} lista: lo que pintes va en esta capa`);
+  toast(tt('toast.layeradded', { name: layerName(L) }));
   return L;
 }
 async function deleteLayer(id, ask = true) {
@@ -2934,7 +3048,7 @@ async function deleteLayer(id, ask = true) {
   const reopen = !!(openPop && openPop.pop.id === 'layersPop');
   if (ask) {
     hidePop();
-    const ok = await confirmBox(`¿Borrar “${L.name}” y lo que tiene pintado? (Puedes deshacer)`, 'Borrar');
+    const ok = await confirmBox(tt('confirm.layerdel', { name: layerName(L) }), tt('obj.del'));
     if (reopen) openLayers();
     if (!ok) return false;
   }
@@ -2945,7 +3059,7 @@ async function deleteLayer(id, ask = true) {
   if (state.activeLayer === id) state.activeLayer = (paint[index - 1] || paint[0]).id;
   mountLayers();
   pushEntry({ parts: [], layerOp: { type: 'del', id, index, data } });
-  toast(`${L.name} borrada (puedes deshacer)`);
+  toast(tt('toast.layerdel', { name: layerName(L) }));
   return true;
 }
 function moveLayer(id, dir) {                     // dir: +1 = subir, -1 = bajar
@@ -2981,7 +3095,7 @@ function layerThumb(L) {
 function refreshLayersUI() {
   const n = paint.length, badge = $('#layersBtn .lcount');
   badge.hidden = n < 2; badge.textContent = String(n);
-  $('#layersBtn').setAttribute('aria-label', n > 1 ? `Capas (${n} capas, pintando en ${layers[paintTarget()].name})` : 'Capas');
+  $('#layersBtn').setAttribute('aria-label', n > 1 ? tt('layers.aria.n', { n, name: layerName(layers[paintTarget()]) }) : tt('tab.layers'));
   if (layersOpen()) renderLayersUI();
 }
 function renderLayersUI() {
@@ -2995,32 +3109,32 @@ function renderLayersUI() {
   // fila de las líneas del dibujo (siempre encima)
   const lr = document.createElement('div'); lr.className = 'lyr lines' + (layers.line.vis ? '' : ' off');
   const ls = document.createElement('div'); ls.className = 'lsel';
-  ls.innerHTML = '<svg><use href="#i-lock"/></svg><span>Líneas del dibujo<small>Siempre encima · el bote las respeta</small></span>';
-  lr.append(ls, mkBtn('vis', 'line', layers.line.vis ? 'i-eye' : 'i-eyeoff', layers.line.vis ? 'Ocultar las líneas del dibujo' : 'Mostrar las líneas del dibujo'));
+  ls.innerHTML = '<svg><use href="#i-lock"/></svg><span></span>'; ls.querySelector('span').append(tt('layers.lines'), Object.assign(document.createElement('small'), { textContent: tt('layers.lines.sub') }));
+  lr.append(ls, mkBtn('vis', 'line', layers.line.vis ? 'i-eye' : 'i-eyeoff', layers.line.vis ? tt('layers.lines.hide') : tt('layers.lines.show')));
   list.append(lr);
   for (let i = paint.length - 1; i >= 0; i--) {
     const L = paint[i], base = i === 0;
     const row = document.createElement('div'); row.className = 'lyr' + (L.id === act ? ' on' : '') + (L.vis ? '' : ' off'); row.dataset.id = L.id;
     const sel = document.createElement('button'); sel.className = 'lsel'; sel.dataset.la = 'sel'; sel.dataset.id = L.id;
     sel.setAttribute('aria-pressed', String(L.id === act));
-    sel.title = `Pintar en ${L.name}`; sel.setAttribute('aria-label', `Pintar en ${L.name}` + (L.id === act ? ' (elegida)' : ''));
-    const sp = document.createElement('span'); sp.textContent = L.name;
-    const sm = document.createElement('small'); sm.textContent = (L.id === act ? 'Pintando aquí' : base ? 'El papel' : 'Transparente') + (L.op < 0.999 ? ` · ${Math.round(L.op * 100)} %` : '');
+    sel.title = tt('layers.paintin', { name: layerName(L) }); sel.setAttribute('aria-label', tt(L.id === act ? 'layers.paintin.on' : 'layers.paintin', { name: layerName(L) }));
+    const sp = document.createElement('span'); sp.textContent = layerName(L);
+    const sm = document.createElement('small'); sm.textContent = (L.id === act ? tt('layers.here') : base ? tt('layers.paper') : tt('layers.transparent')) + (L.op < 0.999 ? ` · ${Math.round(L.op * 100)} %` : '');
     sp.append(sm);
     sel.append(layerThumb(L), sp);
     row.append(sel,
-      mkBtn('vis', L.id, L.vis ? 'i-eye' : 'i-eyeoff', (L.vis ? 'Ocultar ' : 'Mostrar ') + L.name),
-      mkBtn('up', L.id, 'i-up', 'Subir ' + L.name, base || i === paint.length - 1),
-      mkBtn('down', L.id, 'i-down', 'Bajar ' + L.name, base || i === 1),
-      mkBtn('del', L.id, 'i-trash', base ? 'La Capa 1 (el papel) no se puede borrar' : 'Borrar ' + L.name, base, 'danger'));
+      mkBtn('vis', L.id, L.vis ? 'i-eye' : 'i-eyeoff', tt(L.vis ? 'layers.hideL' : 'layers.showL', { name: layerName(L) })),
+      mkBtn('up', L.id, 'i-up', tt('layers.up', { name: layerName(L) }), base || i === paint.length - 1),
+      mkBtn('down', L.id, 'i-down', tt('layers.down', { name: layerName(L) }), base || i === 1),
+      mkBtn('del', L.id, 'i-trash', base ? tt('layers.nodel') : tt('layers.del', { name: layerName(L) }), base, 'danger'));
     list.append(row);
   }
   const A = layers[act], v = Math.round(A.op * 100);
   $('#lyrOp').value = v; $('#lyrOpV').textContent = v + ' %';
-  $('#lyrOpName').textContent = 'Opacidad';
-  $('#lyrOp').setAttribute('aria-label', 'Opacidad de ' + A.name);
+  $('#lyrOpName').textContent = tt('opacity');
+  $('#lyrOp').setAttribute('aria-label', tt('layers.op.of', { name: layerName(A) }));
   const full = paint.length >= MAX_LAYERS;
-  $('#lyrAdd').disabled = full; $('#lyrAdd').textContent = full ? `Máximo ${MAX_LAYERS} capas` : '+ Añadir capa';
+  $('#lyrAdd').disabled = full; $('#lyrAdd').textContent = full ? tt('layers.max', { n: MAX_LAYERS }) : tt('layers.add');
 }
 function openLayers() {
   flattenObjs(); setPicking(false);
@@ -3033,7 +3147,7 @@ $('#lyrAdd').onclick = () => { if (addLayer()) openLayers(); };
 $('#lyrList').addEventListener('click', (e) => {
   const b = e.target.closest('[data-la]'); if (!b || b.disabled) return;
   const id = b.dataset.id, la = b.dataset.la;
-  if (la === 'sel') { selectLayer(id); toast('Pintando en ' + layers[id].name); }
+  if (la === 'sel') { selectLayer(id); toast(tt('toast.paintin', { name: layerName(layers[id]) })); }
   else if (la === 'vis') { setLayerVisible(id, !layers[id].vis); }
   else if (la === 'up') moveLayer(id, +1);
   else if (la === 'down') moveLayer(id, -1);
@@ -3063,7 +3177,7 @@ function showPanel(g) {
   openGrp = g; document.body.dataset.panel = g; document.body.classList.add('panel-open');
   for (const k in GRP_TAB) { const t = $('#' + GRP_TAB[k]); t.classList.toggle('on', k === g); t.setAttribute('aria-expanded', String(k === g)); }
   if (g === 'colors') renderRecent();
-  $('#panel').setAttribute('aria-label', { tools: 'Herramientas', colors: 'Colores', size: 'Tamaño de la punta', more: 'Más opciones' }[g]);
+  $('#panel').setAttribute('aria-label', { tools: tt('tab.tools'), colors: tt('tab.colors'), size: tt('size.title'), more: tt('more.options') }[g]);
   placePanel(); $('#panel').scrollTop = 0;
 }
 function hidePanel() {
@@ -3093,7 +3207,7 @@ const QUICK = ['#333333', '#FFFFFF', '#FF3B30', '#FF9500', '#FFCC00', '#34C759',
   const box = $('#qsList');
   for (const c of QUICK) {
     const b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.dataset.c = c;
-    b.setAttribute('aria-label', 'Color ' + COLOR_NAME[c]); b.title = COLOR_NAME[c];
+    b.setAttribute('aria-label', tt('color.aria', { name: COLOR_NAME[c] })); b.title = COLOR_NAME[c];
     if (c === '#333333') b.dataset.black = '1';
     b.onclick = () => { hidePanel(); setColor(b.dataset.c); };
     box.append(b);
@@ -3116,13 +3230,14 @@ try {
 } catch (_) {}
 function saveMini() { try { localStorage.setItem(MINI_KEY, JSON.stringify(MINI)); } catch (_) {} }
 const TOOL_ICON = { pen: 'i-pen', line: 'i-line', ellipse: 'i-ellipse', rect: 'i-rect', star: 'i-star', heart: 'i-heart', erase: 'i-eraser', fill: 'i-fill', blend: 'i-blend', cerase: 'i-eraser' };
-const TOOL_NAME = { pen: 'Lápiz', line: 'Línea', ellipse: 'Círculo', rect: 'Cuadro', star: 'Estrella', heart: 'Corazón', erase: 'Borrador', fill: 'Bote', grad: 'Degradado', blend: 'Difuminar', cerase: 'Borrar color',
-  crayon: 'Crayón', acrylic: 'Marcador acrílico', water: 'Marcador de agua', alcohol: 'Marcador de alcohol' };
+const TOOL_NAME = {};
+for (const k of ['pen', 'line', 'ellipse', 'rect', 'star', 'heart', 'erase', 'fill', 'grad', 'blend', 'cerase', 'crayon']) Object.defineProperty(TOOL_NAME, k, { get: () => tt('tool.' + k), enumerable: true });
+for (const k of ['acrylic', 'water', 'alcohol']) Object.defineProperty(TOOL_NAME, k, { get: () => tt('mark.n.' + k), enumerable: true });
 const SIZE_DOT = { xxs: 2, xs: 3, 0: 6, 1: 11, 2: 18 };
 function miniToolInfo() {
   const t = currentTool();
   if (state.mode === 'draw') {
-    if (t === 'marker') return { icon: state.drawBrush === 'crayon' ? 'i-marker' : BRUSH_ICONS[state.drawBrush], name: 'Marcador ' + MARK_NAMES[state.drawBrush], tint: true };
+    if (t === 'marker') return { icon: state.drawBrush === 'crayon' ? 'i-marker' : BRUSH_ICONS[state.drawBrush], name: tt('mark.n.' + state.drawBrush), tint: true };
     return { icon: TOOL_ICON[t] || 'i-pen', name: TOOL_NAME[t] || t, tint: t !== 'erase' };
   }
   if (isBrush(t)) return { icon: BRUSH_ICONS[t], name: TOOL_NAME[t], tint: true };
@@ -3134,19 +3249,19 @@ function refreshMini() {
   const fill = a < 0.999 ? `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${a})` : c;
   bar.querySelectorAll('.mbsw').forEach((s) => { s.style.background = fill; });
   const nm = colorLabel(c);
-  $('#mbColor').setAttribute('aria-label', 'Color: ' + nm + '. Toca para elegir otro'); $('#mbColor').title = 'Color: ' + nm + ' (toca para elegir otro)';
+  $('#mbColor').setAttribute('aria-label', tt('mini.color.aria2', { name: nm })); $('#mbColor').title = tt('mini.color.tip2', { name: nm });
   const ti = miniToolInfo(), tb = $('#mbTool');
   setToolIcon(tb, ti, c); setToolIcon($('#tbTools .tbi'), ti, c);
-  $('#tbTools').title = 'Herramientas (ahora: ' + ti.name + ')';
+  $('#tbTools').title = tt('tab.tools.now', { name: ti.name });
   $('#tbColors .tbsw').style.background = fill; $('#qsCur i').style.background = fill;
-  $('#qsCur').setAttribute('aria-label', 'Color actual: ' + nm + '. Toca para ver todos los colores');
+  $('#qsCur').setAttribute('aria-label', tt('qs.cur.aria2', { name: nm }));
   $$('#qsList .sw[data-black]').forEach((q) => { const k = state.mode === 'draw' ? '#000000' : '#333333'; q.dataset.c = k; q.style.background = k; });
   $$('#qsList .sw').forEach((q) => q.classList.toggle('on', q.dataset.c === c));
-  tb.setAttribute('aria-label', 'Herramienta: ' + ti.name + '. Toca para cambiarla'); tb.title = 'Herramienta: ' + ti.name + ' (toca para cambiarla)';
+  tb.setAttribute('aria-label', tt('mini.tool.aria2', { name: ti.name })); tb.title = tt('mini.tool.tip2', { name: ti.name });
   const sk = state.mode === 'draw' ? state.drawSize : state.colorSize, d = SIZE_DOT[sk] || 11, dot = $('#mbSize .mbdot');
   dot.style.width = dot.style.height = d + 'px';
-  const td = $('#tbSize .tbdot'); td.style.width = td.style.height = Math.max(3, Math.min(20, d)) + 'px'; $('#tbSize').title = 'Tamaño de la punta (ahora: ' + SIZE_NAMES[sk] + ')';
-  $('#mbSize').setAttribute('aria-label', 'Grosor de la punta: ' + SIZE_NAMES[sk] + '. Toca para cambiarlo'); $('#mbSize').title = 'Grosor: ' + SIZE_NAMES[sk];
+  const td = $('#tbSize .tbdot'); td.style.width = td.style.height = Math.max(3, Math.min(20, d)) + 'px'; $('#tbSize').title = tt('tab.size.now', { name: SIZE_NAMES[sk] });
+  $('#mbSize').setAttribute('aria-label', tt('mini.size.aria2', { name: SIZE_NAMES[sk] })); $('#mbSize').title = tt('mini.size.tip2', { name: SIZE_NAMES[sk] });
 }
 let insProbe = null;
 function safeInsets() {
@@ -3175,7 +3290,7 @@ function placeMini() {
 }
 function setMiniFolded(on) {
   MINI.folded = !!on; saveMini(); hidePop(); placeMini();
-  toast(on ? 'Barra achicada. Toca el punto para abrirla' : 'Botones rápidos ✓', 2200);
+  toast(on ? tt('toast.minifold') : tt('toast.miniopen'), 2200);
 }
 function setMiniPos(edge, pos) { MINI.edge = edge; MINI.pos = clamp(pos, 0, 1); saveMini(); placeMini(); }
 // Arrastrar desde la agarradera (o el punto): se pega al borde más cercano. Tocar sin mover: achicar / abrir.
@@ -3228,11 +3343,12 @@ function showMiniPop(id, anchor) {
   pop.style.left = clamp(left, 8, Math.max(8, vw - pw - 8)) + 'px'; pop.style.top = clamp(top, 8, Math.max(8, vh - ph - 8)) + 'px';
   anchor.setAttribute('aria-expanded', 'true');
 }
+const mtl = (a, b) => tt(a) + (b ? '<small>' + tt(b) + '</small>' : '');
 const MINI_TOOLS = {
-  color: [['fill', 'Bote', 'i-fill'], ['crayon', 'Crayón<small>lápiz de color</small>', 'i-crayon'], ['acrylic', 'Marcador<small>acrílico</small>', 'i-acrylic'], ['water', 'Marcador<small>de agua</small>', 'i-water'],
-          ['alcohol', 'Marcador<small>de alcohol</small>', 'i-alcohol'], ['grad', 'Degradado', null], ['blend', 'Difuminar', 'i-blend'], ['cerase', 'Borrador<small>de color</small>', 'i-eraser']],
-  draw: [['pen', 'Lápiz', 'i-pen'], ['m-crayon', 'Marcador<small>liso</small>', 'i-marker'], ['m-acrylic', 'Marcador<small>acrílico</small>', 'i-acrylic'], ['m-water', 'Marcador<small>de agua</small>', 'i-water'],
-         ['m-alcohol', 'Marcador<small>de alcohol</small>', 'i-alcohol'], ['erase', 'Borrador', 'i-eraser']],
+  get color() { return [['fill', mtl('tool.fill'), 'i-fill'], ['crayon', mtl('tool.crayon', 'mt.crayon.sub'), 'i-crayon'], ['acrylic', mtl('tool.marker', 'mark.k.acrylic'), 'i-acrylic'], ['water', mtl('tool.marker', 'mark.k.water'), 'i-water'],
+          ['alcohol', mtl('tool.marker', 'mark.k.alcohol'), 'i-alcohol'], ['grad', mtl('tool.grad'), null], ['blend', mtl('tool.blend'), 'i-blend'], ['cerase', mtl('tool.erase', 'mt.eraser.sub'), 'i-eraser']]; },
+  get draw() { return [['pen', mtl('tool.pen'), 'i-pen'], ['m-crayon', mtl('tool.marker', 'mark.k.crayon'), 'i-marker'], ['m-acrylic', mtl('tool.marker', 'mark.k.acrylic'), 'i-acrylic'], ['m-water', mtl('tool.marker', 'mark.k.water'), 'i-water'],
+         ['m-alcohol', mtl('tool.marker', 'mark.k.alcohol'), 'i-alcohol'], ['erase', mtl('tool.erase'), 'i-eraser']]; },
 };
 function miniToolOn(k) {
   const t = currentTool();
@@ -3263,22 +3379,23 @@ function pickMiniTool(k) {
   }
   hidePop(); toast(miniToolInfo().name + ' ✓', 1800);
 }
-(function buildMiniSizes() {
-  const box = $('#mSizes');
+function buildMiniSizes() {
+  const box = $('#mSizes'); box.textContent = '';
   for (const k of ['xxs', 'xs', '0', '1', '2']) {
     const b = document.createElement('button'); b.className = 'pbtn size'; b.dataset.msize = k; b.setAttribute('role', 'menuitem'); b.setAttribute('aria-label', SIZE_NAMES[k]);
     b.innerHTML = '<span class="dotbox"><i></i></span>' + SIZE_NAMES[k];
     const i = b.querySelector('i'); i.style.width = i.style.height = SIZE_DOT[k] + 'px';
     b.onclick = () => setMiniSize(k); box.append(b);
   }
-})();
+}
+buildMiniSizes();
 function setMiniSize(k) {
   if (state.mode === 'draw') setDrawSize(k);
   else {
     setColorSize(k);
     if (state.colorTool === 'fill' || state.colorTool === 'grad') { pickTool(); setColorTool(state.brush); }   // el grosor es para pintar a mano
   }
-  hidePop(); toast('Punta ' + SIZE_NAMES[k] + ' ✓', 1800);
+  hidePop(); toast(tt('toast.size', { name: SIZE_NAMES[k] }), 1800);
 }
 $('#mbColor').onclick = () => openColorsSheet();
 $('#mbTool').onclick = () => { buildMiniTools(); showMiniPop('mToolPop', $('#mbTool')); };
@@ -3287,7 +3404,7 @@ $('#mbSize').onclick = () => {
   $$('#mSizes [data-msize]').forEach((x) => x.classList.toggle('on', x.dataset.msize === sk));
   showMiniPop('mSizePop', $('#mbSize'));
 };
-$$('#mMode [data-m]').forEach((b) => b.onclick = () => { const m = b.dataset.m; hidePop(); if (m !== state.mode) { flattenObjs(); setMode(m); } toast(m === 'draw' ? 'Dibujar ✓' : 'Colorear ✓', 1600); });
+$$('#mMode [data-m]').forEach((b) => b.onclick = () => { const m = b.dataset.m; hidePop(); if (m !== state.mode) { flattenObjs(); setMode(m); } toast((m === 'draw' ? tt('mode.draw') : tt('mode.color')) + ' ✓', 1600); });
 $('#mbUndo').onclick = () => undo();
 $('#mbRedo').onclick = () => redo();
 $('#mbPick').onclick = () => $('#pickColor').onclick();
@@ -3314,7 +3431,7 @@ function setUIHidden(on, opts = {}) {
   }
   layout(); requestAnimationFrame(layout);
   if (on) { refreshMini(); placeMini(); requestAnimationFrame(placeMini); }
-  if (on && !opts.quiet) toast('Botones rápidos al lado ✓ Arrastra ⠿ para moverlos. ⤡ muestra todos los botones', 3200);
+  if (on && !opts.quiet) toast(tt('toast.hidden'), 3200);
 }
 document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement) fsByUs = false; setTimeout(() => { layout(); placeMini(); }, 60); });
 $('#hideUI').onclick = () => setUIHidden(true);
@@ -3367,7 +3484,7 @@ function pkUpdate() {
   if (document.activeElement !== inp) { inp.value = hex; inp.classList.remove('bad'); $('#pkMsg').hidden = true; }   // mientras escribes no se cambia lo que escribes
   const nm = COLOR_NAME[hex];
   $('#pkHex').textContent = [COLOR_CODE[hex], A < 100 ? A + ' %' : ''].filter(Boolean).join(' · ');
-  $('#pkWheel').setAttribute('aria-valuetext', (nm || hex) + (A < 100 ? `, opacidad ${A} %` : ''));
+  $('#pkWheel').setAttribute('aria-valuetext', A < 100 ? tt('pk.valuetext.op', { name: nm || hex, n: A }) : (nm || hex));
   const bi = $('#pkBright'); bi.value = Math.round(pk.v * 100); bi.style.background = `linear-gradient(90deg, #000, rgb(${full.join(',')}))`;
   $('#pkBrightV').textContent = Math.round(pk.v * 100) + ' %';
   const ai = $('#pkAlpha'); ai.value = A;
@@ -3416,17 +3533,17 @@ function renderSlots() {
     if (sl) {
       const [r, g, bb] = hexToRgb(sl.c), nm = (COLOR_NAME[sl.c] || sl.c) + (sl.a < 0.999 ? `, ${Math.round(sl.a * 100)} %` : '');
       const t = document.createElement('i'); t.style.background = `rgba(${r},${g},${bb},${sl.a})`; b.append(t);
-      b.title = `Usar ${nm} (mantén presionado para quitarlo)`; b.setAttribute('aria-label', `Mi color ${i + 1}: ${nm}. Toca para usarlo, mantén presionado para quitarlo`);
+      b.title = tt('pk.slot.tip', { name: nm }); b.setAttribute('aria-label', tt('pk.slot.aria', { i: i + 1, name: nm }));
       b.dataset.c = sl.c;
     } else {
-      b.textContent = '+'; b.title = 'Guardar aquí el color de ahora'; b.setAttribute('aria-label', `Espacio ${i + 1} vacío: toca para guardar el color de ahora`);
+      b.textContent = '+'; b.title = tt('pk.empty.tip'); b.setAttribute('aria-label', tt('pk.empty.aria', { i: i + 1 }));
     }
     box.append(b);
   });
 }
 function removeSlot(i) {
   if (!mySlots[i]) return;
-  mySlots[i] = null; saveSlots(); renderSlots(); toast('Color quitado de “Mis colores”');
+  mySlots[i] = null; saveSlots(); renderSlots(); toast(tt('toast.slotdel'));
 }
 (function slotEvents() {
   const box = $('#pkSlots'); let lp = null;
@@ -3452,7 +3569,7 @@ function removeSlot(i) {
     const i = +b.dataset.i;
     if (box.dataset.lp != null) { delete box.dataset.lp; return; }    // fue una pulsación larga
     if (mySlots[i]) { pkSetHex(mySlots[i].c, mySlots[i].a); }
-    else { mySlots[i] = { c: pkHex(), a: Math.round(pk.a * 100) / 100 }; saveSlots(); renderSlots(); toast('Guardado en “Mis colores” ✓', 1800, mySlots[i].c); }
+    else { mySlots[i] = { c: pkHex(), a: Math.round(pk.a * 100) / 100 }; saveSlots(); renderSlots(); toast(tt('toast.slotsaved'), 1800, mySlots[i].c); }
   });
 })();
 function openPicker(from) {
@@ -3505,15 +3622,15 @@ $('#pkOk').onclick = () => {
   closePicker();
   if (from === 'sheet') closeSheet('#colorsSheet');
   setColor(hex, a); addRecent(hex);
-  const tip = state.mode === 'draw' ? 'Toca la hoja para dibujar' : 'Toca el dibujo para pintar';
-  toast('Color elegido ✓' + (a < 0.999 ? ` (opacidad ${Math.round(a * 100)} %)` : '') + ' ' + tip, 2600, hex);
+  const tip = state.mode === 'draw' ? tt('toast.tapdraw') : tt('toast.tappaint');
+  toast((a < 0.999 ? tt('toast.chosen.op', { n: Math.round(a * 100) }) : tt('toast.chosen')) + ' ' + tip, 2600, hex);
 };
 $('#pkDropper').onclick = () => {
   const from = pk.from, a = pk.a;
   closePicker(); closeSheet('#colorsSheet');
   pickTool(); setPicking(true);
   state.pickToPicker = true; pk.from = from; pk.a = a;
-  toast('Toca el color que quieres copiar 👆', 3000);
+  toast(tt('toast.picktap'), 3000);
 };
 
 /* ---------- hojas y diálogos ---------- */
@@ -3524,7 +3641,7 @@ $$('.overlay:not(.dialog)').forEach((o) => {
   o.querySelector('.close').onclick = () => closeSheet('#' + o.id);
 });
 let confirmResolve = null;
-function confirmBox(text, yes = 'Sí') {
+function confirmBox(text, yes = tt('yes')) {
   if (confirmResolve) endConfirm(false);
   $('#confirmText').textContent = text; $('#confirmYes').textContent = yes;
   openSheet('#confirmDlg');
@@ -3635,6 +3752,7 @@ const STICKERS = [
   { id: 'dino', name: 'Dinosaurio', parts: [['M20 60Q4 58 6 44Q14 52 24 50Z', '#34C759'], ['M22 50Q24 32 46 32Q60 32 64 22Q66 8 80 8Q95 8 94 20Q93 30 80 30Q74 32 74 44Q74 72 56 76H30Q18 72 22 50Z', '#34C759'],
     [SP.r(30, 70, 10, 20), '#34C759'], [SP.r(52, 70, 10, 20), '#34C759'], [SP.c(82, 17, 3.5), K], ['M36 34L40 26L44 32L48 25L52 32', NONE], ['M86 25Q90 26 92 23', NONE]] },
 ];
+for (const d of STICKERS) Object.defineProperty(d, 'name', { get: () => tt('stk.' + d.id), enumerable: true });
 const SHAPES = [
   { id: 'circulo', name: 'Círculo', parts: [[SP.c(50, 50, 45), 'f']] },
   { id: 'cuadrado', name: 'Cuadrado', parts: [[SP.r(7, 7, 86, 86), 'f']] },
@@ -3649,6 +3767,7 @@ const SHAPES = [
   { id: 'rayo', name: 'Rayo', parts: [[SP.poly([[60, 4], [20, 56], [46, 56], [38, 96], [80, 40], [54, 40]]), 'f']] },
   { id: 'gota', name: 'Gota', parts: [['M50 5C50 5 17 45 17 64A33 33 0 0 0 83 64C83 45 50 5 50 5Z', 'f']] },
 ];
+for (const d of SHAPES) Object.defineProperty(d, 'name', { get: () => tt('shp.' + d.id), enumerable: true });
 const EMOJIS = ['😀', '😍', '😎', '🥳', '🐶', '🐱', '🐰', '🦄', '🐻', '🐼', '🦋', '🐞', '🐠', '🦖', '🌸', '🌻', '🌈', '⭐', '☀️', '🌙', '❤️', '🎈', '🎁', '🎂', '🍦', '🍎', '🚀', '👑'];
 for (const d of [...STICKERS, ...SHAPES]) d.paths = d.parts.map(([s, f]) => ({ p: new Path2D(s), f }));
 const STK = Object.fromEntries(STICKERS.map((d) => [d.id, d]));
@@ -3743,7 +3862,7 @@ function updateObjBar() {
   $('#objDel').disabled = !s; $('#objFront').disabled = !s || objs.length < 2;
   const canStyle = s && s.kind !== 'emoji';
   $('#objStyle').disabled = !canStyle;
-  $('#objStyle span').textContent = s && s.style === 'outline' ? 'A color' : 'Contorno';
+  $('#objStyle span').textContent = s && s.style === 'outline' ? tt('add.color') : tt('obj.outline');
   $('#objEdit').style.display = s && s.kind === 'text' ? '' : 'none';
 }
 function enterObjMode() {
@@ -3780,7 +3899,7 @@ function deleteSelected() {
   const before = snapshotObjs();
   objs = objs.filter((o) => o !== s); selId = objs.length ? objs[objs.length - 1].id : null;
   renderObjs(); commitObjs(before);
-  if (!objs.length) toast('Borrado. Toca “Listo” o elige otra herramienta.');
+  if (!objs.length) toast(tt('toast.objdel'));
 }
 // Pasa todo lo añadido a la hoja (queda como parte del dibujo). Se puede deshacer.
 function flattenObjs() {
@@ -3838,7 +3957,7 @@ function objUp(cur, cancelled) {
   if (cur.action === 'move' || cur.action === 'scale') { commitObjs(cur.before); renderObjs(); return; }
   if (cur.action === 'empty' && !cancelled && cur.travel < 10) { selId = null; renderObjs(); }
 }
-$('#objDone').onclick = () => { flattenObjs(); toast('¡Listo! Ya es parte de tu dibujo.'); };
+$('#objDone').onclick = () => { flattenObjs(); toast(tt('toast.objdone')); };
 $('#objDel').onclick = deleteSelected;
 $('#objMore').onclick = () => openAdd(lastAddTab);
 $('#objFront').onclick = () => {
@@ -3864,7 +3983,7 @@ function buildAddGrids() {
   const fill = (grid, defs, kind) => {
     grid.innerHTML = '';
     for (const d of defs) {
-      const b = document.createElement('button'); b.className = 'stk'; b.dataset.kind = kind; b.dataset.key = d.id; b.title = d.name; b.setAttribute('aria-label', d.name);
+      const b = document.createElement('button'); b.className = 'stk'; b.dataset.kind = kind; b.dataset.key = d.id; b.title = d.name; b.setAttribute('aria-label', d.name); b.dataset.i18nSkip = '';
       b.append(thumbFor(d, st, col)); grid.append(b);
     }
   };
@@ -3878,7 +3997,7 @@ function setAddTab(t) {
   $$('#addSheet [data-atab]').forEach((b) => b.classList.toggle('on', b.dataset.atab === t));
   $$('#addSheet [data-apanel]').forEach((p) => { p.hidden = p.dataset.apanel !== t; });
   $('#addStyleBar').style.display = t === 'emoji' ? 'none' : '';
-  $('#stOutline').textContent = t === 'text' ? 'Letras para colorear' : 'Para colorear';
+  $('#stOutline').textContent = t === 'text' ? tt('add.outline.text') : tt('add.outline');
 }
 function setAddStyle(s) {
   addPrefs.style = s;
@@ -3887,8 +4006,8 @@ function setAddStyle(s) {
 }
 function openAdd(tab = 'stk', textObj = null) {
   editingText = textObj;
-  if (textObj) { addPrefs.textColor = textObj.color; setAddStyle(textObj.style); $('#txtInput').value = textObj.text; $('#txtAdd').textContent = 'Cambiar texto'; }
-  else { $('#txtAdd').textContent = 'Añadir texto'; buildAddGrids(); }
+  if (textObj) { addPrefs.textColor = textObj.color; setAddStyle(textObj.style); $('#txtInput').value = textObj.text; $('#txtAdd').textContent = tt('txt.change'); }
+  else { $('#txtAdd').textContent = tt('txt.add'); buildAddGrids(); }
   $$('#txtPalette .sw').forEach((s) => s.classList.toggle('on', s.dataset.c === addPrefs.textColor));
   setAddTab(tab);
   openSheet('#addSheet');
@@ -3907,7 +4026,7 @@ $('#addSheet').addEventListener('click', (e) => {
 (function buildTxtPalette() {
   const p = $('#txtPalette');
   for (const c of PALETTE) {
-    const b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.dataset.c = c; b.setAttribute('aria-label', 'Color ' + c);
+    const b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.dataset.c = c; b.setAttribute('aria-label', tt('color.aria', { name: COLOR_NAME[c] || c }));
     b.onclick = () => { addPrefs.textColor = c; $$('#txtPalette .sw').forEach((s) => s.classList.toggle('on', s === b)); };
     p.append(b);
   }
@@ -3915,7 +4034,7 @@ $('#addSheet').addEventListener('click', (e) => {
 $$('#txtSizes button').forEach((b) => b.onclick = () => { addPrefs.textSize = +b.dataset.ts; $$('#txtSizes button').forEach((x) => x.classList.toggle('on', x === b)); });
 function submitText() {
   const t = $('#txtInput').value.trim();
-  if (!t) { toast('Escribe algo primero'); $('#txtInput').focus(); return; }
+  if (!t) { toast(tt('toast.typesomething')); $('#txtInput').focus(); return; }
   closeSheet('#addSheet'); $('#txtInput').blur();
   if (editingText && objs.includes(editingText)) {
     const before = snapshotObjs();
@@ -4092,6 +4211,7 @@ function detectPage(src) {
   return { x0: clamp((bb.x0 + ix) / w, 0, 1), y0: clamp((bb.y0 + iy) / h, 0, 1), x1: clamp((bb.x1 + 1 - ix) / w, 0, 1), y1: clamp((bb.y1 + 1 - iy) / h, 0, 1) };
 }
 
+let adjHintKey = 'adj.hint';
 const adj = { orig: null, rot: 0, rotCv: null, prev: null, prevData: null, prevOut: null, crop: { x0: 0, y0: 0, x1: 1, y1: 1 },
   mode: 'photo', limp: 50, thick: false, vr: null, drag: null, pending: false };
 function rotatedCanvas() {
@@ -4218,7 +4338,7 @@ async function openAdjust(img) {
   const clean = looksLikeLineArt(cv);
   const page = clean ? null : detectPage(adj.prev);
   if (page) adj.crop = page;
-  $('#adjHint').textContent = page ? 'Encontré la página y la recorté. Arrastra las esquinas si hace falta.' : 'Arrastra las esquinas para recortar la página.';
+  adjHintKey = page ? 'adj.found' : 'adj.hint'; $('#adjHint').textContent = tt(adjHintKey);
   setAdjMode(clean ? 'asis' : 'photo');
 }
 async function useAdjusted() {
@@ -4244,8 +4364,8 @@ async function useAdjusted() {
     state.currentId = null;
     closeAdjust();
     setMode('color'); setColorTool('fill');
-    toast('¡Listo! Toca una zona para pintarla.');
-  } catch (e) { console.warn(e); toast('No se pudo usar la foto'); }
+    toast(tt('toast.photoready'));
+  } catch (e) { console.warn(e); toast(tt('toast.photofail')); }
   $('#adjBusy').classList.remove('show');
 }
 // Punto de entrada: una imagen elegida, tomada con la cámara, pegada, arrastrada o compartida
@@ -4258,7 +4378,7 @@ async function importImageFile(file) {
     if (meta && meta.Colorear) { await importOwn(new Blob([buf], { type: 'image/png' }), meta); return; }
     const img = await loadImage(new Blob([buf], { type: file.type || 'image/*' }));
     await openAdjust(img);
-  } catch (e) { console.warn(e); toast('No se pudo abrir la imagen'); }
+  } catch (e) { console.warn(e); toast(tt('toast.openfail')); }
 }
 async function importOwn(blob, meta) {
   let info = {}; try { info = JSON.parse(meta.Colorear); } catch (_) {}
@@ -4276,7 +4396,7 @@ async function importOwn(blob, meta) {
   }
   state.currentId = null;
   setMode('color'); setColorTool('fill');
-  toast('Dibujo de Colorear abierto ✔ ¡A colorear!');
+  toast(tt('toast.ownopen'));
 }
 function pickFile(input) { input.value = ''; input.click(); }
 $('#phCamera').onclick = () => pickFile($('#fileCam'));
@@ -4401,7 +4521,7 @@ async function buildExport(kind) {        // 'outline' = solo líneas; 'color' =
   return pngWithText(comp, [['Software', 'Colorear'], ['Colorear', JSON.stringify(info)], ['ColorearLineas', l64], ['ColorearColores', c64]]);
 }
 function stamp() { const d = new Date(), p = (n) => String(n).padStart(2, '0'); return `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}`; }
-function fileName() { return `dibujo-${stamp()}.png`; }
+function fileName() { return `${tt('file.drawing')}-${stamp()}.png`; }
 async function shareOrDownload(blob, name, title, text) {
   try {
     const file = new File([blob], name, { type: 'image/png' });
@@ -4415,24 +4535,24 @@ async function shareOrDownload(blob, name, title, text) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a'); a.href = url; a.download = name; document.body.append(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 5000);
-  toast('Imagen guardada');
+  toast(tt('toast.imgsaved'));
   return 'download';
 }
 async function exportPng() {
   const blob = await buildExport('color');
-  return shareOrDownload(blob, fileName(), 'Mi dibujo');
+  return shareOrDownload(blob, fileName(), tt('share.mine'));
 }
 async function shareDrawing(kind) {
   const blob = await buildExport(kind);
   const link = location.origin + location.pathname;
-  return shareOrDownload(blob, (kind === 'outline' ? 'para-colorear-' : 'dibujo-') + stamp() + '.png',
-    kind === 'outline' ? 'Dibujo para colorear' : 'Mi dibujo',
-    kind === 'outline' ? `¡Coloréalo! Ábrelo en la app Colorear con “Subir foto”: ${link}` : `Hecho con Colorear: ${link}`);
+  return shareOrDownload(blob, tt(kind === 'outline' ? 'file.outline' : 'file.drawing') + '-' + stamp() + '.png',
+    kind === 'outline' ? tt('print.alt') : tt('share.mine'),
+    kind === 'outline' ? tt('share.outline.text', { link }) : tt('share.color.text', { link }));
 }
 function printOutline() {
   cancelGesture(); flattenObjs();
   const img = $('#printImg');
-  img.onload = () => { img.onload = null; setTimeout(() => { try { window.print(); } catch (e) { toast('No se pudo imprimir en este dispositivo'); } }, 60); };
+  img.onload = () => { img.onload = null; setTimeout(() => { try { window.print(); } catch (e) { toast(tt('toast.printfail')); } }, 60); };
   img.src = composite(W, H, true).toDataURL('image/png');
 }
 
@@ -4480,10 +4600,10 @@ async function doSave() {
     const id = await tx('dibujos', 'readwrite', (s) => s.put(rec));
     state.currentId = id; state.dirty = false;
     scheduleAutosave();
-    toast('Guardado en “Mis dibujos” ✔');
+    toast(tt('toast.saved'));
     return id;
   } catch (e) {
-    console.warn(e); toast('No se pudo guardar');
+    console.warn(e); toast(tt('toast.savefail'));
   }
 }
 let galleryUrls = [];
@@ -4495,15 +4615,16 @@ async function openGallery() {
   try { items = (await tx('dibujos', 'readonly', (s) => s.getAll())) || []; } catch (e) { console.warn(e); }
   items.sort((a, b) => b.updated - a.updated);
   grid.innerHTML = '';
-  if (!items.length) { grid.innerHTML = '<div class="empty" style="grid-column:1/-1">Todavía no tienes dibujos guardados.<br>Toca el botón <b>Guardar</b> (el disquete) para guardar tu dibujo aquí.</div>'; return; }
+  if (!items.length) { grid.innerHTML = '<div class="empty" style="grid-column:1/-1">' + tt('gallery.empty.html') + '</div>'; return; }
   for (const it of items) {
     const card = document.createElement('div'); card.className = 'card'; card.dataset.id = it.id;
-    const img = document.createElement('img'); img.alt = 'Dibujo';
+    const img = document.createElement('img'); img.alt = tt('gallery.alt');
     if (it.thumb) { const u = URL.createObjectURL(it.thumb); galleryUrls.push(u); img.src = u; }
     const date = document.createElement('div'); date.className = 'date';
-    date.textContent = new Date(it.updated).toLocaleString('es', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    date.textContent = new Date(it.updated).toLocaleString(LANG, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
     const acts = document.createElement('div'); acts.className = 'acts';
-    acts.innerHTML = '<button class="cbtn primary" data-act="open">Abrir</button><button class="cbtn" data-act="again">Colorear otra vez</button><button class="cbtn del" data-act="del">Borrar</button>';
+    acts.innerHTML = '<button class="cbtn primary" data-act="open"></button><button class="cbtn" data-act="again"></button><button class="cbtn del" data-act="del"></button>';
+    acts.children[0].textContent = tt('gallery.open'); acts.children[1].textContent = tt('gallery.again'); acts.children[2].textContent = tt('obj.del');
     card.append(img, date, acts); grid.append(card);
   }
 }
@@ -4511,13 +4632,13 @@ $('#galleryGrid').addEventListener('click', async (e) => {
   const b = e.target.closest('[data-act]'); if (!b) return;
   const id = +b.closest('.card').dataset.id, act = b.dataset.act;
   if (act === 'del') {
-    if (!(await confirmBox('¿Borrar este dibujo para siempre?', 'Borrar'))) return;
+    if (!(await confirmBox(tt('confirm.delDrawing'), tt('obj.del')))) return;
     await tx('dibujos', 'readwrite', (s) => s.delete(id));
     if (state.currentId === id) state.currentId = null;
-    openGallery(); toast('Dibujo borrado');
+    openGallery(); toast(tt('toast.drawingdel'));
     return;
   }
-  if ((state.dirty || objs.length) && state.currentId !== id && !(await confirmBox('Tu dibujo actual no está guardado. ¿Abrir otro de todos modos?', 'Abrir'))) return;
+  if ((state.dirty || objs.length) && state.currentId !== id && !(await confirmBox(tt('confirm.openUnsaved'), tt('gallery.open')))) return;
   const it = await tx('dibujos', 'readonly', (s) => s.get(id));
   if (!it) return;
   cancelGesture();
@@ -4529,7 +4650,7 @@ $('#galleryGrid').addEventListener('click', async (e) => {
   closeSheet('#gallerySheet');
   setMode('color');
   scheduleAutosave();
-  toast(act === 'open' ? 'Dibujo abierto' : '¡Listo para colorear otra vez!');
+  toast(act === 'open' ? tt('toast.opened') : tt('toast.again'));
 });
 
 /* ---------- autoguardado del trabajo actual (por si se cierra la app) ---------- */
@@ -4563,47 +4684,25 @@ async function restore() {
 }
 
 /* ---------- aviso para instalar ---------- */
-let deferredPrompt = null;
+let deferredPrompt = null, hintKind = null;
 const isStandalone = () => (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
 const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 function showHint() {
-  $('#hintTitle').textContent = 'Instala la app en tu teléfono'; $('#hintIcon').setAttribute('href', '#i-phone');
+  hintKind = 'install';
+  $('#hintTitle').textContent = tt('hint.install.title'); $('#hintIcon').setAttribute('href', '#i-phone');
   let html = '<img class="hlogo" src="logo-badge-192.png" width="72" height="72" alt="ByBroken Coloring">';
-  if (isStandalone()) html += '<p>¡La app ya está instalada! Ábrela desde el ícono en tu pantalla de inicio. Funciona sin internet.</p>';
-  else if (isIOS()) html += '<p><b>iPhone / iPad (Safari):</b> toca <span class="kbd">Compartir</span> (el cuadrito con la flecha ↑) y luego <span class="kbd">Agregar a pantalla de inicio</span>.</p>';
-  else html += '<p><b>Android (Chrome):</b> toca el menú <span class="kbd">⋮</span> y luego <span class="kbd">Instalar app</span> o <span class="kbd">Agregar a pantalla de inicio</span></p><p><b>iPhone (Safari):</b> <span class="kbd">Compartir</span> → <span class="kbd">Agregar a pantalla de inicio</span>.</p>';
-  html += '<p style="color:var(--muted);font-size:13px">Consejo: en el menú ☰ encontrarás <b>Plantillas</b> y <b>Subir foto</b> para colorear páginas de tus libros. En <b>Colorear</b> tienes crayón, marcadores (acrílico, de agua y de alcohol), degradados listos, difuminar y <b>Más colores</b> (360 colores). Con <b>Copiar color</b> tomas cualquier color del dibujo o de una foto.</p>';
+  if (isStandalone()) html += tt('install.done.html');
+  else if (isIOS()) html += tt('install.ios.html');
+  else html += tt('install.android.html');
+  html += tt('install.tip.html');
   $('#hintBody').innerHTML = html;
   $('#hintInstall').style.display = deferredPrompt ? '' : 'none';
   $('#hint').classList.add('show');
 }
-const NEWS_HTML = '<p><b>Nuevo en la versión 3.4</b>: ¡más espacio para la hoja!</p>' +
-  '<p>🗂️ <b>Pestañas arriba</b>: <span class="kbd">Herramientas</span>, <span class="kbd">Colores</span>, <span class="kbd">Tamaño</span>, <span class="kbd">Capas</span> y <span class="kbd">Más</span>. Toca una, elige y se cierra sola. Las barras de abajo ya no están: la hoja llega hasta abajo. Debajo de las pestañas tienes tu color y unos colores rápidos. <b>Añadir</b> y <b>Limpiar</b> están en <span class="kbd">Más</span>.</p>' +
-  '<p>⌨️ En la <b>rueda de colores</b> (<span class="kbd">Otro</span>) puedes <b>escribir el código</b> del color: #FF3B30, F00 o uno de Más colores como R3 o A5.</p>' +
-  '<p>🎛️ <b>Botones rápidos</b> con los botones ocultos: una barrita al lado de la hoja con el <b>color</b>, la <b>herramienta</b> (lápiz, crayón, marcadores, difuminar…), el <b>grosor</b>, <b>deshacer</b>, <b>copiar color</b> y <b>Mostrar botones</b>. Arrástrala por <b>⠿</b> a otro lado, o tócala ahí para achicarla a un puntito.</p>' +
-  '<p>🌈 <b>Más colores</b> ocupa media pantalla: cada familia se ve en una fila; toca su nombre para ver todos sus tonos. Siguen los <b>360 colores</b>, y cada uno tiene su <b>código</b> (por ejemplo R4, A10, V22) para encontrarlo otra vez.</p>' +
-  '<p style="margin-top:12px"><b>En la versión 3.3</b>:</p>' +
-  '<p>🖼️ <b>Más espacio para pintar</b>: toca <span class="kbd">Ocultar botones</span> (arriba a la derecha de la hoja) y la hoja usa casi toda la pantalla. Puedes seguir pintando y acercar con dos dedos. Para verlos otra vez, toca <span class="kbd">Mostrar botones</span>.</p>' +
-  '<p>📚 <b>Capas</b> (si quieres): toca <span class="kbd">Capas</span> para pintar en hojas transparentes, una encima de otra. Puedes esconderlas (ojito), subirlas, bajarlas, cambiar su opacidad o borrarlas. Las líneas del dibujo siempre quedan encima. Si no las usas, todo sigue igual.</p>' +
-  '<p>✏️ <b>Punta más fina</b>: <b>Súper fina</b> se queda finita aunque acerques la hoja, los puntitos son pequeños y hay una nueva, <b>Detalle</b>, la más finita de todas.</p>' +
-  '<p>🎨 <b>Nueva rueda de colores</b> en <span class="kbd">Otro</span> (y en “¿No está? Elige cualquier color”): elige cualquier color, su <b>brillo</b> y su <b>opacidad</b> (transparencia), cópialo del dibujo y guarda tus favoritos en <b>Mis colores</b>. La opacidad sirve con el lápiz, marcadores, crayón, figuras, el bote y el degradado.</p>' +
-  '<p style="margin-top:12px"><b>En la versión 3.2</b>:</p>' +
-  '<p>🖊️ <b>Marcador en Dibujar</b>, al lado del <b>Lápiz</b>. Toca <span class="kbd">Marcador</span> otra vez para elegirlo <b>liso</b>, <b>acrílico</b>, <b>de agua</b> o <b>de alcohol</b>.</p>' +
-  '<p>🎨 <b>Todos los colores en Dibujar</b>: el lápiz, el marcador y las figuras usan el color que elijas: colores rápidos, <span class="kbd">Más colores</span> (360), tus <b>Recientes</b> o cualquier otro color.</p>' +
-  '<p>💧 <b>Copiar color</b> (gotero): toca <span class="kbd">Copiar color</span> y luego toca cualquier parte del dibujo o de tu foto. Ese color queda elegido y se guarda en <b>Recientes</b>.</p>' +
-  '<p>✏️ <b>Súper fina</b> ahora es una línea finita de verdad, para los detalles (lápiz, marcador y crayón).</p>' +
-  '<p style="margin-top:12px"><b>En la versión 3.1</b> (en <b>Colorear</b>):</p>' +
-  '<p>🎨 <b>360 colores</b> listos para tocar: abre <span class="kbd">Más colores</span> (debajo de las herramientas) y elige por familias: rojos, verdes, azules, tonos de piel, pastel, neón… Cada fila va de claro a oscuro.</p>' +
-  '<p>🕘 <b>Colores recientes</b>: los últimos que usaste quedan a la mano, al lado de <b>Más colores</b>.</p>' +
-  '<p>🌈 <b>Degradado más fácil</b>: elige uno listo (<b>Atardecer</b>, <b>Mar</b>, <b>Arcoíris</b>, <b>Bosque</b>…) o <b>Mi color</b>, y toca una zona. ¡Así de fácil! El segundo color, circular y la dirección siguen en <b>Más opciones</b>.</p>' +
-  '<p style="margin-top:12px"><b>También en la versión 3:</b></p>' +
-  '<p>🖍️ <b>Marcadores</b>: toca <span class="kbd">Crayón</span> dos veces y elige <b>acrílico</b> (tapa todo, color fuerte), <b>de agua</b> (acuarela suave que se nota más al repasar) o <b>de alcohol</b> (transparente y parejo, se oscurece al repasar).</p>' +
-  '<p>👆 <b>Difuminar</b>: pasa el dedo sobre los colores para mezclarlos suavemente (las líneas negras no se tocan).</p>' +
-  '<p>✏️ Punta <b>súper fina</b> para detalles (en <span class="kbd">Grosor</span>).</p>' +
-  '<p>🐸 <b>18 plantillas nuevas</b> por categorías: animales, naturaleza, mandalas y <b>Puerto Rico</b> (coquí, flor de maga, palmera y playa, garita del Morro y la bandera). Menú ☰ → <span class="kbd">Plantillas</span>.</p>';
 function showNews() {
-  $('#hintTitle').textContent = 'Novedades'; $('#hintIcon').setAttribute('href', '#i-sticker');
-  $('#hintBody').innerHTML = NEWS_HTML;
+  hintKind = 'news';
+  $('#hintTitle').textContent = tt('news.title'); $('#hintIcon').setAttribute('href', '#i-sticker');
+  $('#hintBody').innerHTML = tt('news.html');
   $('#hintInstall').style.display = 'none';
   $('#hint').classList.add('show');
 }
@@ -4621,7 +4720,7 @@ $('#hintInstall').onclick = async () => {
   deferredPrompt = null; hideHint(true);
 };
 window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; if ($('#hint').classList.contains('show')) $('#hintInstall').style.display = ''; });
-window.addEventListener('appinstalled', () => { deferredPrompt = null; hideHint(true); toast('¡App instalada!'); });
+window.addEventListener('appinstalled', () => { deferredPrompt = null; hideHint(true); toast(tt('toast.installed')); });
 
 /* ---------- imagen compartida desde otra app (Web Share Target) ---------- */
 async function receiveShared() {
@@ -4631,11 +4730,11 @@ async function receiveShared() {
   try {
     const c = await caches.open('colorear-compartido');
     const r = await c.match('compartido');
-    if (!r) { toast('No llegó ninguna imagen'); return; }
+    if (!r) { toast(tt('toast.noshared')); return; }
     const b = await r.blob();
     await c.delete('compartido');
     await importImageFile(new File([b], 'compartida', { type: b.type || 'image/*' }));
-  } catch (e) { console.warn('compartido', e); toast('No se pudo abrir la imagen compartida'); }
+  } catch (e) { console.warn('compartido', e); toast(tt('toast.sharedfail')); }
 }
 
 /* ---------- actualizaciones de la app ---------- */
@@ -4644,7 +4743,7 @@ function showUpdate(reg) {
   const bar = $('#updBar');
   bar.classList.add('show');
   bar.onclick = async () => {
-    bar.textContent = 'Actualizando…';
+    bar.textContent = tt('upd.busy');
     updateRequested = true;
     try { await autosave(); } catch (_) {}
     const w = reg.waiting;
@@ -4668,6 +4767,42 @@ if ('serviceWorker' in navigator) {
     } catch (e) { console.warn('SW', e); }
   });
 }
+
+
+/* ---------- cambiar de idioma al instante (no toca la hoja ni las capas) ---------- */
+function refreshLangButtons() {
+  $$('#langList [data-lang]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === LANG)));
+  $('#versionText').textContent = tt('menu.version', { v: APP_VERSION });
+}
+function relabelSwatches() {
+  $$('#palette .sw, #cQuick .sw, #qsList .sw').forEach((b) => { const c = b.dataset.black ? '#333333' : b.dataset.c; b.setAttribute('aria-label', tt('color.aria', { name: COLOR_NAME[c] || c })); b.title = COLOR_NAME[c] || c; });
+  $$('#gPal .sw').forEach((b) => { const c = b.dataset.c; b.setAttribute('aria-label', tt('grad.second.aria', { name: COLOR_NAME[c] || c })); b.title = COLOR_NAME[c] || c; });
+  $$('#txtPalette .sw').forEach((b) => { const c = b.dataset.c; b.setAttribute('aria-label', tt('color.aria', { name: COLOR_NAME[c] || c })); });
+}
+function applyLang() {
+  setDocLang(); buildColorNames(); translateStatic(); refreshLangButtons();
+  relabelSwatches();
+  buildColorSheet(); buildGradPresets(); buildMiniSizes(); buildTemplateGrid();
+  setBrush(state.brush); setDrawBrush(state.drawBrush);
+  updateGradUI(); refreshColorUI(); renderRecent(); refreshLayersUI(); updateObjBar(); renderSlots();
+  setAddTab(lastAddTab); buildAddGrids();
+  $('#txtAdd').textContent = editingText ? tt('txt.change') : tt('txt.add');
+  $('#adjHint').textContent = tt(adjHintKey);
+  if ($('#pickerDlg').classList.contains('show')) pkUpdate();
+  if (openPop && openPop.pop.id === 'mToolPop') buildMiniTools();
+  if (openGrp) $('#panel').setAttribute('aria-label', { tools: tt('tab.tools'), colors: tt('tab.colors'), size: tt('size.title'), more: tt('more.options') }[openGrp]);
+  if ($('#hint').classList.contains('show')) { const inst = $('#hintInstall').style.display; if (hintKind === 'news') showNews(); else if (hintKind === 'install') showHint(); $('#hintInstall').style.display = inst; }
+  if ($('#gallerySheet').classList.contains('show')) openGallery();
+}
+function setLang(l) {
+  if (!LANGS.includes(l) || !I18N[l]) l = 'es';
+  LANG = l;
+  try { localStorage.setItem(LANG_KEY, l); } catch (_) {}
+  applyLang();
+  toast(tt('toast.lang'), 1800);
+}
+$$('#langList [data-lang]').forEach((b) => b.onclick = () => setLang(b.dataset.lang));
+refreshLangButtons();
 
 /* ---------- inicio ---------- */
 buildTemplateGrid();
@@ -4694,7 +4829,7 @@ window.__colorear = {
   get recentColors() { return recentColors.slice(); },
   paint, addLayer, deleteLayer, moveLayer, selectLayer, setLayerVisible, setLayerOpacity, composite, setUIHidden, openPicker, pk, pkSetHex, hsvToRgb, rgbToHsv, docPerScreenPx,
   get mySlots() { return mySlots.slice(); }, COLOR_CODE, placeMini, showPanel, hidePanel, get openPanel() { return openGrp; }, setMiniPos, setMiniFolded, get mini() { return { ...MINI }; }, setFamOpen, openColorsSheet, get activeLayer() { return paintTarget(); },
-  get W() { return W; }, get H() { return H; }, get objs() { return objs; }, get objMode() { return objMode; }, version: APP_VERSION,
+  get W() { return W; }, get lang() { return LANG; }, setLang, tt, LANGS, get H() { return H; }, get objs() { return objs; }, get objMode() { return objMode; }, version: APP_VERSION,
 };
 </script>
 </body>
