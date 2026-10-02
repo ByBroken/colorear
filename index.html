@@ -82,7 +82,7 @@ header.top{
 #paper canvas{position:absolute;left:0;top:0;width:100%;height:100%;touch-action:none}
 #paper.c-pen,#paper.c-marker,#paper.c-line,#paper.c-ellipse,#paper.c-rect,#paper.c-star,#paper.c-heart{cursor:crosshair}
 #paper.c-fill,#paper.c-grad{cursor:cell}
-#paper.c-crayon,#paper.c-acrylic,#paper.c-water,#paper.c-alcohol,#paper.c-cerase,#paper.c-blend,#paper.c-blender0,#paper.c-cpencil,#paper.c-gel,#paper.c-agrad{cursor:crosshair}
+#paper.c-crayon,#paper.c-acrylic,#paper.c-water,#paper.c-alcohol,#paper.c-cerase,#paper.c-blend,#paper.c-blender0,#paper.c-cpencil,#paper.c-gel,#paper.c-agrad,#paper.c-mixb{cursor:crosshair}
 #paper.c-obj{cursor:move}
 #paper.c-pick{cursor:copy}
 #stage.pan-tool #paper,#stage.panning #paper{cursor:inherit}
@@ -598,6 +598,17 @@ body.ui-hidden.obj-mode #miniBar{display:none}
 .pop .gtoadv{display:flex;align-items:center;justify-content:center;gap:8px;padding:4px 10px;line-height:1.2}
 .pop .gtoadv svg{width:22px;height:22px;flex:0 0 auto}
 #agradPop,#gelPop{width:340px;overflow-y:auto;overscroll-behavior:contain}
+/* 3.8: Pincel mezclador */
+#colorArt.row.art{grid-template-columns:repeat(4,minmax(0,1fr))}
+#drawArt.row.art{grid-template-columns:repeat(3,minmax(0,1fr))}
+#mixPop{width:340px;overflow-y:auto;overscroll-behavior:contain}
+#mixPop .ghint{margin:0 4px 8px}
+#mixPop .agchips button{min-height:46px}
+#mixPop .gtoadv{width:100%;margin-top:8px}
+#mixPop .gtoadv b{font-size:18px;line-height:1}
+#mixAdv[hidden]{display:none}
+.mixdemo{height:30px;border-radius:9px;margin:2px 0 8px;background:linear-gradient(90deg,#E53935 0 22%,#B0306A 38%,#7A3590 50%,#4B44C4 62%,#1E5BE5 78%);box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+.mixdemo.raw{background:linear-gradient(90deg,#E53935 0 50%,#1E5BE5 50%)}
 .aghead{display:flex;align-items:center;justify-content:space-between;gap:6px}
 .aghead h4{margin:2px 4px 4px}
 #agBasic{flex:0 0 auto;display:flex;align-items:center;gap:6px;border:0;border-radius:12px;background:#f1eaf7;min-height:40px;padding:0 10px 0 6px;font-weight:700;font-size:13px;color:var(--accent2);white-space:nowrap}
@@ -774,6 +785,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <symbol id="i-grip" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.8"/><circle cx="15" cy="6" r="1.8"/><circle cx="9" cy="12" r="1.8"/><circle cx="15" cy="12" r="1.8"/><circle cx="9" cy="18" r="1.8"/><circle cx="15" cy="18" r="1.8"/></symbol>
     <symbol id="i-cpencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M5.2 15.6L15.8 5l3.2 3.2L8.4 18.8z"/><path d="M5.2 15.6L3.6 20.4l4.8-1.6"/><path d="M3.6 20.4l1.9-.6-1.3-1.3z" fill="currentColor"/><path d="M13.6 7.2l3.2 3.2"/><path d="M14 21l1.2-.6M16.6 20.4l1.4-.5M19.4 19.8l1.2-.4" stroke-width="1.6"/></symbol>
     <symbol id="i-gel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M7.5 16.5L16.3 7.7l2.4 2.4-8.8 8.8z"/><path d="M16.3 7.7l1.6-1.6a1.7 1.7 0 012.4 2.4l-1.6 1.6"/><path d="M7.5 16.5l-1.6 3.2 3.2-1.6"/><circle cx="4.6" cy="20.3" r="1.3" fill="currentColor"/><path d="M10.2 14.6l3.6-3.6" stroke-width="1.2" stroke-opacity=".55"/><path d="M5 5.5v3M3.5 7h3" stroke-width="1.6"/></symbol>
+    <symbol id="i-mixb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M13.6 10.4l6.3-6.3a1.5 1.5 0 012.1 2.1l-6.3 6.3"/><path d="M13.6 10.4c-2.3-.7-4.3.5-4.7 2.6-.3 1.7-1.1 2.8-2.9 3.4 3 1.7 7.2 1 8.7-1.5.8-1.3.6-2.8-1.1-4.5z"/><circle cx="4.6" cy="5.6" r="2.5"/><circle cx="8.6" cy="4.4" r="2.5"/></symbol>
     <symbol id="i-blender0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M8 16l-3 3.5M11 13l7.5-7.5 2 2L13 15z"/><path d="M11 13l-2 1-1 2 2 0 1-1 2-2"/><ellipse cx="6.5" cy="7.5" rx="2.9" ry="4"/></symbol>
     <symbol id="i-agrad" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><rect x="3" y="3.5" width="18" height="17" rx="3"/><path d="M7 16.5l10-9" stroke-dasharray="1.6 2.4"/><circle cx="7" cy="16.5" r="2.3" fill="currentColor"/><circle cx="17" cy="7.5" r="2.3"/><circle cx="12" cy="12" r="1.5" fill="currentColor" fill-opacity=".5"/></symbol>
     <symbol id="i-refwin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><rect x="2.5" y="4" width="19" height="16" rx="2.5"/><rect x="11.5" y="7" width="7.5" height="6.5" rx="1.2" fill="currentColor" fill-opacity=".25"/></symbol>
@@ -863,6 +875,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
   <div class="row only-draw art" id="drawArt" aria-label="Más herramientas de arte">
     <button class="tool" data-tool="cpencil" title="Lápices de colores: con textura de papel; repasa para dar más color y mezclar"><svg><use href="#i-cpencil"/></svg><span>Lápices de colores</span></button>
     <button class="tool has-pop" data-tool="gel" data-pop="gelPop" title="Bolígrafo de gel: tinta opaca y brillante. Toca otra vez para elegir normal, blanco, metálico o brillantina" aria-label="Bolígrafo de gel (toca otra vez para elegir el tipo)"><svg><use href="#i-gel"/></svg><span class="gl">Gel</span></button>
+    <button class="tool has-pop" data-tool="mixb" data-pop="mixPop" title="Pincel mezclador: pasa el pincel donde se juntan dos colores y los mezcla. Toca otra vez para ver las opciones" aria-label="Pincel mezclador (toca otra vez para ver las opciones)"><svg><use href="#i-mixb"/></svg><span>Pincel mezclador</span></button>
   </div>
   <div class="row only-color" id="colorTools">
     <button class="tool on" data-ctool="fill" title="Bote: toca una zona para rellenarla de color" aria-label="Bote de pintura"><svg><use href="#i-fill"/></svg>Bote</button>
@@ -875,6 +888,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <button class="tool" data-ctool="cpencil" title="Lápices de colores: con textura de papel; repasa para dar más color y mezclar"><svg><use href="#i-cpencil"/></svg><span>Lápices de colores</span></button>
     <button class="tool has-pop" data-ctool="gel" data-pop="gelPop" title="Bolígrafo de gel: tinta opaca y brillante. Toca otra vez para elegir normal, blanco, metálico o brillantina" aria-label="Bolígrafo de gel (toca otra vez para elegir el tipo)"><svg><use href="#i-gel"/></svg><span class="gl">Gel</span></button>
     <button class="tool has-pop" data-ctool="agrad" data-pop="agradPop" id="agradBtn" title="Degradado avanzado: arrastra donde quieras, con varios colores, opacidad y mezcla" aria-label="Degradado avanzado"><svg><use href="#i-agrad"/></svg><span>Degradado avanzado</span></button>
+    <button class="tool has-pop" data-ctool="mixb" data-pop="mixPop" title="Pincel mezclador: pasa el pincel donde se juntan dos colores y los mezcla. Toca otra vez para ver las opciones" aria-label="Pincel mezclador (toca otra vez para ver las opciones)"><svg><use href="#i-mixb"/></svg><span>Pincel mezclador</span></button>
   </div>
   <div class="row" id="refRow"><button class="refbtn" id="refBtn" title="Foto de referencia: mira una foto mientras dibujas (no se pinta en tu dibujo)" aria-label="Foto de referencia" aria-pressed="false" aria-haspopup="dialog"><svg><use href="#i-image"/></svg><span>Foto de referencia<small>para mirarla mientras dibujas</small></span></button></div>
   </div>
@@ -995,6 +1009,19 @@ body.ui-hidden.obj-mode #miniBar{display:none}
   <div class="gelm" id="gelMetals"></div>
 </div>
 
+<div class="pop" id="mixPop" role="dialog" aria-label="Pincel mezclador">
+  <h4>Pincel mezclador</h4>
+  <p class="ghint">Pasa el pincel por donde se juntan dos colores 👆</p>
+  <div class="agchips c2" id="mixStart"><button data-ms="mix" title="No pone color nuevo: mezcla los colores que ya están en la hoja">Solo mezclar lo que hay</button><button data-ms="color" title="El pincel empieza cargado con el color elegido y lo va mezclando con lo que toca">Empezar con el color elegido</button></div>
+  <button class="gmore gtoadv" id="mixTipBtn"><b aria-hidden="true">💡</b><span>Cómo mezclar como en Paint</span></button>
+  <button class="gmore" id="mixMore" aria-expanded="false" aria-controls="mixAdv">Más opciones <b>▾</b></button>
+  <div id="mixAdv" hidden>
+    <label class="agop"><span>Cuánto mezcla</span><input type="range" id="mixStr" min="10" max="100" value="50" aria-label="Cuánto mezcla"><b id="mixStrV">50 %</b></label>
+    <label class="agop"><span>Textura: de suave a granulada</span><input type="range" id="mixTex" min="0" max="100" value="40" aria-label="Textura: de suave a granulada"><b id="mixTexV">40 %</b></label>
+    <p class="aglbl">Respetar las líneas</p>
+    <div class="agchips c2" id="mixLines"><button data-ml="1" title="No mezcla las líneas negras ni pasa color al otro lado de una línea">Sí: no cruza las líneas</button><button data-ml="0" title="Mezcla libremente, también encima de las líneas">No: mezcla libre</button></div>
+  </div>
+</div>
 <div class="pop mini" id="mToolPop" role="menu" aria-label="Elegir herramienta"><h4>Herramienta</h4><div class="pgrid" id="mTools"></div><div class="mmode" id="mMode"><button data-m="draw">Dibujar</button><button data-m="color">Colorear</button></div></div>
 <div class="pop mini" id="mSizePop" role="menu" aria-label="Grosor de la punta"><h4>Grosor</h4><div class="pgrid" id="mSizes"></div></div>
 <div class="pop" id="layersPop" role="dialog" aria-label="Capas">
@@ -1304,7 +1331,7 @@ setDocLang(); translateStatic();
 /* Colorear v3.3: crea dibujos para colorear, sube fotos de tus libros y coloréalos
    (lápiz y marcador de colores, crayón, marcadores acrílico / de agua / de alcohol, degradados, difuminar, copiar color,
    capas, ocultar botones, punta Detalle y rueda de colores con opacidad) */
-const APP_VERSION = '3.7';
+const APP_VERSION = '3.8';
 const PORTRAIT = [1200, 1600], LANDSCAPE = [1600, 1200];
 let W = 1200, H = 1600;                       // tamaño de la hoja (px internos); vertical u horizontal
 /* Grosores en píxeles de la hoja (1200×1600). "Súper fina" (xs) y "Detalle" (xxs) no son fijas: se calculan
@@ -1431,7 +1458,18 @@ const state = {
   currentId: null, dirty: false, panTool: false,
   alpha: 1, drawAlpha: 1, activeLayer: 'color', uiHidden: false, pickToPicker: false,
   gelKind: 'normal',
+  // 3.8: Pincel mezclador. start: 'mix' (solo mezcla lo que hay) o 'color' (empieza con el color elegido)
+  mixStart: 'mix', mixStr: 0.5, mixTex: 0.4, mixLines: { color: true, draw: false },
 };
+try {
+  const m = JSON.parse(localStorage.getItem('colorear.mezclador') || 'null');
+  if (m) {
+    if (m.start === 'mix' || m.start === 'color') state.mixStart = m.start;
+    if (isFinite(m.str)) state.mixStr = Math.min(1, Math.max(0.1, +m.str));
+    if (isFinite(m.tex)) state.mixTex = Math.min(1, Math.max(0, +m.tex));
+    if (m.lines && typeof m.lines === 'object') state.mixLines = { color: m.lines.color !== false, draw: m.lines.draw === true };
+  }
+} catch (_) {}
 
 /* ---------- vista: ajuste a la pantalla, zoom y desplazamiento ---------- */
 const view = { z: 1, x: 0, y: 0, bw: 0, bh: 0, bx: 0, by: 0, sw: 0, sh: 0 };
@@ -1723,13 +1761,19 @@ function startSingle(e) {
   const tgt = layers[toolTarget(tool)];
   if (tgt && !tgt.vis) { toast(tt('toast.hiddenlayer'), 2800); return; }
   const isB0 = tool === 'blender0' || (state.mode === 'draw' && tool === 'marker' && state.drawBrush === 'blender0');
-  if (state.mode === 'color' && !isB0 && (tool === 'fill' || isBrush(tool) || tool === 'cpencil' || (tool === 'gel' && state.gelKind !== 'white') || (tool === 'grad' && gradUsesColor()))) addRecent(state.color);
-  if (state.mode === 'draw' && tool !== 'erase' && !isB0 && !(tool === 'gel' && state.gelKind === 'white') && state.drawColor !== '#000000') addRecent(state.drawColor);   // el negro de siempre ya está en los colores rápidos
+  const mixOnly = tool === 'mixb' && state.mixStart !== 'color';   // 3.8: el Pincel mezclador sin color propio no usa el color elegido
+  if (state.mode === 'color' && !isB0 && (tool === 'fill' || isBrush(tool) || tool === 'cpencil' || (tool === 'gel' && state.gelKind !== 'white') || (tool === 'grad' && gradUsesColor()) || (tool === 'mixb' && !mixOnly))) addRecent(state.color);
+  if (state.mode === 'draw' && tool !== 'erase' && !isB0 && !mixOnly && !(tool === 'gel' && state.gelKind === 'white') && state.drawColor !== '#000000') addRecent(state.drawColor);   // el negro de siempre ya está en los colores rápidos
   if (tool === 'agrad') { g = Object.assign(base, { kind: 'agrad', layer: paintTarget() }); agBegin(g); return; }
   if (isB0) {             // 3.6: Mezclador 0: mezcla lo que ya hay (en la capa elegida), sin color propio
     const lw = (state.mode === 'draw' ? sizeLW('mark', state.drawSize) : sizeLW('color', state.colorSize)) * 1.1;
     g = Object.assign(base, { kind: 'blend', b0: true, layer: paintTarget(), lw, box: { x1: Infinity, y1: Infinity, x2: -Infinity, y2: -Infinity } });
     b0Start(g, p);
+    return;
+  }
+  if (tool === 'mixb') {   // 3.8: Pincel mezclador (en la capa elegida; en Dibujar, en el dibujo)
+    g = Object.assign(base, { kind: 'blend', mix: true, layer: toolTarget(tool), box: { x1: Infinity, y1: Infinity, x2: -Infinity, y2: -Infinity } });
+    mixStart(g, p);
     return;
   }
   if (tool === 'fill') { g = Object.assign(base, { kind: 'fill' }); return; }
@@ -1782,7 +1826,7 @@ function onMove(e) {
       bboxAdd(g.box, p.x, p.y, g.st.lw + 2);
       g.mid = mid; g.last = p;
     } else if (g.kind === 'blend') {
-      if (g.b0) b0To(g, p); else blendTo(g, p);
+      if (g.b0) b0To(g, p); else if (g.mix) mixTo(g, p); else blendTo(g, p);
     } else {
       g.last = p;
     }
@@ -2085,6 +2129,117 @@ function blendTo(gg, p) {
   cc.putImageData(img, rx, ry);
   bboxAdd(gg.box, rx, ry, 0); bboxAdd(gg.box, rx + rw, ry + rh, 0);
   gg.lastDab = { x: ex, y: ey };
+}
+
+/* ---------- 3.8: Pincel mezclador (como el «lápiz natural» + gotero de Paint, pero solo) ----------
+   Un pincel semitransparente y con textura que lleva una "carga" de color. En cada toque toma el color que hay debajo
+   (como un gotero automático), lo mezcla con su carga y deja ese color mezclado: al pasarlo por la unión de dos colores
+   van saliendo los tonos de en medio. Con "Respetar las líneas" no toca las líneas negras ni pasa color al otro lado. */
+function mixLW() {
+  const draw = state.mode === 'draw', sz = draw ? state.drawSize : state.colorSize;
+  return isThin(sz) ? sizeLW('color', sz) : sizeLW(draw ? 'mark' : 'color', sz);
+}
+function mixStart(gg, p) {
+  gg.R = Math.max(0.75, mixLW() / 2);
+  gg.lines = !!state.mixLines[state.mode === 'draw' ? 'draw' : 'color'];
+  const s = state.mixStr;
+  // gotero + lápiz semitransparente: la carga sigue de cerca el color de abajo (tonos intermedios, sin manchas planas).
+  // Más fuerte: deja más color y lo lleva más lejos. Con color propio, el color dura un poco más.
+  gg.pick = (0.5 - 0.25 * s) * (state.mixStart === 'color' ? 0.6 : 1); gg.dep = 0.08 + 0.4 * s; gg.tex = state.mixTex;
+  gg.opaque = gg.layer === 'color';
+  gg.load = null; gg.first = true; gg.prevC = null;
+  if (state.mixStart === 'color') {
+    const c = curColor(), a = curAlpha(), [r, g2, b] = hexToRgb(c);
+    gg.load = [r * a, g2 * a, b * a, a];          // premultiplicado (0..255, alfa 0..1)
+  }
+  gg.lastDab = p;
+  mixDabs(gg, [p]);
+}
+function mixTo(gg, p) {
+  const a = gg.lastDab, dist = Math.hypot(p.x - a.x, p.y - a.y), step = Math.max(0.6, gg.R * 0.25);
+  if (dist < step) return;
+  const n = Math.min(400, Math.floor(dist / step)), pts = [];
+  for (let k = 1; k <= n; k++) { const t = k * step / dist; pts.push({ x: a.x + (p.x - a.x) * t, y: a.y + (p.y - a.y) * t }); }
+  mixDabs(gg, pts);
+  gg.lastDab = pts[pts.length - 1];
+}
+function mixDabs(gg, pts) {
+  const R = gg.R, Mg = Math.ceil(R) + 2;
+  let x1 = Infinity, y1 = Infinity, x2 = -Infinity, y2 = -Infinity;
+  for (const q of pts) { x1 = Math.min(x1, q.x); y1 = Math.min(y1, q.y); x2 = Math.max(x2, q.x); y2 = Math.max(y2, q.y); }
+  const rr = clampRect({ x: x1 - Mg, y: y1 - Mg, w: x2 - x1 + 2 * Mg, h: y2 - y1 + 2 * Mg }); if (!rr) return;
+  const { x: rx, y: ry, w: rw, h: rh } = rr;               // se lee y se escribe solo este rectángulo pequeño
+  const L = layers[gg.layer], img = L.ctx.getImageData(rx, ry, rw, rh), d = img.data;
+  let ok = null;
+  if (gg.lines) {                                        // paredes: líneas del dibujo y negro (también en la capa donde pinta)
+    const la = gg.layer !== 'line' ? layers.line.ctx.getImageData(rx, ry, rw, rh).data : null;
+    ok = new Uint8Array(rw * rh);
+    for (let i = 0, b = 0; i < rw * rh; i++, b += 4) {
+      ok[i] = (la && la[b + 3] >= LINE_T) || (d[b + 3] >= LINE_T && d[b] < 60 && d[b + 1] < 60 && d[b + 2] < 60 && (gg.layer === 'line' || d[b] < 40 && d[b + 1] < 40 && d[b + 2] < 40)) ? 0 : 1;
+    }
+  }
+  const T = tooth(), N = TOOTH_N, tex = gg.tex, opaque = gg.opaque, R2 = R * R;
+  const Si = Math.ceil(R) * 2 + 2;
+  if (!gg.wbuf || gg.wbuf.length < Si * Si) { gg.wbuf = new Float32Array(Si * Si); gg.conn = new Uint8Array(Si * Si); gg.qs = new Int32Array(Si * Si); }
+  const wb = gg.wbuf, conn = gg.conn, qs = gg.qs;
+  for (const q of pts) {
+    const i0 = Math.floor(q.x - R), j0 = Math.floor(q.y - R), i1 = Math.floor(q.x + R), j1 = Math.floor(q.y + R);
+    const S = i1 - i0 + 1;
+    const ci = clamp(Math.floor(q.x), i0, i1) - i0, cj = clamp(Math.floor(q.y), j0, j1) - j0;
+    const inside = (i, j) => { const X = i0 + i - rx, Y = j0 + j - ry; return X >= 0 && Y >= 0 && X < rw && Y < rh; };
+    // peso de cada píxel en la punta (círculo suave); con las líneas respetadas, solo lo conectado con el centro
+    if (ok) {
+      conn.fill(0, 0, S * S);
+      const okAt = (i, j) => inside(i, j) && ok[(j0 + j - ry) * rw + (i0 + i - rx)];
+      if (!okAt(ci, cj)) { gg.crossed = true; continue; }  // la punta está encima de una línea: no hace nada
+      let qh = 0, qt = 0; qs[qt++] = cj * S + ci; conn[cj * S + ci] = 1;
+      while (qh < qt) {
+        const v = qs[qh++], i = v % S, j = (v - i) / S;
+        if (i > 0 && !conn[v - 1] && okAt(i - 1, j)) { conn[v - 1] = 1; qs[qt++] = v - 1; }
+        if (i < S - 1 && !conn[v + 1] && okAt(i + 1, j)) { conn[v + 1] = 1; qs[qt++] = v + 1; }
+        if (j > 0 && !conn[v - S] && okAt(i, j - 1)) { conn[v - S] = 1; qs[qt++] = v - S; }
+        if (j < S - 1 && !conn[v + S] && okAt(i, j + 1)) { conn[v + S] = 1; qs[qt++] = v + S; }
+      }
+      // ¿pasó al otro lado de una línea? (el toque anterior no está conectado con este): el pincel se "limpia"
+      const pc = gg.prevC;
+      if (pc) { const pi = pc.x - i0, pj = pc.y - j0; if (gg.crossed || pi < 0 || pj < 0 || pi >= S || pj >= S || !conn[pj * S + pi]) gg.load = null; }
+      gg.crossed = false; gg.prevC = { x: i0 + ci, y: j0 + cj };
+    }
+    let sw = 0, sr = 0, sg = 0, sb = 0, sa = 0;
+    for (let j = 0; j < S; j++) for (let i = 0; i < S; i++) {
+      const k = j * S + i; wb[k] = 0;
+      if ((ok && !conn[k]) || !inside(i, j)) continue;
+      const dx = i0 + i + 0.5 - q.x, dy = j0 + j + 0.5 - q.y; let f = 1 - (dx * dx + dy * dy) / R2;
+      if (f <= 0) { if (i !== ci || j !== cj) continue; f = 0.35; }   // punta muy fina: al menos el píxel del centro
+      const w = f * f * (3 - 2 * f); wb[k] = f * f;          // deja color con un borde muy suave (sin "cuadros" al repasar)
+      const b = ((j0 + j - ry) * rw + (i0 + i - rx)) * 4, a = d[b + 3] / 255;
+      sw += w; sr += d[b] * a * w; sg += d[b + 1] * a * w; sb += d[b + 2] * a * w; sa += a * w;
+    }
+    if (sw <= 0) continue;
+    const pick = [sr / sw, sg / sw, sb / sw, sa / sw];      // el color que hay debajo (gotero automático)
+    let Ld = gg.load;
+    if (!Ld) { gg.load = pick; gg.first = false; continue; }   // "Solo mezclar" (o recién pasó una línea): el primer toque solo carga el pincel
+    if (!gg.first) for (let c = 0; c < 4; c++) Ld[c] += (pick[c] - Ld[c]) * gg.pick;   // mezcla la carga con lo de abajo
+    gg.first = false;
+    const la_ = Ld[3], lr = la_ > 0.002 ? Ld[0] / la_ : 0, lg = la_ > 0.002 ? Ld[1] / la_ : 0, lb = la_ > 0.002 ? Ld[2] / la_ : 0;
+    for (let j = 0; j < S; j++) for (let i = 0; i < S; i++) {
+      const w = wb[j * S + i]; if (!w) continue;
+      const X = i0 + i, Y = j0 + j, b = ((Y - ry) * rw + (X - rx)) * 4;
+      const t = T[(Y % N) * N + (X % N)], tf = 1 - tex + tex * clamp((t - 0.18) * 1.9, 0.05, 1);   // grano del papel
+      const k = gg.dep * w * tf;
+      if (opaque) {                                        // Capa 1 (papel): se pinta encima, la hoja sigue opaca
+        const kk = k * la_;
+        d[b] += (lr - d[b]) * kk; d[b + 1] += (lg - d[b + 1]) * kk; d[b + 2] += (lb - d[b + 2]) * kk;
+      } else {                                             // capa transparente: mezcla también la transparencia
+        const a0 = d[b + 3] / 255;
+        const pr = d[b] * a0 + (Ld[0] - d[b] * a0) * k, pg = d[b + 1] * a0 + (Ld[1] - d[b + 1] * a0) * k, pb = d[b + 2] * a0 + (Ld[2] - d[b + 2] * a0) * k, pa = a0 + (la_ - a0) * k;
+        if (pa <= 0.002) { d[b] = d[b + 1] = d[b + 2] = d[b + 3] = 0; continue; }
+        d[b] = pr / pa; d[b + 1] = pg / pa; d[b + 2] = pb / pa; d[b + 3] = pa * 255;
+      }
+    }
+  }
+  L.ctx.putImageData(img, rx, ry);
+  bboxAdd(gg.box, rx, ry, 0); bboxAdd(gg.box, rx + rw, ry + rh, 0);
 }
 
 /* ---------- 3.6: lápices de colores, bolígrafos de gel, Mezclador 0 (blender) y alcohol más suave ---------- */
@@ -3155,6 +3310,7 @@ function setMode(m) {
   $('#tabDraw').classList.toggle('on', m === 'draw');
   $('#tabColor').classList.toggle('on', m === 'color');
   refreshColorUI();
+  renderMix();   // 3.8: «Respetar las líneas» es distinto en Dibujar y en Colorear
   updateCursor();
   layout();
   requestAnimationFrame(layout);
@@ -3172,6 +3328,7 @@ $$('#drawTools .tool, #drawArt .tool').forEach((b) => b.onclick = () => {
   setDrawTool(b.dataset.tool);
   if (b.id === 'markBtn' && !state.markSeen) { state.markSeen = true; toast(tt('toast.markhint'), 3200); }
   else if (b.dataset.tool === 'gel' && !state.gelSeen) { state.gelSeen = true; showPop('gelPop', b); }
+  else if (b.dataset.tool === 'mixb' && !state.mixSeen) { state.mixSeen = true; showPop('mixPop', b); }
 });
 function setDrawTool(t) { state.drawTool = t; $$('#drawTools .tool, #drawArt .tool').forEach((x) => x.classList.toggle('on', x.dataset.tool === t)); updateCursor(); }
 // Tipo de marcador de Dibujar (liso, acrílico, de agua, de alcohol)
@@ -3257,6 +3414,7 @@ $$('#colorTools [data-ctool], #colorArt [data-ctool]').forEach((b) => b.onclick 
   if (t === 'grad' && !state.gradSeen) { state.gradSeen = true; showPop('gradPop', b); }
   else if (t === 'agrad') { state.agSeen = true; renderAg(); showPop('agradPop', b); }
   else if (t === 'gel' && !state.gelSeen) { state.gelSeen = true; showPop('gelPop', b); }
+  else if (t === 'mixb' && !state.mixSeen) { state.mixSeen = true; showPop('mixPop', b); }
   else if (b.id === 'brushBtn' && !state.brushSeen) { state.brushSeen = true; toast(tt('toast.brushhint')); }
 });
 $$('#brushPop [data-brush]').forEach((b) => b.onclick = () => { pickTool(); setColorTool(b.dataset.brush); state.brushSeen = true; hidePop(); });
@@ -3320,6 +3478,29 @@ $('#gMore').onclick = () => {
 $('#gSwap').onclick = () => { const c = state.color; state.gradPreset = 'custom'; setColor(state.color2); state.color2 = c; updateGradUI(); };
 $$('#gType [data-gt]').forEach((b) => b.onclick = () => { state.gradType = b.dataset.gt; updateGradUI(); });
 $$('#gDir [data-gd]').forEach((b) => b.onclick = () => { state.gradDir = b.dataset.gd; updateGradUI(); });
+/* ---------- 3.8: opciones del Pincel mezclador ---------- */
+function saveMix() { try { localStorage.setItem('colorear.mezclador', JSON.stringify({ start: state.mixStart, str: state.mixStr, tex: state.mixTex, lines: state.mixLines })); } catch (_) {} }
+var mixAdvOpen = false;   // var: setMode() puede llamar a renderMix() antes de llegar aquí
+function renderMix() {
+  $$('#mixStart [data-ms]').forEach((x) => { const on = x.dataset.ms === state.mixStart; x.classList.toggle('on', on); x.setAttribute('aria-pressed', String(on)); });
+  const ln = !!state.mixLines[state.mode === 'draw' ? 'draw' : 'color'];
+  $$('#mixLines [data-ml]').forEach((x) => { const on = (x.dataset.ml === '1') === ln; x.classList.toggle('on', on); x.setAttribute('aria-pressed', String(on)); });
+  const sv = Math.round(state.mixStr * 100), tv = Math.round(state.mixTex * 100);
+  $('#mixStr').value = sv; $('#mixStrV').textContent = sv + ' %'; $('#mixTex').value = tv; $('#mixTexV').textContent = tv + ' %';
+  const more = $('#mixMore'); more.setAttribute('aria-expanded', String(mixAdvOpen)); $('#mixAdv').hidden = !mixAdvOpen;
+  more.firstChild.textContent = (mixAdvOpen ? tt('less.options') : tt('more.options')) + ' ';
+}
+function pickMixTool() { if (currentTool() === 'mixb') return; pickTool(); if (state.mode === 'draw') setDrawTool('mixb'); else setColorTool('mixb'); }
+$$('#mixStart [data-ms]').forEach((b) => b.onclick = () => { pickMixTool(); state.mixStart = b.dataset.ms; saveMix(); renderMix(); refreshColorUI(); });
+$$('#mixLines [data-ml]').forEach((b) => b.onclick = () => { state.mixLines[state.mode === 'draw' ? 'draw' : 'color'] = b.dataset.ml === '1'; saveMix(); renderMix(); });
+$('#mixStr').oninput = () => { state.mixStr = clamp(+$('#mixStr').value / 100, 0.1, 1); saveMix(); renderMix(); };
+$('#mixTex').oninput = () => { state.mixTex = clamp(+$('#mixTex').value / 100, 0, 1); saveMix(); renderMix(); };
+$('#mixMore').onclick = () => {
+  mixAdvOpen = !mixAdvOpen; renderMix();
+  if (openPop && openPop.pop.id === 'mixPop') { const a = openPop.anchor; if (a.classList.contains('mb')) showMiniPop('mixPop', a); else showPop('mixPop', a); if (mixAdvOpen) $('#mixPop').scrollTop = $('#mixPop').scrollHeight; }
+};
+$('#mixTipBtn').onclick = () => { hidePop(); showMixTip(); };
+renderMix();
 /* ---------- 3.6: bolígrafo de gel (normal, blanco, metálico, brillantina) ---------- */
 const GEL_NAME_KEY = { normal: 'tool.gel', white: 'gel.white', metal: 'gel.metal', glitter: 'gel.glitter' };
 const gelName = () => tt(GEL_NAME_KEY[state.gelKind] || 'tool.gel');
@@ -3509,6 +3690,8 @@ function refreshColorUI() {
   if (state.brush === 'blender0') $('#brushBtn svg').style.color = '';
   if (state.drawBrush === 'blender0') $('#markBtn svg').style.color = '';
   if (state.gelKind === 'white') $$('[data-tool="gel"] svg, [data-ctool="gel"] svg').forEach((s) => { s.style.color = ''; });
+  $$('[data-ctool="mixb"] svg').forEach((s) => { s.style.color = state.mixStart === 'color' ? tint(state.color) : ''; });   // 3.8: con color propio, el ícono lleva el color
+  $$('[data-tool="mixb"] svg').forEach((s) => { s.style.color = state.mixStart === 'color' ? tint(state.drawColor) : ''; });
   const a = curAlpha(), chip = $('#alphaChip');
   chip.hidden = a >= 0.999; chip.textContent = Math.round(a * 100) + ' %';
   chip.setAttribute('aria-label', tt('alpha.aria', { n: Math.round(a * 100) }));
@@ -3995,9 +4178,9 @@ try {
   if (s0 && ['left', 'right', 'top', 'bottom'].includes(s0.edge)) { MINI.edge = s0.edge; MINI.pos = clamp(+s0.pos || 0.5, 0, 1); MINI.folded = !!s0.folded; }
 } catch (_) {}
 function saveMini() { try { localStorage.setItem(MINI_KEY, JSON.stringify(MINI)); } catch (_) {} }
-const TOOL_ICON = { pen: 'i-pen', line: 'i-line', ellipse: 'i-ellipse', rect: 'i-rect', star: 'i-star', heart: 'i-heart', erase: 'i-eraser', fill: 'i-fill', blend: 'i-blend', cerase: 'i-eraser', cpencil: 'i-cpencil', gel: 'i-gel', agrad: 'i-agrad' };
+const TOOL_ICON = { pen: 'i-pen', line: 'i-line', ellipse: 'i-ellipse', rect: 'i-rect', star: 'i-star', heart: 'i-heart', erase: 'i-eraser', fill: 'i-fill', blend: 'i-blend', cerase: 'i-eraser', cpencil: 'i-cpencil', gel: 'i-gel', agrad: 'i-agrad', mixb: 'i-mixb' };
 const TOOL_NAME = {};
-for (const k of ['pen', 'line', 'ellipse', 'rect', 'star', 'heart', 'erase', 'fill', 'grad', 'blend', 'cerase', 'crayon', 'cpencil', 'agrad']) Object.defineProperty(TOOL_NAME, k, { get: () => tt('tool.' + k), enumerable: true });
+for (const k of ['pen', 'line', 'ellipse', 'rect', 'star', 'heart', 'erase', 'fill', 'grad', 'blend', 'cerase', 'crayon', 'cpencil', 'agrad', 'mixb']) Object.defineProperty(TOOL_NAME, k, { get: () => tt('tool.' + k), enumerable: true });
 for (const k of ['acrylic', 'water', 'alcohol', 'blender0']) Object.defineProperty(TOOL_NAME, k, { get: () => tt('mark.n.' + k), enumerable: true });
 Object.defineProperty(TOOL_NAME, 'gel', { get: () => gelName(), enumerable: true });
 const SIZE_DOT = { xxs: 2, xs: 3, 0: 6, 1: 11, 2: 18 };
@@ -4005,10 +4188,10 @@ function miniToolInfo() {
   const t = currentTool();
   if (state.mode === 'draw') {
     if (t === 'marker') return { icon: state.drawBrush === 'crayon' ? 'i-marker' : BRUSH_ICONS[state.drawBrush], name: tt('mark.n.' + state.drawBrush), tint: state.drawBrush !== 'blender0' };
-    return { icon: TOOL_ICON[t] || 'i-pen', name: TOOL_NAME[t] || t, tint: t !== 'erase' && !(t === 'gel' && state.gelKind === 'white') };
+    return { icon: TOOL_ICON[t] || 'i-pen', name: TOOL_NAME[t] || t, tint: t !== 'erase' && !(t === 'gel' && state.gelKind === 'white') && !(t === 'mixb' && state.mixStart !== 'color') };
   }
   if (isBrush(t)) return { icon: BRUSH_ICONS[t], name: TOOL_NAME[t], tint: t !== 'blender0' };
-  return { icon: TOOL_ICON[t], name: TOOL_NAME[t] || t, tint: t === 'fill' || t === 'cpencil' || (t === 'gel' && state.gelKind !== 'white'), grad: t === 'grad' };
+  return { icon: TOOL_ICON[t], name: TOOL_NAME[t] || t, tint: t === 'fill' || t === 'cpencil' || (t === 'gel' && state.gelKind !== 'white') || (t === 'mixb' && state.mixStart === 'color'), grad: t === 'grad' };
 }
 function refreshMini() {
   const bar = document.getElementById('miniBar'); if (!bar) return;
@@ -4116,9 +4299,9 @@ const mtl = (a, b) => tt(a) + (b ? '<small>' + tt(b) + '</small>' : '');
 const MINI_TOOLS = {
   get color() { return [['fill', mtl('tool.fill'), 'i-fill'], ['crayon', mtl('tool.crayon', 'mt.crayon.sub'), 'i-crayon'], ['acrylic', mtl('tool.marker', 'mark.k.acrylic'), 'i-acrylic'], ['water', mtl('tool.marker', 'mark.k.water'), 'i-water'],
           ['alcohol', mtl('tool.marker', 'mark.k.alcohol'), 'i-alcohol'], ['blender0', mtl('mark.n.blender0'), 'i-blender0'], ['cpencil', mtl('tool.cpencil'), 'i-cpencil'], ['gel', mtl('tool.gel'), 'i-gel'],
-          ['grad', mtl('tool.grad'), null], ['agrad', mtl('tool.agrad'), 'i-agrad'], ['blend', mtl('tool.blend'), 'i-blend'], ['cerase', mtl('tool.erase', 'mt.eraser.sub'), 'i-eraser']]; },
+          ['grad', mtl('tool.grad'), null], ['agrad', mtl('tool.agrad'), 'i-agrad'], ['blend', mtl('tool.blend'), 'i-blend'], ['mixb', mtl('tool.mixb'), 'i-mixb'], ['cerase', mtl('tool.erase', 'mt.eraser.sub'), 'i-eraser']]; },
   get draw() { return [['pen', mtl('tool.pen'), 'i-pen'], ['m-crayon', mtl('tool.marker', 'mark.k.crayon'), 'i-marker'], ['m-acrylic', mtl('tool.marker', 'mark.k.acrylic'), 'i-acrylic'], ['m-water', mtl('tool.marker', 'mark.k.water'), 'i-water'],
-         ['m-alcohol', mtl('tool.marker', 'mark.k.alcohol'), 'i-alcohol'], ['m-blender0', mtl('mark.n.blender0'), 'i-blender0'], ['cpencil', mtl('tool.cpencil'), 'i-cpencil'], ['gel', mtl('tool.gel'), 'i-gel'], ['erase', mtl('tool.erase'), 'i-eraser']]; },
+         ['m-alcohol', mtl('tool.marker', 'mark.k.alcohol'), 'i-alcohol'], ['m-blender0', mtl('mark.n.blender0'), 'i-blender0'], ['cpencil', mtl('tool.cpencil'), 'i-cpencil'], ['gel', mtl('tool.gel'), 'i-gel'], ['mixb', mtl('tool.mixb'), 'i-mixb'], ['erase', mtl('tool.erase'), 'i-eraser']]; },
 };
 function miniToolOn(k) {
   const t = currentTool();
@@ -4150,6 +4333,7 @@ function pickMiniTool(k) {
   hidePop(); toast(miniToolInfo().name + ' ✓', 1800);
   if (k === 'agrad') { renderAg(); showMiniPop('agradPop', $('#mbTool')); }
   else if (k === 'gel' && !state.gelSeen) { state.gelSeen = true; showMiniPop('gelPop', $('#mbTool')); }
+  else if (k === 'mixb' && !state.mixSeen) { state.mixSeen = true; renderMix(); showMiniPop('mixPop', $('#mbTool')); }
 }
 function buildMiniSizes() {
   const box = $('#mSizes'); box.textContent = '';
@@ -5482,6 +5666,14 @@ function showNews() {
   $('#hint').classList.add('show');
 }
 $('#mNews').onclick = () => { closeSheet('#menuSheet'); showNews(); };
+// 3.8: tarjeta corta «Cómo mezclar como en Paint» (desde el menú del Pincel mezclador)
+function showMixTip() {
+  hintKind = 'mixtip';
+  $('#hintTitle').textContent = tt('mix.tip.title'); $('#hintIcon').setAttribute('href', '#i-mixb');
+  $('#hintBody').innerHTML = tt('mix.tip.html');
+  $('#hintInstall').style.display = 'none';
+  $('#hint').classList.add('show');
+}
 function hideHint(remember = true) {
   if (!$('#hint').classList.contains('show')) return;
   $('#hint').classList.remove('show');
@@ -5559,14 +5751,14 @@ function applyLang() {
   relabelSwatches();
   buildColorSheet(); buildGradPresets(); buildMiniSizes(); buildTemplateGrid();
   setBrush(state.brush); setDrawBrush(state.drawBrush); relabelGel(); relabelAg();
-  updateGradUI(); refreshColorUI(); renderRecent(); refreshLayersUI(); updateObjBar(); renderSlots();
+  updateGradUI(); renderMix(); refreshColorUI(); renderRecent(); refreshLayersUI(); updateObjBar(); renderSlots();
   setAddTab(lastAddTab); buildAddGrids();
   $('#txtAdd').textContent = editingText ? tt('txt.change') : tt('txt.add');
   $('#adjHint').textContent = tt(adjHintKey);
   if ($('#pickerDlg').classList.contains('show')) pkUpdate();
   if (openPop && openPop.pop.id === 'mToolPop') buildMiniTools();
   if (openGrp) $('#panel').setAttribute('aria-label', { tools: tt('tab.tools'), colors: tt('tab.colors'), size: tt('size.title'), more: tt('more.options') }[openGrp]);
-  if ($('#hint').classList.contains('show')) { const inst = $('#hintInstall').style.display; if (hintKind === 'news') showNews(); else if (hintKind === 'install') showHint(); $('#hintInstall').style.display = inst; }
+  if ($('#hint').classList.contains('show')) { const inst = $('#hintInstall').style.display; if (hintKind === 'news') showNews(); else if (hintKind === 'mixtip') showMixTip(); else if (hintKind === 'install') showHint(); $('#hintInstall').style.display = inst; }
   if ($('#gallerySheet').classList.contains('show')) openGallery();
 }
 function setLang(l) {
@@ -5923,6 +6115,8 @@ window.__colorear = {
   get W() { return W; }, get lang() { return LANG; }, setLang, tt, LANGS, get H() { return H; }, get objs() { return objs; }, get objMode() { return objMode; }, version: APP_VERSION,
   get ref() { return Object.assign(refSettings(), { has: !!ref.blob, iw: ref.iw, ih: ref.ih, adjust: ref.adjust }); }, setRef, setRefMode, refAdjust, openRef,
   AG, agApply, agAddStop, agDelStop, agSelect, agSetPreset, renderAg, setGelKind, setDrawTool, tooth, hasConic,
+  setMix(o) { if (o.start) state.mixStart = o.start; if (o.str != null) state.mixStr = clamp(+o.str, 0.1, 1); if (o.tex != null) state.mixTex = clamp(+o.tex, 0, 1); if (o.lines != null) state.mixLines[state.mode === 'draw' ? 'draw' : 'color'] = !!o.lines; renderMix(); refreshColorUI(); },
+  renderMix, showMixTip, get mixAdvOpen() { return mixAdvOpen; },
 };
 </script>
 </body>
