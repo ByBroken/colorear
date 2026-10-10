@@ -395,7 +395,7 @@ html:not([lang="es"]) #recentRow{flex-wrap:wrap;row-gap:6px}
 .chips button{flex:1;min-height:44px;border:0;border-radius:12px;background:#f1eaf7;font-weight:700}
 .chips button.on{background:var(--sel);color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent)}
 /* Ajustar foto */
-#adjust{position:fixed;inset:0;z-index:30;background:#1f1830;display:none;grid-template-rows:auto minmax(0,1fr) auto;color:#fff}
+#adjust{position:fixed;inset:0;z-index:30;background:#1f1830;display:none;grid-template-rows:auto minmax(0,1fr) auto;color:#fff;grid-template-columns:minmax(0,1fr)}
 #adjust.show{display:grid}
 #adjust .ahead{display:flex;align-items:center;gap:8px;padding:calc(env(safe-area-inset-top) + 8px) calc(env(safe-area-inset-right) + 10px) 8px calc(env(safe-area-inset-left) + 10px)}
 #adjust .ahead h2{flex:1;margin:0;font-size:19px;text-align:center}
@@ -724,6 +724,84 @@ body.ui-hidden.obj-mode #miniBar{display:none}
 .rbtns .mbtn{min-height:52px;justify-content:center}
 #refSheet .mbtn.danger{color:#c62828}
 #refSheet .mbtn.danger svg{color:#c62828}
+/* 3.9: acuarela, spray, simetría, paletas listas, foto a dibujo, video del proceso y reto del día */
+#colorArt.row.art{grid-template-columns:repeat(3,minmax(0,1fr))}
+#drawArt.row.art{grid-template-columns:repeat(3,minmax(0,1fr))}
+#paper.c-wcolor,#paper.c-spray{cursor:crosshair}
+.symguide path{fill:none;stroke:rgba(255,45,146,.55);stroke-width:1.5px;stroke-dasharray:7 6;vector-effect:non-scaling-stroke}
+.symguide circle{fill:rgba(255,45,146,.4);stroke:none}
+#symGuide[hidden]{display:none!important}
+#symRow{margin-top:6px}
+#symBtn{width:100%;display:flex;align-items:center;gap:10px;padding:6px 12px;min-height:50px;text-align:left;border:0;border-radius:14px;background:#faf6f1;font-size:14px;font-weight:700;color:var(--ink)}
+#symBtn svg{width:26px;height:26px;flex:0 0 auto;color:#FF2D92}
+#symBtn small{display:block;font-weight:500;font-size:12px;color:var(--muted)}
+#symBtn.on{box-shadow:inset 0 0 0 2px #FF2D92}
+#symBtn:active,#palBtn:active{transform:scale(.98)}
+#miniBar .mb#mbSym.on{background:#FF2D92;color:#fff}
+#miniBar.no-sym #mbSym{display:none}
+#symPop,#palPop,#wcPop,#spPop{width:340px;overflow-y:auto;overscroll-behavior:contain}
+#symPop .gmore,#wcPop .gmore,#spPop .gmore{width:100%}
+#symAdv[hidden],#wcAdv[hidden],#spAdv[hidden],#vidAdv[hidden],#palCur[hidden],#palMineLbl[hidden]{display:none!important}
+#palRow{display:flex;align-items:center;gap:6px;margin-top:6px;min-width:0}
+#palBtn{flex:0 0 auto;display:flex;align-items:center;gap:6px;min-height:40px;padding:4px 12px 4px 8px;border:0;border-radius:14px;background:#faf6f1;font-size:14px;font-weight:700;color:var(--ink);white-space:nowrap}
+#palBtn svg{width:24px;height:24px;flex:0 0 auto;color:var(--accent2)}
+#palCur{flex:1 1 auto;display:flex;align-items:center;gap:6px;min-width:0;font-size:13px}
+#palCur b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#palCurX{flex:0 0 auto;width:34px;height:34px;border:0;border-radius:50%;background:#f1eaf7;font-size:20px;line-height:1;color:var(--ink);padding:0}
+.palrow{display:flex;align-items:center;gap:4px;margin-bottom:6px}
+.palpick{flex:1;min-width:0;display:flex;flex-direction:column;align-items:stretch;gap:4px;border:0;border-radius:12px;background:#faf6f1;padding:6px 8px;text-align:left}
+.palpick:active{transform:scale(.98)}
+.palrow.on .palpick{box-shadow:inset 0 0 0 2px var(--accent)}
+.palpick .pn{font-weight:800;font-size:13px;color:var(--ink)}
+.pdots{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:3px}
+.pdots i{display:block;height:20px;border-radius:6px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+.paldel{flex:0 0 auto;width:36px;height:36px;border:0;border-radius:50%;background:#f1eaf7;font-size:20px;padding:0}
+.reto{display:flex;gap:10px;background:linear-gradient(135deg,#fff4e0,#f3e8ff);border-radius:18px;padding:10px;margin-bottom:12px;box-shadow:inset 0 0 0 1px rgba(88,86,214,.15)}
+.reto canvas{flex:0 0 auto;width:72px;height:96px;border-radius:10px;background:#fff;box-shadow:0 0 0 1px var(--line)}
+.reto .rinfo{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.reto .rhead{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap}
+.reto .rhead b{font-size:16px;color:var(--accent2)}
+#retoStreak{font-size:12.5px;font-weight:800;background:#fff;border-radius:10px;padding:2px 8px;color:#c2410c}
+.reto .rname{font-weight:800;font-size:14px;overflow-wrap:anywhere}
+#retoPrompt{margin:0;font-size:13px;color:var(--muted);line-height:1.25}
+.rcols{display:flex;gap:5px;flex-wrap:wrap}
+.rcols i{width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
+.rbtns2{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:2px}
+.rbtns2 button{border:0;border-radius:12px;min-height:40px;padding:0 12px;font-weight:800;font-size:14px;background:#fff;color:var(--ink);box-shadow:0 0 0 1px var(--line);max-width:100%}
+.rbtns2 button.primary{background:var(--accent);color:#fff;box-shadow:none}
+.rbtns2 button:active{transform:scale(.97)}
+#retoOk{font-weight:800;color:#15803d;font-size:14px}
+#retoStreak[hidden],#retoDone[hidden],#retoOk[hidden]{display:none}
+.reto.done{background:linear-gradient(135deg,#e7f8ec,#f3e8ff)}
+#tplGrid .card{position:relative}
+.card .newb{position:absolute;top:4px;right:4px;background:#FF2D92;color:#fff;font-size:11px;font-weight:800;border-radius:8px;padding:2px 6px;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.vidbox{display:flex;justify-content:center;margin:6px 0 10px}
+.vidbox canvas,.vidbox video{display:block;max-width:100%;height:44vh;max-height:420px;aspect-ratio:9/16;border-radius:14px;background:#f1eaf7;box-shadow:0 2px 12px rgba(60,30,90,.18)}
+.vidbox canvas[hidden],.vidbox video[hidden],#vidProg[hidden],#vidActs[hidden]{display:none!important}
+.vinfo{font-weight:700;font-size:14px;margin:0 2px 8px}
+.vidprog{margin:0 0 10px}
+.vidprog .vbar{height:10px;border-radius:5px;background:#eee8f8;overflow:hidden}
+.vidprog .vbar i{display:block;height:100%;width:0;background:var(--accent2);transition:width .2s}
+.vidprog span{display:block;font-size:13px;font-weight:700;color:var(--muted);margin-top:4px}
+#videoSheet .sheet{max-height:94%}
+#videoSheet .gmore{margin-top:10px;width:100%;min-height:44px;border:0;border-radius:12px;background:#f6f3ff;font-weight:700}
+#vidAdv{margin-top:8px;display:flex;flex-direction:column;gap:8px}
+#videoSheet .mbtn.danger,#videoSheet .mbtn.danger svg{color:#c62828}
+#adjust.sketch .only-photo{display:none!important}
+#adjust:not(.sketch) .only-sketch{display:none!important}
+.apriv{margin:8px 2px 0;font-size:12.5px;color:var(--muted);font-weight:600}
+#adjSketchUse{width:100%;margin-top:10px;min-height:52px;border:0;border-radius:16px;background:var(--accent);color:#fff;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center;gap:8px}
+#adjSketchUse svg{width:22px;height:22px}
+@media (max-width:420px){ #adjust .apanel .seg button{font-size:12.5px;padding:0 3px;line-height:1.1} }
+/* 3.9: con 3 modos (Foto a dibujo) el panel de Ajustar no se sale en pantallas chicas */
+#adjust .apanel{min-width:0;max-width:100vw;box-sizing:border-box}
+#adjust .apanel .seg{min-width:0}
+#adjust .apanel .seg button{min-width:0;flex:1 1 0;white-space:normal;overflow-wrap:break-word;height:auto;min-height:40px;padding-top:3px;padding-bottom:3px}
+#adjust .apanel .slider{min-width:0}
+#adjust .apanel .slider input{min-width:0;flex:1 1 auto;width:auto}
+#adjust .apanel .arow{min-width:0}
+#adjust .apanel .arow .tool{min-width:0;flex:1 1 0;white-space:normal}
+#palCur b{white-space:normal;overflow:visible;line-height:1.15}
 </style>
 </head>
 <body class="mode-draw">
@@ -786,6 +864,13 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <symbol id="i-cpencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M5.2 15.6L15.8 5l3.2 3.2L8.4 18.8z"/><path d="M5.2 15.6L3.6 20.4l4.8-1.6"/><path d="M3.6 20.4l1.9-.6-1.3-1.3z" fill="currentColor"/><path d="M13.6 7.2l3.2 3.2"/><path d="M14 21l1.2-.6M16.6 20.4l1.4-.5M19.4 19.8l1.2-.4" stroke-width="1.6"/></symbol>
     <symbol id="i-gel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M7.5 16.5L16.3 7.7l2.4 2.4-8.8 8.8z"/><path d="M16.3 7.7l1.6-1.6a1.7 1.7 0 012.4 2.4l-1.6 1.6"/><path d="M7.5 16.5l-1.6 3.2 3.2-1.6"/><circle cx="4.6" cy="20.3" r="1.3" fill="currentColor"/><path d="M10.2 14.6l3.6-3.6" stroke-width="1.2" stroke-opacity=".55"/><path d="M5 5.5v3M3.5 7h3" stroke-width="1.6"/></symbol>
     <symbol id="i-mixb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M13.6 10.4l6.3-6.3a1.5 1.5 0 012.1 2.1l-6.3 6.3"/><path d="M13.6 10.4c-2.3-.7-4.3.5-4.7 2.6-.3 1.7-1.1 2.8-2.9 3.4 3 1.7 7.2 1 8.7-1.5.8-1.3.6-2.8-1.1-4.5z"/><circle cx="4.6" cy="5.6" r="2.5"/><circle cx="8.6" cy="4.4" r="2.5"/></symbol>
+    <symbol id="i-sym" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M12 2.5v19" stroke-dasharray="2 2.6"/><path d="M9.5 7.5C6.5 4.5 3 5.5 3 9s3 4.5 6.5 3.5M14.5 7.5c3-3 6.5-2 6.5 1.5s-3 4.5-6.5 3.5M9.5 13.5c-2.6 1-4.2 3-3.3 5s3.3.8 3.3-1.4M14.5 13.5c2.6 1 4.2 3 3.3 5s-3.3.8-3.3-1.4"/></symbol>
+    <symbol id="i-wcolor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M20 3.5l-8.3 8.3"/><path d="M10.7 10.8c-2.4 0-3.8 1.5-3.8 3.6 0 1.4-.9 2.3-1.9 2.6.9.8 2.5 1.4 4.1 1.4 2.8 0 4.5-1.7 4.5-4.3z"/><circle cx="6" cy="6" r="3.2" fill="currentColor" fill-opacity=".3" stroke-width="1.4"/><path d="M17.5 14.5s2.6 2.9 2.6 4.6a2.6 2.6 0 01-5.2 0c0-1.7 2.6-4.6 2.6-4.6z" fill="currentColor" fill-opacity=".35" stroke-width="1.6"/></symbol>
+    <symbol id="i-spray" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><rect x="5" y="9.5" width="9" height="11.5" rx="1.8"/><path d="M7.5 9.5V7h4v2.5M8.5 7V4.5h2"/><path d="M5 13.5h9" stroke-width="1.5"/><g fill="currentColor" stroke="none"><circle cx="17.5" cy="4.5" r="1"/><circle cx="20.5" cy="7" r="1"/><circle cx="17.8" cy="8.6" r=".9"/><circle cx="21" cy="3" r=".8"/><circle cx="21.2" cy="10.6" r=".8"/><circle cx="18.6" cy="11.6" r=".7"/></g></symbol>
+    <symbol id="i-video" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><rect x="3" y="5" width="13" height="14" rx="2"/><path d="M16 10l5-3v10l-5-3z"/><path d="M8 9.3v5.4l4.2-2.7z" fill="currentColor"/></symbol>
+    <symbol id="i-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M12 3a9 9 0 100 18c1.2 0 1.8-.8 1.8-1.7 0-1.2-1-1.5-1-2.6 0-1 .8-1.7 1.8-1.7H17a4 4 0 004-4C21 6.6 17 3 12 3z"/><circle cx="7.5" cy="11.5" r="1.4" fill="currentColor"/><circle cx="9.6" cy="7.2" r="1.4" fill="currentColor"/><circle cx="14.6" cy="7.2" r="1.4" fill="currentColor"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M8 4h8v5a4 4 0 01-8 0z"/><path d="M8 6H4.5a3.2 3.2 0 003.7 4.2M16 6h3.5a3.2 3.2 0 01-3.7 4.2"/><path d="M12 13v3.5M9 20.5h6M10 16.5h4v4h-4z"/></symbol>
+    <symbol id="i-sketch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><rect x="2.5" y="3.5" width="12" height="10" rx="1.6"/><circle cx="6.5" cy="7.3" r="1.3"/><path d="M14.5 10.5l-4-3-8 5.5"/><path d="M12.5 21l.9-3.4 6.4-6.4 2.5 2.5-6.4 6.4z"/><path d="M4 17.5h5M4 20.5h3" stroke-width="1.6"/></symbol>
     <symbol id="i-blender0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M8 16l-3 3.5M11 13l7.5-7.5 2 2L13 15z"/><path d="M11 13l-2 1-1 2 2 0 1-1 2-2"/><ellipse cx="6.5" cy="7.5" rx="2.9" ry="4"/></symbol>
     <symbol id="i-agrad" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><rect x="3" y="3.5" width="18" height="17" rx="3"/><path d="M7 16.5l10-9" stroke-dasharray="1.6 2.4"/><circle cx="7" cy="16.5" r="2.3" fill="currentColor"/><circle cx="17" cy="7.5" r="2.3"/><circle cx="12" cy="12" r="1.5" fill="currentColor" fill-opacity=".5"/></symbol>
     <symbol id="i-refwin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><rect x="2.5" y="4" width="19" height="16" rx="2.5"/><rect x="11.5" y="7" width="7.5" height="6.5" rx="1.2" fill="currentColor" fill-opacity=".25"/></symbol>
@@ -824,6 +909,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <canvas id="cvPreview"></canvas>
     <div id="refUnder" hidden aria-hidden="true"><img id="refUnderImg" alt="" draggable="false"></div>
     <svg id="refPaperGrid" class="rgridsvg" hidden aria-hidden="true" preserveAspectRatio="none"></svg>
+    <svg id="symGuide" class="rgridsvg symguide" hidden aria-hidden="true" preserveAspectRatio="none"></svg>
   </div>
   <div class="float" id="objBar" role="toolbar" aria-label="Editar lo añadido">
     <button class="ob primary" id="objDone"><svg><use href="#i-check"/></svg>Listo</button>
@@ -852,6 +938,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <button class="mb" id="mbUndo" title="Deshacer" aria-label="Deshacer" disabled><svg><use href="#i-undo"/></svg></button>
     <button class="mb" id="mbRedo" title="Rehacer" aria-label="Rehacer" disabled><svg><use href="#i-redo"/></svg></button>
     <button class="mb" id="mbPick" title="Copiar color: toca aquí y luego un color del dibujo" aria-label="Copiar color" aria-pressed="false"><svg><use href="#i-picker"/></svg></button>
+    <button class="mb" id="mbSym" title="Simetría: lo que pintas se repite como en un espejo" aria-label="Simetría" aria-pressed="false" aria-haspopup="dialog"><svg><use href="#i-sym"/></svg></button>
     <button class="mb" id="mbRef" title="Foto de referencia" aria-label="Foto de referencia" aria-pressed="false" aria-haspopup="dialog"><svg><use href="#i-image"/></svg></button>
     <button class="mb" id="showUI" title="Mostrar botones otra vez (todas las opciones)" aria-label="Mostrar botones"><svg><use href="#i-shrink"/></svg></button>
     <button class="mb mbgrip" id="mbGrip" title="Arrastra para mover la barra a otro lado. Toca para achicarla" aria-label="Mover o achicar la barra"><svg><use href="#i-grip"/></svg></button>
@@ -876,6 +963,8 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <button class="tool" data-tool="cpencil" title="Lápices de colores: con textura de papel; repasa para dar más color y mezclar"><svg><use href="#i-cpencil"/></svg><span>Lápices de colores</span></button>
     <button class="tool has-pop" data-tool="gel" data-pop="gelPop" title="Bolígrafo de gel: tinta opaca y brillante. Toca otra vez para elegir normal, blanco, metálico o brillantina" aria-label="Bolígrafo de gel (toca otra vez para elegir el tipo)"><svg><use href="#i-gel"/></svg><span class="gl">Gel</span></button>
     <button class="tool has-pop" data-tool="mixb" data-pop="mixPop" title="Pincel mezclador: pasa el pincel donde se juntan dos colores y los mezcla. Toca otra vez para ver las opciones" aria-label="Pincel mezclador (toca otra vez para ver las opciones)"><svg><use href="#i-mixb"/></svg><span>Pincel mezclador</span></button>
+    <button class="tool has-pop" data-tool="wcolor" data-pop="wcPop" title="Pincel de acuarela: color transparente con agua; la orilla se oscurece al secar. Toca otra vez para ver las opciones" aria-label="Pincel de acuarela (toca otra vez para ver las opciones)"><svg><use href="#i-wcolor"/></svg><span>Pincel de acuarela</span></button>
+    <button class="tool has-pop" data-tool="spray" data-pop="spPop" title="Spray: pintura en puntitos suaves; si vas despacio sale más. Toca otra vez para ver las opciones" aria-label="Spray (toca otra vez para ver las opciones)"><svg><use href="#i-spray"/></svg><span>Spray</span></button>
   </div>
   <div class="row only-color" id="colorTools">
     <button class="tool on" data-ctool="fill" title="Bote: toca una zona para rellenarla de color" aria-label="Bote de pintura"><svg><use href="#i-fill"/></svg>Bote</button>
@@ -889,8 +978,11 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <button class="tool has-pop" data-ctool="gel" data-pop="gelPop" title="Bolígrafo de gel: tinta opaca y brillante. Toca otra vez para elegir normal, blanco, metálico o brillantina" aria-label="Bolígrafo de gel (toca otra vez para elegir el tipo)"><svg><use href="#i-gel"/></svg><span class="gl">Gel</span></button>
     <button class="tool has-pop" data-ctool="agrad" data-pop="agradPop" id="agradBtn" title="Degradado avanzado: arrastra donde quieras, con varios colores, opacidad y mezcla" aria-label="Degradado avanzado"><svg><use href="#i-agrad"/></svg><span>Degradado avanzado</span></button>
     <button class="tool has-pop" data-ctool="mixb" data-pop="mixPop" title="Pincel mezclador: pasa el pincel donde se juntan dos colores y los mezcla. Toca otra vez para ver las opciones" aria-label="Pincel mezclador (toca otra vez para ver las opciones)"><svg><use href="#i-mixb"/></svg><span>Pincel mezclador</span></button>
+    <button class="tool has-pop" data-ctool="wcolor" data-pop="wcPop" title="Pincel de acuarela: color transparente con agua; la orilla se oscurece al secar. Toca otra vez para ver las opciones" aria-label="Pincel de acuarela (toca otra vez para ver las opciones)"><svg><use href="#i-wcolor"/></svg><span>Pincel de acuarela</span></button>
+    <button class="tool has-pop" data-ctool="spray" data-pop="spPop" title="Spray: pintura en puntitos suaves; si vas despacio sale más. Toca otra vez para ver las opciones" aria-label="Spray (toca otra vez para ver las opciones)"><svg><use href="#i-spray"/></svg><span>Spray</span></button>
   </div>
   <div class="row" id="refRow"><button class="refbtn" id="refBtn" title="Foto de referencia: mira una foto mientras dibujas (no se pinta en tu dibujo)" aria-label="Foto de referencia" aria-pressed="false" aria-haspopup="dialog"><svg><use href="#i-image"/></svg><span>Foto de referencia<small>para mirarla mientras dibujas</small></span></button></div>
+  <div class="row" id="symRow"><button id="symBtn" title="Simetría: lo que pintas se repite como en un espejo o un mandala" aria-label="Simetría" aria-pressed="false" aria-haspopup="dialog"><svg><use href="#i-sym"/></svg><span>Simetría<small>espejo y mandala</small></span></button></div>
   </div>
   <div class="grp" data-grp="colors">
     <div class="palette" id="palette"></div>
@@ -901,6 +993,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <button id="alphaChip" hidden title="Opacidad del color: toca para cambiarla" aria-label="Opacidad del color">100 %</button>
     </div>
     <div id="recentLine"><span class="rlbl">Recientes</span><div class="recent" id="recent" aria-label="Colores recientes"></div></div>
+    <div id="palRow"><button id="palBtn" title="Paletas listas: grupos de colores que combinan bien" aria-haspopup="dialog"><svg><use href="#i-palette"/></svg><span>Paletas listas</span></button><div id="palCur" hidden><span class="rlbl">Paleta:</span><b></b><button id="palCurX" title="Volver a los colores de siempre" aria-label="Volver a los colores de siempre">×</button></div></div>
   </div>
   <div class="grp" data-grp="size">
     <p class="gh">Tamaño de la punta</p>
@@ -929,6 +1022,8 @@ body.ui-hidden.obj-mode #miniBar{display:none}
       <button class="mbtn danger" id="btnClear" title="Borrar todo lo de la hoja (puedes deshacer)"><svg><use href="#i-trash"/></svg><div>Limpiar<small>borra la hoja</small></div></button>
       <button class="mbtn" id="moreHide" title="Ocultar botones: la hoja usa casi toda la pantalla" aria-label="Ocultar botones (pantalla completa)"><svg><use href="#i-full"/></svg><div>Ocultar botones<small>pantalla completa</small></div></button>
       <button class="mbtn" id="moreMenu" title="Menú: guardar, plantillas, fotos y más" aria-label="Menú"><svg><use href="#i-menu"/></svg><div>Menú<small>guardar, plantillas…</small></div></button>
+      <button class="mbtn" id="moreVideo" title="Video del proceso: un video corto de cómo pintaste"><svg><use href="#i-video"/></svg><div>Video del proceso<small>para compartir</small></div></button>
+      <button class="mbtn" id="moreReto" title="Reto del día: una plantilla y colores nuevos cada día"><svg><use href="#i-target"/></svg><div>Reto del día<small>uno nuevo cada día</small></div></button>
     </div>
   </div>
 </footer>
@@ -1022,6 +1117,47 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <div class="agchips c2" id="mixLines"><button data-ml="1" title="No mezcla las líneas negras ni pasa color al otro lado de una línea">Sí: no cruza las líneas</button><button data-ml="0" title="Mezcla libremente, también encima de las líneas">No: mezcla libre</button></div>
   </div>
 </div>
+<div class="pop" id="wcPop" role="dialog" aria-label="Pincel de acuarela">
+  <h4>Pincel de acuarela</h4>
+  <p class="ghint">Color con agua: es transparente y la orilla se oscurece al secar 💧</p>
+  <button class="gmore" id="wcMore" aria-expanded="false" aria-controls="wcAdv">Más opciones <b>▾</b></button>
+  <div id="wcAdv" hidden>
+    <label class="agop"><span>Agua y manchas</span><input type="range" id="wcWater" min="0" max="100" value="55" aria-label="Agua y manchas"><b id="wcWaterV">55 %</b></label>
+    <label class="agop"><span>Grano del papel</span><input type="range" id="wcGran" min="0" max="100" value="50" aria-label="Grano del papel"><b id="wcGranV">50 %</b></label>
+    <p class="aglbl">Respetar las líneas</p>
+    <div class="agchips c2" id="wcLines"><button data-l="1" title="No pasa color al otro lado de una línea">Sí: no cruza las líneas</button><button data-l="0" title="Pinta libremente, también encima de las líneas">No: pinta libre</button></div>
+  </div>
+</div>
+<div class="pop" id="spPop" role="dialog" aria-label="Spray">
+  <h4>Spray</h4>
+  <p class="ghint">Mantén el dedo para que salga más pintura: rápido es suave, despacio es fuerte 🎨</p>
+  <button class="gmore" id="spMore" aria-expanded="false" aria-controls="spAdv">Más opciones <b>▾</b></button>
+  <div id="spAdv" hidden>
+    <label class="agop"><span>Cantidad de pintura</span><input type="range" id="spFlow" min="10" max="100" value="50" aria-label="Cantidad de pintura"><b id="spFlowV">50 %</b></label>
+    <p class="aglbl">Respetar las líneas</p>
+    <div class="agchips c2" id="spLines"><button data-l="1" title="No pasa color al otro lado de una línea">Sí: no cruza las líneas</button><button data-l="0" title="Pinta libremente, también encima de las líneas">No: pinta libre</button></div>
+  </div>
+</div>
+<div class="pop" id="symPop" role="dialog" aria-label="Simetría">
+  <h4>Simetría</h4>
+  <p class="ghint">Lo que pintas se repite como en un espejo 🦋</p>
+  <div class="agchips c2" id="symModes"><button data-sym="off">Apagada</button><button data-sym="v">Espejo ↔</button><button data-sym="h">Espejo ↕</button><button data-sym="quad">4 partes</button></div>
+  <button class="gmore" id="symMore" aria-expanded="false" aria-controls="symAdv">Más opciones <b>▾</b></button>
+  <div id="symAdv" hidden>
+    <p class="aglbl">Mandala (alrededor del centro)</p>
+    <div class="agchips c3" id="symN"><button data-n="6">6 partes</button><button data-n="8">8 partes</button><button data-n="12">12 partes</button></div>
+    <label class="rchk"><input type="checkbox" id="symMirror">Caleidoscopio (con espejo)</label>
+    <p class="ptip" style="margin:4px 4px 0">Funciona con lápices, marcadores, crayón, gel, acuarela, spray, mezcladores, borradores y el bote.</p>
+  </div>
+</div>
+<div class="pop" id="palPop" role="dialog" aria-label="Paletas listas">
+  <h4>Paletas listas</h4>
+  <p class="ghint">Toca una paleta: sus colores quedan arriba, en los colores rápidos</p>
+  <div id="palList"></div>
+  <p class="aglbl" id="palMineLbl" hidden>Mis paletas</p>
+  <div id="palMine"></div>
+  <div class="ag2"><button id="palSave" title="Guarda tus colores recientes como una paleta">Guardar mi paleta</button><button id="palReset" title="Volver a los colores de siempre">Colores de siempre</button></div>
+</div>
 <div class="pop mini" id="mToolPop" role="menu" aria-label="Elegir herramienta"><h4>Herramienta</h4><div class="pgrid" id="mTools"></div><div class="mmode" id="mMode"><button data-m="draw">Dibujar</button><button data-m="color">Colorear</button></div></div>
 <div class="pop mini" id="mSizePop" role="menu" aria-label="Grosor de la punta"><h4>Grosor</h4><div class="pgrid" id="mSizes"></div></div>
 <div class="pop" id="layersPop" role="dialog" aria-label="Capas">
@@ -1056,14 +1192,26 @@ body.ui-hidden.obj-mode #miniBar{display:none}
   <div class="sheet">
     <div class="sheet-head"><img class="brand" src="logo-badge-96.png" srcset="logo-badge-96.png 1x, logo-badge-192.png 2x" width="44" height="44" alt="ByBroken Coloring"><h2>Menú</h2><button class="ib close" aria-label="Cerrar"><svg><use href="#i-close"/></svg></button></div>
     <div class="scroll">
+      <div class="reto" id="retoCard">
+        <canvas id="retoThumb" width="120" height="160" aria-hidden="true"></canvas>
+        <div class="rinfo">
+          <div class="rhead"><b><span aria-hidden="true">🎯</span> Reto del día</b><span id="retoStreak" hidden></span></div>
+          <div class="rname" id="retoName"></div>
+          <p id="retoPrompt"></p>
+          <div class="rcols" id="retoCols" aria-hidden="true"></div>
+          <div class="rbtns2"><button class="primary" id="retoStart">Empezar</button><button id="retoDone" hidden>¡Lo terminé!</button><span id="retoOk" hidden>✓ ¡Hecho hoy!</span></div>
+        </div>
+      </div>
       <div class="menu-list">
         <button class="mbtn" id="mPhoto"><svg><use href="#i-camera"/></svg>Subir foto</button>
+        <button class="mbtn" id="mSketch"><svg><use href="#i-sketch"/></svg>Foto a dibujo</button>
         <button class="mbtn" id="mTpl"><svg><use href="#i-tpl"/></svg>Plantillas</button>
         <button class="mbtn" id="mGallery"><svg><use href="#i-gallery"/></svg>Mis dibujos</button>
         <button class="mbtn" id="mNew"><svg><use href="#i-new"/></svg>Hoja nueva</button>
         <button class="mbtn" id="mSave"><svg><use href="#i-save"/></svg>Guardar en Mis dibujos</button>
         <button class="mbtn" id="mExport"><svg><use href="#i-share"/></svg>Guardar imagen</button>
         <button class="mbtn" id="mShare"><svg><use href="#i-send"/></svg>Compartir para colorear</button>
+        <button class="mbtn" id="mVideo"><svg><use href="#i-video"/></svg>Video del proceso</button>
         <button class="mbtn" id="mPrint"><svg><use href="#i-print"/></svg>Imprimir para colorear</button>
         <button class="mbtn" id="mClear"><svg><use href="#i-trash"/></svg>Limpiar hoja</button>
         <button class="mbtn" id="mInstall"><svg><use href="#i-phone"/></svg>Instalar en el teléfono</button>
@@ -1120,6 +1268,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
       <div class="menu-list" style="grid-template-columns:1fr">
         <button class="mbtn big" id="phCamera"><svg><use href="#i-camera"/></svg><div>Tomar foto<small>Fotografía una página de tu libro para colorear</small></div></button>
         <button class="mbtn big" id="phGallery"><svg><use href="#i-image"/></svg><div>Elegir imagen<small>De tu galería o archivos (fotos o dibujos)</small></div></button>
+        <button class="mbtn big" id="phSketch"><svg><use href="#i-sketch"/></svg><div>Foto a dibujo<small>Convierte cualquier foto en un dibujo para colorear</small></div></button>
       </div>
       <p class="tip">Consejo: pon la página plana, tómala de frente, con buena luz y sin tu sombra encima. Después podrás recortarla y limpiarla.</p>
     </div>
@@ -1186,11 +1335,17 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <div class="seg">
       <button id="adjModePhoto" class="on">Foto de un libro</button>
       <button id="adjModeAsis">Dibujo tal cual</button>
+      <button id="adjModeSketch">Foto a dibujo</button>
     </div>
     <div class="slider only-photo">
       <b>Limpieza</b><span>Más líneas</span>
       <input type="range" id="adjLimp" min="0" max="100" value="50" aria-label="Limpieza">
       <span>Más limpio</span>
+    </div>
+    <div class="slider only-sketch">
+      <b>Detalle</b><span>Menos</span>
+      <input type="range" id="adjDetail" min="0" max="100" value="50" aria-label="Detalle del dibujo">
+      <span>Más</span>
     </div>
     <div class="arow">
       <button class="tool" id="adjRotate"><svg><use href="#i-rotate"/></svg>Girar</button>
@@ -1198,6 +1353,28 @@ body.ui-hidden.obj-mode #miniBar{display:none}
       <button class="tool" id="adjThick"><svg><use href="#i-bold"/></svg>Líneas gruesas</button>
     </div>
     <p class="ahint" id="adjHint">Arrastra las esquinas para recortar la página.</p>
+    <p class="apriv only-sketch">🔒 Se convierte aquí, en tu teléfono: la foto no se sube a internet.</p>
+    <button class="only-sketch" id="adjSketchUse"><svg><use href="#i-check"/></svg>Usar para colorear</button>
+  </div>
+</div>
+
+<div class="overlay" id="videoSheet">
+  <div class="sheet" role="dialog" aria-label="Video del proceso">
+    <div class="sheet-head"><h2>Video del proceso</h2><button class="ib close" aria-label="Cerrar"><svg><use href="#i-close"/></svg></button></div>
+    <div class="scroll">
+      <p class="rtip">Colorear guarda solito cómo vas pintando. Crea un video corto para compartir: la foto de referencia nunca sale.</p>
+      <p class="vinfo" id="vidInfo"></p>
+      <div class="vidbox"><canvas id="vidCv" hidden></canvas><video id="vidOut" hidden playsinline controls loop muted></video></div>
+      <div class="vidprog" id="vidProg" hidden><div class="vbar"><i></i></div><span></span></div>
+      <button class="mbtn big" id="vidMake" style="width:100%"><svg><use href="#i-video"/></svg><div>Crear video<small>de 10 a 20 segundos, vertical</small></div></button>
+      <div class="rbtns" id="vidActs" hidden><button class="mbtn" id="vidShare"><svg><use href="#i-send"/></svg>Compartir</button><button class="mbtn" id="vidSave"><svg><use href="#i-share"/></svg>Descargar</button></div>
+      <button class="gmore" id="vidMore" aria-expanded="false" aria-controls="vidAdv">Más opciones <b>▾</b></button>
+      <div id="vidAdv" hidden>
+        <label class="rchk"><input type="checkbox" id="vidAuto" checked>Grabar el proceso automáticamente</label>
+        <p class="rtip">Se guarda solo en este teléfono: fotitos pequeñas de cada dibujo.</p>
+        <button class="mbtn danger" id="vidClear" style="width:100%"><svg><use href="#i-trash"/></svg>Borrar la grabación de este dibujo</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1331,7 +1508,7 @@ setDocLang(); translateStatic();
 /* Colorear v3.3: crea dibujos para colorear, sube fotos de tus libros y coloréalos
    (lápiz y marcador de colores, crayón, marcadores acrílico / de agua / de alcohol, degradados, difuminar, copiar color,
    capas, ocultar botones, punta Detalle y rueda de colores con opacidad) */
-const APP_VERSION = '3.8';
+const APP_VERSION = '3.9';
 const PORTRAIT = [1200, 1600], LANDSCAPE = [1600, 1200];
 let W = 1200, H = 1600;                       // tamaño de la hoja (px internos); vertical u horizontal
 /* Grosores en píxeles de la hoja (1200×1600). "Súper fina" (xs) y "Detalle" (xxs) no son fijas: se calculan
@@ -1597,6 +1774,7 @@ function replaceSheet(nw, nh, drawFn) {
   if (drawFn) drawFn(lc, cc);
   const after = snapLayers();
   syncBackups(); mountLayers();
+  try { procNew(); } catch (_) {}            // 3.9: hoja nueva = video del proceso nuevo
   pushEntry({ parts: [], resize: { before, after } });
 }
 function applyEntry(entry, which) {
@@ -1619,7 +1797,7 @@ function redo() { cancelGesture(); const e = redoStack.pop(); if (!e) return; ap
 function resetHistory() { undoStack.length = 0; redoStack.length = 0; updateUndoButtons(); }
 function updateUndoButtons() { $('#btnUndo').disabled = $('#mbUndo').disabled = !undoStack.length; $('#btnRedo').disabled = $('#mbRedo').disabled = !redoStack.length; }
 function syncBackups() { for (const k in layers) { const L = layers[k]; L.bctx.clearRect(0, 0, W, H); L.bctx.drawImage(L.cv, 0, 0); } }
-function markDirty() { state.dirty = true; scheduleAutosave(); }
+function markDirty() { state.dirty = true; scheduleAutosave(); try { scheduleFrame(); } catch (_) {} }   // 3.9: también guarda un cuadro para el video del proceso
 
 /* ---------- coordenadas ---------- */
 function toDocXY(cx, cy) {
@@ -1762,34 +1940,46 @@ function startSingle(e) {
   if (tgt && !tgt.vis) { toast(tt('toast.hiddenlayer'), 2800); return; }
   const isB0 = tool === 'blender0' || (state.mode === 'draw' && tool === 'marker' && state.drawBrush === 'blender0');
   const mixOnly = tool === 'mixb' && state.mixStart !== 'color';   // 3.8: el Pincel mezclador sin color propio no usa el color elegido
-  if (state.mode === 'color' && !isB0 && (tool === 'fill' || isBrush(tool) || tool === 'cpencil' || (tool === 'gel' && state.gelKind !== 'white') || (tool === 'grad' && gradUsesColor()) || (tool === 'mixb' && !mixOnly))) addRecent(state.color);
+  if (state.mode === 'color' && !isB0 && (tool === 'fill' || isBrush(tool) || tool === 'cpencil' || (tool === 'gel' && state.gelKind !== 'white') || (tool === 'grad' && gradUsesColor()) || (tool === 'mixb' && !mixOnly) || tool === 'wcolor' || tool === 'spray')) addRecent(state.color);
   if (state.mode === 'draw' && tool !== 'erase' && !isB0 && !mixOnly && !(tool === 'gel' && state.gelKind === 'white') && state.drawColor !== '#000000') addRecent(state.drawColor);   // el negro de siempre ya está en los colores rápidos
   if (tool === 'agrad') { g = Object.assign(base, { kind: 'agrad', layer: paintTarget() }); agBegin(g); return; }
   if (isB0) {             // 3.6: Mezclador 0: mezcla lo que ya hay (en la capa elegida), sin color propio
     const lw = (state.mode === 'draw' ? sizeLW('mark', state.drawSize) : sizeLW('color', state.colorSize)) * 1.1;
     g = Object.assign(base, { kind: 'blend', b0: true, layer: paintTarget(), lw, box: { x1: Infinity, y1: Infinity, x2: -Infinity, y2: -Infinity } });
     b0Start(g, p);
+    symSubs(g, p, tool, b0Start);   // 3.9: simetría
     return;
   }
   if (tool === 'mixb') {   // 3.8: Pincel mezclador (en la capa elegida; en Dibujar, en el dibujo)
     g = Object.assign(base, { kind: 'blend', mix: true, layer: toolTarget(tool), box: { x1: Infinity, y1: Infinity, x2: -Infinity, y2: -Infinity } });
     mixStart(g, p);
+    symSubs(g, p, tool, mixStart);
     return;
   }
-  if (tool === 'fill') { g = Object.assign(base, { kind: 'fill' }); return; }
+  if (tool === 'fill') { g = Object.assign(base, { kind: 'fill', T: symFor('fill') }); return; }
   if (tool === 'grad') { g = Object.assign(base, { kind: 'grad' }); return; }
   if (tool === 'blend') {
     g = Object.assign(base, { kind: 'blend', layer: paintTarget(), lw: sizeLW('color', state.colorSize) * 1.2, box: { x1: Infinity, y1: Infinity, x2: -Infinity, y2: -Infinity } });
     blendStart(g, p);
+    symSubs(g, p, tool, blendStart);
+    return;
+  }
+  if (tool === 'wcolor' || tool === 'spray') {   // 3.9: acuarela y spray
+    const st = newToolStyle(tool);
+    g = Object.assign(base, { kind: 'nt', st, T: symFor(tool), box: { x1: Infinity, y1: Infinity, x2: -Infinity, y2: -Infinity } });
+    for (const T of (g.T || [(q) => q])) { const q = T(p); bboxAdd(g.box, q.x, q.y, st.lw + 2); }
+    newToolBegin(g, p);
     return;
   }
   const st = strokeStyleFor(tool);
   if (st) {
-    g = Object.assign(base, { kind: 'stroke', st, box: { x1: Infinity, y1: Infinity, x2: -Infinity, y2: -Infinity } });
+    g = Object.assign(base, { kind: 'stroke', st, box: { x1: Infinity, y1: Infinity, x2: -Infinity, y2: -Infinity }, T: symFor(tool) });
     bboxAdd(g.box, p.x, p.y, st.lw + 2);
-    if (st.art) { if (e.pointerType === 'pen' && e.pressure > 0) st.alpha = clamp(st.alpha * (0.55 + 0.9 * e.pressure), 0.05, 0.98); artBegin(st, p); }
-    else if (st.buf) { bufBegin(); dot(bufCtx, st, p); bufShow(st, p.x - st.lw, p.y - st.lw, p.x + st.lw, p.y + st.lw); }
-    else dot(layers[st.layer].ctx, st, p);
+    const mir = g.T ? g.T.slice(1).map((T) => T(p)) : [];        // 3.9: simetría (los reflejos del primer punto)
+    for (const q of mir) bboxAdd(g.box, q.x, q.y, st.lw + 2);
+    if (st.art) { if (e.pointerType === 'pen' && e.pressure > 0) st.alpha = clamp(st.alpha * (0.55 + 0.9 * e.pressure), 0.05, 0.98); artBegin(st, p); for (const q of mir) artSeg(st, q, q, { x: q.x + 0.01, y: q.y }); }
+    else if (st.buf) { bufBegin(); for (const q of [p, ...mir]) { dot(bufCtx, st, q); bufShow(st, q.x - st.lw, q.y - st.lw, q.x + st.lw, q.y + st.lw); } }
+    else for (const q of [p, ...mir]) dot(layers[st.layer].ctx, st, q);
     return;
   }
   g = Object.assign(base, { kind: 'shape', tool });
@@ -1824,9 +2014,13 @@ function onMove(e) {
       const mid = { x: (g.last.x + p.x) / 2, y: (g.last.y + p.y) / 2 };
       strokeSeg(g, g.mid, g.last, mid);
       bboxAdd(g.box, p.x, p.y, g.st.lw + 2);
+      if (g.T) { symSeg(g, g.mid, g.last, mid); for (let k = 1; k < g.T.length; k++) { const q = g.T[k](p); bboxAdd(g.box, q.x, q.y, g.st.lw + 2); } }
       g.mid = mid; g.last = p;
     } else if (g.kind === 'blend') {
       if (g.b0) b0To(g, p); else if (g.mix) mixTo(g, p); else blendTo(g, p);
+      if (g.subs) for (const s of g.subs) { const q = s.T(p); if (g.b0) b0To(s, q); else if (g.mix) mixTo(s, q); else blendTo(s, q); }
+    } else if (g.kind === 'nt') {
+      newToolMove(g, p);
     } else {
       g.last = p;
     }
@@ -1854,7 +2048,7 @@ function endSingle(cancelled) {
   if (cur.kind === 'pick') {
     if (!cancelled) pickColorAt(cur.travel < 14 ? cur.start : cur.last);
   } else if (cur.kind === 'fill') {
-    if (!cancelled && cur.travel < 14) floodFill(cur.start.x, cur.start.y, state.color, state.alpha);
+    if (!cancelled && cur.travel < 14) { if (cur.T && cur.T.length > 1) floodFillSym(cur.start.x, cur.start.y, state.color, state.alpha, cur.T); else floodFill(cur.start.x, cur.start.y, state.color, state.alpha); }
   } else if (cur.kind === 'grad') {
     pctx.clearRect(0, 0, W, H);
     if (!cancelled) gradientFill(cur.start, state.gradAdv && cur.travel >= 14 ? cur.last : null);
@@ -1862,8 +2056,11 @@ function endSingle(cancelled) {
     agEnd(cur, cancelled);
   } else if (cur.kind === 'blend') {
     commit([capturePart(cur.layer || 'color', rectOf(cur.box))]);
+  } else if (cur.kind === 'nt') {
+    newToolEnd(cur);
   } else if (cur.kind === 'stroke') {
     strokeSeg(cur, cur.mid, cur.last, cur.last);
+    if (cur.T) symSeg(cur, cur.mid, cur.last, cur.last);
     strokeFinish(cur);
     commit([capturePart(cur.st.layer, rectOf(cur.box))]);
   } else if (cur.kind === 'shape') {
@@ -1886,6 +2083,13 @@ function abortSingle() {
   const cur = g; g = null;
   stage.classList.remove('panning');
   if (!cur) return;
+  if (cur.kind === 'nt') {                      // 3.9: acuarela / spray
+    if (cur.spIv) { clearInterval(cur.spIv); cur.spIv = 0; }
+    const r = clampRect(rectOf(cur.box));
+    if (performance.now() - cur.t0 < 450 || cur.travel < 45) { if (r) { const L = layers[cur.st.layer]; L.ctx.putImageData(L.bctx.getImageData(r.x, r.y, r.w, r.h), r.x, r.y); } }
+    else newToolEnd(cur);
+    return;
+  }
   if (cur.kind === 'stroke' || cur.kind === 'blend') {
     const young = performance.now() - cur.t0 < 450 || cur.travel < 45;
     const layer = cur.kind === 'blend' ? (cur.layer || 'color') : cur.st.layer;
@@ -1893,7 +2097,7 @@ function abortSingle() {
       const r = clampRect(rectOf(cur.box));
       if (r) { const L = layers[layer]; L.ctx.putImageData(L.bctx.getImageData(r.x, r.y, r.w, r.h), r.x, r.y); }
     } else {
-      if (cur.kind === 'stroke') { strokeSeg(cur, cur.mid, cur.last, cur.last); strokeFinish(cur); }
+      if (cur.kind === 'stroke') { strokeSeg(cur, cur.mid, cur.last, cur.last); if (cur.T) symSeg(cur, cur.mid, cur.last, cur.last); strokeFinish(cur); }
       commit([capturePart(layer, rectOf(cur.box))]);
     }
   } else if (cur.kind === 'shape' || cur.kind === 'grad') {
@@ -2815,7 +3019,7 @@ function petalRing(c, cx, cy, r1, r2, n, rot = 0, fat = 1) {   // pétalos entre
   }
 }
 const grassLine = (c, y) => { c.moveTo(0, y); c.lineTo(300, y); };
-const TEMPLATE_CATS = [['animales', 'Animales'], ['naturaleza', 'Naturaleza'], ['pr', 'Puerto Rico'], ['mandalas', 'Mandalas'], ['cosas', 'Cosas']];
+const TEMPLATE_CATS = [['animales', 'Animales'], ['naturaleza', 'Naturaleza'], ['pr', 'Puerto Rico'], ['mandalas', 'Mandalas'], ['halloween', 'Halloween'], ['navidad', 'Navidad'], ['cosas', 'Cosas']];
 const TEMPLATES = [
   { id: 'casa', name: 'Casa', cat: 'cosas', probe: [90, 300], draw(c) {
     c.beginPath();
@@ -3249,6 +3453,220 @@ const TEMPLATES = [
     strokeExcept(c, [tri], (k) => { for (let i = 1; i < 5; i++) { const y = Y0 + i * FH / 5; k.moveTo(X0, y); k.lineTo(X0 + FW, y); } });
   }},
 ];
+/* ---------- 3.9: plantillas nuevas, dibujadas a mano en trazos SVG (espacio de 300×400) ----------
+   Para añadir una plantilla nueva (por ejemplo, una cada semana):
+   1) copia un objeto de TPL_NEW y cambia id, cat (animales, naturaleza, pr, halloween, navidad, mandalas, cosas),
+      added (fecha 'AAAA-MM-DD'), probe (un punto [x, y] dentro de una zona cerrada) y paths (lista de trazos SVG «d»);
+   2) pon su nombre en i18n/*.js como "tpl.<id>" (o dentro del objeto: n: { es: '…', en: '…', 'pt-BR': '…', fr: '…' }).
+   Sale con la etiqueta «Nuevo» durante TPL_NEW_DAYS días (o hasta que se abre). */
+const TPL_NEW_DAYS = 21;
+const sC = (x, y, r) => `M${x - r} ${y}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0Z`;
+const sE = (x, y, rx, ry) => `M${x - rx} ${y}a${rx} ${ry} 0 1 0 ${2 * rx} 0a${rx} ${ry} 0 1 0 ${-2 * rx} 0Z`;
+const sR = (x, y, w, h) => `M${x} ${y}h${w}v${h}h${-w}Z`;
+const f2 = (v) => Math.round(v * 100) / 100;
+function sStar(cx, cy, r, inner = 0.45, n = 5, rot = -Math.PI / 2) {
+  let d = '';
+  for (let i = 0; i < 2 * n; i++) { const a = rot + i * Math.PI / n, rr = i % 2 ? r * inner : r; d += (i ? 'L' : 'M') + f2(cx + rr * Math.cos(a)) + ' ' + f2(cy + rr * Math.sin(a)); }
+  return d + 'Z';
+}
+function sPolar(cx, cy, rf, n = 240) {
+  let d = '';
+  for (let i = 0; i < n; i++) { const a = i / n * Math.PI * 2 - Math.PI / 2, r = rf(a); d += (i ? 'L' : 'M') + f2(cx + r * Math.cos(a)) + ' ' + f2(cy + r * Math.sin(a)); }
+  return d + 'Z';
+}
+// n copias de una figura alrededor de (cx, cy): fn(a) devuelve el trazo para el ángulo a
+function sRing(n, fn, rot = 0) { const out = []; for (let i = 0; i < n; i++) out.push(fn(rot + i * 2 * Math.PI / n - Math.PI / 2)); return out.join(''); }
+const pol = (cx, cy, r, a) => f2(cx + r * Math.cos(a)) + ' ' + f2(cy + r * Math.sin(a));
+function sPetal(cx, cy, r1, r2, a, w) {        // pétalo / hoja de r1 a r2 en el ángulo a (ancho w en radianes)
+  const rm = r1 + (r2 - r1) * 0.55;
+  return `M${pol(cx, cy, r1, a)}Q${pol(cx, cy, rm, a - w)} ${pol(cx, cy, r2, a)}Q${pol(cx, cy, rm, a + w)} ${pol(cx, cy, r1, a)}Z`;
+}
+function sHeart(cx, cy, s, a = 0) {             // corazón apuntando hacia afuera (a = ángulo de la punta)
+  const P = (x, y) => { const c = Math.cos(a - Math.PI / 2), si = Math.sin(a - Math.PI / 2); return f2(cx + x * c - y * si) + ' ' + f2(cy + x * si + y * c); };
+  return `M${P(0, 0.85 * s)}C${P(-1.25 * s, 0.05 * s)} ${P(-1 * s, -1 * s)} ${P(0, -0.45 * s)}C${P(1 * s, -1 * s)} ${P(1.25 * s, 0.05 * s)} ${P(0, 0.85 * s)}Z`;
+}
+const sFlake = (x, y, r) => [0, 1, 2].map((k) => { const a = k * Math.PI / 3; return `M${f2(x - r * Math.cos(a))} ${f2(y - r * Math.sin(a))}L${f2(x + r * Math.cos(a))} ${f2(y + r * Math.sin(a))}`; }).join('');
+const sFlower5 = (x, y, r) => sRing(5, (a) => sC(f2(x + r * 0.9 * Math.cos(a)), f2(y + r * 0.9 * Math.sin(a)), f2(r * 0.62))) + sC(x, y, f2(r * 0.42));
+const TPL_NEW = [
+  // ----- Halloween -----
+  { id: 'calabaza', cat: 'halloween', added: '2026-10-09', probe: [150, 345], paths: [
+    'M150 150C88 138 38 182 38 262C38 338 96 372 150 362C204 372 262 338 262 262C262 182 212 138 150 150Z',
+    'M140 151C141 131 137 117 129 104L148 96C157 113 161 132 160 151',
+    'M160 122C178 100 214 100 230 112C212 132 180 134 160 122Z', 'M168 117C190 112 206 110 222 112',
+    'M156 130C172 142 190 134 186 122C182 112 170 117 175 125',
+    'M93 232L127 232L110 202Z', 'M173 232L207 232L190 202Z', 'M141 266L159 266L150 250Z',
+    'M86 288L106 298L120 288L135 300L150 289L165 300L180 288L194 298L214 288C200 338 100 338 86 288Z',
+    'M120 158C104 172 96 188 93 204', 'M180 158C196 172 204 188 207 204', 'M97 330C104 346 113 356 122 361', 'M203 330C196 346 187 356 178 361',
+    'M64 48A30 30 0 1 0 98 98A24 24 0 1 1 64 48Z',
+    'M206 58Q216 48 226 56Q232 48 238 56Q244 48 250 56Q260 48 270 58Q258 62 252 72Q246 64 238 66Q230 64 224 72Q218 62 206 58Z',
+    'M14 382C80 370 220 370 286 382', sStar(258, 128, 9), sStar(36, 150, 7),
+  ] },
+  { id: 'fantasma', cat: 'halloween', added: '2026-10-09', probe: [150, 290], paths: [
+    'M150 66C88 66 70 124 70 188L70 330Q85 352 100 330Q115 308 130 334Q150 356 170 334Q185 308 200 330Q215 352 230 330L230 188C230 124 212 66 150 66Z',
+    'M71 208C48 212 38 240 52 250C64 258 72 244 71 232', 'M229 208C252 212 262 240 248 250C236 258 228 244 229 232',
+    sE(124, 158, 11, 17), sE(176, 158, 11, 17), sC(127, 151, 4), sC(179, 151, 4), sE(150, 214, 14, 20),
+    sE(104, 194, 10, 6), sE(196, 194, 10, 6), sE(150, 376, 70, 10),
+    sStar(40, 60, 12), sStar(262, 92, 9), sStar(252, 300, 8), sStar(36, 290, 8),
+    'M246 40A22 22 0 1 0 270 74A17 17 0 1 1 246 40Z',
+  ] },
+  { id: 'murcielago', cat: 'halloween', added: '2026-10-09', probe: [90, 110], paths: [
+    sC(150, 140, 100),
+    'M150 150C124 128 92 120 50 128C62 140 64 150 58 162C74 158 86 164 90 176C102 168 116 170 124 182C130 172 140 168 150 172C160 168 170 172 176 182C184 170 198 168 210 176C214 164 226 158 242 162C236 150 238 140 250 128C208 120 176 128 150 150Z',
+    sE(150, 168, 16, 26), sC(150, 128, 15), 'M138 120L134 100L146 114', 'M162 120L166 100L154 114',
+    sC(144, 126, 3), sC(156, 126, 3), 'M145 136L148 141L151 136L154 141L157 136',
+    'M0 330C60 300 120 312 160 328C210 310 260 300 300 322L300 400L0 400Z',
+    'M48 318L48 280Q48 256 72 256Q96 256 96 280L96 314', 'M64 276L80 276M72 266L72 292',
+    'M212 312L212 286Q212 268 230 268Q248 268 248 286L248 310',
+    'M30 340L34 352M60 344L58 356M250 336L254 348M276 334L272 346',
+    sStar(40, 40, 8), sStar(268, 42, 10), sStar(268, 230, 7),
+  ] },
+  { id: 'caldero', cat: 'halloween', added: '2026-10-09', probe: [150, 290], paths: [
+    'M68 214C58 298 98 350 150 350C202 350 242 298 232 214Z', sE(150, 212, 88, 20), sE(150, 212, 70, 12),
+    'M96 342L86 364L110 360M204 342L214 364L190 360',
+    'M100 382C96 368 112 362 108 348C122 358 126 366 132 372C134 360 144 352 150 344C156 352 166 360 168 372C174 366 178 358 192 348C188 362 204 368 200 382Z',
+    sC(122, 186, 12), sC(150, 172, 16), sC(182, 182, 10), sC(132, 150, 7), sC(170, 140, 9), sC(150, 116, 6),
+    'M196 206L236 92L246 96L208 208', sE(241, 86, 9, 7),
+    'M106 222C108 240 116 246 122 238C126 232 120 228 120 222', 'M174 222C176 236 184 240 188 232',
+    'M84 270C120 280 180 280 216 270', sStar(46, 60, 10), sStar(254, 160, 8), sStar(60, 180, 7),
+    'M40 120Q55 110 70 120M230 40Q245 30 260 40',
+  ] },
+  // ----- Navidad -----
+  { id: 'arbolnav', cat: 'navidad', added: '2026-10-09', probe: [150, 300], paths: [
+    sStar(150, 50, 22, 0.45),
+    'M150 74L104 140Q128 134 150 142Q172 134 196 140Z',
+    'M118 134L74 210Q112 200 150 210Q188 200 226 210L182 134',
+    'M90 206L44 296Q96 284 150 296Q204 284 256 296L210 206',
+    sR(132, 296, 36, 40),
+    'M110 168C130 180 170 180 190 166', 'M78 248C110 264 190 264 222 246',
+    sC(150, 112, 7), sC(124, 186, 7), sC(176, 188, 7), sC(100, 236, 8), sC(150, 232, 8), sC(204, 236, 8), sC(80, 278, 7), sC(222, 278, 7), sC(150, 272, 7),
+    sR(56, 318, 62, 52), 'M87 318L87 370M56 340L118 340', 'M87 318C70 300 60 312 74 318M87 318C104 300 114 312 100 318',
+    sR(186, 330, 70, 40), 'M221 330L221 370M186 348L256 348', 'M221 330C206 314 196 324 210 330M221 330C236 314 246 324 232 330',
+    'M10 372L290 372', sFlake(40, 80, 10), sFlake(262, 90, 12), sFlake(250, 180, 8), sFlake(34, 200, 8),
+  ] },
+  { id: 'muneco', cat: 'navidad', added: '2026-10-09', probe: [120, 320], paths: [
+    sC(150, 302, 70), sC(150, 182, 50), sC(150, 96, 36),
+    sR(112, 56, 76, 8), sR(124, 18, 52, 38), 'M124 46L176 46',
+    sC(137, 88, 4), sC(163, 88, 4), 'M150 98L180 106L150 108Z', 'M134 112Q150 124 166 112',
+    'M110 132Q150 152 190 132L194 146Q150 166 106 146Z', 'M168 150L184 196L166 198L158 154',
+    sC(150, 170, 5), sC(150, 194, 5), sC(150, 218, 5), sC(150, 280, 6), sC(150, 312, 6),
+    'M104 168L56 136M74 148L66 128M74 148L54 152', 'M196 168L244 136M226 148L234 128M226 148L246 152',
+    'M10 372C80 362 220 362 290 372', sFlake(40, 50, 10), sFlake(256, 56, 12), sFlake(36, 250, 9), sFlake(266, 240, 9), sFlake(250, 330, 7),
+  ] },
+  { id: 'regalo', cat: 'navidad', added: '2026-10-09', probe: [100, 300], paths: [
+    sR(60, 210, 180, 150), sR(48, 176, 204, 34),
+    'M138 176L138 360M162 176L162 360', 'M60 268L238 268M60 290L238 290',
+    'M150 176C120 136 76 136 84 160C90 176 124 178 150 176Z', 'M150 176C180 136 224 136 216 160C210 176 176 178 150 176Z',
+    sE(150, 172, 13, 10), 'M140 180L118 214M160 180L182 214',
+    'M220 300L262 278L276 300L250 320Z', sC(258, 298, 4),
+    'M40 90C50 70 72 70 82 90C72 100 50 100 40 90Z', 'M82 90C92 70 114 70 124 90C114 100 92 100 82 90Z', sC(82, 100, 7), sC(70, 108, 6), sC(94, 108, 6),
+    sStar(230, 70, 16), sStar(270, 130, 8), sStar(30, 150, 8), 'M14 372L286 372',
+  ] },
+  { id: 'bota', cat: 'navidad', added: '2026-10-09', probe: [130, 240], paths: [
+    'M96 120L96 268C96 290 84 300 66 314C46 330 54 372 92 372L156 372C196 372 214 350 214 320L200 120Z',
+    'M86 84L210 84L210 124L86 124Z', 'M86 104Q148 116 210 104',
+    sHeart(150, 196, 22, Math.PI), 'M62 344C80 346 96 356 100 372', 'M180 330C196 332 210 324 214 312',
+    sStar(118, 290, 14), sC(170, 270, 6), sC(140, 330, 6),
+    'M164 84L164 40C164 22 190 22 190 40L190 50L178 50L178 40C178 36 176 34 176 40L176 84',
+    'M164 70L176 62M164 54L176 46M178 66L190 58', sC(110, 66, 12),
+    'M232 140L260 120M246 114L246 146M230 130L262 130', sFlake(40, 70, 10), sFlake(258, 230, 10), sFlake(36, 210, 8),
+  ] },
+  // ----- Mandalas -----
+  { id: 'mandala3', cat: 'mandalas', added: '2026-10-09', probe: [150, 200], paths: [
+    sC(150, 200, 18), sC(150, 200, 40), sC(150, 200, 92), sC(150, 200, 138),
+    sRing(12, (a) => sPetal(150, 200, 18, 40, a, 0.26)),
+    sRing(12, (a) => `M${pol(150, 200, 40, a - 0.26)}L${pol(150, 200, 92, a)}L${pol(150, 200, 40, a + 0.26)}`),
+    sRing(12, (a) => sC(...pol(150, 200, 64, a + Math.PI / 12).split(' ').map(Number), 7)),
+    sRing(24, (a) => sPetal(150, 200, 92, 128, a, 0.11)),
+    sRing(24, (a) => sC(...pol(150, 200, 132, a + Math.PI / 24).split(' ').map(Number), 4)),
+  ] },
+  { id: 'mandala4', cat: 'mandalas', added: '2026-10-09', probe: [150, 200], paths: [
+    sC(150, 200, 14), sStar(150, 200, 34, 0.55, 8), sC(150, 200, 52), sC(150, 200, 140),
+    sRing(8, (a) => sPetal(150, 200, 52, 108, a, 0.34)),
+    sRing(8, (a) => `M${pol(150, 200, 56, a)}L${pol(150, 200, 104, a)}`),
+    sRing(8, (a) => sPetal(150, 200, 52, 92, a + Math.PI / 8, 0.22)),
+    sRing(16, (a) => sC(...pol(150, 200, 118, a).split(' ').map(Number), 8)),
+    sRing(16, (a) => sC(...pol(150, 200, 118, a).split(' ').map(Number), 3)),
+    sRing(32, (a) => `M${pol(150, 200, 128, a)}Q${pol(150, 200, 146, a + Math.PI / 32)} ${pol(150, 200, 128, a + Math.PI / 16)}`),
+  ] },
+  { id: 'mandala5', cat: 'mandalas', added: '2026-10-09', probe: [150, 200], paths: [
+    sC(150, 200, 20), sC(150, 200, 60), sC(150, 200, 104), sC(150, 200, 136),
+    sRing(6, (a) => sHeart(...pol(150, 200, 40, a).split(' ').map(Number), 11, a)),
+    sRing(8, (a) => sHeart(...pol(150, 200, 82, a).split(' ').map(Number), 16, a)),
+    sRing(8, (a) => sC(...pol(150, 200, 84, a + Math.PI / 8).split(' ').map(Number), 6)),
+    sRing(16, (a) => `M${pol(150, 200, 104, a)}Q${pol(150, 200, 126, a + Math.PI / 16)} ${pol(150, 200, 104, a + Math.PI / 8)}`),
+    sRing(16, (a) => sHeart(...pol(150, 200, 120, a + Math.PI / 16).split(' ').map(Number), 6, a + Math.PI / 16)),
+  ] },
+  // ----- Puerto Rico -----
+  { id: 'morro', cat: 'pr', added: '2026-10-09', probe: [150, 300], paths: [
+    'M0 262L60 262L60 250L76 250L76 262L120 262L120 250L136 250L136 262L180 262L180 250L196 250L196 262L240 262L272 340L0 340Z',
+    'M120 262L120 150L180 150L180 262', sR(112, 138, 76, 12), sR(126, 104, 48, 34), 'M138 104L138 138M150 104L150 138M162 104L162 138',
+    'M122 104Q150 70 178 104Z', 'M150 78L150 66', sC(150, 62, 4), 'M140 262L140 226Q150 214 160 226L160 262', sR(140, 172, 20, 22),
+    'M214 262L214 216L250 216L250 250', 'M208 216Q232 176 256 216Z', 'M228 190L228 182', sR(226, 230, 12, 18),
+    'M120 200L180 200',
+    'M0 340L300 340', 'M0 362Q25 352 50 362T100 362T150 362T200 362T250 362T300 362', 'M0 386Q25 376 50 386T100 386T150 386T200 386T250 386T300 386',
+    'M40 290L40 300M90 296L90 306M200 296L200 306M20 312L20 322',
+    'M18 70Q34 52 52 64Q66 48 84 64Q100 60 100 76L16 76Q8 72 18 70Z', 'M200 40Q216 22 234 34Q248 18 266 34Q282 30 282 46L198 46Q190 42 200 40Z',
+    'M40 160L56 152L72 160M230 120L242 112L254 120',
+  ] },
+  { id: 'coqui2', cat: 'pr', added: '2026-10-09', probe: [150, 335], paths: [
+    'M20 300C70 250 230 250 286 300C230 380 80 380 20 300Z', 'M24 300C110 300 200 300 284 300', 'M60 300Q76 312 80 336M100 300Q116 316 118 346M150 300Q164 318 164 352M200 300Q214 316 212 346M244 300Q256 310 254 330M70 300Q84 286 84 270M120 300Q134 282 134 264M176 300Q190 282 192 264M226 300Q238 288 240 274',
+    sE(150, 236, 52, 34), sE(150, 182, 42, 30), sC(124, 162, 15), sC(176, 162, 15), sC(126, 164, 7), sC(174, 164, 7),
+    'M126 194Q150 210 174 194', 'M106 250C88 252 82 270 96 280L118 268', 'M194 250C212 252 218 270 204 280L182 268',
+    'M90 280L80 290M96 282L96 294M102 280L110 290', 'M210 280L220 290M204 282L204 294M198 280L190 290',
+    sC(70, 60, 26), 'M240 120Q244 110 248 120Q252 132 244 134Q236 132 240 120Z', 'M40 160Q44 150 48 160Q52 172 44 174Q36 172 40 160Z', 'M260 200Q264 190 268 200Q272 212 264 214Q256 212 260 200Z',
+    sFlower5(232, 64, 16), sFlower5(260, 100, 10), 'M232 82L226 130',
+  ] },
+  { id: 'pava', cat: 'pr', added: '2026-10-09', probe: [60, 250], paths: [
+    sE(150, 246, 136, 56), 'M86 236C82 170 102 130 150 128C198 130 218 170 214 236', 'M88 208C120 222 180 222 212 208', 'M87 226C120 240 180 240 213 226',
+    'M86 236C110 250 190 250 214 236',
+    'M20 246C40 280 90 296 150 298C210 296 260 280 280 246',
+    ...Array.from({ length: 13 }, (_, i) => { const a = Math.PI * (0.06 + i * 0.07); return `M${f2(150 + 64 * Math.cos(a))} ${f2(242 + 6 * Math.sin(a))}L${f2(150 + 136 * Math.cos(a))} ${f2(246 + 56 * Math.sin(a))}`; }),
+    
+    'M100 154C120 146 180 146 200 154', 'M94 180C120 172 180 172 206 180',
+    sStar(150, 220, 8), sStar(118, 218, 6), sStar(182, 218, 6),
+    'M214 222C232 230 246 250 240 270C232 260 222 256 212 258Z', 'M218 226C238 250 250 270 252 288C240 282 230 276 222 266Z',
+    sE(150, 364, 120, 14), sFlower5(40, 70, 14), sFlower5(260, 60, 18), sFlower5(70, 120, 9),
+  ] },
+  { id: 'vejigante', cat: 'pr', added: '2026-10-09', probe: [118, 252], paths: [
+    'M150 120C96 120 76 170 80 230C84 300 112 350 150 352C188 350 216 300 220 230C224 170 204 120 150 120Z',
+    'M118 126C108 90 112 60 130 36C134 66 138 96 140 122', 'M182 126C192 90 188 60 170 36C166 66 162 96 160 122',
+    'M96 146C70 120 60 92 66 62C80 86 96 112 108 134', 'M204 146C230 120 240 92 234 62C220 86 204 112 192 134',
+    'M82 196C50 186 30 166 22 140C46 150 68 162 84 176', 'M218 196C250 186 270 166 278 140C254 150 232 162 216 176',
+    'M84 262C56 270 38 290 30 314C52 300 72 290 90 284', 'M216 262C244 270 262 290 270 314C248 300 228 290 210 284',
+    'M150 120C146 96 148 72 150 52C152 72 154 96 150 120Z',
+    'M100 204C110 182 136 182 140 206C130 218 110 220 100 204Z', 'M200 204C190 182 164 182 160 206C170 218 190 220 200 204Z', sC(121, 202, 6), sC(179, 202, 6),
+    'M138 234Q150 222 162 234L156 258L144 258Z',
+    'M104 280C124 302 176 302 196 280C190 320 110 320 104 280Z', 'M118 290L124 304L130 293L138 308L146 296L154 308L162 293L170 304L176 290',
+    'M96 166Q110 154 124 166M176 166Q190 154 204 166', sC(96, 246, 8), sC(204, 246, 8), sC(150, 160, 7),
+    'M122 70L136 64M120 90L138 86M174 64L164 70M178 86L162 90M74 92L88 96M80 116L94 114M224 92L212 96M220 116L206 114',
+    'M40 154L56 158M52 172L66 172M260 154L244 158M248 172L234 172M52 296L64 290M246 296L234 290',
+  ] },
+  { id: 'flamboyan', cat: 'pr', added: '2026-10-09', probe: [150, 300], paths: [
+    'M20 150C10 120 36 96 64 104C70 76 106 66 126 84C140 60 180 62 190 86C214 70 250 82 252 106C280 104 296 132 280 154C290 178 266 198 240 188C226 206 196 206 184 192C168 206 136 206 122 192C104 206 72 204 62 188C36 196 10 176 20 150Z',
+    'M138 196L134 260L126 330L176 330L166 260L162 196', 'M138 222L96 194M162 222L204 194M150 196L150 176M136 250C118 236 110 220 112 204M164 250C182 236 190 220 188 204',
+    sFlower5(60, 140, 12), sFlower5(110, 116, 14), sFlower5(170, 108, 12), sFlower5(226, 132, 13), sFlower5(140, 160, 10), sFlower5(250, 168, 9), sFlower5(84, 176, 9), sFlower5(200, 170, 10), sFlower5(40, 120, 8),
+    'M0 330L300 330', 'M0 330L0 400L300 400L300 330', sE(74, 364, 10, 5), sE(226, 352, 8, 4), sE(250, 376, 10, 5), sE(40, 386, 7, 4),
+    sR(196, 300, 70, 10), 'M204 310L204 330M258 310L258 330', sC(40, 40, 18), 'M40 12L40 4M12 40L4 40M60 20L66 14M20 20L14 14',
+  ] },
+];
+for (const t of TPL_NEW) {
+  const paths = t.paths.filter(Boolean);
+  TEMPLATES.push({ id: t.id, cat: t.cat, probe: t.probe, added: t.added, n: t.n, draw(c) { for (const d of paths) c.stroke(new Path2D(d)); } });
+}
+/* «Nuevo» en las plantillas recién añadidas (hasta TPL_NEW_DAYS días o hasta que se abren) */
+const TPL_SEEN_KEY = 'colorear.tplVistos';
+let tplSeen = []; try { tplSeen = JSON.parse(localStorage.getItem(TPL_SEEN_KEY) || '[]') || []; } catch (_) { tplSeen = []; }
+function tplIsNew(t) {
+  if (!t || !t.added || tplSeen.includes(t.id)) return false;
+  const [y, m, d] = t.added.split('-').map(Number), age = (Date.now() - new Date(y, m - 1, d).getTime()) / 864e5;
+  return age >= -1 && age <= TPL_NEW_DAYS;
+}
+function markTplSeen(id) {
+  if (!id || tplSeen.includes(id)) return;
+  tplSeen.push(id); tplSeen = tplSeen.slice(-300);
+  try { localStorage.setItem(TPL_SEEN_KEY, JSON.stringify(tplSeen)); } catch (_) {}
+  const b = document.querySelector(`#tplGrid [data-tpl="${id}"] .newb`); if (b) b.remove();
+}
 function renderTemplate(c, t, w, h) {
   const s = Math.min(w / 300, h / 400);
   c.save();
@@ -3258,7 +3676,7 @@ function renderTemplate(c, t, w, h) {
   t.draw(c);
   c.restore();
 }
-for (const tp of TEMPLATES) Object.defineProperty(tp, 'name', { get: () => tt('tpl.' + tp.id), enumerable: true });
+for (const tp of TEMPLATES) Object.defineProperty(tp, 'name', { get: () => { const k = 'tpl.' + tp.id, v = tt(k); return v === k && tp.n ? (tp.n[LANG] || tp.n.es || v) : v; }, enumerable: true });
 function buildTemplateGrid() {
   const grid = $('#tplGrid'); grid.innerHTML = '';
   // primera tarjeta: subir una foto de un libro para colorear
@@ -3271,7 +3689,9 @@ function buildTemplateGrid() {
     const cv = mkCanvas(240, 320); const c = cv.getContext('2d'); c.fillStyle = '#fff'; c.fillRect(0, 0, 240, 320);
     if (t) renderTemplate(c, t, 240, 320);
     const n = document.createElement('div'); n.className = 'name'; n.textContent = name;
-    b.append(cv, n); grid.append(b);
+    b.append(cv, n);
+    if (tplIsNew(t)) { const nb = document.createElement('span'); nb.className = 'newb'; nb.textContent = tt('tpl.new'); b.append(nb); }   // 3.9
+    grid.append(b);
   };
   for (const [key] of TEMPLATE_CATS) {
     head(key, tt('tplcat.' + key));
@@ -3293,6 +3713,7 @@ function buildTemplateGrid() {
 function loadTemplate(id) {
   cancelGesture(); flattenObjs();
   const t = TEMPLATES.find((x) => x.id === id);
+  if (t) markTplSeen(t.id);
   replaceSheet(PORTRAIT[0], PORTRAIT[1], (lc) => { if (t) renderTemplate(lc, t, W, H); });
   state.currentId = null;
   setMode(t ? 'color' : 'draw');
@@ -3311,6 +3732,7 @@ function setMode(m) {
   $('#tabColor').classList.toggle('on', m === 'color');
   refreshColorUI();
   renderMix();   // 3.8: «Respetar las líneas» es distinto en Dibujar y en Colorear
+  try { renderNewToolPops(); } catch (_) {}
   updateCursor();
   layout();
   requestAnimationFrame(layout);
@@ -3685,7 +4107,7 @@ function refreshColorUI() {
   $$('#cQuick .sw[data-black]').forEach((q) => { const c = state.mode === 'draw' ? '#000000' : '#333333'; q.dataset.c = c; q.style.background = c; });
   $$('#palette .sw, .recent .sw, #cList .sw, #cQuick .sw').forEach((s) => s.classList.toggle('on', s.dataset.c === cur));
   const tint = (c) => (c === '#FFFFFF' ? '' : c);
-  $$('#colorTools [data-ctool="fill"] svg, #brushBtn svg, #colorArt [data-ctool="cpencil"] svg, #colorArt [data-ctool="gel"] svg').forEach((s) => { s.style.color = tint(state.color); });
+  $$('#colorTools [data-ctool="fill"] svg, #brushBtn svg, #colorArt [data-ctool="cpencil"] svg, #colorArt [data-ctool="gel"] svg, #colorArt [data-ctool="wcolor"] svg, #colorArt [data-ctool="spray"] svg').forEach((s) => { s.style.color = tint(state.color); });
   $$('#drawTools [data-tool="pen"] svg, #markBtn svg, #drawArt .tool svg').forEach((s) => { s.style.color = tint(state.drawColor); });
   if (state.brush === 'blender0') $('#brushBtn svg').style.color = '';
   if (state.drawBrush === 'blender0') $('#markBtn svg').style.color = '';
@@ -4178,9 +4600,9 @@ try {
   if (s0 && ['left', 'right', 'top', 'bottom'].includes(s0.edge)) { MINI.edge = s0.edge; MINI.pos = clamp(+s0.pos || 0.5, 0, 1); MINI.folded = !!s0.folded; }
 } catch (_) {}
 function saveMini() { try { localStorage.setItem(MINI_KEY, JSON.stringify(MINI)); } catch (_) {} }
-const TOOL_ICON = { pen: 'i-pen', line: 'i-line', ellipse: 'i-ellipse', rect: 'i-rect', star: 'i-star', heart: 'i-heart', erase: 'i-eraser', fill: 'i-fill', blend: 'i-blend', cerase: 'i-eraser', cpencil: 'i-cpencil', gel: 'i-gel', agrad: 'i-agrad', mixb: 'i-mixb' };
+const TOOL_ICON = { pen: 'i-pen', line: 'i-line', ellipse: 'i-ellipse', rect: 'i-rect', star: 'i-star', heart: 'i-heart', erase: 'i-eraser', fill: 'i-fill', blend: 'i-blend', cerase: 'i-eraser', cpencil: 'i-cpencil', gel: 'i-gel', agrad: 'i-agrad', mixb: 'i-mixb', wcolor: 'i-wcolor', spray: 'i-spray' };
 const TOOL_NAME = {};
-for (const k of ['pen', 'line', 'ellipse', 'rect', 'star', 'heart', 'erase', 'fill', 'grad', 'blend', 'cerase', 'crayon', 'cpencil', 'agrad', 'mixb']) Object.defineProperty(TOOL_NAME, k, { get: () => tt('tool.' + k), enumerable: true });
+for (const k of ['pen', 'line', 'ellipse', 'rect', 'star', 'heart', 'erase', 'fill', 'grad', 'blend', 'cerase', 'crayon', 'cpencil', 'agrad', 'mixb', 'wcolor', 'spray']) Object.defineProperty(TOOL_NAME, k, { get: () => tt('tool.' + k), enumerable: true });
 for (const k of ['acrylic', 'water', 'alcohol', 'blender0']) Object.defineProperty(TOOL_NAME, k, { get: () => tt('mark.n.' + k), enumerable: true });
 Object.defineProperty(TOOL_NAME, 'gel', { get: () => gelName(), enumerable: true });
 const SIZE_DOT = { xxs: 2, xs: 3, 0: 6, 1: 11, 2: 18 };
@@ -4191,7 +4613,7 @@ function miniToolInfo() {
     return { icon: TOOL_ICON[t] || 'i-pen', name: TOOL_NAME[t] || t, tint: t !== 'erase' && !(t === 'gel' && state.gelKind === 'white') && !(t === 'mixb' && state.mixStart !== 'color') };
   }
   if (isBrush(t)) return { icon: BRUSH_ICONS[t], name: TOOL_NAME[t], tint: t !== 'blender0' };
-  return { icon: TOOL_ICON[t], name: TOOL_NAME[t] || t, tint: t === 'fill' || t === 'cpencil' || (t === 'gel' && state.gelKind !== 'white') || (t === 'mixb' && state.mixStart === 'color'), grad: t === 'grad' };
+  return { icon: TOOL_ICON[t], name: TOOL_NAME[t] || t, tint: t === 'fill' || t === 'cpencil' || t === 'wcolor' || t === 'spray' || (t === 'gel' && state.gelKind !== 'white') || (t === 'mixb' && state.mixStart === 'color'), grad: t === 'grad' };
 }
 function refreshMini() {
   const bar = document.getElementById('miniBar'); if (!bar) return;
@@ -4223,10 +4645,12 @@ function placeMini() {
   const bar = $('#miniBar'); if (!state.uiHidden) return;
   const horiz = MINI.edge === 'top' || MINI.edge === 'bottom';
   bar.classList.toggle('h', horiz); bar.classList.toggle('folded', MINI.folded); bar.dataset.edge = MINI.edge;
-  bar.classList.remove('no-redo', 'wrap', 'no-ref'); bar.style.maxWidth = bar.style.maxHeight = '';
+  bar.classList.remove('no-redo', 'wrap', 'no-ref', 'no-sym'); bar.style.maxWidth = bar.style.maxHeight = '';
   const ins = safeInsets(), M = 6, vw = innerWidth, vh = innerHeight;
   const avail = horiz ? vw - ins.l - ins.r - 2 * M : vh - ins.t - ins.b - 2 * M;
   const len = () => (horiz ? bar.offsetWidth : bar.offsetHeight);
+  // 3.9: Simetría: si está apagada y falta espacio (o el teléfono es pequeño), su botón se esconde antes que nada
+  if (!document.body.classList.contains('sym-on') && (Math.min(vw, vh) < 360 || len() > avail)) bar.classList.add('no-sym');
   // 3.7: Foto de referencia: si todavía no hay foto y falta espacio (o el teléfono es pequeño), su botón se esconde primero
   if (!document.body.classList.contains('ref-has') && (Math.min(vw, vh) < 360 || len() > avail)) bar.classList.add('no-ref');
   if (len() > avail) bar.classList.add('no-redo');         // si no cabe, primero se quita Rehacer
@@ -4298,10 +4722,10 @@ function showMiniPop(id, anchor) {
 const mtl = (a, b) => tt(a) + (b ? '<small>' + tt(b) + '</small>' : '');
 const MINI_TOOLS = {
   get color() { return [['fill', mtl('tool.fill'), 'i-fill'], ['crayon', mtl('tool.crayon', 'mt.crayon.sub'), 'i-crayon'], ['acrylic', mtl('tool.marker', 'mark.k.acrylic'), 'i-acrylic'], ['water', mtl('tool.marker', 'mark.k.water'), 'i-water'],
-          ['alcohol', mtl('tool.marker', 'mark.k.alcohol'), 'i-alcohol'], ['blender0', mtl('mark.n.blender0'), 'i-blender0'], ['cpencil', mtl('tool.cpencil'), 'i-cpencil'], ['gel', mtl('tool.gel'), 'i-gel'],
+          ['alcohol', mtl('tool.marker', 'mark.k.alcohol'), 'i-alcohol'], ['blender0', mtl('mark.n.blender0'), 'i-blender0'], ['cpencil', mtl('tool.cpencil'), 'i-cpencil'], ['gel', mtl('tool.gel'), 'i-gel'], ['wcolor', mtl('tool.wcolor'), 'i-wcolor'], ['spray', mtl('tool.spray'), 'i-spray'],
           ['grad', mtl('tool.grad'), null], ['agrad', mtl('tool.agrad'), 'i-agrad'], ['blend', mtl('tool.blend'), 'i-blend'], ['mixb', mtl('tool.mixb'), 'i-mixb'], ['cerase', mtl('tool.erase', 'mt.eraser.sub'), 'i-eraser']]; },
   get draw() { return [['pen', mtl('tool.pen'), 'i-pen'], ['m-crayon', mtl('tool.marker', 'mark.k.crayon'), 'i-marker'], ['m-acrylic', mtl('tool.marker', 'mark.k.acrylic'), 'i-acrylic'], ['m-water', mtl('tool.marker', 'mark.k.water'), 'i-water'],
-         ['m-alcohol', mtl('tool.marker', 'mark.k.alcohol'), 'i-alcohol'], ['m-blender0', mtl('mark.n.blender0'), 'i-blender0'], ['cpencil', mtl('tool.cpencil'), 'i-cpencil'], ['gel', mtl('tool.gel'), 'i-gel'], ['mixb', mtl('tool.mixb'), 'i-mixb'], ['erase', mtl('tool.erase'), 'i-eraser']]; },
+         ['m-alcohol', mtl('tool.marker', 'mark.k.alcohol'), 'i-alcohol'], ['m-blender0', mtl('mark.n.blender0'), 'i-blender0'], ['cpencil', mtl('tool.cpencil'), 'i-cpencil'], ['gel', mtl('tool.gel'), 'i-gel'], ['wcolor', mtl('tool.wcolor'), 'i-wcolor'], ['spray', mtl('tool.spray'), 'i-spray'], ['mixb', mtl('tool.mixb'), 'i-mixb'], ['erase', mtl('tool.erase'), 'i-eraser']]; },
 };
 function miniToolOn(k) {
   const t = currentTool();
@@ -5008,6 +5432,7 @@ $('#txtInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.p
 /* ---------- Subir foto: convertir la foto de una página en líneas negras limpias ---------- */
 // Devuelve la opacidad (0–255) de la tinta para cada píxel. p = { mode: 'photo' | 'asis', limp: 0–100, thick: bool }
 function processLineArt(id, p) {
+  if (p.mode === 'sketch') return sketchLineArt(id, p);      // 3.9: Foto a dibujo
   const w = id.width, h = id.height, d = id.data, N = w * h;
   const gray = new Uint8ClampedArray(N);
   for (let i = 0, k = 0; i < N; i++, k += 4) {
@@ -5170,7 +5595,7 @@ function detectPage(src) {
 
 let adjHintKey = 'adj.hint';
 const adj = { orig: null, rot: 0, rotCv: null, prev: null, prevData: null, prevOut: null, crop: { x0: 0, y0: 0, x1: 1, y1: 1 },
-  mode: 'photo', limp: 50, thick: false, vr: null, drag: null, pending: false };
+  mode: 'photo', limp: 50, detail: 50, thick: false, vr: null, drag: null, pending: false };
 function rotatedCanvas() {
   if (adj.rotCv) return adj.rotCv;
   const o = adj.orig;
@@ -5187,7 +5612,7 @@ function buildPreviewSrc() {
   c.imageSmoothingQuality = 'high'; c.fillStyle = '#fff'; c.fillRect(0, 0, pw, ph); c.drawImage(rc, 0, 0, pw, ph);
   adj.prev = cv; adj.prevData = c.getImageData(0, 0, pw, ph);
 }
-function adjParams() { return { mode: adj.mode, limp: adj.limp, thick: adj.thick }; }
+function adjParams() { return { mode: adj.mode, limp: adj.mode === 'sketch' ? adj.detail : adj.limp, thick: adj.thick }; }
 function processPreview() {
   if (adj.pending) return;
   adj.pending = true;
@@ -5263,6 +5688,7 @@ function setAdjMode(m) {
   adj.mode = m;
   $('#adjModePhoto').classList.toggle('on', m === 'photo'); $('#adjModeAsis').classList.toggle('on', m === 'asis');
   $('#adjust').classList.toggle('asis', m === 'asis');
+  $('#adjModeSketch').classList.toggle('on', m === 'sketch'); $('#adjust').classList.toggle('sketch', m === 'sketch');   // 3.9
   processPreview();
 }
 $('#adjModePhoto').onclick = () => setAdjMode('photo');
@@ -5283,20 +5709,21 @@ function closeAdjust() {
   $('#adjust').classList.remove('show');
   adj.orig = adj.rotCv = adj.prev = adj.prevData = adj.prevOut = null;
 }
-async function openAdjust(img) {
+async function openAdjust(img, want) {
   const MAX = 2600, s = Math.min(1, MAX / Math.max(img.width, img.height));
   const w = Math.max(1, Math.round(img.width * s)), h = Math.max(1, Math.round(img.height * s));
   const cv = mkCanvas(w, h), c = cv.getContext('2d');
   c.imageSmoothingQuality = 'high'; c.fillStyle = '#fff'; c.fillRect(0, 0, w, h); c.drawImage(img, 0, 0, w, h);
-  Object.assign(adj, { orig: cv, rot: 0, rotCv: null, crop: { x0: 0, y0: 0, x1: 1, y1: 1 }, limp: 50, thick: false, drag: null });
-  $('#adjLimp').value = 50; $('#adjThick').classList.remove('on');
+  Object.assign(adj, { orig: cv, rot: 0, rotCv: null, crop: { x0: 0, y0: 0, x1: 1, y1: 1 }, limp: 50, detail: 50, thick: false, drag: null });
+  $('#adjLimp').value = 50; $('#adjDetail').value = 50; $('#adjThick').classList.remove('on');
   $('#adjust').classList.add('show');
   buildPreviewSrc();
-  const clean = looksLikeLineArt(cv);
-  const page = clean ? null : detectPage(adj.prev);
+  const sk = want === 'sketch';
+  const clean = !sk && looksLikeLineArt(cv);
+  const page = clean || sk ? null : detectPage(adj.prev);
   if (page) adj.crop = page;
-  adjHintKey = page ? 'adj.found' : 'adj.hint'; $('#adjHint').textContent = tt(adjHintKey);
-  setAdjMode(clean ? 'asis' : 'photo');
+  adjHintKey = sk ? 'adj.sketch.hint' : page ? 'adj.found' : 'adj.hint'; $('#adjHint').textContent = tt(adjHintKey);
+  setAdjMode(sk ? 'sketch' : clean ? 'asis' : 'photo');
 }
 async function useAdjusted() {
   if (!adj.orig) return;
@@ -5319,14 +5746,16 @@ async function useAdjusted() {
     replaceSheet(nw, nh, (lc) => lc.drawImage(ink, ox, oy));
     window.__colorear.lastImport = { crop: { x: cx, y: cy, w: cw, h: ch }, src: { w: rc.width, h: rc.height }, dest: { x: ox, y: oy, w: dw, h: dh }, sheet: [nw, nh] };
     state.currentId = null;
+    const wasSketch = adj.mode === 'sketch';
     closeAdjust();
     setMode('color'); setColorTool('fill');
-    toast(tt('toast.photoready'));
+    toast(tt(wasSketch ? 'toast.sketchready' : 'toast.photoready'));
   } catch (e) { console.warn(e); toast(tt('toast.photofail')); }
   $('#adjBusy').classList.remove('show');
 }
 // Punto de entrada: una imagen elegida, tomada con la cámara, pegada, arrastrada o compartida
 async function importImageFile(file) {
+  const want = photoIntent; photoIntent = null;      // 3.9: «Foto a dibujo»
   if (!file) return;
   closeSheet('#photoSheet'); closeSheet('#tplSheet');
   try {
@@ -5334,7 +5763,7 @@ async function importImageFile(file) {
     const meta = readPngText(buf);
     if (meta && meta.Colorear) { await importOwn(new Blob([buf], { type: 'image/png' }), meta); return; }
     const img = await loadImage(new Blob([buf], { type: file.type || 'image/*' }));
-    await openAdjust(img);
+    await openAdjust(img, want);
   } catch (e) { console.warn(e); toast(tt('toast.openfail')); }
 }
 async function importOwn(blob, meta) {
@@ -5549,7 +5978,8 @@ async function doSave() {
     const now = Date.now();
     const rec = { line, color, thumb, w: W, h: H, updated: now };
     if (extra.length || !layers.line.vis || !layers.color.vis || layers.color.op < 1) { rec.capas = extra; rec.capasInfo = layerMeta(); }
-    if (ref.blob) rec.ref = refRecord();      // 3.7: la foto de referencia va con el dibujo (aparte: nunca dentro de la imagen)
+    if (ref.blob) rec.ref = refRecord();
+    rec.proc = procId;                          // 3.9: el video del proceso va con el dibujo      // 3.7: la foto de referencia va con el dibujo (aparte: nunca dentro de la imagen)
     if (state.currentId != null) {
       const old = await tx('dibujos', 'readonly', (s) => s.get(state.currentId));
       if (old) { rec.id = state.currentId; rec.created = old.created; }
@@ -5591,7 +6021,9 @@ $('#galleryGrid').addEventListener('click', async (e) => {
   const id = +b.closest('.card').dataset.id, act = b.dataset.act;
   if (act === 'del') {
     if (!(await confirmBox(tt('confirm.delDrawing'), tt('obj.del')))) return;
+    const old = await tx('dibujos', 'readonly', (s) => s.get(id));
     await tx('dibujos', 'readwrite', (s) => s.delete(id));
+    if (old && old.proc && old.proc !== procId) deleteProc(old.proc).catch(() => {});   // 3.9
     if (state.currentId === id) state.currentId = null;
     openGallery(); toast(tt('toast.drawingdel'));
     return;
@@ -5603,6 +6035,7 @@ $('#galleryGrid').addEventListener('click', async (e) => {
   objs = []; exitObjMode(); renderObjs();
   await setLayersFrom(it.line, act === 'open' ? it.color : null, act === 'open' ? it.capas : null, act === 'open' ? it.capasInfo : null);
   await setRef(it.ref || null);
+  setProc(act === 'open' && it.proc ? it.proc : null);   // 3.9
   resetHistory();
   state.currentId = act === 'open' ? id : null;
   state.dirty = false;
@@ -5620,7 +6053,7 @@ async function autosave() {
   autoBusy = true;
   try {
     const [line, color, capas] = await Promise.all([toBlob(layers.line.cv), toBlob(layers.color.cv), extraLayersData()]);
-    await tx('estado', 'readwrite', (s) => s.put({ line, color, capas, capasInfo: layerMeta(), w: W, h: H, objs: snapshotObjs(), currentId: state.currentId, dirty: state.dirty, mode: state.mode, t: Date.now() }, 'actual'));
+    await tx('estado', 'readwrite', (s) => s.put({ line, color, capas, capasInfo: layerMeta(), w: W, h: H, objs: snapshotObjs(), currentId: state.currentId, dirty: state.dirty, mode: state.mode, proc: procId, t: Date.now() }, 'actual'));
   } catch (e) { console.warn('autoguardado', e); }
   autoBusy = false;
 }
@@ -5631,6 +6064,7 @@ async function restore() {
     if (s && s.line) {
       await setLayersFrom(s.line, s.color, s.capas, s.capasInfo);
       state.currentId = s.currentId ?? null; state.dirty = !!s.dirty;
+      if (s.proc) setProc(s.proc);                // 3.9
       setMode(s.mode === 'color' ? 'color' : 'draw');
       if (Array.isArray(s.objs) && s.objs.length) {
         objs = cloneObjs(s.objs); objSeq = Math.max(...objs.map((o) => o.id || 0)) + 1;
@@ -5757,6 +6191,7 @@ function applyLang() {
   $('#adjHint').textContent = tt(adjHintKey);
   if ($('#pickerDlg').classList.contains('show')) pkUpdate();
   if (openPop && openPop.pop.id === 'mToolPop') buildMiniTools();
+  buildQuickColors(); renderSymGuide(); renderPalPop(); renderReto();   // 3.9
   if (openGrp) $('#panel').setAttribute('aria-label', { tools: tt('tab.tools'), colors: tt('tab.colors'), size: tt('size.title'), more: tt('more.options') }[openGrp]);
   if ($('#hint').classList.contains('show')) { const inst = $('#hintInstall').style.display; if (hintKind === 'news') showNews(); else if (hintKind === 'mixtip') showMixTip(); else if (hintKind === 'install') showHint(); $('#hintInstall').style.display = inst; }
   if ($('#gallerySheet').classList.contains('show')) openGallery();
@@ -6086,8 +6521,736 @@ async function restoreRef() {
   try { const r = await tx('estado', 'readonly', (s) => s.get('ref')); if (r && r.blob) await setRef(r, { noSave: true }); } catch (e) { console.warn('ref', e); }
 }
 
+/* ====================================================================================
+   3.9: Simetría, acuarela y spray, paletas listas, foto a dibujo, video del proceso y reto del día
+   ==================================================================================== */
+
+/* ---------- 3.9: Simetría / espejo: lo que pintas se repite al otro lado (alrededor del centro de la hoja) ---------- */
+const SYM_KEY = 'colorear.simetria';
+const SYM = { mode: 'off', n: 8, mirror: false };          // mode: off | v | h | quad | radial
+try { const s = JSON.parse(localStorage.getItem(SYM_KEY) || 'null'); if (s) { if ([6, 8, 12].includes(+s.n)) SYM.n = +s.n; SYM.mirror = !!s.mirror; } } catch (_) {}
+function saveSym() { try { localStorage.setItem(SYM_KEY, JSON.stringify({ n: SYM.n, mirror: SYM.mirror })); } catch (_) {} }
+const SYM_TOOLS = ['pen', 'erase', 'marker', 'crayon', 'acrylic', 'water', 'alcohol', 'blender0', 'cpencil', 'gel', 'cerase', 'blend', 'mixb', 'wcolor', 'spray', 'fill'];
+// Lista de transformaciones (la primera es el trazo original)
+function symTransforms() {
+  const cx = W / 2, cy = H / 2, id = (p) => p;
+  const fv = (p) => ({ x: 2 * cx - p.x, y: p.y }), fh = (p) => ({ x: p.x, y: 2 * cy - p.y }), fb = (p) => ({ x: 2 * cx - p.x, y: 2 * cy - p.y });
+  if (SYM.mode === 'v') return [id, fv];
+  if (SYM.mode === 'h') return [id, fh];
+  if (SYM.mode === 'quad') return [id, fv, fh, fb];
+  if (SYM.mode === 'radial') {
+    const out = [], n = SYM.n;
+    for (let k = 0; k < n; k++) {
+      const a = k * 2 * Math.PI / n, ca = Math.cos(a), sa = Math.sin(a);
+      const rot = (p) => { const dx = p.x - cx, dy = p.y - cy; return { x: cx + dx * ca - dy * sa, y: cy + dx * sa + dy * ca }; };
+      out.push(k ? rot : id);
+      if (SYM.mirror) out.push((p) => rot(fv(p)));
+    }
+    return out;
+  }
+  return [id];
+}
+function symFor(tool) { return SYM.mode !== 'off' && SYM_TOOLS.includes(tool) ? symTransforms() : null; }
+const symPt = (T, p) => T(p);
+// Guía suave en la hoja (no se pinta ni sale al guardar)
+function renderSymGuide() {
+  const svg = $('#symGuide'); if (!svg) return;
+  const on = SYM.mode !== 'off';
+  svg.toggleAttribute('hidden', !on);
+  document.body.classList.toggle('sym-on', on);
+  $$('#symBtn, #mbSym').forEach((b) => { b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); });
+  const lbl = $('#symBtn small'); if (lbl) lbl.textContent = on ? symLabel() : tt('sym.sub');
+  $$('#symModes [data-sym]').forEach((b) => b.classList.toggle('on', b.dataset.sym === SYM.mode));
+  $$('#symN [data-n]').forEach((b) => b.classList.toggle('on', +b.dataset.n === SYM.n));
+  const mc = $('#symMirror'); if (mc) mc.checked = SYM.mirror;
+  if (!on) { svg.innerHTML = ''; return; }
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const cx = W / 2, cy = H / 2, R = Math.hypot(W, H);
+  let d = '';
+  if (SYM.mode === 'v' || SYM.mode === 'quad') d += `M${cx} 0V${H}`;
+  if (SYM.mode === 'h' || SYM.mode === 'quad') d += `M0 ${cy}H${W}`;
+  if (SYM.mode === 'radial') for (let k = 0; k < SYM.n; k++) { const a = -Math.PI / 2 + k * 2 * Math.PI / SYM.n; d += `M${cx} ${cy}L${(cx + R * Math.cos(a)).toFixed(1)} ${(cy + R * Math.sin(a)).toFixed(1)}`; }
+  svg.innerHTML = `<path d="${d}"/><circle cx="${cx}" cy="${cy}" r="7"/>`;
+}
+function symLabel() { return SYM.mode === 'radial' ? tt('sym.radial.n', { n: SYM.n }) : tt('sym.m.' + SYM.mode); }
+function setSym(mode, opts = {}) {
+  if (!['off', 'v', 'h', 'quad', 'radial'].includes(mode)) mode = 'off';
+  SYM.mode = mode;
+  if (opts.n && [6, 8, 12].includes(+opts.n)) SYM.n = +opts.n;
+  if (opts.mirror != null) SYM.mirror = !!opts.mirror;
+  saveSym(); renderSymGuide();
+  if (state.uiHidden) placeMini();
+  if (!opts.quiet) toast(mode === 'off' ? tt('sym.toast.off') : tt('sym.toast.on', { name: symLabel() }), 2000);
+}
+$$('#symModes [data-sym]').forEach((b) => b.onclick = () => setSym(b.dataset.sym));
+$$('#symN [data-n]').forEach((b) => b.onclick = () => setSym('radial', { n: +b.dataset.n }));
+$('#symMirror').addEventListener('change', (e) => setSym(SYM.mode === 'off' ? 'radial' : SYM.mode, { mirror: e.target.checked }));
+let symAdvOpen = false;
+$('#symMore').onclick = () => { symAdvOpen = !symAdvOpen; $('#symAdv').hidden = !symAdvOpen; $('#symMore').setAttribute('aria-expanded', String(symAdvOpen)); };
+$('#symBtn').onclick = () => { renderSymGuide(); showPop('symPop', $('#symBtn')); };
+$('#mbSym').onclick = () => { renderSymGuide(); showMiniPop('symPop', $('#mbSym')); };
+// Bote con simetría: rellena la zona tocada y sus reflejos (de una vez: un solo «Deshacer»)
+function floodFillSym(fx, fy, hex, alpha = 1, Ts) {
+  const target = paintTarget(), cctx = layers[target].ctx;
+  const [r, gg, b] = hexToRgb(hex), A = clamp(alpha == null ? 1 : +alpha, 0, 1);
+  const done = new Uint8Array(W * H), box = { x1: Infinity, y1: Infinity, x2: -Infinity, y2: -Infinity };
+  let changed = false;
+  for (const T of Ts) {
+    const q = T({ x: fx, y: fy }), qx = Math.round(q.x), qy = Math.round(q.y);
+    if (qx < 0 || qy < 0 || qx >= W || qy >= H || done[qy * W + qx]) continue;
+    const reg = regionMask(q.x, q.y); if (!reg) continue;
+    const { mask, minX, minY, maxX, maxY } = reg, bw = maxX - minX + 1, bh = maxY - minY + 1;
+    const img = cctx.getImageData(minX, minY, bw, bh), d = img.data;
+    for (let y = 0; y < bh; y++) {
+      const mrow = (y + minY) * W + minX, drow = y * bw;
+      for (let x = 0; x < bw; x++) {
+        if (!mask[mrow + x] || done[mrow + x]) continue;
+        done[mrow + x] = 1;
+        const k = (drow + x) * 4;
+        if (A < 0.999 || d[k] !== r || d[k + 1] !== gg || d[k + 2] !== b || d[k + 3] !== 255) changed = true;
+        overPx(d, k, r, gg, b, A);
+      }
+    }
+    cctx.putImageData(img, minX, minY);
+    bboxAdd(box, minX, minY, 0); bboxAdd(box, maxX + 1, maxY + 1, 0);
+  }
+  if (!changed) { if (box.x2 > box.x1) { const R = clampRect(rectOf(box)); if (R) cctx.putImageData(layers[target].bctx.getImageData(R.x, R.y, R.w, R.h), R.x, R.y); } return false; }
+  commit([capturePart(target, rectOf(box))]);
+  return true;
+}
+
+/* ---------- 3.9: Acuarela (transparente, se oscurece en la orilla, manchas de agua, grano del papel, se mezcla mojada) y Spray ---------- */
+const WC_KEY = 'colorear.acuarela', SP_KEY = 'colorear.spray';
+const WC = { water: 0.55, gran: 0.5, lines: { color: true, draw: false } };
+const SPR = { flow: 0.5, lines: { color: true, draw: false } };
+try { const s = JSON.parse(localStorage.getItem(WC_KEY) || 'null'); if (s) { WC.water = clamp(+s.water || 0, 0, 1); WC.gran = clamp(+s.gran || 0, 0, 1); if (s.lines) WC.lines = { color: s.lines.color !== false, draw: !!s.lines.draw }; } } catch (_) {}
+try { const s = JSON.parse(localStorage.getItem(SP_KEY) || 'null'); if (s) { SPR.flow = clamp(+s.flow || 0.5, 0.1, 1); if (s.lines) SPR.lines = { color: s.lines.color !== false, draw: !!s.lines.draw }; } } catch (_) {}
+function saveWC() { try { localStorage.setItem(WC_KEY, JSON.stringify(WC)); localStorage.setItem(SP_KEY, JSON.stringify(SPR)); } catch (_) {} }
+const WC_SIZES = { color: { xxs: 6, xs: 10, 0: 22, 1: 46, 2: 84 }, draw: { xxs: 4, xs: 7, 0: 14, 1: 30, 2: 56 } };
+const SPRAY_SIZES = { color: { xxs: 10, xs: 16, 0: 28, 1: 60, 2: 110 }, draw: { xxs: 8, xs: 12, 0: 18, 1: 36, 2: 70 } };
+function newToolStyle(tool) {
+  const draw = state.mode === 'draw', sz = draw ? state.drawSize : state.colorSize, layer = draw ? drawTarget() : paintTarget();
+  const color = draw ? state.drawColor : state.color, alpha = draw ? state.drawAlpha : state.alpha;
+  const lines = (tool === 'wcolor' ? WC.lines : SPR.lines)[draw ? 'draw' : 'color'];
+  if (tool === 'wcolor') return { layer, color, comp: 'source-over', lw: (WC_SIZES[draw ? 'draw' : 'color'][sz] || 30), buf: 'wc', alpha: 0.5 * alpha, lines, water: WC.water, gran: WC.gran };
+  return { layer, color, comp: 'source-over', lw: (SPRAY_SIZES[draw ? 'draw' : 'color'][sz] || 40), buf: 'spray', alpha, lines, flow: SPR.flow };
+}
+// Máscara de «respetar las líneas»: las zonas cerradas donde empieza el trazo (y sus reflejos)
+let lmCv = null, lmCtx = null;
+function lineMaskFor(pts) {
+  if (!lmCv || lmCv.width !== W || lmCv.height !== H) { lmCv = mkCanvas(); lmCtx = ctx2d(lmCv); }
+  lmCtx.clearRect(0, 0, W, H);
+  const u = new Uint8Array(W * H); let x1 = W, y1 = H, x2 = -1, y2 = -1;
+  for (const p of pts) {
+    const px = Math.round(p.x), py = Math.round(p.y);
+    if (px < 0 || py < 0 || px >= W || py >= H || u[py * W + px]) continue;
+    const reg = regionMask(p.x, p.y); if (!reg) continue;
+    const m = reg.mask;
+    for (let y = reg.minY; y <= reg.maxY; y++) for (let x = reg.minX, i = y * W + reg.minX; x <= reg.maxX; x++, i++) if (m[i]) u[i] = 1;
+    x1 = Math.min(x1, reg.minX); y1 = Math.min(y1, reg.minY); x2 = Math.max(x2, reg.maxX); y2 = Math.max(y2, reg.maxY);
+  }
+  if (x2 < 0) return null;
+  const w = x2 - x1 + 1, h = y2 - y1 + 1, im = lmCtx.createImageData(w, h), d = im.data;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (u[(y + y1) * W + x + x1]) d[(y * w + x) * 4 + 3] = 255;
+  lmCtx.putImageData(im, x1, y1);
+  return { cv: lmCv, x1, y1, x2: x2 + 1, y2: y2 + 1 };
+}
+function applyLineMask(st, r) {
+  if (!st.mask || !r) return;
+  bufCtx.save(); bufCtx.beginPath(); bufCtx.rect(r.x, r.y, r.w, r.h); bufCtx.clip();
+  bufCtx.globalCompositeOperation = 'destination-in'; bufCtx.drawImage(st.mask.cv, r.x, r.y, r.w, r.h, r.x, r.y, r.w, r.h);
+  bufCtx.restore();
+}
+// Vista previa: lo de antes + el trazo (acuarela: suave y transparente, como un velo; spray: puntitos)
+function newToolShow(st, x1, y1, x2, y2) {
+  const blur = st.buf === 'wc' ? Math.max(1, st.lw * 0.06) : 0;
+  const r = clampRect({ x: x1 - blur * 2, y: y1 - blur * 2, w: x2 - x1 + blur * 4, h: y2 - y1 + blur * 4 }); if (!r) return;
+  const L = layers[st.layer], c = L.ctx;
+  c.save(); c.beginPath(); c.rect(r.x, r.y, r.w, r.h); c.clip();
+  c.globalCompositeOperation = 'copy'; c.drawImage(L.bak, r.x, r.y, r.w, r.h, r.x, r.y, r.w, r.h);
+  c.globalCompositeOperation = st.buf === 'wc' && st.layer === 'color' ? 'multiply' : 'source-over';
+  c.globalAlpha = st.buf === 'wc' ? Math.min(0.95, st.alpha * 1.25) : st.alpha;
+  if (blur && hasCtxFilter) c.filter = `blur(${blur.toFixed(1)}px)`;
+  const m = Math.ceil(blur * 3);
+  const sx = Math.max(0, r.x - m), sy = Math.max(0, r.y - m), sw = Math.min(W, r.x + r.w + m) - sx, sh = Math.min(H, r.y + r.h + m) - sy;
+  c.drawImage(bufCv, sx, sy, sw, sh, sx, sy, sw, sh);
+  c.restore();
+}
+function newToolBegin(gg, p) {
+  const st = gg.st; bufBegin();
+  st.mask = st.lines ? lineMaskFor((gg.T || [(q) => q]).map((T) => T(p))) : null;
+  if (st.buf === 'spray') { gg.spLast = performance.now(); sprayEmit(gg, p, p, 60); gg.spIv = setInterval(() => { if (g === gg) { const t = performance.now(); sprayEmit(gg, gg.last, gg.last, t - gg.spLast); gg.spLast = t; } }, 45); }
+  else wcSeg(gg, p, p, { x: p.x + 0.01, y: p.y });
+}
+function wcSeg(gg, p0, p1, p2) {
+  const st = gg.st, Ts = gg.T || [(q) => q], pad = st.lw;
+  for (const T of Ts) {
+    const a = T(p0), b = T(p1), c = T(p2);
+    segment(bufCtx, st, a, b, c);
+    const x1 = Math.min(a.x, b.x, c.x) - pad, y1 = Math.min(a.y, b.y, c.y) - pad, x2 = Math.max(a.x, b.x, c.x) + pad, y2 = Math.max(a.y, b.y, c.y) + pad;
+    applyLineMask(st, clampRect({ x: x1, y: y1, w: x2 - x1, h: y2 - y1 }));
+    newToolShow(st, x1, y1, x2, y2);
+  }
+}
+// Spray: puntitos al azar (más juntos en el centro). Sale mientras se mantiene el dedo: despacio = más pintura.
+function gaussR() { let u = 0, v = 0; while (!u) u = Math.random(); while (!v) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+function sprayEmit(gg, a, b, dt) {
+  const st = gg.st, R = st.lw / 2, Ts = gg.T || [(q) => q];
+  const n = Math.min(700, Math.round(R * R * 0.1 * st.flow * clamp(dt, 0, 120) / 16 / Math.sqrt(Ts.length)) + 2);
+  const pr = clamp(R / 26, 0.6, 2.4);
+  bufCtx.save(); bufCtx.fillStyle = st.color;
+  for (let i = 0; i < n; i++) {
+    const t = Math.random(), cx = a.x + (b.x - a.x) * t, cy = a.y + (b.y - a.y) * t;
+    const ox = gaussR() * R * 0.45, oy = gaussR() * R * 0.45;
+    if (ox * ox + oy * oy > R * R) continue;
+    const s = pr * (0.6 + Math.random() * 0.9);
+    bufCtx.globalAlpha = 0.35 + Math.random() * 0.5;
+    for (const T of Ts) { const q = T({ x: cx + ox, y: cy + oy }); bufCtx.beginPath(); bufCtx.arc(q.x, q.y, s, 0, Math.PI * 2); bufCtx.fill(); }
+  }
+  bufCtx.restore();
+  for (const T of Ts) {
+    const qa = T(a), qb = T(b), m = R + 4;
+    bboxAdd(gg.box, qa.x, qa.y, m); bboxAdd(gg.box, qb.x, qb.y, m);
+    const x1 = Math.min(qa.x, qb.x) - m, y1 = Math.min(qa.y, qb.y) - m, x2 = Math.max(qa.x, qb.x) + m, y2 = Math.max(qa.y, qb.y) + m;
+    applyLineMask(st, clampRect({ x: x1, y: y1, w: x2 - x1, h: y2 - y1 }));
+    newToolShow(st, x1, y1, x2, y2);
+  }
+}
+function newToolMove(gg, p) {
+  if (gg.st.buf === 'spray') {
+    const t = performance.now(); sprayEmit(gg, gg.last, p, t - gg.spLast); gg.spLast = t; gg.last = p; return;
+  }
+  if (Math.hypot(p.x - gg.last.x, p.y - gg.last.y) < 1.5) return;
+  const mid = { x: (gg.last.x + p.x) / 2, y: (gg.last.y + p.y) / 2 };
+  wcSeg(gg, gg.mid, gg.last, mid);
+  for (const T of (gg.T || [(q) => q])) { const q = T(p); bboxAdd(gg.box, q.x, q.y, gg.st.lw + 2); }
+  gg.mid = mid; gg.last = p;
+}
+function newToolEnd(gg) {
+  if (gg.spIv) { clearInterval(gg.spIv); gg.spIv = 0; }
+  if (gg.st.buf === 'wc') { wcSeg(gg, gg.mid, gg.last, gg.last); wcFinish(gg); }
+  commit([capturePart(gg.st.layer, rectOf(gg.box))]);
+}
+// Al soltar la acuarela: se «seca» (orilla más oscura, manchas de agua, grano del papel, se mezcla con lo que estaba mojado debajo)
+function wcFinish(gg) {
+  const st = gg.st, r0 = clampRect(rectOf(gg.box)); if (!r0) return;
+  const pad = Math.ceil(st.lw * 0.3) + 4;
+  const R = clampRect({ x: r0.x - pad, y: r0.y - pad, w: r0.w + 2 * pad, h: r0.h + 2 * pad }); if (!R) return;
+  bboxAdd(gg.box, R.x, R.y, 0); bboxAdd(gg.box, R.x + R.w, R.y + R.h, 0);
+  const soft = Math.max(1, st.lw * 0.05), bleed = Math.max(2, st.lw * 0.16) * (0.7 + st.water * 0.8);
+  const body = mkCanvas(R.w, R.h), bc = ctx2d(body);
+  if (hasCtxFilter) bc.filter = `blur(${soft.toFixed(1)}px)`;
+  bc.drawImage(bufCv, R.x, R.y, R.w, R.h, 0, 0, R.w, R.h); bc.filter = 'none';
+  const wide = mkCanvas(R.w, R.h), wc2 = ctx2d(wide);
+  if (hasCtxFilter) wc2.filter = `blur(${bleed.toFixed(1)}px)`;
+  wc2.drawImage(bufCv, R.x, R.y, R.w, R.h, 0, 0, R.w, R.h); wc2.filter = 'none';
+  if (st.mask) for (const cx of [bc, wc2]) { cx.globalCompositeOperation = 'destination-in'; cx.drawImage(st.mask.cv, R.x, R.y, R.w, R.h, 0, 0, R.w, R.h); cx.globalCompositeOperation = 'source-over'; }
+  const mb = bc.getImageData(0, 0, R.w, R.h).data, mw = wc2.getImageData(0, 0, R.w, R.h).data;
+  const L = layers[st.layer], base = L.bctx.getImageData(R.x, R.y, R.w, R.h), d = base.data;
+  const T = tooth(), N = TOOTH_N, [cr, cg, cb] = hexToRgb(st.color), A = st.alpha, G = st.gran, Wt = st.water;
+  const opaque = st.layer === 'color';
+  const wet = 0.12 + 0.3 * Wt;
+  for (let y = 0; y < R.h; y++) {
+    const Y = R.y + y, ty = (Y % N) * N, fy = Y / 9 + 97, iy = fy | 0, ay = fy - iy, ny0 = (iy % N) * N, ny1 = ((iy + 1) % N) * N;
+    for (let x = 0; x < R.w; x++) {
+      const k = (y * R.w + x) * 4, a0 = mb[k + 3]; if (!a0) continue;
+      const X = R.x + x, cov = a0 / 255, cw = mw[k + 3] / 255;
+      const edge = clamp((cov - cw) * 2.4, 0, 1);                       // el pigmento se junta en la orilla
+      const t = T[ty + (X % N)];
+      const gran = 1 + G * (0.5 - t) * 1.3;                             // y en los huecos del papel
+      const fx = X / 9 + 53, ix = fx | 0, ax = fx - ix, nx0 = ix % N, nx1 = (ix + 1) % N;
+      const n2 = (T[ny0 + nx0] * (1 - ax) + T[ny0 + nx1] * ax) * (1 - ay) + (T[ny1 + nx0] * (1 - ax) + T[ny1 + nx1] * ax) * ay;
+      const blot = Wt * clamp((n2 - 0.56) * 6, 0, 1);                   // manchas de agua (más claras)…
+      const rim = Wt * Math.exp(-((n2 - 0.56) * (n2 - 0.56)) / 0.0012) * 0.8;   // …con su borde más oscuro
+      let a = A * cov * gran * (1 - 0.45 * blot) * (1 + 0.85 * edge + 0.5 * rim);
+      a = clamp(a, 0, 0.92);
+      const dk = 1 - 0.2 * edge - 0.12 * rim;
+      let r = cr * dk, gC = cg * dk, b = cb * dk;
+      const da = d[k + 3];
+      if (da > 200) {                                                   // mezcla con el color que ya había (mojado sobre mojado)
+        const ur = d[k], ug = d[k + 1], ub = d[k + 2], sat = Math.max(ur, ug, ub) - Math.min(ur, ug, ub);
+        if (sat > 24 || ur + ug + ub < 600) { r += (ur - r) * wet; gC += (ug - gC) * wet; b += (ub - b) * wet; }
+      }
+      if (opaque && da === 255) {                                       // veladura: se ve lo de abajo (como multiplicar)
+        d[k] = Math.round(d[k] * (1 - a) + d[k] * r / 255 * a); d[k + 1] = Math.round(d[k + 1] * (1 - a) + d[k + 1] * gC / 255 * a); d[k + 2] = Math.round(d[k + 2] * (1 - a) + d[k + 2] * b / 255 * a);
+      } else overPx(d, k, Math.round(r), Math.round(gC), Math.round(b), a);
+    }
+  }
+  L.ctx.putImageData(base, R.x, R.y);
+}
+function renderNewToolPops() {
+  const m = state.mode === 'draw' ? 'draw' : 'color';
+  $$('#wcLines [data-l]').forEach((b) => b.classList.toggle('on', (b.dataset.l === '1') === WC.lines[m]));
+  $$('#spLines [data-l]').forEach((b) => b.classList.toggle('on', (b.dataset.l === '1') === SPR.lines[m]));
+  $('#wcWater').value = Math.round(WC.water * 100); $('#wcWaterV').textContent = Math.round(WC.water * 100) + ' %';
+  $('#wcGran').value = Math.round(WC.gran * 100); $('#wcGranV').textContent = Math.round(WC.gran * 100) + ' %';
+  $('#spFlow').value = Math.round(SPR.flow * 100); $('#spFlowV').textContent = Math.round(SPR.flow * 100) + ' %';
+}
+$$('#wcLines [data-l]').forEach((b) => b.onclick = () => { WC.lines[state.mode === 'draw' ? 'draw' : 'color'] = b.dataset.l === '1'; saveWC(); renderNewToolPops(); });
+$$('#spLines [data-l]').forEach((b) => b.onclick = () => { SPR.lines[state.mode === 'draw' ? 'draw' : 'color'] = b.dataset.l === '1'; saveWC(); renderNewToolPops(); });
+$('#wcWater').addEventListener('input', (e) => { WC.water = +e.target.value / 100; saveWC(); renderNewToolPops(); });
+$('#wcGran').addEventListener('input', (e) => { WC.gran = +e.target.value / 100; saveWC(); renderNewToolPops(); });
+$('#spFlow').addEventListener('input', (e) => { SPR.flow = clamp(+e.target.value / 100, 0.1, 1); saveWC(); renderNewToolPops(); });
+for (const [btn, adv] of [['#wcMore', '#wcAdv'], ['#spMore', '#spAdv']]) $(btn).onclick = () => { const o = $(adv).hidden; $(adv).hidden = !o; $(btn).setAttribute('aria-expanded', String(o)); };
+renderNewToolPops();
+
+/* ---------- 3.9: Paletas listas (en Colores): tocar una paleta pone sus colores en la tira de colores rápidos ---------- */
+const PALETTES = [
+  { id: 'pastel', c: ['#FFC8DD', '#FFAFCC', '#FFE5B4', '#FFF3B0', '#CDEAC0', '#BDE0FE', '#A2D2FF', '#D7C4F2'] },
+  { id: 'otono', c: ['#7F2A12', '#B5451B', '#DD6E1F', '#F2A541', '#E9C46A', '#8A8C2E', '#5B3A1E', '#A0522D'] },
+  { id: 'neon', c: ['#FF1F8E', '#FF6B00', '#FFE600', '#39FF14', '#00F5D4', '#00BBF9', '#7B2FFF', '#FF00E6'] },
+  { id: 'piel', c: ['#FBE3D3', '#F3CBA5', '#E7B48F', '#D29B6C', '#B57A50', '#8E5A3C', '#68412B', '#43291C'] },
+  { id: 'tierra', c: ['#5C4033', '#8B5E3C', '#A9744F', '#C9A66B', '#E2CFA5', '#7D8B4F', '#4F5D2F', '#B5651D'] },
+  { id: 'oceano', c: ['#03045E', '#023E8A', '#0077B6', '#0096C7', '#00B4D8', '#48CAE4', '#90E0EF', '#CAF0F8'] },
+  { id: 'atardecer', c: ['#2B1055', '#6A2C70', '#B83B5E', '#F08A5D', '#F9A826', '#FFD56B', '#FF7E67', '#3D2C8D'] },
+  { id: 'boricua', c: ['#ED1C24', '#FFFFFF', '#0050F0', '#002A8F', '#00A651', '#FFD100', '#FF5A1F', '#00B5AD'] },
+  { id: 'vintage', c: ['#6B4E3D', '#A47551', '#D4A373', '#E9D8A6', '#94A89A', '#5F7A61', '#B5838D', '#6D597A'] },
+  { id: 'mono', dyn: true },
+];
+const PAL_KEY = 'colorear.paleta', MYPAL_KEY = 'colorear.misPaletas';
+let quickPal = null;         // { id, c: [...] } o null (los colores de siempre)
+let myPals = [];
+try { const s = JSON.parse(localStorage.getItem(PAL_KEY) || 'null'); if (s && Array.isArray(s.c) && s.c.length) quickPal = { id: String(s.id || 'mine'), c: s.c.filter((x) => /^#[0-9A-F]{6}$/i.test(x)).map((x) => x.toUpperCase()).slice(0, 10), name: s.name }; } catch (_) {}
+try { myPals = (JSON.parse(localStorage.getItem(MYPAL_KEY) || '[]') || []).filter((p) => p && Array.isArray(p.c)).slice(0, 8); } catch (_) { myPals = []; }
+function rgbToHsl(r, g, b) {
+  r /= 255; g /= 255; b /= 255; const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2;
+  if (mx === mn) return [0, 0, l];
+  const d = mx - mn, s = l > 0.5 ? d / (2 - mx - mn) : d / (mx + mn);
+  const h = mx === r ? (g - b) / d + (g < b ? 6 : 0) : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+  return [h / 6, s, l];
+}
+function hslToHex(h, s, l) {
+  const f = (n) => { const k = (n + h * 12) % 12, a = s * Math.min(l, 1 - l); const v = l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1)); return Math.round(v * 255).toString(16).padStart(2, '0'); };
+  return ('#' + f(0) + f(8) + f(4)).toUpperCase();
+}
+function monoPalette(hex) {
+  const [h, s0] = rgbToHsl(...hexToRgb(hex)), s = Math.max(s0, 0.08);
+  return [0.92, 0.82, 0.7, 0.58, 0.47, 0.37, 0.27, 0.17].map((l) => hslToHex(h, s0 < 0.04 ? 0 : s, l));
+}
+function palColors(p) { return p.dyn ? monoPalette(curColor()) : p.c; }
+function palName(p) { return p.name || tt('pal.' + p.id); }
+function buildQuickColors() {
+  const box = $('#qsList'); box.textContent = '';
+  const list = quickPal ? quickPal.c : QUICK;
+  for (const c of list) {
+    const b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.dataset.c = c;
+    b.setAttribute('aria-label', tt('color.aria', { name: COLOR_NAME[c] || c })); b.title = COLOR_NAME[c] || c;
+    if (!quickPal && c === '#333333') b.dataset.black = '1';
+    b.onclick = () => { hidePanel(); setColor(b.dataset.c); };
+    box.append(b);
+  }
+  $('#qsList').classList.toggle('pal', !!quickPal);
+  const cur = $('#palCur');
+  if (cur) { cur.hidden = !quickPal; if (quickPal) { cur.querySelector('b').textContent = palName(quickPal); } }
+  refreshMini();
+}
+function applyPalette(p, opts = {}) {
+  const c = palColors(p).slice(0, 10);
+  quickPal = { id: p.id, c, name: p.name };
+  try { localStorage.setItem(PAL_KEY, JSON.stringify(quickPal)); } catch (_) {}
+  buildQuickColors();
+  if (!opts.keepColor) setColor(c.find((x) => x !== '#FFFFFF') || c[0]);
+  if (!opts.quiet) toast(tt('pal.toast', { name: palName(quickPal) }), 2200);
+}
+function resetPalette(quiet) {
+  quickPal = null; try { localStorage.removeItem(PAL_KEY); } catch (_) {}
+  buildQuickColors(); renderPalPop();
+  if (!quiet) toast(tt('pal.reset.toast'), 2000);
+}
+function palRow(p, del) {
+  const row = document.createElement('div'); row.className = 'palrow' + (quickPal && quickPal.id === p.id && (!p.name || p.name === quickPal.name) ? ' on' : '');
+  const b = document.createElement('button'); b.className = 'palpick'; b.dataset.pal = p.id;
+  const nm = document.createElement('span'); nm.className = 'pn'; nm.textContent = palName(p);
+  const dots = document.createElement('span'); dots.className = 'pdots';
+  for (const c of palColors(p)) { const i = document.createElement('i'); i.style.background = c; dots.append(i); }
+  b.append(nm, dots); b.setAttribute('aria-label', tt('pal.use.aria', { name: palName(p) }));
+  b.onclick = () => { applyPalette(p); hidePop(); };
+  row.append(b);
+  if (del) { const x = document.createElement('button'); x.className = 'paldel'; x.textContent = '×'; x.setAttribute('aria-label', tt('pal.del.aria', { name: palName(p) })); x.onclick = (e) => { e.stopPropagation(); myPals = myPals.filter((q) => q !== p); try { localStorage.setItem(MYPAL_KEY, JSON.stringify(myPals)); } catch (_) {} renderPalPop(); }; row.append(x); }
+  return row;
+}
+function renderPalPop() {
+  const box = $('#palList'); if (!box) return; box.textContent = '';
+  for (const p of PALETTES) box.append(palRow(p));
+  const mine = $('#palMine'); mine.textContent = '';
+  $('#palMineLbl').hidden = !myPals.length;
+  myPals.forEach((p, i) => mine.append(palRow(Object.assign(p, { id: 'mine' + i }), true)));
+}
+function saveMyPalette() {
+  const src = recentColors.slice(0, 8);
+  if (src.length < 3) { toast(tt('pal.save.few'), 2800); return; }
+  const n = myPals.length + 1;
+  myPals.push({ name: tt('pal.mine.n', { n }), c: src });
+  if (myPals.length > 8) myPals.shift();
+  try { localStorage.setItem(MYPAL_KEY, JSON.stringify(myPals.map((p) => ({ name: p.name, c: p.c })))); } catch (_) {}
+  renderPalPop(); toast(tt('pal.saved'), 2200);
+}
+$('#palBtn').onclick = () => { renderPalPop(); showPop('palPop', $('#palBtn')); };
+$('#palSave').onclick = () => saveMyPalette();
+$('#palReset').onclick = () => { resetPalette(); hidePop(); };
+$('#palCurX').onclick = (e) => { e.stopPropagation(); resetPalette(); };
+
+/* ---------- 3.9: Foto a dibujo: convierte una foto cualquiera en líneas para colorear (en el teléfono, sin subirla a internet) ---------- */
+function boxBlurF(src, w, h, r) {
+  if (r < 1) return src;
+  const tmp = new Float32Array(src.length), out = new Float32Array(src.length), k = 1 / (2 * r + 1);
+  for (let y = 0; y < h; y++) {
+    const row = y * w; let s = src[row] * (r + 1);
+    for (let x = 1; x <= r; x++) s += src[row + Math.min(w - 1, x)];
+    for (let x = 0; x < w; x++) { tmp[row + x] = s * k; s += src[row + Math.min(w - 1, x + r + 1)] - src[row + Math.max(0, x - r)]; }
+  }
+  for (let x = 0; x < w; x++) {
+    let s = tmp[x] * (r + 1);
+    for (let y = 1; y <= r; y++) s += tmp[Math.min(h - 1, y) * w + x];
+    for (let y = 0; y < h; y++) { out[y * w + x] = s * k; s += tmp[Math.min(h - 1, y + r + 1) * w + x] - tmp[Math.max(0, y - r) * w + x]; }
+  }
+  return out;
+}
+const gaussF = (src, w, h, sigma) => { const r = Math.max(1, Math.round(sigma * 0.85)); return boxBlurF(boxBlurF(boxBlurF(src, w, h, r), w, h, r), w, h, r); };
+function sketchLineArt(id, p) {
+  const w = id.width, h = id.height, d = id.data, N = w * h, sc = Math.max(w, h) / 1000;
+  const det = clamp(p.limp == null ? 50 : p.limp, 0, 100) / 100;      // 0 = menos detalle, 1 = más detalle
+  const gray = new Float32Array(N);
+  for (let i = 0, k = 0; i < N; i++, k += 4) { const a = d[k + 3] / 255; gray[i] = (0.299 * d[k] + 0.587 * d[k + 1] + 0.114 * d[k + 2]) * a + 255 * (1 - a); }
+  // 1) bordes: diferencia de dos desenfoques (DoG) + intensidad del gradiente (Sobel)
+  const s1 = (1.7 - 0.7 * det) * sc, g1 = gaussF(gray, w, h, s1), g2 = gaussF(gray, w, h, s1 * 1.7);
+  const ink = new Uint8Array(N);
+  const thrD = 2.8 - 1.8 * det, thrS = (70 - 40 * det);
+  for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
+    const i = y * w + x, dog = g1[i] - g2[i];
+    if (dog >= -thrD) continue;
+    const gx = g1[i + 1] - g1[i - 1] + 0.5 * (g1[i - w + 1] - g1[i - w - 1] + g1[i + w + 1] - g1[i + w - 1]);
+    const gy = g1[i + w] - g1[i - w] + 0.5 * (g1[i + w - 1] - g1[i - w - 1] + g1[i + w + 1] - g1[i - w + 1]);
+    if (gx * gx + gy * gy > thrS * thrS * 0.02) ink[i] = 1;
+  }
+  // 2) contornos de zonas de luz (curvas cerradas: así queda fácil de rellenar con el bote)
+  const g3 = gaussF(gray, w, h, (3.2 - 1.4 * det) * sc), levels = 2 + Math.round(det * 4);
+  const q = new Uint8Array(N);
+  for (let i = 0; i < N; i++) q[i] = Math.min(levels - 1, Math.floor(g3[i] / 256 * levels));
+  for (let y = 0; y < h - 1; y++) for (let x = 0; x < w - 1; x++) { const i = y * w + x; if (q[i] !== q[i + 1] || q[i] !== q[i + w]) ink[i] = 1; }
+  // 3) quitar puntitos sueltos
+  const minArea = Math.max(6, Math.round((10 + (1 - det) * 220) * sc * sc));
+  const lab = new Uint8Array(N), qq = new Int32Array(N);
+  for (let s0 = 0; s0 < N; s0++) {
+    if (!ink[s0] || lab[s0]) continue;
+    let head = 0, tail = 0; qq[tail++] = s0; lab[s0] = 1;
+    while (head < tail) {
+      const i = qq[head++], y = (i / w) | 0, x = i - y * w;
+      for (let dy = -1; dy <= 1; dy++) { const yy = y + dy; if (yy < 0 || yy >= h) continue; for (let dx = -1; dx <= 1; dx++) { const xx = x + dx; if (xx < 0 || xx >= w) continue; const j = yy * w + xx; if (ink[j] && !lab[j]) { lab[j] = 1; qq[tail++] = j; } } }
+    }
+    if (tail < minArea) for (let k = 0; k < tail; k++) ink[qq[k]] = 0;
+  }
+  // 4) líneas gruesas y cerradas (cierra huecos pequeños)
+  let m = ink;
+  const passes = Math.max(1, Math.round(1.3 * sc)) + (p.thick ? 1 : 0);
+  for (let k = 0; k < passes; k++) m = dilateMask(m, w, h);
+  const out = new Uint8ClampedArray(N);
+  for (let i = 0; i < N; i++) if (m[i]) out[i] = 255;
+  for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) { const i = y * w + x; if (!m[i] && (m[i - 1] || m[i + 1] || m[i - w] || m[i + w])) out[i] = 90; }
+  // marco: la orilla de la foto cierra las zonas del borde
+  const fr = Math.max(2, Math.round(2 * sc));
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (x < fr || y < fr || x >= w - fr || y >= h - fr) out[y * w + x] = 255;
+  return out;
+}
+let photoIntent = null;     // 'sketch' cuando se eligió «Foto a dibujo»
+function startSketch() { closeSheet('#menuSheet'); closeSheet('#photoSheet'); photoIntent = 'sketch'; pickFile($('#fileGal')); }
+$('#mSketch').onclick = startSketch;
+$('#phSketch').onclick = startSketch;
+$('#adjModeSketch').onclick = () => setAdjMode('sketch');
+$('#adjSketchUse').onclick = () => useAdjusted();
+
+/* ---------- 3.9: Video del proceso: se guardan fotitos del dibujo mientras pintas y se arma un video corto (time-lapse) ---------- */
+// Solo se guardan imágenes del dibujo (como «Guardar imagen»): la foto de referencia nunca entra.
+const PROC_MAX = 110, PROC_KEEP = 12, PROC_GAP = 1400;
+const PROC_ON_KEY = 'colorear.grabarProceso';
+let procOn = true; try { procOn = localStorage.getItem(PROC_ON_KEY) !== '0'; } catch (_) {}
+let procId = newProcId(), procSeq = 0, procLastT = 0, procT = 0, procSig = '', procBusy = false, procCount = null;
+function newProcId() { return 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+let pdbP = null;
+function pdb() {
+  if (!pdbP) pdbP = new Promise((res, rej) => {
+    const r = indexedDB.open('colorear-proceso', 1);
+    r.onupgradeneeded = () => {
+      const d = r.result;
+      if (!d.objectStoreNames.contains('cuadros')) d.createObjectStore('cuadros', { keyPath: ['p', 'i'] });
+      if (!d.objectStoreNames.contains('procesos')) d.createObjectStore('procesos', { keyPath: 'p' });
+    };
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => { pdbP = null; rej(r.error); };
+  });
+  return pdbP;
+}
+async function ptx(stores, mode, fn) {
+  const d = await pdb();
+  return new Promise((res, rej) => {
+    const t = d.transaction(stores, mode); let out;
+    const r = fn(t); if (r && 'onsuccess' in r) r.onsuccess = () => { out = r.result; };
+    t.oncomplete = () => res(out); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error);
+  });
+}
+const procRange = (p) => IDBKeyRange.bound([p, 0], [p, Infinity]);
+function setProc(id) { procId = id || newProcId(); procSeq = 0; procSig = ''; procCount = null; }
+function procNew() { setProc(null); scheduleFrame(); }
+function scheduleFrame() {
+  if (!procOn) return;
+  clearTimeout(procT);
+  const wait = Math.max(500, PROC_GAP - (Date.now() - procLastT));
+  procT = setTimeout(captureFrame, wait);
+}
+function frameSig(cv) {
+  const t = mkCanvas(12, 16), c = ctx2d(t); c.drawImage(cv, 0, 0, 12, 16);
+  const d = c.getImageData(0, 0, 12, 16).data; let s = '';
+  for (let k = 0; k < d.length; k += 4) s += ((d[k] >> 3) << 10 | (d[k + 1] >> 3) << 5 | (d[k + 2] >> 3)).toString(36) + ',';
+  return s;
+}
+async function captureFrame(force) {
+  if ((!procOn && !force) || procBusy) return;
+  if (g || pinch) { scheduleFrame(); return; }       // no estorbar mientras se pinta
+  procBusy = true; procLastT = Date.now();
+  try {
+    const [fw, fh] = W > H ? [600, 450] : [450, 600];
+    const cv = composite(fw, fh), sig = frameSig(cv);
+    if (sig === procSig && !force) return;
+    procSig = sig;
+    const blob = await toBlob(cv, 'image/jpeg', 0.72); if (!blob) return;
+    const pid = procId;
+    if (!procSeq) { const last = await ptx('cuadros', 'readonly', (t) => t.objectStore('cuadros').getAllKeys(procRange(pid))); procSeq = last && last.length ? last[last.length - 1][1] + 1 : 0; procCount = last ? last.length : 0; }
+    const i = procSeq++;
+    await ptx(['cuadros', 'procesos'], 'readwrite', (t) => { t.objectStore('cuadros').put({ p: pid, i, blob, w: fw, h: fh }); t.objectStore('procesos').put({ p: pid, t: Date.now() }); });
+    procCount = (procCount || 0) + 1;
+    if (procCount > PROC_MAX) await thinFrames(pid);
+    if (i === 0) pruneProcs();
+  } catch (e) { console.warn('proceso', e); }
+  finally { procBusy = false; }
+}
+// Demasiados cuadros: se quita uno de cada dos (menos el primero y los últimos) para que no ocupe mucho
+async function thinFrames(pid) {
+  const keys = await ptx('cuadros', 'readonly', (t) => t.objectStore('cuadros').getAllKeys(procRange(pid)));
+  if (!keys || keys.length <= PROC_MAX) return;
+  const del = keys.filter((k, j) => j > 0 && j < keys.length - 6 && j % 2 === 1);
+  await ptx('cuadros', 'readwrite', (t) => { const s = t.objectStore('cuadros'); for (const k of del) s.delete(k); });
+  procCount = keys.length - del.length;
+}
+async function pruneProcs() {
+  try {
+    const all = (await ptx('procesos', 'readonly', (t) => t.objectStore('procesos').getAll())) || [];
+    if (all.length <= PROC_KEEP) return;
+    all.sort((a, b) => b.t - a.t);
+    for (const p of all.slice(PROC_KEEP)) if (p.p !== procId) await deleteProc(p.p);
+  } catch (e) { console.warn('proceso', e); }
+}
+async function deleteProc(pid) {
+  if (!pid) return;
+  await ptx(['cuadros', 'procesos'], 'readwrite', (t) => { t.objectStore('cuadros').delete(procRange(pid)); t.objectStore('procesos').delete(pid); });
+  if (pid === procId) { procSeq = 0; procCount = 0; procSig = ''; }
+}
+async function procFrames(pid = procId) { try { return (await ptx('cuadros', 'readonly', (t) => t.objectStore('cuadros').getAll(procRange(pid)))) || []; } catch (_) { return []; } }
+function videoMime() {
+  if (!window.MediaRecorder || !MediaRecorder.isTypeSupported) return '';
+  for (const m of ['video/mp4;codecs=avc1.42E01E', 'video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm']) if (MediaRecorder.isTypeSupported(m)) return m;
+  return '';
+}
+let vidLogo = null;
+function loadLogo() { if (vidLogo) return Promise.resolve(vidLogo); return new Promise((res) => { const i = new Image(); i.onload = () => res((vidLogo = i)); i.onerror = () => res(null); i.src = 'logo-badge-192.png'; }); }
+function roundRect(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
+// Arma el video (vertical 720×1280): el proceso acelerado y al final el dibujo terminado unos segundos, con la marca «ByBroken Coloring»
+async function makeProcessVideo(opts = {}) {
+  const mime = videoMime(); if (!mime) throw new Error('nomr');
+  cancelGesture(); flattenObjs();
+  await captureFrame(true);
+  const recs = await procFrames(procId);
+  const imgs = [];
+  for (const r of recs) { try { imgs.push(await createImageBitmap(r.blob)); } catch (_) {} }
+  const final = composite();
+  const logo = await loadLogo();
+  const OW = 720, OH = 1280, cv = opts.canvas || mkCanvas(OW, OH);
+  cv.width = OW; cv.height = OH;
+  const c = cv.getContext('2d');
+  const nF = Math.max(1, imgs.length);
+  const prog = opts.seconds ? opts.seconds * 0.7 : clamp(nF * 0.16, 7, 15), hold = opts.seconds ? opts.seconds * 0.3 : 3.2, total = prog + hold;
+  const aw = W > H ? 660 : 640, ah = aw * H / W, ax = (OW - aw) / 2, ay = 190 + (900 - ah) / 2;
+  const title = opts.title || tt('vid.title');
+  const draw = (t) => {
+    const bg = c.createLinearGradient(0, 0, 0, OH); bg.addColorStop(0, '#FFF4E8'); bg.addColorStop(1, '#EFE6FA');
+    c.fillStyle = bg; c.fillRect(0, 0, OW, OH);
+    c.fillStyle = '#3B2A63'; c.font = '800 46px system-ui, -apple-system, "Segoe UI", sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
+    c.fillText(title, OW / 2, 110, OW - 60);
+    c.save(); c.shadowColor = 'rgba(60,30,90,.25)'; c.shadowBlur = 30; c.shadowOffsetY = 8;
+    roundRect(c, ax - 10, ay - 10, aw + 20, ah + 20, 22); c.fillStyle = '#fff'; c.fill(); c.restore();
+    c.save(); roundRect(c, ax, ay, aw, ah, 14); c.clip();
+    c.imageSmoothingQuality = 'high';
+    if (t < prog && imgs.length) {
+      const f = clamp(t / prog, 0, 1) * (imgs.length - 1), i0 = Math.floor(f), fr = f - i0;
+      c.drawImage(imgs[i0], ax, ay, aw, ah);
+      if (fr > 0.02 && imgs[i0 + 1]) { c.globalAlpha = fr; c.drawImage(imgs[i0 + 1], ax, ay, aw, ah); c.globalAlpha = 1; }
+    } else c.drawImage(final, ax, ay, aw, ah);
+    c.restore();
+    // barrita de avance
+    const pw = aw * clamp(t / prog, 0, 1);
+    roundRect(c, ax, ay + ah + 34, aw, 10, 5); c.fillStyle = 'rgba(88,86,214,.18)'; c.fill();
+    if (pw > 10) { roundRect(c, ax, ay + ah + 34, pw, 10, 5); c.fillStyle = '#5856D6'; c.fill(); }
+    if (t >= prog) { c.fillStyle = '#3B2A63'; c.font = '700 34px system-ui, -apple-system, "Segoe UI", sans-serif'; c.fillText('✨ ' + tt('vid.done') + ' ✨', OW / 2, ay + ah + 96, OW - 60); }
+    // marca de agua pequeña
+    c.globalAlpha = 0.85;
+    if (logo) c.drawImage(logo, OW / 2 - 128, OH - 92, 44, 44);
+    c.fillStyle = '#4A3A6A'; c.font = '700 26px system-ui, -apple-system, "Segoe UI", sans-serif'; c.textAlign = 'left';
+    c.fillText('ByBroken Coloring', OW / 2 - 76, OH - 70); c.globalAlpha = 1; c.textAlign = 'center';
+  };
+  draw(0);
+  const stream = cv.captureStream(30), rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 5000000 });
+  const chunks = [];
+  rec.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
+  const stopped = new Promise((res) => { rec.onstop = res; });
+  rec.start(500);
+  const t0 = performance.now();
+  await new Promise((res) => {
+    const tick = () => {
+      const t = (performance.now() - t0) / 1000;
+      draw(Math.min(t, total));
+      if (opts.onProgress) opts.onProgress(Math.min(1, t / total));
+      if (t >= total) { res(); return; }
+      setTimeout(tick, 1000 / 30);
+    };
+    tick();
+  });
+  await new Promise((r) => setTimeout(r, 120));
+  rec.stop(); await stopped;
+  stream.getTracks().forEach((tr) => tr.stop());
+  imgs.forEach((b) => b.close && b.close());
+  const type = mime.split(';')[0];
+  return { blob: new Blob(chunks, { type }), type, ext: type === 'video/mp4' ? 'mp4' : 'webm', frames: imgs.length, seconds: total };
+}
+let vidOut = null, vidUrl = null, vidBusy = false;
+async function openVideoSheet() {
+  closeSheet('#menuSheet'); hidePanel();
+  openSheet('#videoSheet');
+  $('#vidAuto').checked = procOn;
+  const n = (await procFrames(procId)).length;
+  $('#vidInfo').textContent = n ? tt('vid.count', { n }) : tt('vid.none');
+  if (!videoMime()) { $('#vidInfo').textContent = tt('vid.nosupport'); $('#vidMake').disabled = true; }
+}
+async function vidMake() {
+  if (vidBusy) return;
+  vidBusy = true; $('#vidMake').disabled = true; $('#vidActs').hidden = true;
+  const vcv = $('#vidCv'), out = $('#vidOut'); out.hidden = true; out.pause && out.pause(); vcv.hidden = false;
+  const pr = $('#vidProg'); pr.hidden = false;
+  try {
+    vidOut = await makeProcessVideo({ canvas: vcv, onProgress: (f) => { pr.querySelector('i').style.width = Math.round(f * 100) + '%'; pr.querySelector('span').textContent = tt('vid.making', { n: Math.round(f * 100) }); } });
+    if (vidUrl) URL.revokeObjectURL(vidUrl);
+    vidUrl = URL.createObjectURL(vidOut.blob);
+    out.src = vidUrl; out.hidden = false; vcv.hidden = true; $('#vidActs').hidden = false;
+    try { out.play().catch(() => {}); } catch (_) {}
+  } catch (e) { console.warn('video', e); toast(tt('vid.fail'), 3000); vcv.hidden = true; }
+  pr.hidden = true; vidBusy = false; $('#vidMake').disabled = false;
+}
+function vidName() { return `${tt('vid.file')}-${stamp()}.${vidOut ? vidOut.ext : 'webm'}`; }
+async function vidShare() {
+  if (!vidOut) return;
+  try {
+    const file = new File([vidOut.blob], vidName(), { type: vidOut.type });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: tt('vid.title') }); return; }
+  } catch (e) { if (e && e.name === 'AbortError') return; }
+  vidDownload();
+}
+function vidDownload() {
+  if (!vidOut) return;
+  const a = document.createElement('a'); a.href = vidUrl; a.download = vidName(); document.body.append(a); a.click(); a.remove();
+  toast(tt('vid.saved'));
+}
+$('#mVideo').onclick = openVideoSheet;
+$('#moreVideo').onclick = openVideoSheet;
+$('#vidMake').onclick = vidMake;
+$('#vidShare').onclick = vidShare;
+$('#vidSave').onclick = vidDownload;
+$('#vidAuto').addEventListener('change', (e) => { procOn = e.target.checked; try { localStorage.setItem(PROC_ON_KEY, procOn ? '1' : '0'); } catch (_) {} if (procOn) scheduleFrame(); });
+$('#vidMore').onclick = () => { const o = $('#vidAdv').hidden; $('#vidAdv').hidden = !o; $('#vidMore').setAttribute('aria-expanded', String(o)); };
+$('#vidClear').onclick = async () => {
+  if (!(await confirmBox(tt('vid.clear.q'), tt('obj.del')))) return;
+  await deleteProc(procId); $('#vidInfo').textContent = tt('vid.none'); toast(tt('vid.cleared'));
+};
+
+/* ---------- 3.9: Reto del día: una plantilla, 3 a 5 colores y una idea (sale igual para todos ese día; funciona sin internet) ---------- */
+const RETO_KEY = 'colorear.reto', RETO_PROMPTS = 12;
+function dayStr(d = new Date()) { const p = (n) => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`; }
+function hashStr(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } h ^= h >>> 15; h = Math.imul(h, 2246822507); h ^= h >>> 13; return h >>> 0; }
+function retoFor(ds) {
+  const h = hashStr('reto:' + ds), h2 = hashStr(ds + ':colores');
+  const pool = TEMPLATES.filter((t) => t.id !== 'bandera');
+  const tpl = pool[h % pool.length];
+  const pals = PALETTES.filter((p) => !p.dyn && p.id !== 'piel');
+  const pal = pals[h2 % pals.length];
+  const k = 3 + ((h2 >>> 8) % 3), len = pal.c.length, start = (h2 >>> 12) % len, step = [1, 3, 5, 7][(h2 >>> 20) % 4];
+  const colors = [];
+  for (let i = 0; colors.length < k && i < len * 2; i++) { const c = pal.c[(start + i * step) % len]; if (!colors.includes(c) && c !== '#FFFFFF') colors.push(c); }
+  return { date: ds, tpl: tpl.id, pal: pal.id, colors, prompt: 'reto.p.' + ((h >>> 16) % RETO_PROMPTS) };
+}
+function retoData() { try { const s = JSON.parse(localStorage.getItem(RETO_KEY) || 'null'); if (s && Array.isArray(s.done)) return s; } catch (_) {} return { done: [] }; }
+function retoSave(s) { try { localStorage.setItem(RETO_KEY, JSON.stringify(s)); } catch (_) {} }
+function dayShift(ds, n) { const [y, m, d] = ds.split('-').map(Number), t = new Date(y, m - 1, d + n); return dayStr(t); }
+function retoStreak(s = retoData(), today = dayStr()) {
+  const set = new Set(s.done); let day = set.has(today) ? today : dayShift(today, -1), n = 0;
+  while (set.has(day)) { n++; day = dayShift(day, -1); }
+  return n;
+}
+function renderReto() {
+  const r = retoFor(dayStr()), s = retoData(), done = s.done.includes(r.date), started = s.started === r.date;
+  const t = TEMPLATES.find((x) => x.id === r.tpl);
+  const cv = $('#retoThumb'), c = cv.getContext('2d'); c.fillStyle = '#fff'; c.fillRect(0, 0, cv.width, cv.height); if (t) renderTemplate(c, t, cv.width, cv.height);
+  $('#retoPrompt').textContent = tt(r.prompt, { name: t ? t.name : '' });
+  $('#retoName').textContent = t ? t.name : '';
+  const cols = $('#retoCols'); cols.textContent = '';
+  for (const col of r.colors) { const i = document.createElement('i'); i.style.background = col; i.title = COLOR_NAME[col] || col; cols.append(i); }
+  const n = retoStreak(s);
+  $('#retoStreak').textContent = n ? tt('reto.streak', { n }) : '';
+  $('#retoStreak').hidden = !n;
+  $('#retoStart').textContent = done ? tt('reto.again') : started ? tt('reto.continue') : tt('reto.start');
+  $('#retoDone').hidden = done || !started;
+  $('#retoCard').classList.toggle('done', done);
+  $('#retoOk').hidden = !done;
+}
+function retoStart(ds = dayStr()) {
+  const r = retoFor(ds), s = retoData();
+  closeSheet('#menuSheet'); hidePanel();
+  const cont = s.started === r.date && s.proc === procId && !s.done.includes(r.date);
+  if (!cont) loadTemplate(r.tpl);          // se puede deshacer, como al elegir cualquier plantilla
+  s.started = r.date; s.proc = procId; retoSave(s);
+  applyPalette({ id: 'reto', name: tt('reto.title'), c: r.colors }, { quiet: true });
+  setMode('color'); setColorTool('fill');
+  toast('🎯 ' + tt(r.prompt, { name: (TEMPLATES.find((x) => x.id === r.tpl) || {}).name || '' }), 4200);
+  renderReto();
+  return r;
+}
+function retoComplete(ds = dayStr()) {
+  const s = retoData();
+  if (!s.done.includes(ds)) s.done.push(ds);
+  s.done = s.done.slice(-120); retoSave(s);
+  const n = retoStreak(s);
+  renderReto();
+  toast('🏆 ' + tt('reto.done.toast', { n }), 3600);
+  return n;
+}
+$('#retoStart').onclick = () => retoStart();
+$('#retoDone').onclick = () => retoComplete();
+$('#moreReto').onclick = () => { hidePanel(); renderReto(); openSheet('#menuSheet'); };
+$('#btnMenu').addEventListener('click', renderReto);
+$('#moreMenu').addEventListener('click', renderReto);
+
+
+$('#adjDetail').addEventListener('input', (e) => { adj.detail = +e.target.value; processPreview(); });
+for (const b of $$('#drawArt [data-tool="wcolor"], #drawArt [data-tool="spray"], #colorArt [data-ctool="wcolor"], #colorArt [data-ctool="spray"]')) b.addEventListener('click', () => {
+  const t = b.dataset.tool || b.dataset.ctool;
+  if (currentTool() === t && !state[t + 'Seen']) { state[t + 'Seen'] = true; renderNewToolPops(); toast(tt(t === 'wcolor' ? 'wc.hint' : 'sp.hint'), 3400); }
+});
+function symSeg(gg, p0, p1, p2) { for (let k = 1; k < gg.T.length; k++) { const T = gg.T[k]; strokeSeg(gg, T(p0), T(p1), T(p2)); } }
+// Mezcladores con simetría: un «pincel» más por cada reflejo (comparten el rectángulo para un solo «Deshacer»)
+function symSubs(gg, p, tool, startFn) {
+  const Ts = symFor(tool); if (!Ts || Ts.length < 2) return;
+  gg.subs = Ts.slice(1).map((T) => { const s = Object.assign({}, gg, { box: gg.box, T, subs: null }); startFn(s, T(p)); return s; });
+}
+
 /* ---------- inicio ---------- */
 buildTemplateGrid();
+buildQuickColors(); renderSymGuide(); renderReto();
 refreshColorUI(); updateGradUI();
 setAddTab('stk');
 layout();
@@ -6117,6 +7280,9 @@ window.__colorear = {
   AG, agApply, agAddStop, agDelStop, agSelect, agSetPreset, renderAg, setGelKind, setDrawTool, tooth, hasConic,
   setMix(o) { if (o.start) state.mixStart = o.start; if (o.str != null) state.mixStr = clamp(+o.str, 0.1, 1); if (o.tex != null) state.mixTex = clamp(+o.tex, 0, 1); if (o.lines != null) state.mixLines[state.mode === 'draw' ? 'draw' : 'color'] = !!o.lines; renderMix(); refreshColorUI(); },
   renderMix, showMixTip, get mixAdvOpen() { return mixAdvOpen; },
+  SYM, setSym, symTransforms, floodFillSym, WC, SPR, newToolStyle, PALETTES, applyPalette, resetPalette, monoPalette, saveMyPalette, get quickPal() { return quickPal; }, get myPals() { return myPals; },
+  sketchLineArt, openAdjust, setAdjMode, useAdjusted, makeProcessVideo, captureFrame, procFrames, deleteProc, openVideoSheet, videoMime, get procId() { return procId; }, get procOn() { return procOn; },
+  retoFor, retoStart, retoComplete, retoStreak, renderReto, dayStr, TPL_NEW, tplIsNew, markTplSeen, buildTemplateGrid,
 };
 </script>
 </body>
