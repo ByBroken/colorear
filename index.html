@@ -739,6 +739,21 @@ body.ui-hidden.obj-mode #miniBar{display:none}
 #symBtn:active,#palBtn:active{transform:scale(.98)}
 #miniBar .mb#mbSym.on{background:#FF2D92;color:#fff}
 #miniBar.no-sym #mbSym{display:none}
+/* 3.10: No salirme de las líneas (interruptor para pintar con el dedo) */
+#flRow{margin-bottom:2px}
+#flBtn{width:100%;display:flex;align-items:center;gap:10px;padding:6px 12px;min-height:52px;text-align:left;border:0;border-radius:14px;background:#eef9f1;font-size:14px;font-weight:700;color:var(--ink)}
+#flBtn svg{width:26px;height:26px;flex:0 0 auto;color:#1E9E4A}
+#flBtn>span{flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
+#flBtn small{display:block;font-weight:500;font-size:12px;color:var(--muted)}
+#flBtn .flsw{flex:0 0 auto;position:relative;width:44px;height:26px;border-radius:13px;background:#c9c4cf;transition:background .15s}
+#flBtn .flsw::after{content:'';position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .15s}
+#flBtn.on{box-shadow:inset 0 0 0 2px #34C759}
+#flBtn.on .flsw{background:#34C759}
+#flBtn.on .flsw::after{transform:translateX(18px)}
+#flBtn:active{transform:scale(.98)}
+#miniBar .mb#mbFL.on{background:#34C759;color:#fff}
+#miniBar.no-fl #mbFL{display:none}
+@media (max-height:700px){#flBtn,#refBtn,#symBtn{min-height:44px;padding-top:3px;padding-bottom:3px}}   /* teléfonos bajitos: el panel no pasa del 60 % */
 #symPop,#palPop,#wcPop,#spPop{width:340px;overflow-y:auto;overscroll-behavior:contain}
 #symPop .gmore,#wcPop .gmore,#spPop .gmore{width:100%}
 #symAdv[hidden],#wcAdv[hidden],#spAdv[hidden],#vidAdv[hidden],#palCur[hidden],#palMineLbl[hidden]{display:none!important}
@@ -864,6 +879,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <symbol id="i-cpencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M5.2 15.6L15.8 5l3.2 3.2L8.4 18.8z"/><path d="M5.2 15.6L3.6 20.4l4.8-1.6"/><path d="M3.6 20.4l1.9-.6-1.3-1.3z" fill="currentColor"/><path d="M13.6 7.2l3.2 3.2"/><path d="M14 21l1.2-.6M16.6 20.4l1.4-.5M19.4 19.8l1.2-.4" stroke-width="1.6"/></symbol>
     <symbol id="i-gel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M7.5 16.5L16.3 7.7l2.4 2.4-8.8 8.8z"/><path d="M16.3 7.7l1.6-1.6a1.7 1.7 0 012.4 2.4l-1.6 1.6"/><path d="M7.5 16.5l-1.6 3.2 3.2-1.6"/><circle cx="4.6" cy="20.3" r="1.3" fill="currentColor"/><path d="M10.2 14.6l3.6-3.6" stroke-width="1.2" stroke-opacity=".55"/><path d="M5 5.5v3M3.5 7h3" stroke-width="1.6"/></symbol>
     <symbol id="i-mixb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M13.6 10.4l6.3-6.3a1.5 1.5 0 012.1 2.1l-6.3 6.3"/><path d="M13.6 10.4c-2.3-.7-4.3.5-4.7 2.6-.3 1.7-1.1 2.8-2.9 3.4 3 1.7 7.2 1 8.7-1.5.8-1.3.6-2.8-1.1-4.5z"/><circle cx="4.6" cy="5.6" r="2.5"/><circle cx="8.6" cy="4.4" r="2.5"/></symbol>
+    <symbol id="i-fl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><rect x="2.8" y="2.8" width="18.4" height="18.4" rx="5" stroke-width="2.6"/><path d="M6.8 15.8c1.6-3.6 2.8-5.4 4-4.6s-1.4 4.4.6 4.6 2.6-5.4 5.8-7.2"/></symbol>
     <symbol id="i-sym" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M12 2.5v19" stroke-dasharray="2 2.6"/><path d="M9.5 7.5C6.5 4.5 3 5.5 3 9s3 4.5 6.5 3.5M14.5 7.5c3-3 6.5-2 6.5 1.5s-3 4.5-6.5 3.5M9.5 13.5c-2.6 1-4.2 3-3.3 5s3.3.8 3.3-1.4M14.5 13.5c2.6 1 4.2 3 3.3 5s-3.3.8-3.3-1.4"/></symbol>
     <symbol id="i-wcolor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M20 3.5l-8.3 8.3"/><path d="M10.7 10.8c-2.4 0-3.8 1.5-3.8 3.6 0 1.4-.9 2.3-1.9 2.6.9.8 2.5 1.4 4.1 1.4 2.8 0 4.5-1.7 4.5-4.3z"/><circle cx="6" cy="6" r="3.2" fill="currentColor" fill-opacity=".3" stroke-width="1.4"/><path d="M17.5 14.5s2.6 2.9 2.6 4.6a2.6 2.6 0 01-5.2 0c0-1.7 2.6-4.6 2.6-4.6z" fill="currentColor" fill-opacity=".35" stroke-width="1.6"/></symbol>
     <symbol id="i-spray" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><rect x="5" y="9.5" width="9" height="11.5" rx="1.8"/><path d="M7.5 9.5V7h4v2.5M8.5 7V4.5h2"/><path d="M5 13.5h9" stroke-width="1.5"/><g fill="currentColor" stroke="none"><circle cx="17.5" cy="4.5" r="1"/><circle cx="20.5" cy="7" r="1"/><circle cx="17.8" cy="8.6" r=".9"/><circle cx="21" cy="3" r=".8"/><circle cx="21.2" cy="10.6" r=".8"/><circle cx="18.6" cy="11.6" r=".7"/></g></symbol>
@@ -938,6 +954,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <button class="mb" id="mbUndo" title="Deshacer" aria-label="Deshacer" disabled><svg><use href="#i-undo"/></svg></button>
     <button class="mb" id="mbRedo" title="Rehacer" aria-label="Rehacer" disabled><svg><use href="#i-redo"/></svg></button>
     <button class="mb" id="mbPick" title="Copiar color: toca aquí y luego un color del dibujo" aria-label="Copiar color" aria-pressed="false"><svg><use href="#i-picker"/></svg></button>
+    <button class="mb" id="mbFL" title="No salirme de las líneas: lo que pintes con el dedo no se sale" aria-label="No salirme de las líneas" aria-pressed="false"><svg><use href="#i-fl"/></svg></button>
     <button class="mb" id="mbSym" title="Simetría: lo que pintas se repite como en un espejo" aria-label="Simetría" aria-pressed="false" aria-haspopup="dialog"><svg><use href="#i-sym"/></svg></button>
     <button class="mb" id="mbRef" title="Foto de referencia" aria-label="Foto de referencia" aria-pressed="false" aria-haspopup="dialog"><svg><use href="#i-image"/></svg></button>
     <button class="mb" id="showUI" title="Mostrar botones otra vez (todas las opciones)" aria-label="Mostrar botones"><svg><use href="#i-shrink"/></svg></button>
@@ -949,6 +966,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
 <footer class="tools" id="panel" role="dialog" aria-label="Opciones">
   <div class="grp" data-grp="tools">
     <p class="gh">Herramientas</p>
+  <div class="row" id="flRow"><button id="flBtn" title="No salirme de las líneas: lo que pintes con el dedo se queda dentro de la parte donde empiezas, aunque el dedo pase por encima de las líneas" aria-label="No salirme de las líneas" aria-pressed="false"><svg><use href="#i-fl"/></svg><span>No salirme de las líneas<small>para pintar con el dedo</small></span><i class="flsw" aria-hidden="true"></i></button></div>
   <div class="row only-draw" id="drawTools">
     <button class="tool on" data-tool="pen" title="Lápiz: dibuja líneas a mano con el color elegido"><svg><use href="#i-pen"/></svg>Lápiz</button>
     <button class="tool has-pop" id="markBtn" data-tool="marker" data-pop="markPop" aria-label="Marcador (toca otra vez para elegir el tipo)" title="Marcador: pinta un trazo de color. Toca otra vez para elegir liso, acrílico, de agua o de alcohol"><svg><use href="#i-marker"/></svg>Marcador</button>
@@ -1508,7 +1526,7 @@ setDocLang(); translateStatic();
 /* Colorear v3.3: crea dibujos para colorear, sube fotos de tus libros y coloréalos
    (lápiz y marcador de colores, crayón, marcadores acrílico / de agua / de alcohol, degradados, difuminar, copiar color,
    capas, ocultar botones, punta Detalle y rueda de colores con opacidad) */
-const APP_VERSION = '3.9.1';
+const APP_VERSION = '3.10';
 const PORTRAIT = [1200, 1600], LANDSCAPE = [1600, 1200];
 let W = 1200, H = 1600;                       // tamaño de la hoja (px internos); vertical u horizontal
 /* Grosores en píxeles de la hoja (1200×1600). "Súper fina" (xs) y "Detalle" (xxs) no son fijas: se calculan
@@ -1927,7 +1945,7 @@ function onDown(e) {
     startPinch(keepObj);
   }
 }
-function startSingle(e) {
+function startSingle0(e) {
   const p = toDoc(e);
   const base = { id: e.pointerId, t0: performance.now(), sx: e.clientX, sy: e.clientY, travel: 0, start: p, last: p, mid: p };
   if (e.button === 1 || spaceDown || state.panTool) {
@@ -2025,6 +2043,7 @@ function onMove(e) {
       g.last = p;
     }
   }
+  if (g.fl) flMove(g, evs.map(toDoc));   // 3.10: No salirme de las líneas
   if (g.kind === 'shape') {
     pctx.clearRect(0, 0, W, H);
     drawShape(pctx, g.tool, g.start, g.last, sizeLW('draw', state.drawSize), state.drawColor, state.drawAlpha);
@@ -2045,6 +2064,7 @@ function endSingle(cancelled) {
   const cur = g; g = null;
   stage.classList.remove('panning');
   if (!cur) return;
+  if (!cancelled) flTipMaybe(cur);   // 3.10
   if (cur.kind === 'pick') {
     if (!cancelled) pickColorAt(cur.travel < 14 ? cur.start : cur.last);
   } else if (cur.kind === 'fill') {
@@ -2055,6 +2075,7 @@ function endSingle(cancelled) {
   } else if (cur.kind === 'agrad') {
     agEnd(cur, cancelled);
   } else if (cur.kind === 'blend') {
+    flEnd(cur);
     commit([capturePart(cur.layer || 'color', rectOf(cur.box))]);
   } else if (cur.kind === 'nt') {
     newToolEnd(cur);
@@ -2062,6 +2083,7 @@ function endSingle(cancelled) {
     strokeSeg(cur, cur.mid, cur.last, cur.last);
     if (cur.T) symSeg(cur, cur.mid, cur.last, cur.last);
     strokeFinish(cur);
+    flEnd(cur);
     commit([capturePart(cur.st.layer, rectOf(cur.box))]);
   } else if (cur.kind === 'shape') {
     pctx.clearRect(0, 0, W, H);
@@ -2098,6 +2120,7 @@ function abortSingle() {
       if (r) { const L = layers[layer]; L.ctx.putImageData(L.bctx.getImageData(r.x, r.y, r.w, r.h), r.x, r.y); }
     } else {
       if (cur.kind === 'stroke') { strokeSeg(cur, cur.mid, cur.last, cur.last); if (cur.T) symSeg(cur, cur.mid, cur.last, cur.last); strokeFinish(cur); }
+      flEnd(cur);
       commit([capturePart(layer, rectOf(cur.box))]);
     }
   } else if (cur.kind === 'shape' || cur.kind === 'grad') {
@@ -2785,10 +2808,10 @@ function hexToRgb(h) { h = h.replace('#', ''); if (h.length === 3) h = h.split('
 const LINE_T = 110;   // alfa desde el cual un píxel del contorno cuenta como "pared"
 const DILATE = 2;     // píxeles extra bajo el borde suavizado (evita halos blancos)
 // Zona cerrada por las líneas alrededor de (fx, fy): máscara + rectángulo que la contiene
-function regionMask(fx, fy) {
+function regionMask(fx, fy, laIn) {
   let sx = Math.round(fx), sy = Math.round(fy);
   if (sx < 0 || sy < 0 || sx >= W || sy >= H) return null;
-  const la = layers.line.ctx.getImageData(0, 0, W, H).data;
+  const la = laIn || layers.line.ctx.getImageData(0, 0, W, H).data;
   const wall = (i) => la[i * 4 + 3] >= LINE_T;
   if (wall(sy * W + sx)) {                  // tocó encima de una línea: busca un hueco cercano
     let found = false;
@@ -3747,6 +3770,7 @@ function setMode(m) {
   $('#tabColor').classList.toggle('on', m === 'color');
   refreshColorUI();
   renderMix();   // 3.8: «Respetar las líneas» es distinto en Dibujar y en Colorear
+  try { renderFL(); } catch (_) {}    // 3.10: «No salirme de las líneas» se guarda aparte en Dibujar y en Colorear
   try { renderNewToolPops(); } catch (_) {}
   updateCursor();
   layout();
@@ -4660,7 +4684,7 @@ function placeMini() {
   const bar = $('#miniBar'); if (!state.uiHidden) return;
   const horiz = MINI.edge === 'top' || MINI.edge === 'bottom';
   bar.classList.toggle('h', horiz); bar.classList.toggle('folded', MINI.folded); bar.dataset.edge = MINI.edge;
-  bar.classList.remove('no-redo', 'wrap', 'no-ref', 'no-sym'); bar.style.maxWidth = bar.style.maxHeight = '';
+  bar.classList.remove('no-redo', 'wrap', 'no-ref', 'no-sym', 'no-fl'); bar.style.maxWidth = bar.style.maxHeight = '';
   const ins = safeInsets(), M = 6, vw = innerWidth, vh = innerHeight;
   const avail = horiz ? vw - ins.l - ins.r - 2 * M : vh - ins.t - ins.b - 2 * M;
   const len = () => (horiz ? bar.offsetWidth : bar.offsetHeight);
@@ -4668,6 +4692,8 @@ function placeMini() {
   if (!document.body.classList.contains('sym-on') && (Math.min(vw, vh) < 360 || len() > avail)) bar.classList.add('no-sym');
   // 3.7: Foto de referencia: si todavía no hay foto y falta espacio (o el teléfono es pequeño), su botón se esconde primero
   if (!document.body.classList.contains('ref-has') && (Math.min(vw, vh) < 360 || len() > avail)) bar.classList.add('no-ref');
+  // 3.10: No salirme de las líneas: si está apagado y aún falta espacio, se esconde después de Simetría y Foto
+  if (!document.body.classList.contains('fl-on') && len() > avail) bar.classList.add('no-fl');
   if (len() > avail) bar.classList.add('no-redo');         // si no cabe, primero se quita Rehacer
   if (len() > avail) { bar.classList.add('wrap'); bar.style[horiz ? 'maxWidth' : 'maxHeight'] = avail + 'px'; }   // y si aún no cabe, en dos filas
   const w = bar.offsetWidth, h = bar.offsetHeight;
@@ -6207,6 +6233,7 @@ function applyLang() {
   if ($('#pickerDlg').classList.contains('show')) pkUpdate();
   if (openPop && openPop.pop.id === 'mToolPop') buildMiniTools();
   buildQuickColors(); renderSymGuide(); renderPalPop(); renderReto();   // 3.9
+  try { renderFL(); } catch (_) {}   // 3.10
   if (openGrp) $('#panel').setAttribute('aria-label', { tools: tt('tab.tools'), colors: tt('tab.colors'), size: tt('size.title'), more: tt('more.options') }[openGrp]);
   if ($('#hint').classList.contains('show')) { const inst = $('#hintInstall').style.display; if (hintKind === 'news') showNews(); else if (hintKind === 'mixtip') showMixTip(); else if (hintKind === 'install') showHint(); $('#hintInstall').style.display = inst; }
   if ($('#gallerySheet').classList.contains('show')) openGallery();
@@ -6652,14 +6679,15 @@ function newToolStyle(tool) {
 }
 // Máscara de «respetar las líneas»: las zonas cerradas donde empieza el trazo (y sus reflejos)
 let lmCv = null, lmCtx = null;
-function lineMaskFor(pts) {
+function lineMaskFor(pts, laIn) {
   if (!lmCv || lmCv.width !== W || lmCv.height !== H) { lmCv = mkCanvas(); lmCtx = ctx2d(lmCv); }
   lmCtx.clearRect(0, 0, W, H);
+  const la = laIn || layers.line.ctx.getImageData(0, 0, W, H).data;   // se lee una sola vez (con simetría hay varias zonas)
   const u = new Uint8Array(W * H); let x1 = W, y1 = H, x2 = -1, y2 = -1;
   for (const p of pts) {
     const px = Math.round(p.x), py = Math.round(p.y);
     if (px < 0 || py < 0 || px >= W || py >= H || u[py * W + px]) continue;
-    const reg = regionMask(p.x, p.y); if (!reg) continue;
+    const reg = regionMask(p.x, p.y, la); if (!reg) continue;
     const m = reg.mask;
     for (let y = reg.minY; y <= reg.maxY; y++) for (let x = reg.minX, i = y * W + reg.minX; x <= reg.maxX; x++, i++) if (m[i]) u[i] = 1;
     x1 = Math.min(x1, reg.minX); y1 = Math.min(y1, reg.minY); x2 = Math.max(x2, reg.maxX); y2 = Math.max(y2, reg.maxY);
@@ -6668,7 +6696,7 @@ function lineMaskFor(pts) {
   const w = x2 - x1 + 1, h = y2 - y1 + 1, im = lmCtx.createImageData(w, h), d = im.data;
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (u[(y + y1) * W + x + x1]) d[(y * w + x) * 4 + 3] = 255;
   lmCtx.putImageData(im, x1, y1);
-  return { cv: lmCv, x1, y1, x2: x2 + 1, y2: y2 + 1 };
+  return { cv: lmCv, x1, y1, x2: x2 + 1, y2: y2 + 1, u };
 }
 function applyLineMask(st, r) {
   if (!st.mask || !r) return;
@@ -6693,7 +6721,7 @@ function newToolShow(st, x1, y1, x2, y2) {
 }
 function newToolBegin(gg, p) {
   const st = gg.st; bufBegin();
-  st.mask = st.lines ? lineMaskFor((gg.T || [(q) => q]).map((T) => T(p))) : null;
+  st.mask = flPending ? flPending.lm : st.lines ? lineMaskFor((gg.T || [(q) => q]).map((T) => T(p))) : null;   // 3.10: con «No salirme de las líneas» usa esa zona
   if (st.buf === 'spray') { gg.spLast = performance.now(); sprayEmit(gg, p, p, 60); gg.spIv = setInterval(() => { if (g === gg) { const t = performance.now(); sprayEmit(gg, gg.last, gg.last, t - gg.spLast); gg.spLast = t; } }, 45); }
   else wcSeg(gg, p, p, { x: p.x + 0.01, y: p.y });
 }
@@ -6744,6 +6772,7 @@ function newToolMove(gg, p) {
 function newToolEnd(gg) {
   if (gg.spIv) { clearInterval(gg.spIv); gg.spIv = 0; }
   if (gg.st.buf === 'wc') { wcSeg(gg, gg.mid, gg.last, gg.last); wcFinish(gg); }
+  flEnd(gg);
   commit([capturePart(gg.st.layer, rectOf(gg.box))]);
 }
 // Al soltar la acuarela: se «seca» (orilla más oscura, manchas de agua, grano del papel, se mezcla con lo que estaba mojado debajo)
@@ -7263,9 +7292,140 @@ function symSubs(gg, p, tool, startFn) {
   gg.subs = Ts.slice(1).map((T) => { const s = Object.assign({}, gg, { box: gg.box, T, subs: null }); startFn(s, T(p)); return s; });
 }
 
+/* ---------- 3.10: «No salirme de las líneas» (para quien pinta con el dedo, sin lápiz óptico) ----------
+   Prendido: todo lo que se pinta a mano (crayón, marcadores, lápices, gel, acuarela, spray, mezcladores, difuminar y borrar color)
+   se queda dentro de la zona cerrada donde empezó el trazo, aunque el dedo se pase por encima de las líneas.
+   La zona se calcula UNA vez al poner el dedo (el mismo relleno del bote: entra un poquito debajo de la línea, sin bordes blancos)
+   y, mientras se pinta, todo lo que cae fuera vuelve a quedar como estaba antes del trazo. Con simetría, cada reflejo usa su zona.
+   Apagado: no cambia nada. Se guarda aparte en Colorear y en Dibujar (en los dos empieza apagado). */
+const FL_KEY = 'colorear.noSalirme', FL_TIP_KEY = 'colorear.noSalirmeTip';
+const FL = { color: false, draw: false, lastMs: 0 };
+try { const s = JSON.parse(localStorage.getItem(FL_KEY) || 'null'); if (s) { FL.color = !!s.color; FL.draw = !!s.draw; } } catch (_) {}
+function saveFL() { try { localStorage.setItem(FL_KEY, JSON.stringify({ color: FL.color, draw: FL.draw })); } catch (_) {} }
+const flOn = () => !!FL[state.mode === 'draw' ? 'draw' : 'color'];
+const FL_DRAW_TOOLS = ['pen', 'marker', 'cpencil', 'gel', 'mixb', 'wcolor', 'spray'];               // el Borrador de líneas no (borra líneas)
+const FL_COLOR_TOOLS = ['cpencil', 'gel', 'mixb', 'wcolor', 'spray', 'blend', 'blender0', 'cerase'];
+function flToolOK(tool) { return state.mode === 'draw' ? FL_DRAW_TOOLS.includes(tool) : (isBrush(tool) || FL_COLOR_TOOLS.includes(tool)); }
+function renderFL() {
+  const on = flOn();
+  document.body.classList.toggle('fl-on', on);
+  $$('#flBtn, #mbFL').forEach((b) => { b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); });
+  if (state.uiHidden) placeMini();
+}
+function setFL(on, opts = {}) {
+  FL[state.mode === 'draw' ? 'draw' : 'color'] = !!on;
+  if (on) try { localStorage.setItem(FL_TIP_KEY, '1'); } catch (_) {}   // ya lo conoce: no hace falta el consejo
+  saveFL(); renderFL();
+  if (!opts.quiet) toast(on ? tt('fl.toast.on') : tt('fl.toast.off'), on ? 3200 : 2000);
+}
+$('#flBtn').onclick = () => setFL(!flOn());
+$('#mbFL').onclick = () => setFL(!flOn());
+// Zona donde empieza el trazo (con simetría: la zona de cada reflejo). Las líneas se leen una sola vez y cada zona se rellena
+// una sola vez (si dos reflejos empiezan en la misma zona, se usa la misma). Cada zona se guarda recortada a su rectángulo.
+function flMaskFor(pts) {
+  const t0 = performance.now();
+  const la = layers.line.ctx.getImageData(0, 0, W, H).data;
+  const regs = [];
+  const has = (r, x, y) => x >= r.x1 && y >= r.y1 && x < r.x1 + r.w && y < r.y1 + r.h && r.m[(y - r.y1) * r.w + (x - r.x1)];
+  for (const p of pts) {
+    const px = Math.round(p.x), py = Math.round(p.y);
+    if (px < 0 || py < 0 || px >= W || py >= H) { regs.push(null); continue; }
+    let r = regs.find((q) => q && has(q, px, py));
+    if (!r) {
+      const reg = regionMask(p.x, p.y, la);
+      if (reg) {
+        const w = reg.maxX - reg.minX + 1, h = reg.maxY - reg.minY + 1, m = new Uint8Array(w * h);
+        for (let y = 0; y < h; y++) m.set(reg.mask.subarray((y + reg.minY) * W + reg.minX, (y + reg.minY) * W + reg.minX + w), y * w);
+        r = { x1: reg.minX, y1: reg.minY, w, h, m };
+      } else r = null;
+    }
+    regs.push(r);
+  }
+  // máscara de lienzo (unión de las zonas) para la acuarela y el spray, que ya la saben usar al pintar
+  let lm = null;
+  const live = regs.filter(Boolean);
+  if (live.length) {
+    if (!lmCv || lmCv.width !== W || lmCv.height !== H) { lmCv = mkCanvas(); lmCtx = ctx2d(lmCv); }
+    lmCtx.clearRect(0, 0, W, H);
+    const x1 = Math.min(...live.map((r) => r.x1)), y1 = Math.min(...live.map((r) => r.y1)), x2 = Math.max(...live.map((r) => r.x1 + r.w)), y2 = Math.max(...live.map((r) => r.y1 + r.h));
+    const im = lmCtx.createImageData(x2 - x1, y2 - y1), d = im.data, iw = x2 - x1;
+    for (const r of new Set(live)) for (let y = 0; y < r.h; y++) for (let x = 0; x < r.w; x++) if (r.m[y * r.w + x]) d[((y + r.y1 - y1) * iw + x + r.x1 - x1) * 4 + 3] = 255;
+    lmCtx.putImageData(im, x1, y1);
+    lm = { cv: lmCv, x1, y1, x2, y2 };
+  }
+  FL.lastMs = performance.now() - t0;
+  // con simetría: «permitido» = lo que cada reflejo puede pintar (su zona, cerca de su propio camino)
+  return { regs, lm, multi: regs.length > 1, A: regs.length > 1 ? new Uint8Array(W * H) : null };
+}
+let flPending = null;
+function flPrepare(e) {
+  if (!flOn() || e.button === 1 || spaceDown || state.panTool || objMode || state.picking) return null;
+  const tool = currentTool(); if (!flToolOK(tool)) return null;
+  const tgt = layers[toolTarget(tool)]; if (tgt && !tgt.vis) return null;
+  const p = toDoc(e), Ts = symFor(tool) || [(q) => q];
+  const m = flMaskFor(Ts.map((T) => T(p))); m.p = p;
+  return m;
+}
+function startSingle(e) {
+  const pre = flPrepare(e);
+  flPending = pre;
+  try { startSingle0(e); } finally { flPending = null; }
+  if (g) g.ptype = e.pointerType;
+  if (!pre || !g || !(g.kind === 'stroke' || g.kind === 'blend' || g.kind === 'nt')) return;
+  g.fl = pre; g.flLayer = g.kind === 'blend' ? (g.layer || 'color') : g.st.layer; g.flPrev = pre.p;
+  flMove(g, [pre.p]);
+}
+const flTs = (gg) => gg.T || (gg.subs ? [(q) => q, ...gg.subs.map((s) => s.T)] : [(q) => q]);
+const flPad = (gg) => Math.max(gg.st ? gg.st.lw : 0, gg.lw || 0, 2 * (gg.R || 0) + 2 * Math.max(2, Math.round((gg.R || 0) * 0.5)), 4) + 16;
+// Deja como estaba antes del trazo todo lo que quedó fuera de la zona (solo en el rectángulo r)
+function flClip(gg, r) {
+  r = clampRect(r); if (!r || !gg.fl) return;
+  const F = gg.fl, L = layers[gg.flLayer], R0 = F.regs[0], A = F.A;
+  const cur = L.ctx.getImageData(r.x, r.y, r.w, r.h), d = cur.data, o = L.bctx.getImageData(r.x, r.y, r.w, r.h).data;
+  let ch = false;
+  for (let y = 0; y < r.h; y++) {
+    const Y = y + r.y, row = Y * W + r.x, ry = R0 ? (Y - R0.y1) * R0.w - R0.x1 : 0, yin = R0 && Y >= R0.y1 && Y < R0.y1 + R0.h;
+    for (let x = 0, k = y * r.w * 4; x < r.w; x++, k += 4) {
+      const X = x + r.x;
+      if (A ? A[row + x] : (yin && X >= R0.x1 && X < R0.x1 + R0.w && R0.m[ry + X])) continue;
+      if (d[k] !== o[k] || d[k + 1] !== o[k + 1] || d[k + 2] !== o[k + 2] || d[k + 3] !== o[k + 3]) { d[k] = o[k]; d[k + 1] = o[k + 1]; d[k + 2] = o[k + 2]; d[k + 3] = o[k + 3]; ch = true; }
+    }
+  }
+  if (ch) L.ctx.putImageData(cur, r.x, r.y);
+}
+// Con simetría: cada reflejo solo puede pintar en SU zona, cerca de su camino (si un reflejo se cruza a la zona donde empezó otro, no pinta ahí)
+function flMark(gg, Tk, reg, all, pad) {
+  const A = gg.fl.A;
+  for (let i = 0; i < all.length; i++) {
+    const a = Tk(all[i]), b = Tk(all[Math.min(i + 1, all.length - 1)]);
+    const x1 = Math.max(reg.x1, Math.floor(Math.min(a.x, b.x) - pad)), x2 = Math.min(reg.x1 + reg.w, Math.ceil(Math.max(a.x, b.x) + pad));
+    const y1 = Math.max(reg.y1, Math.floor(Math.min(a.y, b.y) - pad)), y2 = Math.min(reg.y1 + reg.h, Math.ceil(Math.max(a.y, b.y) + pad));
+    for (let y = y1; y < y2; y++) { const mo = (y - reg.y1) * reg.w - reg.x1, ro = y * W; for (let x = x1; x < x2; x++) if (reg.m[mo + x]) A[ro + x] = 1; }
+  }
+}
+function flMove(gg, pts) {
+  if (!pts.length) return;
+  const pad = flPad(gg), all = [gg.flPrev || pts[0], ...pts], Ts = flTs(gg);
+  if (gg.fl.multi) Ts.forEach((T, k) => { const reg = gg.fl.regs[k]; if (reg) flMark(gg, T, reg, all, pad); });
+  for (const T of Ts) {
+    let x1 = Infinity, y1 = Infinity, x2 = -Infinity, y2 = -Infinity;
+    for (const p of all) { const q = T(p); x1 = Math.min(x1, q.x); y1 = Math.min(y1, q.y); x2 = Math.max(x2, q.x); y2 = Math.max(y2, q.y); }
+    flClip(gg, { x: x1 - pad, y: y1 - pad, w: x2 - x1 + 2 * pad, h: y2 - y1 + 2 * pad });
+  }
+  gg.flPrev = pts[pts.length - 1];
+}
+function flEnd(gg) { if (gg && gg.fl) flClip(gg, rectOf(gg.box)); }
+// Consejo de una vez: a quien pinta con el dedo en Colorear y todavía no lo ha prendido
+function flTipMaybe(cur) {
+  if (state.mode !== 'color' || FL.color || cur.ptype !== 'touch' || cur.travel < 45) return;
+  if (!(cur.kind === 'stroke' || cur.kind === 'blend' || cur.kind === 'nt')) return;
+  try { if (localStorage.getItem(FL_TIP_KEY) === '1') return; localStorage.setItem(FL_TIP_KEY, '1'); } catch (_) { return; }
+  setTimeout(() => toast(tt('fl.hint'), 5200), 300);
+}
+
 /* ---------- inicio ---------- */
 buildTemplateGrid();
-buildQuickColors(); renderSymGuide(); renderReto();
+buildQuickColors(); renderSymGuide(); renderReto(); renderFL();
 refreshColorUI(); updateGradUI();
 setAddTab('stk');
 layout();
@@ -7298,6 +7458,7 @@ window.__colorear = {
   SYM, setSym, symTransforms, floodFillSym, WC, SPR, newToolStyle, PALETTES, applyPalette, resetPalette, monoPalette, saveMyPalette, get quickPal() { return quickPal; }, get myPals() { return myPals; },
   sketchLineArt, openAdjust, setAdjMode, useAdjusted, makeProcessVideo, captureFrame, procFrames, deleteProc, openVideoSheet, videoMime, get procId() { return procId; }, get procOn() { return procOn; },
   retoFor, retoStart, retoComplete, retoStreak, renderReto, dayStr, TPL_NEW, tplIsNew, markTplSeen, buildTemplateGrid,
+  FL, setFL, renderFL, flMaskFor, get flOn() { return flOn(); },
 };
 </script>
 </body>
