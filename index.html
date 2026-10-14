@@ -748,6 +748,10 @@ body.ui-hidden.obj-mode #miniBar{display:none}
 #flBtn .flsw{flex:0 0 auto;position:relative;width:44px;height:26px;border-radius:13px;background:#c9c4cf;transition:background .15s}
 #flBtn .flsw::after{content:'';position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .15s}
 #flBtn.on{box-shadow:inset 0 0 0 2px #34C759}
+#flSensMore{width:100%;margin-top:8px;border:0;border-radius:12px;background:#f1eaf7;min-height:40px;font-weight:700;font-size:14px;color:var(--accent2)}
+#flSensMore[aria-expanded="true"] b{display:inline-block;transform:rotate(180deg)}
+.flsrow{display:flex;align-items:center;gap:8px;margin:8px 4px 2px;font-size:13px;font-weight:700;color:var(--muted)}
+.flsrow input{flex:1 1 auto;min-width:0}
 #flBtn.on .flsw{background:#34C759}
 #flBtn.on .flsw::after{transform:translateX(18px)}
 #flBtn:active{transform:scale(.98)}
@@ -1042,6 +1046,11 @@ body.ui-hidden.obj-mode #miniBar{display:none}
       <button class="mbtn" id="moreMenu" title="Menú: guardar, plantillas, fotos y más" aria-label="Menú"><svg><use href="#i-menu"/></svg><div>Menú<small>guardar, plantillas…</small></div></button>
       <button class="mbtn" id="moreVideo" title="Video del proceso: un video corto de cómo pintaste"><svg><use href="#i-video"/></svg><div>Video del proceso<small>para compartir</small></div></button>
       <button class="mbtn" id="moreReto" title="Reto del día: una plantilla y colores nuevos cada día"><svg><use href="#i-target"/></svg><div>Reto del día<small>uno nuevo cada día</small></div></button>
+    </div>
+    <button class="gmore" id="flSensMore" aria-expanded="false" title="Para fotos subidas: qué tan fuerte detecta las líneas «No salirme de las líneas»">Líneas de mis fotos <b>▾</b></button>
+    <div id="flSensBox" hidden>
+      <div class="flsrow"><span>Menos</span><input type="range" id="flSens" min="0" max="100" value="50" aria-label="Sensibilidad de líneas"><span>Más</span></div>
+      <p class="ptip">Si en tus fotos el color se sale con «No salirme de las líneas», sube la sensibilidad. Si no te deja pintar en partes finitas, bájala.</p>
     </div>
   </div>
 </footer>
@@ -1526,7 +1535,7 @@ setDocLang(); translateStatic();
 /* Colorear v3.3: crea dibujos para colorear, sube fotos de tus libros y coloréalos
    (lápiz y marcador de colores, crayón, marcadores acrílico / de agua / de alcohol, degradados, difuminar, copiar color,
    capas, ocultar botones, punta Detalle y rueda de colores con opacidad) */
-const APP_VERSION = '3.10';
+const APP_VERSION = '3.10.1';
 const PORTRAIT = [1200, 1600], LANDSCAPE = [1600, 1200];
 let W = 1200, H = 1600;                       // tamaño de la hoja (px internos); vertical u horizontal
 /* Grosores en píxeles de la hoja (1200×1600). "Súper fina" (xs) y "Detalle" (xxs) no son fijas: se calculan
@@ -4598,7 +4607,7 @@ function hidePanel() {
 for (const g in GRP_TAB) $('#' + GRP_TAB[g]).onclick = () => { if (openGrp === g) hidePanel(); else showPanel(g); };
 // elegir algo en el panel (o en su submenú) cierra el panel; si se abrió un submenú (tipos de marcador, degradado) se queda
 // (se escucha al final del clic, cuando el botón ya hizo lo suyo; así un toque rápido en la hoja justo después ya pinta)
-$('#panel').addEventListener('click', (e) => { if (e.target.closest('button') && !openPop) hidePanel(); });
+$('#panel').addEventListener('click', (e) => { if (e.target.closest('button') && !e.target.closest('#flSensMore') && !openPop) hidePanel(); });
 document.addEventListener('click', (e) => { if (openGrp && e.target.closest && e.target.closest('.pop button') && !e.target.closest('#gMore, #gAdv') && !openPop) hidePanel(); });
 document.addEventListener('pointerdown', (e) => {
   if (!openGrp) return;
@@ -7332,7 +7341,7 @@ function flMaskFor(pts) {
     if (px < 0 || py < 0 || px >= W || py >= H) { regs.push(null); continue; }
     let r = regs.find((q) => q && has(q, px, py));
     if (!r) {
-      const reg = regionMask(p.x, p.y, la);
+      const reg = flRegion(p.x, p.y, la);   // 3.10.1
       if (reg) {
         const w = reg.maxX - reg.minX + 1, h = reg.maxY - reg.minY + 1, m = new Uint8Array(w * h);
         for (let y = 0; y < h; y++) m.set(reg.mask.subarray((y + reg.minY) * W + reg.minX, (y + reg.minY) * W + reg.minX + w), y * w);
@@ -7356,6 +7365,123 @@ function flMaskFor(pts) {
   FL.lastMs = performance.now() - t0;
   // con simetría: «permitido» = lo que cada reflejo puede pintar (su zona, cerca de su propio camino)
   return { regs, lm, multi: regs.length > 1, A: regs.length > 1 ? new Uint8Array(W * H) : null };
+}
+/* ---------- 3.10.1: zona de «No salirme de las líneas» más firme en fotos subidas ----------
+   En las fotos las líneas salen grises, de color, finitas o con huequitos (lápiz, JPEG, papel con sombra): con el umbral fijo
+   del bote (alfa ≥ 110) la zona se «escapaba» por esos huequitos o por encima de las líneas claras. Aquí, solo dentro del
+   rectángulo de la zona del bote: 1) pared = alfa ≥ un umbral más bajo (según la sensibilidad), 2) se quitan los puntitos sueltos
+   (ruido del JPEG), 3) las paredes se engordan R píxeles para cerrar huequitos, 4) se rellena y la zona vuelve a crecer R píxeles
+   sin cruzar líneas. Solo se usa si de verdad tapa una fuga (la zona del bote es claramente más grande); en las plantillas no cambia nada. */
+const FL_SENS_KEY = 'colorear.noSalirmeSens';
+FL.sens = 50; FL.lastMode = null;
+try { const v = localStorage.getItem(FL_SENS_KEY); if (v != null && isFinite(+v)) FL.sens = clamp(Math.round(+v), 0, 100); } catch (_) {}
+function flParams(sens) {
+  const s = Math.max(W, H) / 1200;
+  return { LT: Math.max(16, Math.round(120 - sens * 1.6)), R: Math.max(1, Math.round(s * (0.5 + sens / 40))), minA: Math.max(3, Math.round(8 * s * s)) };
+}
+// Engorda una máscara binaria (w×h) r píxeles (cuadrado), con sumas acumuladas: O(w·h). keep: solo donde keep[i] = 1
+function flDilate(src, w, h, r, keep) {
+  const tmp = new Uint8Array(w * h), out = new Uint8Array(w * h), acc = new Int32Array(Math.max(w, h) + 1);
+  for (let y = 0; y < h; y++) {
+    const row = y * w; acc[0] = 0;
+    for (let x = 0; x < w; x++) acc[x + 1] = acc[x] + src[row + x];
+    for (let x = 0; x < w; x++) if (acc[Math.min(w, x + r + 1)] - acc[Math.max(0, x - r)]) tmp[row + x] = 1;
+  }
+  for (let x = 0; x < w; x++) {
+    acc[0] = 0;
+    for (let y = 0; y < h; y++) acc[y + 1] = acc[y] + tmp[y * w + x];
+    for (let y = 0; y < h; y++) if ((acc[Math.min(h, y + r + 1)] - acc[Math.max(0, y - r)]) && (!keep || keep[y * w + x])) out[y * w + x] = 1;
+  }
+  return out;
+}
+// Relleno firme alrededor de (fx, fy), dentro de la zona del bote «base». Devuelve el formato de regionMask (máscara de toda la hoja)
+function flRobust(fx, fy, la, base, P, R) {
+  const pad = 2 * R + 2, X0 = Math.max(0, base.minX - pad), Y0 = Math.max(0, base.minY - pad);
+  const w = Math.min(W - 1, base.maxX + pad) - X0 + 1, h = Math.min(H - 1, base.maxY + pad) - Y0 + 1, n = w * h;
+  const w0 = new Uint8Array(n); let ink = 0;
+  for (let y = 0; y < h; y++) for (let x = 0, k = ((y + Y0) * W + X0) * 4, i = y * w; x < w; x++, k += 4, i++) if (la[k + 3] >= P.LT) { w0[i] = 1; ink++; }
+  if (!ink) return null;
+  // quitar puntitos sueltos (ruido): manchitas de tinta más pequeñas que minA
+  const seen = new Uint8Array(n), list = new Int32Array(P.minA + 9);
+  for (let s0 = 0; s0 < n; s0++) {
+    if (!w0[s0] || seen[s0]) continue;
+    let len = 1, head = 0; list[0] = s0; seen[s0] = 1;
+    const stack = [];
+    while (head < len) {
+      const i = list[head++], y = (i / w) | 0, x = i - y * w;
+      for (let dy = -1; dy <= 1; dy++) { const yy = y + dy; if (yy < 0 || yy >= h) continue;
+        for (let dx = -1; dx <= 1; dx++) { const xx = x + dx; if (xx < 0 || xx >= w) continue; const j = yy * w + xx;
+          if (w0[j] && !seen[j]) { seen[j] = 1; if (len < list.length) list[len++] = j; else stack.push(j); } } }
+      if (len >= P.minA) break;
+    }
+    if (len < P.minA) { for (let t = 0; t < len; t++) w0[list[t]] = 0; continue; }
+    for (let t = head; t < len; t++) stack.push(list[t]);          // componente grande: solo marcarla como vista
+    while (stack.length) { const i = stack.pop(), y = (i / w) | 0, x = i - y * w;
+      for (let dy = -1; dy <= 1; dy++) { const yy = y + dy; if (yy < 0 || yy >= h) continue;
+        for (let dx = -1; dx <= 1; dx++) { const xx = x + dx; if (xx < 0 || xx >= w) continue; const j = yy * w + xx; if (w0[j] && !seen[j]) { seen[j] = 1; stack.push(j); } } } }
+  }
+  const wd = flDilate(w0, w, h, R);
+  const inBase = (i) => { const y = (i / w) | 0, x = i - y * w; return base.mask[(y + Y0) * W + x + X0] === 1; };
+  let sx = Math.round(fx) - X0, sy = Math.round(fy) - Y0;
+  if (sx < 0 || sy < 0 || sx >= w || sy >= h) return null;
+  if (wd[sy * w + sx] || !inBase(sy * w + sx)) {
+    let found = false;
+    for (let r = 1; r <= 14 + R && !found; r++) for (let dy = -r; dy <= r && !found; dy++) for (let dx = -r; dx <= r && !found; dx++) {
+      const x = sx + dx, y = sy + dy;
+      if (x >= 0 && y >= 0 && x < w && y < h && !wd[y * w + x] && inBase(y * w + x)) { sx = x; sy = y; found = true; }
+    }
+    if (!found) return null;
+  }
+  const m0 = new Uint8Array(n), st = [sy * w + sx]; m0[st[0]] = 1;
+  const ok = (j) => !m0[j] && !wd[j] && inBase(j);
+  while (st.length) {
+    const i = st.pop(), y = (i / w) | 0, x = i - y * w;
+    if (x > 0 && ok(i - 1)) { m0[i - 1] = 1; st.push(i - 1); }
+    if (x < w - 1 && ok(i + 1)) { m0[i + 1] = 1; st.push(i + 1); }
+    if (y > 0 && ok(i - w)) { m0[i - w] = 1; st.push(i - w); }
+    if (y < h - 1 && ok(i + w)) { m0[i + w] = 1; st.push(i + w); }
+  }
+  const free = new Uint8Array(n); for (let i = 0; i < n; i++) free[i] = w0[i] ? 0 : 1;
+  const lm = flDilate(m0, w, h, R, free);
+  // como el bote: entra un poquito debajo de la línea (solo sobre tinta) para no dejar bordes blancos
+  for (let pass = 0; pass < DILATE; pass++) {
+    const add = [];
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      const i = y * w + x; if (lm[i] || la[((y + Y0) * W + x + X0) * 4 + 3] === 0) continue;
+      if ((x > 0 && lm[i - 1]) || (x < w - 1 && lm[i + 1]) || (y > 0 && lm[i - w]) || (y < h - 1 && lm[i + w])) add.push(i);
+    }
+    for (const i of add) lm[i] = 1;
+  }
+  const mask = new Uint8Array(W * H);
+  let minX = W, maxX = -1, minY = H, maxY = -1, area = 0;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const i = y * w + x; if (!lm[i]) continue;
+    const g = (y + Y0) * W + x + X0; if (!base.mask[g]) continue;          // nunca fuera de la zona del bote
+    mask[g] = 1; area++;
+    const X = x + X0, Y = y + Y0; if (X < minX) minX = X; if (X > maxX) maxX = X; if (Y < minY) minY = Y; if (Y > maxY) maxY = Y;
+  }
+  return area ? { mask, minX, minY, maxX, maxY, area } : null;
+}
+const maskArea = (r) => { let a = 0; for (let y = r.minY; y <= r.maxY; y++) for (let x = r.minX, i = y * W + x; x <= r.maxX; x++, i++) a += r.mask[i]; return a; };
+// Zona para «No salirme»: la del bote, salvo que la versión firme encuentre una fuga (entonces la firme, dentro de la del bote)
+function flRegion(fx, fy, la) {
+  const base = regionMask(fx, fy, la);
+  FL.lastMode = 'base';
+  if (!base) return null;
+  const ab = maskArea(base);
+  if (ab < W * H * 0.004) return base;                                    // zonita chica: ya está cerrada
+  const P = flParams(FL.sens);
+  let rob = flRobust(fx, fy, la, base, P, P.R);
+  // ¿sigue enorme (más de la mitad de la hoja)? probar cerrando huequitos más grandes
+  if (rob && rob.area > W * H * 0.5) { const r2 = flRobust(fx, fy, la, base, P, P.R * 2 + 1); if (r2 && r2.area < rob.area * 0.7) rob = r2; }
+  if (!rob || rob.area >= ab * 0.92) return base;
+  FL.lastMode = 'robust';
+  return rob;
+}
+function setFLSens(v) {
+  FL.sens = clamp(Math.round(+v), 0, 100);
+  try { localStorage.setItem(FL_SENS_KEY, String(FL.sens)); } catch (_) {}
+  const el = $('#flSens'); if (el && +el.value !== FL.sens) el.value = FL.sens;
 }
 let flPending = null;
 function flPrepare(e) {
@@ -7424,6 +7550,9 @@ function flTipMaybe(cur) {
 }
 
 /* ---------- inicio ---------- */
+$('#flSensMore').onclick = () => { const b = $('#flSensBox'), open = b.hidden; b.hidden = !open; $('#flSensMore').setAttribute('aria-expanded', String(open)); };
+$('#flSens').value = FL.sens;
+$('#flSens').addEventListener('input', (e) => setFLSens(e.target.value));
 buildTemplateGrid();
 buildQuickColors(); renderSymGuide(); renderReto(); renderFL();
 refreshColorUI(); updateGradUI();
@@ -7458,7 +7587,7 @@ window.__colorear = {
   SYM, setSym, symTransforms, floodFillSym, WC, SPR, newToolStyle, PALETTES, applyPalette, resetPalette, monoPalette, saveMyPalette, get quickPal() { return quickPal; }, get myPals() { return myPals; },
   sketchLineArt, openAdjust, setAdjMode, useAdjusted, makeProcessVideo, captureFrame, procFrames, deleteProc, openVideoSheet, videoMime, get procId() { return procId; }, get procOn() { return procOn; },
   retoFor, retoStart, retoComplete, retoStreak, renderReto, dayStr, TPL_NEW, tplIsNew, markTplSeen, buildTemplateGrid,
-  FL, setFL, renderFL, flMaskFor, get flOn() { return flOn(); },
+  FL, setFL, renderFL, flMaskFor, flRegion, setFLSens, get flOn() { return flOn(); },
 };
 </script>
 </body>
