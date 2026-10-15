@@ -149,6 +149,8 @@
           "name": "imagen",
           "accept": [
             "image/*",
+            "application/pdf",
+            ".pdf",
             ".png",
             ".jpg",
             ".jpeg",

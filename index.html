@@ -416,6 +416,49 @@ html:not([lang="es"]) #recentRow{flex-wrap:wrap;row-gap:6px}
 .slider input{flex:1;height:36px;accent-color:var(--accent2)}
 .ahint{font-size:12.5px;color:var(--muted);margin:6px 2px 0;text-align:center}
 #adjust.asis .only-photo{display:none!important}
+/* 3.10.2: PDF — elegir página y cargando */
+#pdfPick{position:fixed;inset:0;z-index:31;background:#1f1830;display:none;grid-template-rows:auto minmax(0,1fr) auto;grid-template-columns:minmax(0,1fr);color:#fff}
+#pdfPick.show{display:grid}
+#pdfPick .ahead{display:flex;align-items:center;gap:8px;padding:calc(env(safe-area-inset-top) + 8px) calc(env(safe-area-inset-right) + 10px) 8px calc(env(safe-area-inset-left) + 10px)}
+#pdfPick .ahead h2{flex:1;margin:0;font-size:19px;text-align:center}
+#pdfPick .ahead .ib{background:rgba(255,255,255,.12);color:#fff}
+#pdfPick .ahead .sp{width:48px;flex:none}
+#pdfStage{position:relative;min-height:0;padding:4px 14px 10px;display:flex}
+#pdfPrev{width:100%;height:100%;object-fit:contain;min-width:0;min-height:0;background:transparent}
+#pdfPick .apanel{background:#fff;color:var(--ink);border-radius:20px 20px 0 0;padding:10px calc(env(safe-area-inset-right) + 12px) calc(env(safe-area-inset-bottom) + 12px) calc(env(safe-area-inset-left) + 12px);min-width:0;max-width:100vw}
+.pdfnav{display:flex;align-items:center;gap:6px}
+.pdfnav button{flex:1 1 0;min-width:0;height:46px;border:0;border-radius:12px;background:#f1eaf7;font-weight:700;font-size:15px;color:var(--ink);white-space:nowrap;padding:0 4px}
+.pdfnav button:disabled{opacity:.4}
+.pdfnav b{flex:1.2 1 0;min-width:0;text-align:center;font-size:15px;white-space:nowrap}
+@media (max-width:360px){ .pdfnav{gap:4px} .pdfnav button,.pdfnav b{font-size:13.5px} }
+#pdfThumbs{display:flex;gap:8px;overflow-x:auto;padding:10px 2px 6px;margin-top:2px;-webkit-overflow-scrolling:touch}
+#pdfThumbs button{flex:none;width:58px;height:78px;border:2px solid #e3d9ee;border-radius:8px;background:#fff;padding:0;position:relative;overflow:hidden}
+#pdfThumbs button.on{border-color:var(--accent2);box-shadow:0 0 0 2px var(--accent2)}
+#pdfThumbs canvas{width:100%;height:100%;object-fit:contain;display:block}
+#pdfThumbs i{position:absolute;right:2px;bottom:1px;font-style:normal;font-size:11px;font-weight:800;background:rgba(40,28,60,.75);color:#fff;border-radius:6px;padding:0 4px}
+#pdfUse{width:100%;height:52px;margin-top:8px;border:0;border-radius:14px;background:#34C759;color:#fff;font-weight:800;font-size:17px;display:flex;align-items:center;justify-content:center;gap:6px}
+#pdfUse svg{width:22px;height:22px}
+.pdfhint{font-size:12.5px;color:var(--muted);margin:0 2px 8px;text-align:center}
+#pdfLoad{position:fixed;inset:0;z-index:45;background:rgba(30,20,50,.35);display:none;align-items:center;justify-content:center}
+#pdfLoad.show{display:flex}
+#pdfLoad div{background:rgba(40,28,60,.92);color:#fff;padding:14px 20px;border-radius:14px;font-weight:700;font-size:15px;display:flex;align-items:center;gap:12px}
+#pdfLoad i{width:22px;height:22px;border-radius:50%;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;animation:pdfspin .8s linear infinite}
+@keyframes pdfspin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){#pdfLoad i{animation-duration:2.4s}}
+@media (min-width:760px) and (orientation:landscape){
+  #pdfPick{grid-template-columns:minmax(0,1fr) minmax(300px,36%);grid-template-rows:auto minmax(0,1fr)}
+  #pdfPick .ahead{grid-column:1 / span 2}
+  #pdfPick #pdfStage{grid-column:1;grid-row:2}
+  #pdfPick .apanel{grid-column:2;grid-row:2;border-radius:20px 0 0 0;overflow-y:auto}
+}
+@media (max-height:520px) and (orientation:landscape){
+  .pdfnav{gap:4px;flex-wrap:wrap} .pdfnav button,.pdfnav b{font-size:13.5px} .pdfnav b{order:-1;flex:1 0 100%;margin-bottom:2px} .pdfnav button{height:40px}
+  #pdfPick .pdfhint{display:none} #pdfThumbs{padding:6px 2px 4px} #pdfThumbs button{width:42px;height:56px} #pdfUse{height:46px;margin-top:4px}
+  #pdfPick{grid-template-columns:minmax(0,1fr) minmax(260px,42%);grid-template-rows:auto minmax(0,1fr)}
+  #pdfPick .ahead{grid-column:1 / span 2}
+  #pdfPick #pdfStage{grid-column:1;grid-row:2}
+  #pdfPick .apanel{grid-column:2;grid-row:2;border-radius:20px 0 0 0;overflow-y:auto}
+}
 #toast{
   position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 76px);transform:translateX(-50%) translateY(20px);
   background:rgba(40,28,60,.92);color:#fff;padding:12px 18px;border-radius:14px;font-weight:600;font-size:15px;
@@ -1294,7 +1337,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <div class="scroll">
       <div class="menu-list" style="grid-template-columns:1fr">
         <button class="mbtn big" id="phCamera"><svg><use href="#i-camera"/></svg><div>Tomar foto<small>Fotografía una página de tu libro para colorear</small></div></button>
-        <button class="mbtn big" id="phGallery"><svg><use href="#i-image"/></svg><div>Elegir imagen<small>De tu galería o archivos (fotos o dibujos)</small></div></button>
+        <button class="mbtn big" id="phGallery"><svg><use href="#i-image"/></svg><div>Elegir imagen o PDF<small>De tu galería o archivos (fotos, dibujos o PDF)</small></div></button>
         <button class="mbtn big" id="phSketch"><svg><use href="#i-sketch"/></svg><div>Foto a dibujo<small>Convierte cualquier foto en un dibujo para colorear</small></div></button>
       </div>
       <p class="tip">Consejo: pon la página plana, tómala de frente, con buena luz y sin tu sombra encima. Después podrás recortarla y limpiarla.</p>
@@ -1302,7 +1345,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
   </div>
 </div>
 <input type="file" accept="image/*" capture="environment" id="fileCam" class="hidden-input" tabindex="-1" aria-hidden="true">
-<input type="file" accept="image/*" id="fileGal" class="hidden-input" tabindex="-1" aria-hidden="true">
+<input type="file" accept="image/*,application/pdf,.pdf" id="fileGal" class="hidden-input" tabindex="-1" aria-hidden="true">
 
 <div class="overlay" id="shareSheet">
   <div class="sheet">
@@ -1385,6 +1428,26 @@ body.ui-hidden.obj-mode #miniBar{display:none}
   </div>
 </div>
 
+<div id="pdfPick" role="dialog" aria-label="Elegir página del PDF">
+  <div class="ahead">
+    <button class="ib" id="pdfCancel" aria-label="Cancelar"><svg><use href="#i-close"/></svg></button>
+    <h2>Elegir página</h2>
+    <span class="sp" aria-hidden="true"></span>
+  </div>
+  <div id="pdfStage"><canvas id="pdfPrev" aria-label="Página del PDF"></canvas></div>
+  <div class="apanel">
+    <p class="pdfhint">Elige la página que quieres colorear.</p>
+    <div class="pdfnav">
+      <button id="pdfPrevBtn">‹ Anterior</button>
+      <b id="pdfPageTxt" aria-live="polite"></b>
+      <button id="pdfNextBtn">Siguiente ›</button>
+    </div>
+    <div id="pdfThumbs" role="listbox" aria-label="Páginas"></div>
+    <button id="pdfUse"><svg><use href="#i-check"/></svg>Usar esta página</button>
+  </div>
+</div>
+<div id="pdfLoad" role="status" aria-live="polite"><div><i></i><span id="pdfLoadTxt">Abriendo PDF…</span></div></div>
+
 <div class="overlay" id="videoSheet">
   <div class="sheet" role="dialog" aria-label="Video del proceso">
     <div class="sheet-head"><h2>Video del proceso</h2><button class="ib close" aria-label="Cerrar"><svg><use href="#i-close"/></svg></button></div>
@@ -1427,7 +1490,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <div class="sheet-head"><h2>Foto de referencia</h2><button class="ib close" aria-label="Cerrar"><svg><use href="#i-close"/></svg></button></div>
     <div class="scroll">
       <p class="rtip">Sube una foto para mirarla mientras dibujas a mano. Nunca se pinta en tu dibujo ni sale al guardar, compartir o imprimir.</p>
-      <div id="refEmpty"><button class="mbtn big" id="refPick" style="width:100%"><svg><use href="#i-image"/></svg><div>Elegir foto<small>de tu galería o de la cámara</small></div></button></div>
+      <div id="refEmpty"><button class="mbtn big" id="refPick" style="width:100%"><svg><use href="#i-image"/></svg><div>Elegir foto<small>de tu galería, de la cámara o de un PDF</small></div></button></div>
       <div id="refHas" hidden>
         <div class="rtop"><img id="refThumb" alt="Foto de referencia">
           <div class="rmodes" id="refModes" role="radiogroup" aria-label="Cómo ver la foto">
@@ -1447,7 +1510,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
         </div>
         <div class="rbtns"><button class="mbtn" id="refChange"><svg><use href="#i-image"/></svg>Cambiar foto</button><button class="mbtn danger" id="refRemove"><svg><use href="#i-trash"/></svg>Quitar foto</button></div>
       </div>
-      <input type="file" id="refFile" accept="image/*" hidden>
+      <input type="file" id="refFile" accept="image/*,application/pdf,.pdf" hidden>
     </div>
   </div>
 </div>
@@ -1535,7 +1598,7 @@ setDocLang(); translateStatic();
 /* Colorear v3.3: crea dibujos para colorear, sube fotos de tus libros y coloréalos
    (lápiz y marcador de colores, crayón, marcadores acrílico / de agua / de alcohol, degradados, difuminar, copiar color,
    capas, ocultar botones, punta Detalle y rueda de colores con opacidad) */
-const APP_VERSION = '3.10.1';
+const APP_VERSION = '3.10.2';
 const PORTRAIT = [1200, 1600], LANDSCAPE = [1600, 1200];
 let W = 1200, H = 1600;                       // tamaño de la hoja (px internos); vertical u horizontal
 /* Grosores en píxeles de la hoja (1200×1600). "Súper fina" (xs) y "Detalle" (xxs) no son fijas: se calculan
@@ -5759,7 +5822,7 @@ function closeAdjust() {
   $('#adjust').classList.remove('show');
   adj.orig = adj.rotCv = adj.prev = adj.prevData = adj.prevOut = null;
 }
-async function openAdjust(img, want) {
+async function openAdjust(img, want, opts = {}) {
   const MAX = 2600, s = Math.min(1, MAX / Math.max(img.width, img.height));
   const w = Math.max(1, Math.round(img.width * s)), h = Math.max(1, Math.round(img.height * s));
   const cv = mkCanvas(w, h), c = cv.getContext('2d');
@@ -5770,7 +5833,7 @@ async function openAdjust(img, want) {
   buildPreviewSrc();
   const sk = want === 'sketch';
   const clean = !sk && looksLikeLineArt(cv);
-  const page = clean || sk ? null : detectPage(adj.prev);
+  const page = clean || sk || opts.pdf ? null : detectPage(adj.prev);   // una página de PDF ya es la página: no se busca el papel
   if (page) adj.crop = page;
   adjHintKey = sk ? 'adj.sketch.hint' : page ? 'adj.found' : 'adj.hint'; $('#adjHint').textContent = tt(adjHintKey);
   setAdjMode(sk ? 'sketch' : clean ? 'asis' : 'photo');
@@ -5809,7 +5872,9 @@ async function importImageFile(file) {
   if (!file) return;
   closeSheet('#photoSheet'); closeSheet('#tplSheet');
   try {
+    if (isPdfLike(file)) { const pg = await choosePdfPage(file); if (pg) await openAdjust(pg, want, { pdf: true }); return; }   // 3.10.2: PDF
     const buf = await file.arrayBuffer();
+    if (hasPdfMagic(buf)) { const pg = await choosePdfPage(file, buf); if (pg) await openAdjust(pg, want, { pdf: true }); return; }
     const meta = readPngText(buf);
     if (meta && meta.Colorear) { await importOwn(new Blob([buf], { type: 'image/png' }), meta); return; }
     const img = await loadImage(new Blob([buf], { type: file.type || 'image/*' }));
@@ -5834,6 +5899,127 @@ async function importOwn(blob, meta) {
   setMode('color'); setColorTool('fill');
   toast(tt('toast.ownopen'));
 }
+/* ---------- 3.10.2: PDF como si fuera una foto ----------
+   PDF.js (en pdfjs/, sin CDN, guardado en el caché para funcionar sin internet) se carga solo al abrir un PDF.
+   Una página sola pasa directo; con varias, se elige cuál. La página se dibuja sobre fondo blanco a un máximo de
+   PDF_SIDE px y entra por el mismo camino que una foto subida (openAdjust → useAdjusted). */
+const PDF_SIDE = 2000, PDF_MAX_BYTES = 60 * 1024 * 1024;
+const PDF = { lib: null, doc: null, n: 0, i: 1, done: null, seq: 0, busy: 0 };
+function isPdfLike(f) { return !!f && (f.type === 'application/pdf' || /\.pdf$/i.test(f.name || '')); }
+function hasPdfMagic(buf) {
+  const b = new Uint8Array(buf, 0, Math.min(1024, buf.byteLength)); if (b.length < 5) return false;
+  for (let i = 0; i + 4 < b.length; i++) if (b[i] === 0x25 && b[i + 1] === 0x50 && b[i + 2] === 0x44 && b[i + 3] === 0x46 && b[i + 4] === 0x2d) return true;
+  return false;
+}
+function pdfBusy(on, key) {
+  PDF.busy = Math.max(0, PDF.busy + (on ? 1 : -1));
+  if (on) $('#pdfLoadTxt').textContent = tt(key || 'pdf.loading');
+  $('#pdfLoad').classList.toggle('show', PDF.busy > 0);
+}
+async function loadPdfLib() {
+  if (PDF.lib) return PDF.lib;
+  let lib;
+  try { lib = await import('./pdfjs/pdf.min.mjs'); } catch (e) { console.warn('pdfjs', e); const er = new Error('pdf lib'); er.name = 'PdfLibError'; throw er; }
+  lib.GlobalWorkerOptions.workerSrc = new URL('pdfjs/pdf.worker.min.mjs', location.href).href;
+  return (PDF.lib = lib);
+}
+// Dibuja una página sobre fondo blanco, con su lado más largo = side px
+async function renderPdfPage(doc, num, side) {
+  const page = await doc.getPage(num);
+  try {
+    const v1 = page.getViewport({ scale: 1 });
+    const k = side / Math.max(v1.width, v1.height), vp = page.getViewport({ scale: k });
+    const cv = mkCanvas(Math.max(1, Math.round(vp.width)), Math.max(1, Math.round(vp.height)));
+    await page.render({ canvasContext: cv.getContext('2d'), viewport: vp, background: '#ffffff' }).promise;
+    return cv;
+  } finally { try { page.cleanup(); } catch (_) {} }
+}
+function pdfErrorKey(e) {
+  const n = e && e.name;
+  if (n === 'TooBigError') return 'pdf.err.big';
+  if (n === 'PasswordException') return 'pdf.err.password';
+  if (n === 'PdfLibError') return 'pdf.err.load';
+  return 'pdf.err.corrupt';
+}
+// Devuelve un canvas con la página elegida, o null si se canceló o falló (ya avisó con un mensaje)
+async function choosePdfPage(file, buf) {
+  let doc = null;
+  pdfBusy(true, 'pdf.loading');
+  try {
+    if (file.size > PDF_MAX_BYTES) { const er = new Error('big'); er.name = 'TooBigError'; throw er; }
+    buf = buf || await file.arrayBuffer();
+    const lib = await loadPdfLib();
+    doc = await lib.getDocument({ data: new Uint8Array(buf), isEvalSupported: false, enableXfa: false }).promise;
+    if (!doc.numPages) throw new Error('empty');
+    if (doc.numPages === 1) return await renderPdfPage(doc, 1, PDF_SIDE);
+    pdfBusy(false);
+    try { return await pdfPicker(doc); } finally { pdfBusy(true); }
+  } catch (e) {
+    console.warn('pdf', e);
+    toast(tt(pdfErrorKey(e)), 6000);
+    return null;
+  } finally {
+    pdfBusy(false);
+    PDF.seq++;
+    if (doc) { try { doc.destroy(); } catch (_) {} }
+  }
+}
+// Selector de página (varias páginas): vista grande, Anterior/Siguiente, miniaturas y «Usar esta página»
+function pdfPicker(doc) {
+  return new Promise((resolve) => {
+    const my = ++PDF.seq;
+    PDF.doc = doc; PDF.n = doc.numPages; PDF.i = 1; PDF.done = (v) => { PDF.done = null; PDF.doc = null; $('#pdfPick').classList.remove('show'); $('#pdfThumbs').textContent = ''; resolve(v); };
+    const th = $('#pdfThumbs'); th.textContent = '';
+    const q = []; let qrun = false;
+    const io = 'IntersectionObserver' in window ? new IntersectionObserver((ents) => ents.forEach((en) => { if (en.isIntersecting) { io.unobserve(en.target); q.push(en.target); pump(); } }), { root: th, rootMargin: '120px' }) : null;
+    async function pump() {
+      if (qrun) return; qrun = true;
+      while (q.length && PDF.seq === my && PDF.doc === doc) {
+        const b = q.shift();
+        try { const c = await renderPdfPage(doc, +b.dataset.pg, 160); b.insertBefore(c, b.firstChild); } catch (_) {}
+      }
+      qrun = false;
+    }
+    for (let n = 1; n <= PDF.n; n++) {
+      const b = document.createElement('button'); b.dataset.pg = n; b.setAttribute('role', 'option'); b.setAttribute('aria-label', tt('pdf.page', { n, total: PDF.n }));
+      const l = document.createElement('i'); l.textContent = n; b.append(l);
+      b.onclick = () => show(n); th.append(b);
+      if (io) io.observe(b); else q.push(b);
+    }
+    if (!io) pump();
+    let tok = 0;
+    async function show(n) {
+      n = clamp(n, 1, PDF.n); PDF.i = n; const t = ++tok;
+      $('#pdfPageTxt').textContent = tt('pdf.page', { n, total: PDF.n });
+      $('#pdfPrevBtn').disabled = n <= 1; $('#pdfNextBtn').disabled = n >= PDF.n;
+      for (const b of th.children) { const on = +b.dataset.pg === n; b.classList.toggle('on', on); b.setAttribute('aria-selected', String(on)); if (on) b.scrollIntoView({ block: 'nearest', inline: 'center' }); }
+      try {
+        const c = await renderPdfPage(doc, n, 1100);
+        if (t !== tok || PDF.doc !== doc) return;
+        const pv = $('#pdfPrev'); pv.width = c.width; pv.height = c.height; pv.getContext('2d').drawImage(c, 0, 0);
+      } catch (e) { console.warn('pdf prev', e); }
+    }
+    PDF.show = show;
+    $('#pdfPick').classList.add('show');
+    show(1);
+  });
+}
+$('#pdfCancel').onclick = () => { if (PDF.done) PDF.done(null); };
+$('#pdfPrevBtn').onclick = () => PDF.show && PDF.show(PDF.i - 1);
+$('#pdfNextBtn').onclick = () => PDF.show && PDF.show(PDF.i + 1);
+$('#pdfUse').onclick = async () => {
+  const doc = PDF.doc, done = PDF.done; if (!doc || !done) return;
+  pdfBusy(true, 'pdf.rendering');
+  try { const c = await renderPdfPage(doc, PDF.i, PDF_SIDE); done(c); }
+  catch (e) { console.warn('pdf use', e); toast(tt('pdf.err.corrupt'), 6000); done(null); }
+  finally { pdfBusy(false); }
+};
+document.addEventListener('keydown', (e) => {
+  if (!$('#pdfPick').classList.contains('show')) return;
+  if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); if (PDF.done) PDF.done(null); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); PDF.show && PDF.show(PDF.i - 1); }
+  else if (e.key === 'ArrowRight') { e.preventDefault(); PDF.show && PDF.show(PDF.i + 1); }
+}, true);
 function pickFile(input) { input.value = ''; input.click(); }
 $('#phCamera').onclick = () => pickFile($('#fileCam'));
 $('#phGallery').onclick = () => pickFile($('#fileGal'));
@@ -5848,7 +6034,7 @@ document.addEventListener('dragover', (e) => { if (e.dataTransfer && Array.from(
 document.addEventListener('dragleave', (e) => { if (!e.relatedTarget) document.body.classList.remove('dragover'); });
 document.addEventListener('drop', (e) => {
   document.body.classList.remove('dragover');
-  const f = e.dataTransfer && Array.from(e.dataTransfer.files || []).find((x) => x.type.startsWith('image/'));
+  const f = e.dataTransfer && Array.from(e.dataTransfer.files || []).find((x) => x.type.startsWith('image/') || isPdfLike(x));
   if (f) { e.preventDefault(); importImageFile(f); }
 });
 
@@ -6308,7 +6494,8 @@ async function setRef(data, opts = {}) {
 async function refFromFile(file) {
   if (!file) return;
   try {
-    const img = await loadImage(file);
+    let img;
+    if (isPdfLike(file)) { img = await choosePdfPage(file); if (!img) return; } else img = await loadImage(file);   // 3.10.2: PDF
     const k = Math.min(1, REF_MAX / Math.max(img.width, img.height));
     const w = Math.max(1, Math.round(img.width * k)), h = Math.max(1, Math.round(img.height * k));
     const c = mkCanvas(w, h), x = c.getContext('2d');
@@ -7574,7 +7761,7 @@ restore().then(async (restored) => {
 // Acceso para pruebas / depuración
 window.__colorear = {
   layers, state, view, floodFill, loadTemplate, undo, redo, saveToGallery, openGallery, exportPng, buildExport, shareDrawing, undoStack, redoStack, tx,
-  processLineArt, importImageFile, readPngText, addObject, flattenObjs, zoomAt, zoomFit, adj,
+  processLineArt, importImageFile, choosePdfPage, isPdfLike, readPngText, addObject, flattenObjs, zoomAt, zoomFit, adj,
   gradientFill, regionMask, setColorTool, setColorSize, setColor, showNews, setMode, setDrawBrush, setPicking, colorAt, pickColorAt, thinLW, sizeLW, templates: TEMPLATES, COLOR_FAMILIES, ALL_COLORS, GRAD_PRESETS, gradStops, lighterOf,
   get recentColors() { return recentColors.slice(); },
   paint, addLayer, deleteLayer, moveLayer, selectLayer, setLayerVisible, setLayerOpacity, composite, setUIHidden, openPicker, pk, pkSetHex, hsvToRgb, rgbToHsv, docPerScreenPx,

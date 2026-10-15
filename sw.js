@@ -1,6 +1,6 @@
 /* Service worker de Colorear: guarda todo en caché para funcionar sin internet
    y recibe imágenes compartidas desde otras apps (Web Share Target). */
-const CACHE = 'colorear-v17';
+const CACHE = 'colorear-v18';
 const CACHE_COMPARTIDO = 'colorear-compartido';
 const ARCHIVOS = [
   './',
@@ -26,7 +26,9 @@ const ARCHIVOS = [
   'favicon.ico',
   'favicon-32.png',
   'logo-badge-96.png',
-  'logo-badge-192.png'
+  'logo-badge-192.png',
+  'pdfjs/pdf.min.mjs',
+  'pdfjs/pdf.worker.min.mjs'
 ];
 
 self.addEventListener('install', (e) => {
