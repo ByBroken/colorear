@@ -16,6 +16,7 @@
 <script src="i18n/en.js"></script>
 <script src="i18n/pt-BR.js"></script>
 <script src="i18n/fr.js"></script>
+<script src="templates-data.js"></script>
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -825,6 +826,10 @@ body.ui-hidden.obj-mode #miniBar{display:none}
 .reto .rhead b{font-size:16px;color:var(--accent2)}
 #retoStreak{font-size:12.5px;font-weight:800;background:#fff;border-radius:10px;padding:2px 8px;color:#c2410c}
 .reto .rname{font-weight:800;font-size:14px;overflow-wrap:anywhere}
+#retoTitle{font-weight:800;font-size:16px;line-height:1.15;overflow-wrap:anywhere}
+.reto .rmeta{display:flex;flex-wrap:wrap;align-items:center;gap:2px 6px;font-size:12.5px;font-weight:700;color:var(--muted)}
+.reto .rstars{color:#f59e0b;font-size:14px;letter-spacing:1px}
+.reto .rmeta .rname{font-size:12.5px;font-weight:700}
 #retoPrompt{margin:0;font-size:13px;color:var(--muted);line-height:1.25}
 .rcols{display:flex;gap:5px;flex-wrap:wrap}
 .rcols i{width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
@@ -1266,7 +1271,8 @@ body.ui-hidden.obj-mode #miniBar{display:none}
         <canvas id="retoThumb" width="120" height="160" aria-hidden="true"></canvas>
         <div class="rinfo">
           <div class="rhead"><b><span aria-hidden="true">🎯</span> Reto del día</b><span id="retoStreak" hidden></span></div>
-          <div class="rname" id="retoName"></div>
+          <div class="rtitle" id="retoTitle"></div>
+          <div class="rmeta"><span class="rstars" id="retoStars"></span><span id="retoLvl"></span><span class="rdot" aria-hidden="true">·</span><span class="rname" id="retoName"></span></div>
           <p id="retoPrompt"></p>
           <div class="rcols" id="retoCols" aria-hidden="true"></div>
           <div class="rbtns2"><button class="primary" id="retoStart">Empezar</button><button id="retoDone" hidden>¡Lo terminé!</button><span id="retoOk" hidden>✓ ¡Hecho hoy!</span></div>
@@ -1598,7 +1604,7 @@ setDocLang(); translateStatic();
 /* Colorear v3.3: crea dibujos para colorear, sube fotos de tus libros y coloréalos
    (lápiz y marcador de colores, crayón, marcadores acrílico / de agua / de alcohol, degradados, difuminar, copiar color,
    capas, ocultar botones, punta Detalle y rueda de colores con opacidad) */
-const APP_VERSION = '3.10.2';
+const APP_VERSION = '3.10.3';
 const PORTRAIT = [1200, 1600], LANDSCAPE = [1600, 1200];
 let W = 1200, H = 1600;                       // tamaño de la hoja (px internos); vertical u horizontal
 /* Grosores en píxeles de la hoja (1200×1600). "Súper fina" (xs) y "Detalle" (xxs) no son fijas: se calculan
@@ -3763,6 +3769,27 @@ for (const t of TPL_NEW) {
   const paths = t.paths.filter(Boolean);
   TEMPLATES.push({ id: t.id, cat: t.cat, probe: t.probe, added: t.added, n: t.n, draw(c) { for (const d of paths) c.stroke(new Path2D(d)); } });
 }
+/* 3.10.3: plantillas con más detalle. TPL_RE = redibujadas (mismo id), TPL_UP = marco, fondo y patrones encima del dibujo de antes
+   (se recorta al marco), TPL_ADD = plantillas nuevas de Puerto Rico. Los datos están en templates-data.js (se guardan para usar sin internet). */
+const TPL_FRAME_CLIP = new Path2D('M18 10H282A8 8 0 0 1 290 18V382A8 8 0 0 1 282 390H18A8 8 0 0 1 10 382V18A8 8 0 0 1 18 10Z');
+const TPL_UPG_DATE = '2026-10-15';
+(function () {
+  const RE = window.TPL_RE || {}, UP = window.TPL_UP || {}, ADD = window.TPL_ADD || [];
+  const strokeAll = (c, ds) => { for (const d of ds) c.stroke(new Path2D(d)); };
+  for (const t of TEMPLATES) {
+    const re = RE[t.id], up = UP[t.id];
+    if (re) { const ds = re.d; t.probe = re.p; t.draw = (c) => strokeAll(c, ds); t.added = TPL_UPG_DATE; }
+    else if (up) {
+      const o = t.draw, ds = up.d, clip = !!up.c;
+      t.draw = (c) => { if (clip) { c.save(); c.clip(TPL_FRAME_CLIP); o(c); c.restore(); } else o(c); strokeAll(c, ds); };
+    }
+  }
+  for (const a of ADD) { const ds = a.d; TEMPLATES.push({ id: a.id, cat: a.cat, probe: a.p, added: TPL_UPG_DATE, draw(c) { strokeAll(c, ds); } }); }
+  // rayitas de tinta que cierran rendijas angostas (cuellos de menos de 4 unidades) para que cada zona se pinte por separado
+  const PR = window.TPL_PROBE || {}; for (const t of TEMPLATES) if (PR[t.id]) t.probe = PR[t.id];   // punto de prueba dentro de la zona principal (para las pruebas)
+  const FIX = window.TPL_FIX || {};
+  for (const t of TEMPLATES) { const fx = FIX[t.id]; if (!fx || !fx.length) continue; const o = t.draw; t.draw = (c) => { o(c); strokeAll(c, fx); }; }
+})();
 /* «Nuevo» en las plantillas recién añadidas (hasta TPL_NEW_DAYS días o hasta que se abren) */
 const TPL_SEEN_KEY = 'colorear.tplVistos';
 let tplSeen = []; try { tplSeen = JSON.parse(localStorage.getItem(TPL_SEEN_KEY) || '[]') || []; } catch (_) { tplSeen = []; }
@@ -7410,19 +7437,103 @@ $('#vidClear').onclick = async () => {
 };
 
 /* ---------- 3.9: Reto del día: una plantilla, 3 a 5 colores y una idea (sale igual para todos ese día; funciona sin internet) ---------- */
-const RETO_KEY = 'colorear.reto', RETO_PROMPTS = 12;
-function dayStr(d = new Date()) { const p = (n) => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`; }
+const RETO_KEY = 'colorear.reto';
+/* 3.10.3: retos de verdad. [id, dificultad 1-3, colores, plantillas (ids o 'cat:nombre'; null = cualquiera)]
+   Textos: reto.t.<id> (título) y reto.p.<id> (una línea). Cada día toca uno, en un orden fijo que no repite hasta dar la vuelta completa. */
+const RETO_DEFS = [
+  ['tres', 2, 'pal3', null],
+  ['calidos', 1, 'warm', null],
+  ['frios', 1, 'cool', null],
+  ['mono', 2, 'mono', null],
+  ['degradado', 3, 'pal3', null],
+  ['suave', 3, 'none', null],
+  ['atardecer', 1, 'sunset', null],
+  ['mandalagel', 2, 'gems', ["cat:mandalas"]],
+  ['mezclador', 2, 'pal3', null],
+  ['lapices', 2, 'pal4', null],
+  ['opuestos', 2, 'compl', null],
+  ['noche', 2, 'night', null],
+  ['espejo', 1, 'pal4', ["mariposa"]],
+  ['foto', 3, 'none', null],
+  ['arcoiris', 1, 'rainbow', null],
+  ['puntillismo', 3, 'pal4', null],
+  ['pastel', 1, 'pastel', null],
+  ['neon', 2, 'neon', null],
+  ['estaciones', 2, 'seasons', null],
+  ['sinblanco', 2, 'pal5', null],
+  ['patrones', 3, 'pal5', null],
+  ['luz', 3, 'mono', null],
+  ['naturaleza', 1, 'nature', null],
+  ['boricua', 1, 'boricua', ["cat:pr"]],
+  ['fondo', 1, 'pal3', null],
+  ['fantasia', 1, 'pal5', null],
+  ['acuarela', 2, 'pal4', null],
+  ['spray', 1, 'pal3', null],
+  ['gel', 2, 'pal4', null],
+  ['oscuroclaro', 2, 'mono', null],
+  ['contraste', 2, 'compl', null],
+  ['expres', 1, 'pal4', null],
+  ['gris', 3, 'gray', null],
+  ['mitad', 2, 'pal5', null],
+  ['vitral', 2, 'gems', null],
+  ['joyas', 1, 'gems', null],
+  ['playa', 1, 'beach', ["flamenco", "luquillo", "buye", "islaverde", "palmera", "bahia", "tortuga", "pez"]],
+  ['fiesta', 2, 'party', ["vejigante", "pava", "flamboyan", "coqui", "coqui2", "mariposa", "sol"]]
+];
+const RETO_FIXED = {
+  warm: ['#B3001B', '#FF3B1F', '#FF7A00', '#FFB300', '#FFE259'],
+  cool: ['#1E6FD9', '#48C6EF', '#2E8B3E', '#7BC950', '#7B5CE0'],
+  sunset: ['#3D2C8D', '#B83B5E', '#FF7E67', '#F9A826', '#FFD56B'],
+  night: ['#0B1B4A', '#1F2F7A', '#3D2C8D', '#6A2C70', '#00BBF9'],
+  rainbow: ['#FF3B30', '#FF9500', '#FFCC00', '#34C759', '#00A6FF', '#5856D6', '#AF52DE'],
+  seasons: ['#7BC950', '#FFD100', '#DD6E1F', '#48C6EF'],
+  gems: ['#C2185B', '#00897B', '#1E56C8', '#7B2FFF', '#F2B705'],
+  beach: ['#F2D49B', '#48C6EF', '#FF7A59', '#2E8B3E', '#0077B6'],
+  party: ['#ED1C24', '#FFD100', '#00A651', '#0050F0', '#FF5A1F', '#AF52DE'],
+  nature: ['#2E8B3E', '#7BC950', '#8B5E3C', '#C9A66B', '#48C6EF'],
+};
+const RETO_PAL = { pastel: 'pastel', neon: 'neon', boricua: 'boricua' };
+const RETO_COMPL = [['#1E6FD9', '#FF8A1F'], ['#E53935', '#2E9B4E'], ['#7B2FFF', '#FFD100'], ['#00A6A6', '#E8505B']];
+function hslHex(h, s, l) {
+  s /= 100; l /= 100; const k = (n) => (n + h / 30) % 12, a = s * Math.min(l, 1 - l), f = (n) => l - a * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1));
+  return '#' + [f(0), f(8), f(4)].map((v) => Math.round(v * 255).toString(16).padStart(2, '0')).join('').toUpperCase();
+}
 function hashStr(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } h ^= h >>> 15; h = Math.imul(h, 2246822507); h ^= h >>> 13; return h >>> 0; }
-function retoFor(ds) {
-  const h = hashStr('reto:' + ds), h2 = hashStr(ds + ':colores');
-  const pool = TEMPLATES.filter((t) => t.id !== 'bandera');
-  const tpl = pool[h % pool.length];
-  const pals = PALETTES.filter((p) => !p.dyn && p.id !== 'piel');
-  const pal = pals[h2 % pals.length];
-  const k = 3 + ((h2 >>> 8) % 3), len = pal.c.length, start = (h2 >>> 12) % len, step = [1, 3, 5, 7][(h2 >>> 20) % 4];
+function dayStr(d = new Date()) { const p = (n) => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`; }
+function dayNum(ds) { const [y, m, d] = ds.split('-').map(Number); return Math.floor(Date.UTC(y, m - 1, d) / 864e5); }
+let retoOrder = null;
+function retoOrderGet() {
+  if (retoOrder) return retoOrder;
+  const n = RETO_DEFS.length, a = Array.from({ length: n }, (_, i) => i); let h = hashStr('reto-orden-3.10.3');
+  for (let i = n - 1; i > 0; i--) { h = (Math.imul(h, 1664525) + 1013904223) >>> 0; const j = h % (i + 1); [a[i], a[j]] = [a[j], a[i]]; }
+  return (retoOrder = a);
+}
+function retoPool(tokens) {
+  let pool = [];
+  if (tokens) for (const tk of tokens) { if (tk.startsWith('cat:')) pool.push(...TEMPLATES.filter((t) => t.cat === tk.slice(4))); else { const t = TEMPLATES.find((x) => x.id === tk); if (t) pool.push(t); } }
+  if (!pool.length) pool = TEMPLATES.filter((t) => t.id !== 'bandera');
+  return pool;
+}
+function retoColors(mode, h2) {
+  const pick = (a, n) => a.slice(0, n);
+  if (RETO_FIXED[mode]) return RETO_FIXED[mode].slice();
+  if (mode === 'none') return [];
+  if (mode === 'compl') return RETO_COMPL[h2 % RETO_COMPL.length].slice();
+  if (mode === 'mono') { const hue = (h2 >>> 4) % 360; return [92, 80, 66, 52, 38].map((l) => hslHex(hue, 70, l)); }
+  if (mode === 'gray') return ['#2B2B2B', '#5C5C5C', '#8E8E8E', '#BDBDBD', '#E4E4E4', ['#E53935', '#FFB300', '#1E6FD9'][h2 % 3]];
+  if (RETO_PAL[mode]) { const pl = PALETTES.find((x) => x.id === RETO_PAL[mode]); return pl ? pl.c.filter((c) => c !== '#FFFFFF').slice(0, 6) : []; }
+  const k = mode === 'pal3' ? 3 : mode === 'pal4' ? 4 : 5;
+  const pals = PALETTES.filter((p) => !p.dyn && p.id !== 'piel'), pal = pals[h2 % pals.length], len = pal.c.length, start = (h2 >>> 12) % len, step = [1, 3, 5, 7][(h2 >>> 20) % 4];
   const colors = [];
   for (let i = 0; colors.length < k && i < len * 2; i++) { const c = pal.c[(start + i * step) % len]; if (!colors.includes(c) && c !== '#FFFFFF') colors.push(c); }
-  return { date: ds, tpl: tpl.id, pal: pal.id, colors, prompt: 'reto.p.' + ((h >>> 16) % RETO_PROMPTS) };
+  return colors;
+}
+function retoFor(ds) {
+  const h = hashStr('reto:' + ds), h2 = hashStr(ds + ':colores');
+  const def = RETO_DEFS[retoOrderGet()[((dayNum(ds) % RETO_DEFS.length) + RETO_DEFS.length) % RETO_DEFS.length]];
+  const [id, level, mode, tokens] = def;
+  const pool = retoPool(tokens), tpl = pool[h % pool.length];
+  return { date: ds, id, level, tpl: tpl.id, pal: mode, colors: retoColors(mode, h2), prompt: 'reto.p.' + id, title: 'reto.t.' + id };
 }
 function retoData() { try { const s = JSON.parse(localStorage.getItem(RETO_KEY) || 'null'); if (s && Array.isArray(s.done)) return s; } catch (_) {} return { done: [] }; }
 function retoSave(s) { try { localStorage.setItem(RETO_KEY, JSON.stringify(s)); } catch (_) {} }
@@ -7436,8 +7547,12 @@ function renderReto() {
   const r = retoFor(dayStr()), s = retoData(), done = s.done.includes(r.date), started = s.started === r.date;
   const t = TEMPLATES.find((x) => x.id === r.tpl);
   const cv = $('#retoThumb'), c = cv.getContext('2d'); c.fillStyle = '#fff'; c.fillRect(0, 0, cv.width, cv.height); if (t) renderTemplate(c, t, cv.width, cv.height);
+  $('#retoTitle').textContent = tt(r.title);
   $('#retoPrompt').textContent = tt(r.prompt, { name: t ? t.name : '' });
   $('#retoName').textContent = t ? t.name : '';
+  const lv = tt('reto.lvl.' + r.level), st = $('#retoStars');
+  st.textContent = '★'.repeat(r.level) + '☆'.repeat(3 - r.level); st.title = tt('reto.diff') + ': ' + lv; st.setAttribute('aria-label', tt('reto.diff') + ': ' + lv);
+  $('#retoLvl').textContent = lv;
   const cols = $('#retoCols'); cols.textContent = '';
   for (const col of r.colors) { const i = document.createElement('i'); i.style.background = col; i.title = COLOR_NAME[col] || col; cols.append(i); }
   const n = retoStreak(s);
@@ -7454,9 +7569,9 @@ function retoStart(ds = dayStr()) {
   const cont = s.started === r.date && s.proc === procId && !s.done.includes(r.date);
   if (!cont) loadTemplate(r.tpl);          // se puede deshacer, como al elegir cualquier plantilla
   s.started = r.date; s.proc = procId; retoSave(s);
-  applyPalette({ id: 'reto', name: tt('reto.title'), c: r.colors }, { quiet: true });
+  if (r.colors.length) applyPalette({ id: 'reto', name: tt('reto.title'), c: r.colors }, { quiet: true });
   setMode('color'); setColorTool('fill');
-  toast('🎯 ' + tt(r.prompt, { name: (TEMPLATES.find((x) => x.id === r.tpl) || {}).name || '' }), 4200);
+  toast('🎯 ' + tt(r.title) + ' · ' + tt(r.prompt, { name: (TEMPLATES.find((x) => x.id === r.tpl) || {}).name || '' }), 4200);
   renderReto();
   return r;
 }
