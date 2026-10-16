@@ -3785,6 +3785,9 @@ const TPL_UPG_DATE = '2026-10-15';
     }
   }
   for (const a of ADD) { const ds = a.d; TEMPLATES.push({ id: a.id, cat: a.cat, probe: a.p, added: TPL_UPG_DATE, draw(c) { strokeAll(c, ds); } }); }
+  // 3.12: estilo «cozy» (líneas gruesas y redondas, formas simples y zonas grandes); cada una trae su grosor de línea
+  const CZ = window.TPL_COZY || {};
+  for (const t of TEMPLATES) { const z = CZ[t.id]; if (!z) continue; const ds = z.d, lw = z.w; t.probe = z.p; t.added = TPL_UPG_DATE; t.draw = (c) => { c.lineWidth = lw; strokeAll(c, ds); }; }
   // rayitas de tinta que cierran rendijas angostas (cuellos de menos de 4 unidades) para que cada zona se pinte por separado
   const PR = window.TPL_PROBE || {}; for (const t of TEMPLATES) if (PR[t.id]) t.probe = PR[t.id];   // punto de prueba dentro de la zona principal (para las pruebas)
   const FIX = window.TPL_FIX || {};
