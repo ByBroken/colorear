@@ -773,6 +773,10 @@ body.ui-hidden.obj-mode #miniBar{display:none}
 #paper.c-stamp{cursor:crosshair}
 #stampBox[hidden],#stampAdv[hidden]{display:none!important}
 #stampBox{margin-top:8px;padding:8px;border-radius:16px;background:#fbf8ff;box-shadow:inset 0 0 0 1px var(--line)}
+#stampCats{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;touch-action:pan-x;padding:0 2px 6px}
+#stampCats::-webkit-scrollbar{display:none}
+#stampCats .st-cc{flex:0 0 auto;border:0;border-radius:15px;background:#ece7fb;color:var(--accent2);font-weight:800;font-size:12px;height:30px;padding:0 11px;white-space:nowrap}
+#stampCats .st-cc.on{background:var(--sel);color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent)}
 #stampStrip{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;touch-action:pan-x;padding:2px 2px 6px;scroll-snap-type:x proximity}
 #stampStrip::-webkit-scrollbar{display:none}
 #stampStrip .st-cat{flex:0 0 auto;align-self:center;writing-mode:horizontal-tb;font-size:11px;font-weight:800;color:var(--accent2);background:#ece7fb;border-radius:10px;padding:6px 8px;max-width:84px;line-height:1.1;text-align:center;scroll-snap-align:start}
@@ -1078,6 +1082,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <button class="tool" data-ctool="stamp" title="Sellos: toca la hoja para poner un sello; arrastra para dejar una estela de sellos" aria-label="Sellos"><svg><use href="#i-stamp"/></svg><span>Sellos</span></button>
   </div>
   <div id="stampBox" hidden>
+    <div id="stampCats" role="tablist" aria-label="Grupos de sellos"></div>
     <div id="stampStrip" role="listbox" aria-label="Elegir sello"></div>
     <div id="stampCtl">
       <button class="st-btn" id="stampFav" aria-pressed="false" title="Agregar a favoritos" aria-label="Agregar a favoritos">☆</button>
@@ -1089,6 +1094,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
       <div class="st-row"><label for="stampRot">Girar</label><input type="range" id="stampRot" min="0" max="345" step="15"><span class="st-val" id="stampRotV">0°</span><button class="st-btn2" id="stampRot90" aria-label="Girar 90°" title="Girar 90°">↻ 90°</button></div>
       <div class="st-row"><label for="stampSpace">Separación</label><input type="range" id="stampSpace" min="40" max="260" step="10"><span class="st-val" id="stampSpaceV">100%</span></div>
       <div class="st-row"><label>Color</label><div class="st-chips" id="stampCm"><button data-cm="mine">Mi color</button><button data-cm="rainbow">Arcoíris</button><button data-cm="random">Al azar</button></div></div>
+      <div class="st-row"><label>Línea</label><div class="st-chips" id="stampLw"><button data-lw="thin">Fina</button><button data-lw="norm">Normal</button><button data-lw="thick">Gruesa</button></div></div>
       <label class="rchk"><input type="checkbox" id="stampRand">Girar al azar</label>
       <label class="rchk"><input type="checkbox" id="stampFollow">Girar con el dedo</label>
       <button class="st-btn2" id="stampReset">Volver a lo normal</button>
@@ -1647,7 +1653,7 @@ setDocLang(); translateStatic();
 /* Colorear v3.3: crea dibujos para colorear, sube fotos de tus libros y coloréalos
    (lápiz y marcador de colores, crayón, marcadores acrílico / de agua / de alcohol, degradados, difuminar, copiar color,
    capas, ocultar botones, punta Detalle y rueda de colores con opacidad) */
-const APP_VERSION = '3.13';
+const APP_VERSION = '3.14';
 const PORTRAIT = [1200, 1600], LANDSCAPE = [1600, 1200];
 let W = 1200, H = 1600;                       // tamaño de la hoja (px internos); vertical u horizontal
 /* Grosores en píxeles de la hoja (1200×1600). "Súper fina" (xs) y "Detalle" (xxs) no son fijas: se calculan
@@ -4749,7 +4755,7 @@ function hidePanel() {
 for (const g in GRP_TAB) $('#' + GRP_TAB[g]).onclick = () => { if (openGrp === g) hidePanel(); else showPanel(g); };
 // elegir algo en el panel (o en su submenú) cierra el panel; si se abrió un submenú (tipos de marcador, degradado) se queda
 // (se escucha al final del clic, cuando el botón ya hizo lo suyo; así un toque rápido en la hoja justo después ya pinta)
-$('#panel').addEventListener('click', (e) => { if (e.target.closest('button') && !e.target.closest('#flSensMore, #stampCtl button, #stampAdv button') && !openPop) hidePanel(); });
+$('#panel').addEventListener('click', (e) => { if (e.target.closest('button') && !e.target.closest('#flSensMore, #stampCats button, #stampCtl button, #stampAdv button') && !openPop) hidePanel(); });
 document.addEventListener('click', (e) => { if (openGrp && e.target.closest && e.target.closest('.pop button') && !e.target.closest('#gMore, #gAdv') && !openPop) hidePanel(); });
 document.addEventListener('pointerdown', (e) => {
   if (!openGrp) return;
@@ -7912,11 +7918,13 @@ function flTipMaybe(cur) {
 const ST_KEY = 'colorear.sellos';
 const STAMPS = window.COLOREAR_STAMPS || { cats: [], items: [] };
 const STI = Object.create(null); for (const it of STAMPS.items) STI[it.id] = it;
-const ST = { id: 'chispa-l', size: 40, rot: 0, rand: false, follow: false, rain: false, space: 100, cm: 'mine', favs: [] };
+const ST = { id: 'fino-1', cat: 'finos', lw: 'norm', size: 22, rot: 0, rand: false, follow: false, rain: false, space: 100, cm: 'mine', favs: [] };
 try {
   const s0 = JSON.parse(localStorage.getItem(ST_KEY) || 'null');
   if (s0) {
     if (STI[s0.id]) ST.id = s0.id;
+    if (s0.cat === 'favs' || STAMPS.cats.some((c) => c.id === s0.cat)) ST.cat = s0.cat;
+    if (['thin', 'norm', 'thick'].includes(s0.lw)) ST.lw = s0.lw;
     if (isFinite(+s0.size)) ST.size = clamp(Math.round(+s0.size), 1, 100);
     if (isFinite(+s0.rot)) ST.rot = ((Math.round(+s0.rot / 15) * 15) % 360 + 360) % 360;
     if (isFinite(+s0.space)) ST.space = clamp(Math.round(+s0.space / 10) * 10, 40, 260);
@@ -7929,7 +7937,8 @@ function saveST() { try { localStorage.setItem(ST_KEY, JSON.stringify(ST)); } ca
 const stLang = () => ({ es: 0, en: 1, 'pt-BR': 2, fr: 3 }[LANG] || 0);
 const stName = (it) => it.n[stLang()] || it.n[0];
 const stCatName = (c) => c.n[stLang()] || c.n[0];
-const stampPx = () => Math.round(50 + ST.size * 4);      // tamaño en píxeles de la hoja (de 54 a 450)
+const stampPx = () => Math.round(24 + 426 * Math.pow(ST.size / 100, 1.5));      // tamaño en píxeles de la hoja (de 28 a 450); lo normal es chiquito
+const ST_LWM = { thin: 0.7, norm: 1, thick: 1.8 };
 function stPaths(it) { if (!it._p) it._p = it.p.map((q) => ({ t: q[0], path: new Path2D(q[1]), w: q[2] })); return it._p; }
 // Dibuja un sello centrado en (x, y), de lado «size», girado «ang» (radianes) y, si flip, en espejo
 function drawStamp(c, it, x, y, size, ang, flip, color, alpha) {
@@ -7939,11 +7948,11 @@ function drawStamp(c, it, x, y, size, ang, flip, color, alpha) {
   c.translate(x, y); c.rotate(ang); if (flip) c.scale(1, -1);
   c.scale(k, k); c.translate(-50, -50);
   c.fillStyle = c.strokeStyle = color; c.lineCap = 'round'; c.lineJoin = 'round';
-  const minw = 3.2 / k;                                  // las líneas finas nunca quedan más finas que ~3 px
+  const minw = 2.2 / k, lm = ST_LWM[ST.lw] || 1;         // las líneas finas nunca quedan más finas que ~2 px
   for (const q of stPaths(it)) {
-    if (q.t === 's') { c.lineWidth = Math.max(q.w || it.w || 3.6, minw); c.stroke(q.path); }
+    if (q.t === 's') { c.lineWidth = Math.max((q.w || it.w || 3.6) * lm, minw); c.stroke(q.path); }
     else if (q.t === 'e') c.fill(q.path, 'evenodd');
-    else { c.fill(q.path); if (it.j) { c.lineWidth = it.w; c.stroke(q.path); } }
+    else { c.fill(q.path); if (it.j) { c.lineWidth = it.w * lm; c.stroke(q.path); } }
   }
   c.restore();
 }
@@ -8015,14 +8024,24 @@ const stThumb = (it) => '<svg viewBox="0 0 100 100" aria-hidden="true">' + it.p.
   if (q[0] === 's') return `<path d="${q[1]}" stroke-width="${w}"/>`;
   return `<path d="${q[1]}" fill="currentColor" stroke="${it.j ? 'currentColor' : 'none'}" stroke-width="${it.j ? w : 0}"${q[0] === 'e' ? ' fill-rule="evenodd"' : ''}/>`;
 }).join('') + '</svg>';
+const stHasCat = (id) => id === 'favs' ? ST.favs.length > 0 : STAMPS.items.some((it) => it.c === id);
 function buildStampStrip() {
-  const box = $('#stampStrip'); if (!box) return;
-  const parts = [];
-  const btn = (it, fav) => `<button class="st-b" role="option" data-st="${it.id}" aria-selected="false" title="${stName(it).replace(/"/g, '&quot;')}" aria-label="${stName(it).replace(/"/g, '&quot;')}">${stThumb(it)}</button>`;
-  if (ST.favs.length) { parts.push(`<span class="st-cat">⭐ ${tt('stamp.favs')}</span>`); for (const k of ST.favs) parts.push(btn(STI[k], true)); }
-  for (const c of STAMPS.cats) { parts.push(`<span class="st-cat">${stCatName(c)}</span>`); for (const it of STAMPS.items) if (it.c === c.id) parts.push(btn(it)); }
-  box.innerHTML = parts.join('');
+  const box = $('#stampStrip'), cats = $('#stampCats'); if (!box) return;
+  if (!stHasCat(ST.cat)) ST.cat = STAMPS.cats.length ? STAMPS.cats[0].id : 'favs';
+  const btn = (it) => `<button class="st-b" role="option" data-st="${it.id}" aria-selected="false" title="${stName(it).replace(/"/g, '&quot;')}" aria-label="${stName(it).replace(/"/g, '&quot;')}">${stThumb(it)}</button>`;
+  const chips = [];
+  if (ST.favs.length) chips.push(`<button class="st-cc" role="tab" data-cat="favs" aria-selected="${ST.cat === 'favs'}">⭐ ${tt('stamp.favs')}</button>`);
+  for (const c of STAMPS.cats) chips.push(`<button class="st-cc" role="tab" data-cat="${c.id}" aria-selected="${ST.cat === c.id}">${stCatName(c)}</button>`);
+  cats.innerHTML = chips.join('');
+  cats.querySelectorAll('.st-cc').forEach((b) => b.classList.toggle('on', b.dataset.cat === ST.cat));
+  const list = ST.cat === 'favs' ? ST.favs.map((k) => STI[k]) : STAMPS.items.filter((it) => it.c === ST.cat);
+  box.innerHTML = list.map(btn).join('');
   stMarkSel();
+}
+function setStampCat(id, opts = {}) {
+  if (!stHasCat(id)) return;
+  ST.cat = id; saveST(); buildStampStrip(); $('#stampStrip').scrollLeft = 0;
+  const on = $('#stampCats .st-cc.on'); if (on && on.scrollIntoView && !opts.quiet) { const bar = $('#stampCats'), r = on.getBoundingClientRect(), R = bar.getBoundingClientRect(); if (r.left < R.left || r.right > R.right) bar.scrollLeft += r.left - R.left - 20; }
 }
 function stMarkSel() {
   const first = {};
@@ -8037,6 +8056,7 @@ function renderStampUI() {
   $('#stampRand').checked = ST.rand; $('#stampFollow').checked = ST.follow;
   $('#stampRain').classList.toggle('on', ST.rain); $('#stampRain').setAttribute('aria-pressed', String(ST.rain));
   $$('#stampCm [data-cm]').forEach((b) => b.classList.toggle('on', b.dataset.cm === ST.cm));
+  $$('#stampLw [data-lw]').forEach((b) => { b.textContent = tt('stamp.lw.' + b.dataset.lw); b.classList.toggle('on', b.dataset.lw === ST.lw); });
   stMarkSel();
 }
 let stSeen = false;
@@ -8051,13 +8071,15 @@ window.stampRefresh = function () {
 };
 function setStamp(id, opts = {}) {
   if (!STI[id]) return;
-  ST.id = id; saveST(); stMarkSel();
+  ST.id = id; const itc = STI[id].c; if (ST.cat !== 'favs' && ST.cat !== itc) { ST.cat = itc; saveST(); buildStampStrip(); } else if (ST.cat === 'favs' && !ST.favs.includes(id)) { ST.cat = itc; buildStampStrip(); }
+  saveST(); stMarkSel();
   if (!opts.quiet) { const strip = $('#stampStrip'); strip.dataset.last = id; }
 }
 function toggleStampFav() {
   const i = ST.favs.indexOf(ST.id);
   if (i >= 0) ST.favs.splice(i, 1); else ST.favs.unshift(ST.id);
   ST.favs = ST.favs.slice(0, 40); saveST();
+  if (ST.cat === 'favs' && !ST.favs.length) ST.cat = STI[ST.id].c;
   const keep = $('#stampStrip').scrollLeft; buildStampStrip(); $('#stampStrip').scrollLeft = keep;
   toast(tt(i >= 0 ? 'stamp.fav.offt' : 'stamp.fav.ont'), 1600);
 }
@@ -8072,7 +8094,9 @@ $('#stampSpace').addEventListener('input', (e) => { ST.space = clamp(Math.round(
 $('#stampRand').addEventListener('change', (e) => { ST.rand = e.target.checked; saveST(); });
 $('#stampFollow').addEventListener('change', (e) => { ST.follow = e.target.checked; saveST(); });
 $$('#stampCm [data-cm]').forEach((b) => b.onclick = () => { ST.cm = b.dataset.cm; saveST(); renderStampUI(); });
-$('#stampReset').onclick = () => { Object.assign(ST, { size: 40, rot: 0, rand: false, follow: false, rain: false, space: 100, cm: 'mine' }); saveST(); renderStampUI(); };
+$$('#stampLw [data-lw]').forEach((b) => b.onclick = () => { ST.lw = b.dataset.lw; saveST(); renderStampUI(); });
+$('#stampCats').addEventListener('click', (e) => { const b = e.target.closest('.st-cc'); if (b) { e.stopPropagation(); setStampCat(b.dataset.cat); } });
+$('#stampReset').onclick = () => { Object.assign(ST, { size: 22, lw: 'norm', rot: 0, rand: false, follow: false, rain: false, space: 100, cm: 'mine' }); saveST(); renderStampUI(); };
 buildStampStrip(); renderStampUI();
 
 /* ---------- inicio ---------- */
@@ -8110,7 +8134,7 @@ window.__colorear = {
   AG, agApply, agAddStop, agDelStop, agSelect, agSetPreset, renderAg, setGelKind, setDrawTool, tooth, hasConic,
   setMix(o) { if (o.start) state.mixStart = o.start; if (o.str != null) state.mixStr = clamp(+o.str, 0.1, 1); if (o.tex != null) state.mixTex = clamp(+o.tex, 0, 1); if (o.lines != null) state.mixLines[state.mode === 'draw' ? 'draw' : 'color'] = !!o.lines; renderMix(); refreshColorUI(); },
   renderMix, showMixTip, get mixAdvOpen() { return mixAdvOpen; },
-  ST, STI, STAMPS, setStamp, stampPx, drawStamp, toggleStampFav, buildStampStrip, renderStampUI,
+  ST, STI, STAMPS, setStamp, stampPx, drawStamp, toggleStampFav, buildStampStrip, renderStampUI, setStampCat, ST_LWM,
   SYM, setSym, symTransforms, floodFillSym, WC, SPR, newToolStyle, PALETTES, applyPalette, resetPalette, monoPalette, saveMyPalette, get quickPal() { return quickPal; }, get myPals() { return myPals; },
   sketchLineArt, openAdjust, setAdjMode, useAdjusted, makeProcessVideo, captureFrame, procFrames, deleteProc, openVideoSheet, videoMime, get procId() { return procId; }, get procOn() { return procOn; },
   retoFor, retoStart, retoComplete, retoStreak, renderReto, dayStr, TPL_NEW, tplIsNew, markTplSeen, buildTemplateGrid,
