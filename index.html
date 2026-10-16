@@ -1604,7 +1604,7 @@ setDocLang(); translateStatic();
 /* Colorear v3.3: crea dibujos para colorear, sube fotos de tus libros y coloréalos
    (lápiz y marcador de colores, crayón, marcadores acrílico / de agua / de alcohol, degradados, difuminar, copiar color,
    capas, ocultar botones, punta Detalle y rueda de colores con opacidad) */
-const APP_VERSION = '3.10.3';
+const APP_VERSION = '3.11';
 const PORTRAIT = [1200, 1600], LANDSCAPE = [1600, 1200];
 let W = 1200, H = 1600;                       // tamaño de la hoja (px internos); vertical u horizontal
 /* Grosores en píxeles de la hoja (1200×1600). "Súper fina" (xs) y "Detalle" (xxs) no son fijas: se calculan
@@ -3120,7 +3120,7 @@ function petalRing(c, cx, cy, r1, r2, n, rot = 0, fat = 1) {   // pétalos entre
   }
 }
 const grassLine = (c, y) => { c.moveTo(0, y); c.lineTo(300, y); };
-const TEMPLATE_CATS = [['animales', 'Animales'], ['naturaleza', 'Naturaleza'], ['pr', 'Puerto Rico'], ['mandalas', 'Mandalas'], ['halloween', 'Halloween'], ['navidad', 'Navidad'], ['cosas', 'Cosas']];
+const TEMPLATE_CATS = [['animales', 'Animales'], ['naturaleza', 'Naturaleza'], ['pr', 'Puerto Rico'], ['monumentos', 'Monumentos del mundo'], ['mandalas', 'Mandalas'], ['halloween', 'Halloween'], ['navidad', 'Navidad'], ['cosas', 'Cosas']];
 const TEMPLATES = [
   { id: 'casa', name: 'Casa', cat: 'cosas', probe: [90, 300], draw(c) {
     c.beginPath();
