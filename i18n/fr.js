@@ -31,7 +31,7 @@ window.COLOREAR_I18N["fr"] = {
 "qs.cur": "Couleur",
 "quick.aria": "Couleurs rapides",
 "qs.more.tip": "Plus de couleurs : 400+ couleurs",
-"more400+.aria": "Plus de couleurs (360 couleurs)",
+"more360.aria": "Plus de couleurs (400+ couleurs)",
 "obj.aria": "Modifier ce que tu as ajouté",
 "done": "OK",
 "obj.style.tip": "Passer de « en couleur » à « à colorier »",

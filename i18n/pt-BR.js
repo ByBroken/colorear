@@ -31,7 +31,7 @@ window.COLOREAR_I18N["pt-BR"] = {
 "qs.cur": "Cor",
 "quick.aria": "Cores rápidas",
 "qs.more.tip": "Mais cores: 400+ cores",
-"more400+.aria": "Mais cores (360 cores)",
+"more360.aria": "Mais cores (400+ cores)",
 "obj.aria": "Editar o que você adicionou",
 "done": "Pronto",
 "obj.style.tip": "Alternar entre colorido e para colorir",
