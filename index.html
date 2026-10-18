@@ -133,7 +133,7 @@ footer .gh{margin:0 4px 6px;font-size:12.5px;font-weight:800;color:var(--muted)}
 .tb .tbgrad{display:block;width:24px;height:21px;border-radius:6px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
 #tbTools{flex-grow:1.5}
 @media (max-width:359px){ .tb{font-size:10px;letter-spacing:-.3px;padding:0 1px} #tabBar{gap:3px} }
-#quickStrip{display:flex;align-items:center;gap:6px;padding:2px calc(env(safe-area-inset-right) + 8px) 4px calc(env(safe-area-inset-left) + 8px);background:var(--panel);box-shadow:0 1px 0 var(--line);z-index:2;min-width:0}
+#quickStrip{grid-row:3;grid-column:1;display:flex;align-items:center;gap:6px;padding:2px calc(env(safe-area-inset-right) + 8px) 4px calc(env(safe-area-inset-left) + 8px);background:var(--panel);box-shadow:0 1px 0 var(--line);z-index:2;min-width:0}
 #qsCur{flex:0 0 auto;height:30px;border:0;border-radius:15px;padding:0 8px 0 3px;display:flex;align-items:center;gap:4px;background:#f1eaf7;font-size:11.5px;font-weight:800;color:var(--accent2)}
 #qsCur i{display:block;width:24px;height:24px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.22),0 0 0 2px #fff}
 #qsList{flex:1 1 auto;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;touch-action:pan-x;min-width:0;padding:2px}
@@ -516,7 +516,7 @@ body.pbn #toast{bottom:calc(env(safe-area-inset-bottom) + 150px)!important}
 @media (orientation:landscape) and (max-height:560px){ #pbnBar{grid-column:2;grid-row:2;align-self:start} body.pbn #toast{bottom:20px!important} }
 
 /* 3.15: tira de herramientas (un toque por herramienta) */
-#toolDock{grid-row:3;grid-column:1;min-width:0;background:var(--panel);z-index:2}
+#toolDock{grid-row:2;grid-column:1;min-width:0;background:var(--panel);z-index:2}
 #toolStrip{display:flex;align-items:stretch;gap:4px;padding:2px calc(env(safe-area-inset-right) + 6px) 4px calc(env(safe-area-inset-left) + 6px);min-width:0}
 #tsList{flex:1 1 auto;min-width:0;display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;padding:2px 14px 4px 2px;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x;overscroll-behavior-x:contain;
   -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 22px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 22px),transparent)}
@@ -541,7 +541,7 @@ body.pbn #toast{bottom:calc(env(safe-area-inset-bottom) + 150px)!important}
 #quickStrip{box-shadow:none}
 body.pbn #toolDock,body.ui-hidden #toolDock{display:none!important}
 @media (max-width:359px){ .ts-t{width:66px} }
-@media (orientation:landscape) and (max-height:560px){ #toolDock{grid-column:2;grid-row:3;align-self:start} .ts-t,.ts-more{height:60px} }
+@media (orientation:landscape) and (max-height:560px){ #toolDock{grid-column:2;grid-row:2;align-self:start} .ts-t,.ts-more{height:60px} }
 @media (min-width:700px) and (min-height:600px){ .ts-t{width:84px;height:74px} .ts-l{font-size:12.5px} }
 #toast{
   position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 76px);transform:translateX(-50%) translateY(20px);
@@ -575,6 +575,7 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
   #stage{grid-column:1;grid-row:1 / span 4;padding:6px}
   header.top{grid-column:2;grid-row:1}
   #tabBar{grid-column:2;grid-row:2}
+  #quickStrip{grid-column:2;grid-row:3;align-self:start}
   footer .row{flex-wrap:wrap}
   footer .tool{flex:1 0 56px;height:52px}
   :root{--btn:44px}
@@ -1066,22 +1067,22 @@ body.ui-hidden.obj-mode #miniBar{display:none}
   <button class="ib" id="btnSave" title="Guardar en Mis dibujos" aria-label="Guardar en Mis dibujos"><svg><use href="#i-save"/></svg></button>
   <button class="ib" id="btnMenu" title="Menú" aria-label="Menú"><svg><use href="#i-menu"/></svg></button>
 </header>
+<div id="toolDock">
+<div id="toolStrip" role="toolbar" aria-label="Herramientas: toca una para usarla">
+  <div id="tsList" role="group"></div>
+  <button class="ts-more" id="tbTools" data-grp="tools" aria-haspopup="dialog" aria-expanded="false" title="Todas las herramientas y ajustes" aria-label="Todas las herramientas y ajustes"><span class="tbi" hidden></span><span class="ts-dots" aria-hidden="true">⋯</span><span class="tbl"></span></button>
+</div>
 <nav id="tabBar" role="toolbar" aria-label="Herramientas y opciones">
   <button class="tb" id="tbColors" data-grp="colors" aria-haspopup="dialog" aria-expanded="false" title="Colores: colores rápidos, Más colores, Otro y Copiar color" aria-label="Colores"><span class="tbi"><i class="tbsw"></i></span><span class="tbl">Colores</span></button>
   <button class="tb" id="tbSize" data-grp="size" aria-haspopup="dialog" aria-expanded="false" title="Tamaño de la punta: de Detalle a Gruesa" aria-label="Tamaño"><span class="tbi"><i class="tbdot"></i></span><span class="tbl">Tamaño</span></button>
   <button class="tb" id="layersBtn" title="Capas: pinta en hojas transparentes, una encima de otra" aria-label="Capas" aria-haspopup="dialog" aria-expanded="false"><span class="tbi"><svg><use href="#i-layers"/></svg></span><span class="tbl">Capas</span><span class="lcount" hidden></span></button>
   <button class="tb" id="tbMore" data-grp="more" aria-haspopup="dialog" aria-expanded="false" title="Más: añadir stickers y texto, limpiar la hoja, ocultar botones" aria-label="Más opciones"><span class="tbi"><svg><use href="#i-grip"/></svg></span><span class="tbl">Más</span></button>
 </nav>
-<div id="toolDock">
-<div id="toolStrip" role="toolbar" aria-label="Herramientas: toca una para usarla">
-  <div id="tsList" role="group"></div>
-  <button class="ts-more" id="tbTools" data-grp="tools" aria-haspopup="dialog" aria-expanded="false" title="Todas las herramientas y ajustes" aria-label="Todas las herramientas y ajustes"><span class="tbi" hidden></span><span class="ts-dots" aria-hidden="true">⋯</span><span class="tbl"></span></button>
 </div>
 <div id="quickStrip" role="toolbar" aria-label="Color actual y colores rápidos">
   <button id="qsCur" title="Color actual: toca para ver todos los colores" aria-label="Color actual. Toca para ver todos los colores"><i></i>Color</button>
   <div id="qsList" aria-label="Colores rápidos"></div>
   <button id="qsMore" title="Más colores: 360 colores" aria-label="Más colores (360 colores)"></button>
-</div>
 </div>
 
 <main id="stage">
@@ -4864,7 +4865,7 @@ function placePanel() {
   const vw = innerWidth, vh = innerHeight, w = Math.min(bar.width - (vw < 400 ? 4 : 8), 620);
   const tab = openGrp && $('#' + GRP_TAB[openGrp]).getBoundingClientRect();
   const m = vw < 400 ? 2 : 4, left = clamp(tab ? tab.left + tab.width / 2 - w / 2 : bar.left + m, bar.left + m, bar.right - m - w);
-  const top = Math.round((openGrp === 'tools' ? $('#toolStrip').getBoundingClientRect().bottom : bar.bottom) + 2);
+  const top = Math.round(bar.bottom + 2);
   p.style.width = w + 'px'; p.style.left = Math.round(left) + 'px'; p.style.top = top + 'px';
   p.style.maxHeight = Math.max(160, vh - top - 10) + 'px';
 }
