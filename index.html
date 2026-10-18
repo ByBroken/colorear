@@ -1885,7 +1885,7 @@ function buildColorNames() {
 buildColorNames();
 for (const f of COLOR_FAMILIES) Object.defineProperty(f, 'n', { get: () => tt('fam.' + f.id), enumerable: true });
 // tonos que se ven en la fila compacta de cada familia (el tono medio de cada fila; en grises también blanco y negro)
-const famReps = (f) => f.id === 'grises' ? [[0, 0], [0, 3], [1, 0], [1, 5], [2, 3], [3, 3]] : f.rows.map((_, ri) => [ri, 3]);
+const famReps = (f) => f.id === 'grises' ? [[0, 0], [0, 3], [1, 0], [1, 5], [2, 3], [3, 3]] : f.id === 'neon' ? [0, 2, 5, 7, 10].filter((r) => r < f.rows.length).map((r) => [r, 3]) : f.rows.map((_, ri) => [ri, 3]);   // neón: solo 5 de muestra (son 12 filas y no caben cerradas)
 const colorLabel = (c) => (COLOR_CODE[c] ? COLOR_CODE[c] + ' · ' : '') + (COLOR_NAME[c] || tt('qs.cur'));
 /* degradados listos (de arriba a abajo) */
 const GRAD_PRESETS = [
@@ -4742,7 +4742,7 @@ $('#moreColors').onclick = openColorsSheet;
   });
 })();
 function relabelNeon() {
-  $('#neonLine .rlbl').textContent = tt('neon.row'); $('#neonMore').textContent = tt('neon.all'); $('#neonMore').title = tt('neon.all.tip');
+  $('#neonLine .rlbl').textContent = tt('neon.row'); $('#neonMore').textContent = tt('neon.all'); $('#neonMore').title = tt('neon.all.tip'); $('#neonQuick').setAttribute('aria-label', tt('neon.quick.aria'));
   $$('#neonQuick .sw').forEach((b) => { const c = b.dataset.c; b.title = COLOR_NAME[c] + ' · ' + COLOR_CODE[c]; b.setAttribute('aria-label', tt('code.aria', { name: COLOR_NAME[c], code: COLOR_CODE[c] })); b.classList.toggle('on', c === curColor()); });
 }
 $('#neonMore').onclick = () => { openColorsSheet(); setFamOpen('neon', true); showFam('neon'); const sc = $('#cScroll'), sec = $('#fam-neon'); sc.scrollTop = Math.max(0, sec.offsetTop - 4); };
