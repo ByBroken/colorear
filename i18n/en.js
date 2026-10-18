@@ -986,5 +986,15 @@ window.COLOREAR_I18N["en"] = {
 "pbn.done.close": "Keep looking",
 "ptool.more": "All",
 "ptool.more.tip": "All tools and settings",
-"ptool.aria": "Tools: tap one to use it"
+"ptool.aria": "Tools: tap one to use it",
+"grad.own": "My colors",
+"grad.own.tip": "Gradient with your own colors: pick 2 or 3",
+"grad.own.hint": "Tap a circle and pick its color",
+"grad.own.add": "Add a third color",
+"grad.own.del": "Remove third color",
+"grad.own.other": "More colors…",
+"grad.own.swap": "Reverse",
+"grad.own.done": "Done",
+"grad.own.stop": "Gradient color {n}",
+"grad.own.stop.sel": "Gradient color {n} (selected): tap again for more colors"
 };

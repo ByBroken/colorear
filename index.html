@@ -203,6 +203,19 @@ footer .gh{margin:0 4px 6px;font-size:12.5px;font-weight:800;color:var(--muted)}
 /* degradado fácil: degradados listos */
 #gradPop{width:340px;overflow-y:auto;overscroll-behavior:contain}
 .pop .ghint{font-size:14px;font-weight:700;color:var(--ink);margin:0 4px 8px;line-height:1.3}
+.gown-row{display:flex;gap:10px;align-items:center;justify-content:center;margin-top:10px}
+.gown-row button{flex:0 0 auto;width:54px;height:54px;border-radius:50%;border:0;box-shadow:inset 0 0 0 1px rgba(0,0,0,.22);position:relative;touch-action:manipulation}
+.gown-row button.on{box-shadow:0 0 0 3px #fff,0 0 0 6px var(--accent)}
+.gown-row button.add{background:#faf6f1;border:2px dashed #b9aacb;box-shadow:none;font-size:28px;font-weight:700;color:var(--accent2)}
+.gown-row button.add:active,.gown-row button:active{transform:scale(.94)}
+.gown-prev{height:30px;border-radius:15px;margin-top:10px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+#gOwn .gpal{margin-top:6px}
+#gOwn .gpal .sw{min-height:34px;border-radius:50%}
+#gOwn .gpal .sw.on{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--accent)}
+.gown-act{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.gown-act button{flex:1 1 auto;min-height:44px;border:0;border-radius:14px;background:#f1eaf7;font-weight:700;font-size:14px;color:var(--ink);padding:0 10px;touch-action:manipulation}
+.gown-act button.ok{background:var(--accent);color:#fff;flex:1 1 100%}
+.gown-act button[hidden]{display:none}
 .gpresets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 .gpresets button{border:0;border-radius:14px;background:#faf6f1;padding:5px 5px 6px;display:flex;flex-direction:column;align-items:stretch;gap:4px;
   min-height:66px;font-size:12.5px;font-weight:700;color:var(--ink);line-height:1.1;text-align:center}
@@ -1280,6 +1293,18 @@ body.ui-hidden.obj-mode #miniBar{display:none}
   <h4>Degradado</h4>
   <p class="ghint">Toca una zona para pintar con degradado 👆</p>
   <div class="gpresets" id="gPresets"></div>
+  <div id="gOwn" hidden>
+    <div class="gown-row" id="gOwnRow" role="group"></div>
+    <div class="gown-prev" id="gOwnPrev"></div>
+    <p class="ptip" id="gOwnTip">Toca un círculo y elige su color</p>
+    <div class="gpal" id="gOwnPal"></div>
+    <div class="gown-act">
+      <button type="button" id="gOwnOther"><span aria-hidden="true">🎨</span> <span class="t">Más colores…</span></button>
+      <button type="button" id="gOwnSwap"><span aria-hidden="true">⇄</span> <span class="t">Invertir</span></button>
+      <button type="button" id="gOwnDel" hidden>Quitar tercer color</button>
+      <button type="button" id="gOwnDone" class="ok">Listo</button>
+    </div>
+  </div>
   <button class="gmore" id="gMore" aria-expanded="false" aria-controls="gAdv">Más opciones <b>▾</b></button>
   <div id="gAdv" hidden>
     <div class="grow">
@@ -3207,11 +3232,12 @@ function lighterOf(hex) {
   return ('#' + h(r) + h(g) + h(b)).toUpperCase();
 }
 function gradStops() {
+  if (state.gradPreset === 'own' && state.gradOwn) return state.gradOwn.slice();
   if (state.gradPreset === 'custom') return [state.color, state.color2];
   const p = GRAD_PRESETS.find((x) => x.id === state.gradPreset);
   return p && p.s ? p.s : [state.color, lighterOf(state.color)];
 }
-const gradUsesColor = () => state.gradPreset === 'mine' || state.gradPreset === 'custom';
+const gradUsesColor = () => state.gradPreset === 'mine' || state.gradPreset === 'custom' || state.gradPreset === 'own';
 // Flecha de vista previa al arrastrar con el degradado
 function drawGradArrow(c, a, b) {
   const stops = gradStops(), cA = stops[0], cB = stops[stops.length - 1];
@@ -4181,6 +4207,7 @@ $$('#colorSizes .size').forEach((b) => b.onclick = () => {
 const cssGrad = (stops, ang) => stops.length > 1 ? `linear-gradient(${ang}, ${stops.join(', ')})` : stops[0];
 function updateGradUI() {
   const stops = gradStops(), c1 = state.color, c2 = state.color2, radial = state.gradType === 'radial';
+  try { renderOwn(); } catch (_) {}
   const sw = $('#gradBtn .gswatch'); sw.style.background = radial ? `radial-gradient(circle, ${stops.join(', ')})` : cssGrad(stops, '180deg'); sw.classList.toggle('radial', radial);
   $$('#gPresets [data-gp]').forEach((b) => {
     b.classList.toggle('on', b.dataset.gp === state.gradPreset);
@@ -4209,6 +4236,14 @@ function buildGradPresets() {
     };
     p.append(b);
   }
+  const o = document.createElement('button'); o.dataset.gp = 'own'; o.title = tt('grad.own.tip'); o.setAttribute('aria-label', o.title);
+  o.innerHTML = '<i></i>' + tt('grad.own');
+  o.onclick = () => {
+    state.gradPreset = 'own'; state.gradSeen = true;
+    pickTool(); setColorTool('grad'); updateGradUI();
+    if (openPop && openPop.pop.id === 'gradPop') { const a = openPop.anchor; showPop('gradPop', a); $('#gradPop').scrollTop = 0; }
+  };
+  p.insertBefore(o, p.children[1] || null);
 }
 buildGradPresets();
 $('#gMore').onclick = () => {
@@ -4223,6 +4258,60 @@ $('#gMore').onclick = () => {
     b.onclick = () => { state.color2 = c; state.gradPreset = 'custom'; updateGradUI(); }; p.append(b);
   }
 })();
+/* ---------- 3.16: degradado con mis propios colores (2 o 3) ---------- */
+const GOWN_KEY = 'colorear.gradOwn', GOWN_DEF = ['#FF6B6B', '#4D96FF'];
+state.gradOwn = (() => { try { const a = JSON.parse(localStorage.getItem(GOWN_KEY) || 'null'); if (Array.isArray(a) && a.length >= 2 && a.length <= 3 && a.every((x) => /^#[0-9A-Fa-f]{6}$/.test(x))) return a.map((x) => x.toUpperCase()); } catch (_) {} return GOWN_DEF.slice(); })();
+state.gradOwnSel = 0;
+const saveOwn = () => { try { localStorage.setItem(GOWN_KEY, JSON.stringify(state.gradOwn)); } catch (_) {} };
+function renderOwn() {
+  const box = $('#gOwn'); if (!box || !state.gradOwn) return;
+  const on = state.gradPreset === 'own'; box.hidden = !on;
+  const own = state.gradOwn, row = $('#gOwnRow'), sel = Math.min(state.gradOwnSel, own.length - 1);
+  state.gradOwnSel = sel; row.textContent = '';
+  own.forEach((c, i) => {
+    const b = document.createElement('button'); b.type = 'button'; b.dataset.gs = i; b.style.background = c; b.classList.toggle('on', i === sel);
+    b.setAttribute('aria-label', tt(i === sel ? 'grad.own.stop.sel' : 'grad.own.stop', { n: i + 1 }) + ' · ' + (COLOR_NAME[c] || c)); b.title = COLOR_NAME[c] || c;
+    row.append(b);
+  });
+  if (own.length < 3) { const a = document.createElement('button'); a.type = 'button'; a.className = 'add'; a.id = 'gOwnAdd'; a.textContent = '+'; a.setAttribute('aria-label', tt('grad.own.add')); a.title = tt('grad.own.add'); row.append(a); }
+  $('#gOwnPrev').style.background = cssGrad(own, '90deg');
+  $('#gOwnTip').textContent = tt('grad.own.hint');
+  $$('#gOwnPal .sw').forEach((s) => s.classList.toggle('on', s.dataset.c === own[sel]));
+  $('#gOwnOther .t').textContent = tt('grad.own.other'); $('#gOwnSwap .t').textContent = tt('grad.own.swap');
+  $('#gOwnDel').textContent = tt('grad.own.del'); $('#gOwnDel').hidden = own.length < 3; $('#gOwnDone').textContent = tt('grad.own.done');
+  const t = $('#gradBtn .gswatch'); if (t && state.gradPreset === 'own') t.style.background = state.gradType === 'radial' ? `radial-gradient(circle, ${own.join(', ')})` : cssGrad(own, '180deg');
+  const pb = $('#gPresets [data-gp="own"] i'); if (pb) pb.style.background = cssGrad(own, '180deg');
+}
+function setOwnStop(i, hex) { state.gradOwn[i] = String(hex).toUpperCase(); saveOwn(); updateGradUI(); }
+function reopenGradPop() {
+  const a = document.querySelector('#tsList [data-st="grad"]') || $('#gradBtn');
+  if (a && a.getClientRects().length) showPop('gradPop', a);
+}
+(function buildOwnPalette() {
+  const p = $('#gOwnPal');
+  for (const c of ['#FF3B30', '#FF9500', '#FFCC00', '#FFE66D', '#34C759', '#A8E063', '#00C7BE', '#5AC8FA',
+                   '#007AFF', '#1E3A8A', '#5856D6', '#AF52DE', '#FF2D92', '#FFB3D9', '#8B4513', '#FFFFFF',
+                   '#9E9E9E', '#333333', '#FFD700', '#39FF14', '#00F0FF', '#FF2FD6', '#FF6EC7', '#CCFF00']) {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'sw'; b.style.background = c; b.dataset.c = c; b.title = COLOR_NAME[c] || c; b.setAttribute('aria-label', tt('grad.second.aria', { name: COLOR_NAME[c] || c }));
+    b.onclick = () => setOwnStop(state.gradOwnSel, c);
+    p.append(b);
+  }
+})();
+$('#gOwnRow').addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.id === 'gOwnAdd') {
+    const o = state.gradOwn; o.push(o[o.length - 1]); state.gradOwnSel = 2; saveOwn(); updateGradUI();
+    if (openPop && openPop.pop.id === 'gradPop') showPop('gradPop', openPop.anchor);
+    return;
+  }
+  const i = +b.dataset.gs;
+  if (i === state.gradOwnSel) { openPicker('gradstop', state.gradOwn[i]); return; }   // otra vez: todos los colores (rueda y código)
+  state.gradOwnSel = i; updateGradUI();
+});
+$('#gOwnOther').onclick = () => openPicker('gradstop', state.gradOwn[state.gradOwnSel]);
+$('#gOwnSwap').onclick = () => { state.gradOwn.reverse(); saveOwn(); updateGradUI(); };
+$('#gOwnDel').onclick = () => { state.gradOwn.pop(); state.gradOwnSel = Math.min(state.gradOwnSel, 1); saveOwn(); updateGradUI(); if (openPop && openPop.pop.id === 'gradPop') showPop('gradPop', openPop.anchor); };
+$('#gOwnDone').onclick = () => { pickTool(); setColorTool('grad'); hidePop(); toast(tt('toast.gradtap')); };
 $('#gSwap').onclick = () => { const c = state.color; state.gradPreset = 'custom'; setColor(state.color2); state.color2 = c; updateGradUI(); };
 $$('#gType [data-gt]').forEach((b) => b.onclick = () => { state.gradType = b.dataset.gt; updateGradUI(); });
 $$('#gDir [data-gd]').forEach((b) => b.onclick = () => { state.gradDir = b.dataset.gd; updateGradUI(); });
@@ -5359,16 +5448,16 @@ function removeSlot(i) {
     else { mySlots[i] = { c: pkHex(), a: Math.round(pk.a * 100) / 100 }; saveSlots(); renderSlots(); toast(tt('toast.slotsaved'), 1800, mySlots[i].c); }
   });
 })();
-function openPicker(from) {
+function openPicker(from, hex) {
   hidePop();
   pk.from = from || null;
-  const [h, s, v] = rgbToHsv(...hexToRgb(curColor()));
+  const [h, s, v] = rgbToHsv(...hexToRgb(hex || curColor()));
   if (s > 0.001 && v > 0.001) pk.h = h;
   pk.s = s; pk.v = v; pk.a = curAlpha();
   openSheet('#pickerDlg');
   drawWheel(); renderSlots(); pkUpdate();
 }
-function closePicker() { closeSheet('#pickerDlg'); pk.drag = null; }
+function closePicker(reopen) { closeSheet('#pickerDlg'); pk.drag = null; if (reopen && pk.from === 'gradstop') setTimeout(reopenGradPop, 0); }
 (function wheelEvents() {
   const wh = $('#pkWheel');
   const at = (e) => {
@@ -5402,11 +5491,12 @@ function closePicker() { closeSheet('#pickerDlg'); pk.drag = null; }
 })();
 $('#pkBright').addEventListener('input', (e) => { pk.v = clamp(+e.target.value / 100, 0, 1); pkUpdate(); });
 $('#pkAlpha').addEventListener('input', (e) => { pk.a = clamp(+e.target.value / 100, 0.05, 1); pkUpdate(); });
-$('#pkCancel').onclick = closePicker;
-$('#pickerDlg').addEventListener('click', (e) => { if (e.target === $('#pickerDlg')) closePicker(); });
+$('#pkCancel').onclick = () => closePicker(true);
+$('#pickerDlg').addEventListener('click', (e) => { if (e.target === $('#pickerDlg')) closePicker(true); });
 $('#pkOk').onclick = () => {
   const hex = pkHex(), a = Math.round(pk.a * 100) / 100, from = pk.from;
-  closePicker();
+  closePicker(from === 'gradstop');
+  if (from === 'gradstop') { setOwnStop(state.gradOwnSel, hex); addRecent(hex); return; }
   if (from === 'sheet') closeSheet('#colorsSheet');
   setColor(hex, a); addRecent(hex);
   if (from === 'agstop' && agOn()) { agReopen(); return; }

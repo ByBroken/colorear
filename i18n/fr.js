@@ -986,5 +986,15 @@ window.COLOREAR_I18N["fr"] = {
 "pbn.done.close": "Continuer à regarder",
 "ptool.more": "Toutes",
 "ptool.more.tip": "Tous les outils et réglages",
-"ptool.aria": "Outils : touche-en un pour l'utiliser"
+"ptool.aria": "Outils : touche-en un pour l'utiliser",
+"grad.own": "Mes couleurs",
+"grad.own.tip": "Dégradé avec tes propres couleurs : choisis-en 2 ou 3",
+"grad.own.hint": "Touche un rond et choisis sa couleur",
+"grad.own.add": "Ajouter une 3e couleur",
+"grad.own.del": "Retirer la 3e couleur",
+"grad.own.other": "Plus de couleurs…",
+"grad.own.swap": "Inverser",
+"grad.own.done": "Terminé",
+"grad.own.stop": "Couleur {n} du dégradé",
+"grad.own.stop.sel": "Couleur {n} du dégradé (choisie) : touche encore pour plus de couleurs"
 };
