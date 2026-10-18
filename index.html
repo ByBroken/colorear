@@ -139,6 +139,8 @@ footer .gh{margin:0 4px 6px;font-size:12.5px;font-weight:800;color:var(--muted)}
 #qsList{flex:1 1 auto;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;touch-action:pan-x;min-width:0;padding:2px}
 #qsList::-webkit-scrollbar{display:none}
 #qsList .sw{flex:0 0 26px;width:26px;height:26px;min-height:26px}
+#qsList.fx{gap:7px}
+#qsList .sw.fx{flex:0 0 30px;width:30px;height:30px;min-height:30px}
 #qsList .sw.on{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--ink);transform:scale(.85)}
 #qsMore{flex:0 0 auto;width:30px;height:30px;border:0;border-radius:50%;padding:0;background:conic-gradient(#ff3b30,#ffcc00,#34c759,#00c7be,#007aff,#af52de,#ff2d92,#ff3b30);box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
 #recentLine{display:flex;align-items:center;gap:6px;margin-top:6px;min-width:0}
@@ -1353,8 +1355,10 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <button class="pbtn" data-gel="metal"><span class="gk gk-metal" aria-hidden="true"></span><div>Metálico<small>Oro, plata, cobre… con reflejos</small></div></button>
     <button class="pbtn" data-gel="glitter"><span class="gk gk-glitter" aria-hidden="true"></span><div>Brillantina<small>Con puntitos que brillan</small></div></button>
   </div>
-  <p class="aglbl">Colores metálicos:</p>
+  <p class="aglbl" id="gelMetLbl">Colores metálicos:</p>
   <div class="gelm" id="gelMetals"></div>
+  <p class="aglbl" id="gelGlitLbl" hidden>Colores de brillantina:</p>
+  <div class="gelm" id="gelGlitters" hidden></div>
 </div>
 
 <div class="pop" id="mixPop" role="dialog" aria-label="Pincel mezclador">
@@ -1832,7 +1836,10 @@ const BRUSH_ICONS = { crayon: 'i-crayon', acrylic: 'i-acrylic', water: 'i-water'
 const PENCIL_SIZES = { draw: { 0: 5, 1: 9, 2: 16 }, color: { 0: 8, 1: 18, 2: 34 } };
 const GEL_SIZES = { 0: 5, 1: 8, 2: 12 };
 const GEL_KINDS = ['normal', 'white', 'metal', 'glitter'];
-const GEL_METALS = [['gold', '#D4AF37'], ['silver', '#C0C2C9'], ['copper', '#B87333'], ['rose', '#E0A3A0']];
+const GEL_METALS = [['gold', '#D4AF37'], ['rose', '#E0A3A0'], ['silver', '#C0C2C9'], ['bronze', '#CD7F32'], ['copper', '#B87333'], ['champagne', '#E8D3A2'],
+  ['graphite', '#6B7280'], ['chrome', '#4F8FD8'], ['turquoise', '#2AA7A0'], ['emerald', '#2FA36B'], ['violet', '#8E5BD1'], ['ruby', '#C8323C']];
+const GEL_GLITTERS = [['pink', '#FF4FA3'], ['gold', '#FFC93C'], ['silver', '#D5DBE6'], ['blue', '#4DA3FF'], ['purple', '#B06CFF'], ['green', '#46D38A'],
+  ['red', '#FF4B4B'], ['turquoise', '#38E0D0'], ['orange', '#FF9A3C'], ['lilac', '#E3B8FF']];
 const ZMIN = 1, ZMAX = 6;
 const PALETTE = ['#FF3B30','#FF6F61','#FF9500','#FFCC00','#FFE66D','#A8E063','#34C759','#0B8F3C',
   '#00C7BE','#5AC8FA','#007AFF','#1E3A8A','#5856D6','#AF52DE','#D291FF','#FF2D92',
@@ -4348,6 +4355,9 @@ function setGelKind(k, quiet) {
   $$('[data-tool="gel"] .gl, [data-ctool="gel"] .gl').forEach((x) => { x.textContent = gelName(); });
   $$('[data-tool="gel"], [data-ctool="gel"]').forEach((x) => x.setAttribute('aria-label', gelName() + ' · ' + tt('tool.gel.aria')));
   $$('#gelMetals [data-mc]').forEach((x) => x.classList.toggle('on', k === 'metal' && x.dataset.mc === curColor()));
+  $$('#gelGlitters [data-gc]').forEach((x) => x.classList.toggle('on', k === 'glitter' && x.dataset.gc === curColor()));
+  { const m = k === 'metal', g = k === 'glitter'; $('#gelMetals').hidden = !m; $('#gelMetLbl').hidden = !m; $('#gelGlitters').hidden = !g; $('#gelGlitLbl').hidden = !g; }
+  if (openPop && openPop.pop.id === 'gelPop') showPop('gelPop', openPop.anchor);
   if (!quiet) refreshColorUI();
 }
 function pickGelTool() {
@@ -4358,18 +4368,30 @@ $$('#gelPop [data-gel]').forEach((b) => b.onclick = () => {
   pickGelTool(); setGelKind(b.dataset.gel); state.gelSeen = true; hidePop();
   toast(gelName() + ' ✓', 1800);
 });
+const metalBg = (c) => `linear-gradient(135deg, ${c}, #fff 45%, ${c} 62%, ${rgbHexSafe(c, 0.7)})`;
+const glitBg = (c) => `radial-gradient(circle at 28% 30%, #fff 0 7%, transparent 9%), radial-gradient(circle at 70% 38%, #fff 0 6%, transparent 8%), radial-gradient(circle at 46% 74%, #fff 0 6%, transparent 8%), radial-gradient(circle at 82% 78%, #fff 0 4%, transparent 6%), ${c}`;
+const inkOn = (c) => { const [r, g, b] = hexToRgb(c); return (0.299 * r + 0.587 * g + 0.114 * b) > 150 ? '#2d2010' : '#fff'; };
 (function buildGelMetals() {
   const box = $('#gelMetals');
   for (const [id, c] of GEL_METALS) {
     const b = document.createElement('button'); b.dataset.mc = c; b.dataset.mid = id;
-    b.style.background = `linear-gradient(135deg, ${c}, #fff 45%, ${c} 62%, ${rgbHexSafe(c, 0.7)})`;
+    b.style.background = metalBg(c); b.style.color = inkOn(rgbHexSafe(c, 0.85)); b.style.textShadow = b.style.color === 'rgb(255, 255, 255)' ? '0 1px 2px rgba(0,0,0,.6)' : '0 0 4px #fff, 0 0 2px #fff';
     b.onclick = () => { pickGelTool(); setGelKind('metal'); setColor(c); setGelKind('metal'); addRecent(c); hidePop(); toast(gelName() + ' · ' + tt('gel.m.' + id) + ' ✓', 1800, c); };
     box.append(b);
+  }
+  const gb = $('#gelGlitters');
+  for (const [id, c] of GEL_GLITTERS) {
+    const b = document.createElement('button'); b.dataset.gc = c; b.dataset.gid = id;
+    b.style.background = glitBg(c); b.style.color = inkOn(c); b.style.textShadow = b.style.color === 'rgb(255, 255, 255)' ? '0 1px 2px rgba(0,0,0,.6)' : '0 0 4px #fff, 0 0 2px #fff';
+    b.onclick = () => { pickGelTool(); setGelKind('glitter'); setColor(c); setGelKind('glitter'); addRecent(c); hidePop(); toast(gelName() + ' · ' + tt('gel.g.' + id) + ' ✓', 1800, c); };
+    gb.append(b);
   }
 })();
 function rgbHexSafe(hex, k) { const [r, g, b] = hexToRgb(hex); return '#' + [r, g, b].map((v) => Math.round(v * k).toString(16).padStart(2, '0')).join(''); }
 function relabelGel() {
   $$('#gelMetals [data-mc]').forEach((b) => { const n = tt('gel.m.' + b.dataset.mid); b.textContent = n; b.setAttribute('aria-label', tt('gel.m.aria', { name: n })); b.title = n; });
+  $$('#gelGlitters [data-gc]').forEach((b) => { const n = tt('gel.g.' + b.dataset.gid); b.textContent = n; b.setAttribute('aria-label', tt('gel.g.aria', { name: n })); b.title = n; });
+  $('#gelMetLbl').textContent = tt('gel.metals'); $('#gelGlitLbl').textContent = tt('gel.glitters');
   setGelKind(state.gelKind, true);
 }
 relabelGel();
@@ -5109,6 +5131,7 @@ function miniToolInfo() {
   return { icon: TOOL_ICON[t], name: TOOL_NAME[t] || t, tint: t === 'fill' || t === 'cpencil' || t === 'wcolor' || t === 'spray' || t === 'stamp' || (t === 'gel' && state.gelKind !== 'white') || (t === 'mixb' && state.mixStart === 'color'), grad: t === 'grad' };
 }
 function refreshMini() {
+  try { qsSync(); } catch (_) {}
   try { tsRefresh(); } catch (_) {}
   const bar = document.getElementById('miniBar'); if (!bar) return;
   const c = curColor(), a = curAlpha(), rgb = hexToRgb(c);
@@ -7836,16 +7859,22 @@ function monoPalette(hex) {
 }
 function palColors(p) { return p.dyn ? monoPalette(curColor()) : p.c; }
 function palName(p) { return p.name || tt('pal.' + p.id); }
+var qsKey = '';
+function qsFx() { if (currentTool() !== 'gel') return null; if (state.gelKind === 'metal') return { k: 'metal', list: GEL_METALS }; if (state.gelKind === 'glitter') return { k: 'glitter', list: GEL_GLITTERS }; return null; }
+function qsSync() { const f = qsFx(), k = f ? f.k : ''; if (k === qsKey) return; qsKey = k; buildQuickColors(); }
 function buildQuickColors() {
   const box = $('#qsList'); box.textContent = '';
-  const list = quickPal ? quickPal.c : QUICK;
-  for (const c of list) {
+  const fx = qsFx(), list = fx ? fx.list.map((x) => x[1]) : quickPal ? quickPal.c : QUICK;
+  box.classList.toggle('fx', !!fx);
+  list.forEach((c, i) => {
     const b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.dataset.c = c;
-    b.setAttribute('aria-label', tt('color.aria', { name: COLOR_NAME[c] || c })); b.title = COLOR_NAME[c] || c;
-    if (!quickPal && c === '#333333') b.dataset.black = '1';
+    const nm = fx ? tt('gel.' + (fx.k === 'metal' ? 'm.' : 'g.') + fx.list[i][0]) : (COLOR_NAME[c] || c);
+    if (fx) { b.style.background = fx.k === 'metal' ? metalBg(c) : glitBg(c); b.classList.add('fx'); }
+    b.setAttribute('aria-label', fx ? tt(fx.k === 'metal' ? 'gel.m.aria' : 'gel.g.aria', { name: nm }) : tt('color.aria', { name: nm })); b.title = nm;
+    if (!quickPal && !fx && c === '#333333') b.dataset.black = '1';
     b.onclick = () => { hidePanel(); setColor(b.dataset.c); };
     box.append(b);
-  }
+  });
   $('#qsList').classList.toggle('pal', !!quickPal);
   const cur = $('#palCur');
   if (cur) { cur.hidden = !quickPal; if (quickPal) { cur.querySelector('b').textContent = palName(quickPal); } }
