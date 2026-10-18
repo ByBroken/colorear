@@ -536,6 +536,19 @@ body.pbn #toast{bottom:calc(env(safe-area-inset-bottom) + 150px)!important}
 #pbnAdv[hidden]{display:none!important}
 #pbnAdv button{min-height:48px;border:0;border-radius:12px;background:#faf6f1;font-weight:700;font-size:16px;text-align:left;padding:0 14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
 #pbnAdv button:disabled{opacity:.45}
+.pbn-now{display:flex;align-items:center;justify-content:center;gap:8px;min-height:34px;border:0;border-radius:12px;background:transparent;font-weight:800;font-size:15px;color:#2b2140;padding:0 8px;white-space:nowrap;overflow:hidden;max-width:100%}
+.pbn-now i{width:18px;height:18px;border-radius:50%;box-shadow:0 0 0 1.5px rgba(40,28,60,.4);flex:0 0 auto}
+.pbn-now span{overflow:hidden;text-overflow:ellipsis}
+.pbn-now em{font-style:normal;font-weight:600;color:var(--muted);font-size:13.5px}
+.pbn-now:active{background:#f1eaf7}
+.pbn-leg{display:grid;grid-template-columns:1fr 1fr;gap:6px;max-height:56vh;overflow:auto;text-align:left;margin:8px 0 2px;-webkit-overflow-scrolling:touch}
+.pbn-leg button{display:flex;align-items:center;gap:9px;min-height:54px;border:0;border-radius:14px;background:#f6f0ff;padding:4px 8px;font-size:15px;font-weight:800;text-align:left;color:#2b2140;min-width:0}
+.pbn-leg button.on{box-shadow:inset 0 0 0 2.5px var(--accent2);background:#fff}
+.pbn-leg button.done{opacity:.6}
+.pbn-leg .lsw{width:36px;height:36px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:17px;border:2.5px solid #fff;box-shadow:0 0 0 1.5px rgba(40,28,60,.3)}
+.pbn-leg .lt{display:flex;flex-direction:column;min-width:0;line-height:1.15}
+.pbn-leg .lt b{font-size:15px;line-height:1.1}
+.pbn-leg .lt small{font-weight:600;color:var(--muted);font-size:12.5px}
 #pbnAdv .pbn-state{font-size:14px;color:var(--accent2)}
 #pbnLeave{color:#c0392b}
 .pbn-modebar{display:flex;gap:4px;background:#f1eaf7;border-radius:16px;padding:4px;margin-bottom:10px}
@@ -543,7 +556,7 @@ body.pbn #toast{bottom:calc(env(safe-area-inset-bottom) + 150px)!important}
 .pbn-modebar button.on{background:#fff;color:var(--accent2);box-shadow:0 1px 4px rgba(60,30,90,.18)}
 .pbn-modetip{margin:-2px 4px 10px!important;color:var(--accent2)!important;font-weight:600}
 #tplSheet.pbn-mode .card.tpl{position:relative}
-#tplSheet.pbn-mode .card.tpl::after{content:'123';position:absolute;right:10px;top:10px;background:var(--accent2);color:#fff;font-size:10.5px;font-weight:900;letter-spacing:-.4px;border-radius:7px;padding:2px 5px}
+#tplSheet.pbn-mode .card.tpl::after{content:'123';position:absolute;left:10px;top:10px;background:var(--accent2);color:#fff;font-size:10.5px;font-weight:900;letter-spacing:-.4px;border-radius:7px;padding:2px 5px}
 #tplSheet.pbn-mode .card.pbn-off{display:none}
 .pbn-mi{flex:0 0 auto;font-weight:900;font-size:15px;letter-spacing:-.5px;color:#fff;background:var(--accent2);border-radius:9px;padding:5px 7px;line-height:1}
 #pbnConfetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50}
@@ -1194,8 +1207,10 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <button class="pbn-btn" id="pbnHintBtn" type="button"><span aria-hidden="true">💡</span><span class="pbn-l"></span></button>
     <button class="pbn-btn pbn-sq" id="pbnMore" type="button" aria-expanded="false" aria-controls="pbnAdv">⋯</button>
   </div>
+  <button type="button" class="pbn-now" id="pbnNow"></button>
   <div id="pbnPal" role="listbox"></div>
   <div id="pbnAdv" hidden>
+    <button type="button" id="pbnLegendBtn"></button>
     <button type="button" id="pbnFillNum"></button>
     <button type="button" id="pbnNums" aria-pressed="true"><span class="pbn-l"></span><b class="pbn-state"></b></button>
     <button type="button" id="pbnRestart"></button>
@@ -1488,6 +1503,13 @@ body.ui-hidden.obj-mode #miniBar{display:none}
 </div>
 
 <canvas id="pbnConfetti" hidden aria-hidden="true"></canvas>
+<div class="overlay dialog" id="pbnLegend">
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="pbnLegT">
+    <h2 id="pbnLegT"></h2>
+    <div class="pbn-leg" id="pbnLegList" role="listbox"></div>
+    <button type="button" class="pbn-close" id="pbnLegClose"></button>
+  </div>
+</div>
 <div class="overlay dialog" id="pbnDone">
   <div class="box" role="dialog" aria-modal="true" aria-labelledby="pbnDoneT">
     <div class="pbn-party" aria-hidden="true">🎉</div>
@@ -1847,7 +1869,7 @@ setDocLang(); translateStatic();
 /* Colorear v3.3: crea dibujos para colorear, sube fotos de tus libros y coloréalos
    (lápiz y marcador de colores, crayón, marcadores acrílico / de agua / de alcohol, degradados, difuminar, copiar color,
    capas, ocultar botones, punta Detalle y rueda de colores con opacidad) */
-const APP_VERSION = '3.17';
+const APP_VERSION = '3.18';
 const PORTRAIT = [1200, 1600], LANDSCAPE = [1600, 1200];
 let W = 1200, H = 1600;                       // tamaño de la hoja (px internos); vertical u horizontal
 /* Grosores en píxeles de la hoja (1200×1600). "Súper fina" (xs) y "Detalle" (xxs) no son fijas: se calculan
@@ -5788,6 +5810,27 @@ function pbnBuildPal() {
     box.append(b);
   });
 }
+// 3.18: nombres de los colores (leyenda «1 Rojo, 2 Amarillo…»): se busca el más parecido de una lista corta
+const PBN_CN = [['red','#E8483F'],['darkred','#B3303A'],['coral','#FF7F6B'],['orange','#FF9A3D'],['yellow','#FFD54A'],['lemon','#FFF09A'],['gold','#E9A93A'],['cream','#FFF1D6'],['peach','#FFD2B0'],['tan','#E5C08E'],['brown','#9A6240'],['darkbrown','#5E3B2A'],['lime','#B5E05A'],['green','#5CBF6B'],['darkgreen','#2F8F57'],['mint','#A5E8CC'],['teal','#2DBBB1'],['sky','#9AD8FF'],['blue','#4C9BF0'],['navy','#2E4A9E'],['purple','#8E5BD9'],['lilac','#CDB0F5'],['pink','#FFA6C9'],['hotpink','#E8508F'],['gray','#A3A3B8'],['lightgray','#DCDCE8'],['black','#2F2A3A'],['white','#FFFFFF']];
+const PBN_CN_RGB = PBN_CN.map(([k, h]) => [k, hexToRgb(h)]);
+function pbnColorKey(hex) {
+  const c = hexToRgb(hex); let best = PBN_CN_RGB[0][0], bd = 1e9;
+  for (const [k, r] of PBN_CN_RGB) { const d = (c[0] - r[0]) ** 2 + (c[1] - r[1]) ** 2 + (c[2] - r[2]) ** 2; if (d < bd) { bd = d; best = k; } }
+  return best;
+}
+const pbnColorName = (hex) => tt('pbn.c.' + pbnColorKey(hex));
+function pbnLegendBuild() {
+  const box = $('#pbnLegList'); box.innerHTML = '';
+  PBN.pal.forEach((hex, i) => {
+    const n = i + 1, left = pbnLeft(n), b = document.createElement('button'); b.type = 'button'; b.dataset.n = n; b.setAttribute('role', 'option');
+    b.classList.toggle('on', n === PBN.sel); b.classList.toggle('done', left === 0);
+    const sw = document.createElement('span'); sw.className = 'lsw'; sw.style.background = hex; sw.style.color = pbnTextOn(hex); sw.textContent = n;
+    const t = document.createElement('span'); t.className = 'lt'; const nm = document.createElement('b'); nm.textContent = pbnColorName(hex);
+    const sm = document.createElement('small'); sm.textContent = left ? tt('pbn.now.left', { left }) : tt('pbn.now.done');
+    t.append(nm, sm); b.append(sw, t); box.append(b);
+  });
+}
+function pbnLegendOpen() { if (!PBN.on) return; pbnCloseAdv(); pbnLegendBuild(); openSheet('#pbnLegend'); }
 function pbnRenderBar() {
   const pct = pbnPct();
   $('#pbnFill').style.width = pct + '%';
@@ -5800,6 +5843,9 @@ function pbnRenderBar() {
     b.setAttribute('aria-selected', n === PBN.sel ? 'true' : 'false');
     b.setAttribute('aria-label', left ? tt('pbn.sw.aria', { n, left }) : tt('pbn.sw.done', { n }));
   });
+  { const hx = PBN.pal[PBN.sel - 1], lf = pbnLeft(PBN.sel), nw = $('#pbnNow');
+    if (hx) { nw.innerHTML = ''; const dot = document.createElement('i'); dot.style.background = hx; const t = document.createElement('span'); t.textContent = PBN.sel + ' · ' + pbnColorName(hx);
+      const em = document.createElement('em'); em.textContent = lf ? '· ' + tt('pbn.now.left', { left: lf }) : '✓'; nw.append(dot, t, em); nw.setAttribute('aria-label', tt('pbn.legend.btn') + ': ' + PBN.sel + ' ' + pbnColorName(hx)); } }
   $('#pbnFillNum').textContent = tt('pbn.fillnum', { n: PBN.sel });
   $('#pbnFillNum').disabled = pbnLeft(PBN.sel) === 0;
   $('#pbnHintBtn').disabled = pbnCounts().done >= pbnCounts().total;
@@ -5938,7 +5984,7 @@ function pbnExit(quiet) {
   pbnClearHint(); pbnCtx.clearRect(0, 0, pbnCv.width, pbnCv.height);
   PBN.lab = null; PBN.map = null; PBN.labBox = null; PBN.regs = []; PBN.mains = []; PBN.groups = {}; PBN.filled = null;
   $('#pbnAdv').hidden = true; $('#pbnMore').setAttribute('aria-expanded', 'false');
-  closeSheet('#pbnDone');
+  closeSheet('#pbnDone'); closeSheet('#pbnLegend');
   if (!quiet) toast(tt('pbn.exit.toast'), 2400);
   layout(); requestAnimationFrame(layout); updateCursor();
 }
@@ -5988,6 +6034,7 @@ function pbnApplyLang() {
   $('#pbnMore').setAttribute('aria-label', tt('pbn.more')); $('#pbnMore').title = tt('pbn.more');
   $('#pbnPal').setAttribute('aria-label', tt('pbn.pal.aria'));
   $('#pbnNums .pbn-l').textContent = tt('pbn.shownums'); $('#pbnRestart').textContent = tt('pbn.restart'); $('#pbnLeave').textContent = tt('pbn.leave');
+  $('#pbnLegendBtn').textContent = tt('pbn.legend.btn'); $('#pbnNow').title = tt('pbn.legend.tip'); $('#pbnLegT').textContent = tt('pbn.legend.title'); $('#pbnLegClose').textContent = tt('pbn.done.close');
   $('#pbnFillNum').title = tt('pbn.fillnum.tip');
   $('#pbnBar').setAttribute('aria-label', tt('pbn.bar.aria'));
   $('#tplMode').setAttribute('aria-label', tt('pbn.mode.aria'));
@@ -6023,6 +6070,10 @@ $('#pbnNums').onclick = () => { PBN.nums = !PBN.nums; try { localStorage.setItem
 $('#pbnRestart').onclick = () => { pbnCloseAdv(); pbnRestart(); };
 $('#pbnLeave').onclick = () => { pbnExit(false); };
 $('#pbnExit').onclick = () => { pbnExit(false); };
+$('#pbnNow').onclick = () => pbnLegendOpen();
+$('#pbnLegendBtn').onclick = () => pbnLegendOpen();
+$('#pbnLegClose').onclick = () => closeSheet('#pbnLegend');
+$('#pbnLegList').addEventListener('click', (e) => { const b = e.target.closest('[data-n]'); if (b) { closeSheet('#pbnLegend'); pbnSelect(+b.dataset.n, true); } });
 $('#pbnDoneClose').onclick = () => closeSheet('#pbnDone');
 $('#pbnDoneSave').onclick = async () => { await saveToGallery(); };
 $('#pbnDoneShare').onclick = () => { closeSheet('#pbnDone'); shareDrawing('color'); };
@@ -8482,7 +8533,7 @@ function retoOrderGet() {
 function retoPool(tokens) {
   let pool = [];
   if (tokens) for (const tk of tokens) { if (tk.startsWith('cat:')) pool.push(...TEMPLATES.filter((t) => t.cat === tk.slice(4))); else { const t = TEMPLATES.find((x) => x.id === tk); if (t) pool.push(t); } }
-  if (!pool.length) pool = TEMPLATES.filter((t) => t.id !== 'bandera');
+  if (!pool.length) pool = TEMPLATES.filter((t) => t.id !== 'bandera' && t.cat !== 'personajes');   // 3.18: los Personajes (60–110 zonas) son para Por número, no para el reto del día
   return pool;
 }
 function retoColors(mode, h2) {
