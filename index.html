@@ -17,6 +17,7 @@
 <script src="i18n/pt-BR.js"></script>
 <script src="i18n/fr.js"></script>
 <script src="templates-data.js"></script>
+<script src="pbn-data.js"></script>
 <script src="stamps-data.js"></script>
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -461,6 +462,59 @@ html:not([lang="es"]) #recentRow{flex-wrap:wrap;row-gap:6px}
   #pdfPick #pdfStage{grid-column:1;grid-row:2}
   #pdfPick .apanel{grid-column:2;grid-row:2;border-radius:20px 0 0 0;overflow-y:auto}
 }
+/* 3.15: Colorear por número */
+#cvPbn,#cvPbnHint{pointer-events:none}
+#cvPbnHint{animation:pbnPulse 1s ease-in-out infinite alternate}
+@keyframes pbnPulse{from{opacity:.3}to{opacity:1}}
+#pbnHead{display:none;flex:1 1 auto;min-width:0;align-items:center;gap:8px;height:var(--btn);padding:0 4px 0 10px;background:#f1eaf7;border-radius:16px}
+#pbnHead .pbn-ic{flex:0 0 auto;font-weight:900;font-size:12px;letter-spacing:-.5px;color:#fff;background:var(--accent2);border-radius:8px;padding:3px 5px}
+#pbnHead b{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:15px}
+#pbnExit{flex:0 0 auto;height:calc(var(--btn) - 12px);padding:0 12px;border:0;border-radius:12px;background:#fff;font-weight:800;font-size:14px;color:var(--accent);box-shadow:0 1px 3px rgba(60,30,90,.15)}
+body.pbn #pbnHead{display:flex}
+body.pbn header .seg,body.pbn #tabBar,body.pbn #quickStrip,body.pbn #miniBar,body.pbn #viewBar,body.pbn #objBar{display:none!important}
+#pbnBar{grid-row:5;grid-column:1;display:none;position:relative;flex-direction:column;gap:6px;padding:6px calc(env(safe-area-inset-right) + 8px) calc(env(safe-area-inset-bottom) + 8px) calc(env(safe-area-inset-left) + 8px);background:var(--panel);box-shadow:0 -1px 0 var(--line),0 -6px 18px rgba(60,30,90,.08);z-index:3;min-width:0}
+body.pbn #pbnBar{display:flex}
+body.pbn #toast{bottom:calc(env(safe-area-inset-bottom) + 150px)!important}
+.pbn-top{display:flex;gap:6px;align-items:center}
+.pbn-prog{position:relative;flex:1 1 auto;height:44px;border-radius:14px;background:#f1eaf7;overflow:hidden;min-width:0}
+.pbn-prog i{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,#9A8CFF,var(--accent2));transition:width .35s ease}
+.pbn-prog span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#2b2140;text-shadow:0 0 6px #fff,0 0 3px #fff;white-space:nowrap}
+.pbn-btn{flex:0 0 auto;height:44px;min-width:44px;padding:0 12px;border:0;border-radius:14px;background:#fff7e0;box-shadow:inset 0 0 0 2px #ffd54a;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;gap:6px}
+.pbn-btn.pbn-sq{background:#f6f0ff;box-shadow:none;font-size:22px;padding:0;width:44px}
+.pbn-btn:disabled{opacity:.4}
+.pbn-btn:active{transform:scale(.96)}
+#pbnPal{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 6px;scrollbar-width:none;touch-action:pan-x;-webkit-overflow-scrolling:touch}
+#pbnPal::-webkit-scrollbar{display:none}
+.pbn-sw{position:relative;flex:0 0 auto;width:46px;height:46px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1.5px rgba(40,28,60,.28),0 2px 5px rgba(40,28,60,.18);font-weight:900;font-size:19px;display:flex;align-items:center;justify-content:center;padding:0;transition:transform .12s}
+.pbn-sw.on{transform:scale(1.14);box-shadow:0 0 0 3px var(--accent2),0 3px 8px rgba(40,28,60,.3)}
+.pbn-sw.done{opacity:.55}
+.pbn-sw.done::after{content:'✓';position:absolute;right:-5px;top:-5px;width:20px;height:20px;border-radius:50%;background:#34C759;color:#fff;font-size:13px;line-height:20px;text-align:center;box-shadow:0 0 0 2px #fff}
+.pbn-sw.nudge{animation:pbnNudge .6s ease}
+@keyframes pbnNudge{0%,100%{transform:scale(1)}30%{transform:scale(1.35)}60%{transform:scale(.95)}}
+#pbnAdv{position:absolute;right:8px;bottom:calc(100% + 6px);width:min(300px,calc(100% - 16px));background:#fff;border-radius:18px;box-shadow:0 8px 30px rgba(50,25,90,.3);padding:8px;display:flex;flex-direction:column;gap:6px;z-index:4}
+#pbnAdv[hidden]{display:none!important}
+#pbnAdv button{min-height:48px;border:0;border-radius:12px;background:#faf6f1;font-weight:700;font-size:16px;text-align:left;padding:0 14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+#pbnAdv button:disabled{opacity:.45}
+#pbnAdv .pbn-state{font-size:14px;color:var(--accent2)}
+#pbnLeave{color:#c0392b}
+.pbn-mode{display:flex;gap:4px;background:#f1eaf7;border-radius:16px;padding:4px;margin-bottom:10px}
+.pbn-mode button{flex:1;min-height:46px;border:0;border-radius:12px;background:transparent;font-weight:800;font-size:15px;color:var(--muted)}
+.pbn-mode button.on{background:#fff;color:var(--accent2);box-shadow:0 1px 4px rgba(60,30,90,.18)}
+.pbn-modetip{margin:-2px 4px 10px!important;color:var(--accent2)!important;font-weight:600}
+#tplSheet.pbn-mode .card.tpl{position:relative}
+#tplSheet.pbn-mode .card.tpl::after{content:'123';position:absolute;right:10px;top:10px;background:var(--accent2);color:#fff;font-size:10.5px;font-weight:900;letter-spacing:-.4px;border-radius:7px;padding:2px 5px}
+#tplSheet.pbn-mode .card.pbn-off{display:none}
+.pbn-mi{flex:0 0 auto;font-weight:900;font-size:15px;letter-spacing:-.5px;color:#fff;background:var(--accent2);border-radius:9px;padding:5px 7px;line-height:1}
+#pbnConfetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50}
+#pbnConfetti[hidden]{display:none}
+.pbn-party{font-size:54px;line-height:1;margin-bottom:6px}
+#pbnDone h2{margin:0 0 6px;font-size:24px}
+.pbn-done-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pbn-done-btns button{min-height:52px;border:0;border-radius:14px;font-size:16px;font-weight:700;background:#f1eaf7;padding:6px}
+.pbn-done-btns button.ok{background:var(--accent);color:#fff}
+.pbn-close{width:100%;min-height:46px;margin-top:8px;border:0;background:transparent;font-weight:700;font-size:15px;color:var(--muted)}
+@media (orientation:landscape) and (max-height:560px){ #pbnBar{grid-column:2;grid-row:2;align-self:start} body.pbn #toast{bottom:20px!important} }
+
 #toast{
   position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 76px);transform:translateX(-50%) translateY(20px);
   background:rgba(40,28,60,.92);color:#fff;padding:12px 18px;border-radius:14px;font-weight:600;font-size:15px;
@@ -981,6 +1035,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <button id="tabDraw" class="on" role="tab"><svg><use href="#i-pen"/></svg><span>Dibujar</span></button>
     <button id="tabColor" role="tab"><svg><use href="#i-brush"/></svg><span>Colorear</span></button>
   </div>
+  <div id="pbnHead"><span class="pbn-ic" aria-hidden="true">123</span><b id="pbnName"></b><button id="pbnExit" type="button"></button></div>
   <button class="ib" id="btnSave" title="Guardar en Mis dibujos" aria-label="Guardar en Mis dibujos"><svg><use href="#i-save"/></svg></button>
   <button class="ib" id="btnMenu" title="Menú" aria-label="Menú"><svg><use href="#i-menu"/></svg></button>
 </header>
@@ -1001,6 +1056,8 @@ body.ui-hidden.obj-mode #miniBar{display:none}
   <div id="paper" class="c-pen">
     <canvas id="cvColor"></canvas>
     <canvas id="cvLine"></canvas>
+    <canvas id="cvPbn" aria-hidden="true"></canvas>
+    <canvas id="cvPbnHint" aria-hidden="true"></canvas>
     <canvas id="cvObj"></canvas>
     <canvas id="cvPreview"></canvas>
     <div id="refUnder" hidden aria-hidden="true"><img id="refUnderImg" alt="" draggable="false"></div>
@@ -1042,6 +1099,20 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <button class="mb" id="mbDot" title="Toca para abrir los botones rápidos. Arrastra para moverlo" aria-label="Abrir botones rápidos"><i class="mbsw"></i></button>
   </div>
 </main>
+<div id="pbnBar" role="toolbar">
+  <div class="pbn-top">
+    <div class="pbn-prog" id="pbnProg" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="pbnFill"></i><span id="pbnPct"></span></div>
+    <button class="pbn-btn" id="pbnHintBtn" type="button"><span aria-hidden="true">💡</span><span class="pbn-l"></span></button>
+    <button class="pbn-btn pbn-sq" id="pbnMore" type="button" aria-expanded="false" aria-controls="pbnAdv">⋯</button>
+  </div>
+  <div id="pbnPal" role="listbox"></div>
+  <div id="pbnAdv" hidden>
+    <button type="button" id="pbnFillNum"></button>
+    <button type="button" id="pbnNums" aria-pressed="true"><span class="pbn-l"></span><b class="pbn-state"></b></button>
+    <button type="button" id="pbnRestart"></button>
+    <button type="button" id="pbnLeave"></button>
+  </div>
+</div>
 
 <footer class="tools" id="panel" role="dialog" aria-label="Opciones">
   <div class="grp" data-grp="tools">
@@ -1312,6 +1383,22 @@ body.ui-hidden.obj-mode #miniBar{display:none}
   </div>
 </div>
 
+<canvas id="pbnConfetti" hidden aria-hidden="true"></canvas>
+<div class="overlay dialog" id="pbnDone">
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="pbnDoneT">
+    <div class="pbn-party" aria-hidden="true">🎉</div>
+    <h2 id="pbnDoneT"></h2>
+    <p id="pbnDoneText"></p>
+    <div class="pbn-done-btns">
+      <button type="button" class="ok" id="pbnDoneSave"></button>
+      <button type="button" id="pbnDoneShare"></button>
+      <button type="button" id="pbnDoneVideo"></button>
+      <button type="button" id="pbnDoneMore"></button>
+    </div>
+    <button type="button" class="pbn-close" id="pbnDoneClose"></button>
+  </div>
+</div>
+
 <div class="overlay" id="menuSheet">
   <div class="sheet">
     <div class="sheet-head"><img class="brand" src="logo-badge-96.png" srcset="logo-badge-96.png 1x, logo-badge-192.png 2x" width="44" height="44" alt="ByBroken Coloring"><h2>Menú</h2><button class="ib close" aria-label="Cerrar"><svg><use href="#i-close"/></svg></button></div>
@@ -1331,6 +1418,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
         <button class="mbtn" id="mPhoto"><svg><use href="#i-camera"/></svg>Subir foto</button>
         <button class="mbtn" id="mSketch"><svg><use href="#i-sketch"/></svg>Foto a dibujo</button>
         <button class="mbtn" id="mTpl"><svg><use href="#i-tpl"/></svg>Plantillas</button>
+        <button class="mbtn" id="mPbn"></button>
         <button class="mbtn" id="mGallery"><svg><use href="#i-gallery"/></svg>Mis dibujos</button>
         <button class="mbtn" id="mNew"><svg><use href="#i-new"/></svg>Hoja nueva</button>
         <button class="mbtn" id="mSave"><svg><use href="#i-save"/></svg>Guardar en Mis dibujos</button>
@@ -1374,6 +1462,8 @@ body.ui-hidden.obj-mode #miniBar{display:none}
 <div class="overlay" id="tplSheet">
   <div class="sheet">
     <div class="sheet-head"><h2>Plantillas</h2><button class="ib close" aria-label="Cerrar"><svg><use href="#i-close"/></svg></button></div>
+    <div class="pbn-mode" id="tplMode" role="group"><button type="button" data-m="free"></button><button type="button" data-m="num"></button></div>
+    <p class="tip pbn-modetip" id="tplModeTip" hidden></p>
     <div class="tabs" id="tplTabs" role="tablist"></div>
     <div class="scroll"><div class="grid" id="tplGrid"></div></div>
   </div>
@@ -1653,7 +1743,7 @@ setDocLang(); translateStatic();
 /* Colorear v3.3: crea dibujos para colorear, sube fotos de tus libros y coloréalos
    (lápiz y marcador de colores, crayón, marcadores acrílico / de agua / de alcohol, degradados, difuminar, copiar color,
    capas, ocultar botones, punta Detalle y rueda de colores con opacidad) */
-const APP_VERSION = '3.14';
+const APP_VERSION = '3.15';
 const PORTRAIT = [1200, 1600], LANDSCAPE = [1600, 1200];
 let W = 1200, H = 1600;                       // tamaño de la hoja (px internos); vertical u horizontal
 /* Grosores en píxeles de la hoja (1200×1600). "Súper fina" (xs) y "Detalle" (xxs) no son fijas: se calculan
@@ -1772,6 +1862,7 @@ function setSheetSize(w, h) {
 function sizeForImage(w, h) { return w > h ? LANDSCAPE : PORTRAIT; }
 
 /* ---------- estado ---------- */
+var PBN = { on: false };   // 3.15: Colorear por número (se llena más abajo)
 const state = {
   mode: 'draw', drawTool: 'pen', colorTool: 'fill',
   drawSize: '1', colorSize: '1', color: '#FF3B30', brush: 'crayon',
@@ -1910,6 +2001,7 @@ function resetLayerStack() {
 }
 // Reemplaza la hoja completa (plantilla, foto, hoja nueva…) de forma que se pueda deshacer, aunque cambie de orientación
 function replaceSheet(nw, nh, drawFn) {
+  if (PBN.on) pbnExit(true);          // 3.15: una hoja nueva termina el modo Por número
   const before = snapLayers();
   setSheetSize(nw, nh);
   resetLayerStack();
@@ -1937,8 +2029,8 @@ function applyEntry(entry, which) {
     renderObjs();
   }
 }
-function undo() { cancelGesture(); const e = undoStack.pop(); if (!e) return; applyEntry(e, 'before'); redoStack.push(e); markDirty(); updateUndoButtons(); refreshLayersUI(); }
-function redo() { cancelGesture(); const e = redoStack.pop(); if (!e) return; applyEntry(e, 'after'); undoStack.push(e); markDirty(); updateUndoButtons(); refreshLayersUI(); }
+function undo() { cancelGesture(); const e = undoStack.pop(); if (!e) return; applyEntry(e, 'before'); redoStack.push(e); markDirty(); updateUndoButtons(); refreshLayersUI(); if (PBN.on) pbnAfterHistory(e); }
+function redo() { cancelGesture(); const e = redoStack.pop(); if (!e) return; applyEntry(e, 'after'); undoStack.push(e); markDirty(); updateUndoButtons(); refreshLayersUI(); if (PBN.on) pbnAfterHistory(e); }
 function resetHistory() { undoStack.length = 0; redoStack.length = 0; updateUndoButtons(); }
 function updateUndoButtons() { $('#btnUndo').disabled = $('#mbUndo').disabled = !undoStack.length; $('#btnRedo').disabled = $('#mbRedo').disabled = !redoStack.length; }
 function syncBackups() { for (const k in layers) { const L = layers[k]; L.bctx.clearRect(0, 0, W, H); L.bctx.drawImage(L.cv, 0, 0); } }
@@ -2078,6 +2170,7 @@ function startSingle0(e) {
   if (e.button === 1 || spaceDown || state.panTool) {
     g = Object.assign(base, { kind: 'pan', vx: view.x, vy: view.y }); stage.classList.add('panning'); return;
   }
+  if (PBN.on) { g = Object.assign(base, { kind: 'pbn', vx: view.x, vy: view.y }); return; }   // 3.15: Por número: un toque pinta la zona; arrastrar mueve la hoja si tiene zoom
   if (objMode) { g = objDown(base, p); return; }
   if (state.picking) { g = Object.assign(base, { kind: 'pick' }); return; }     // Copiar color: se copia al soltar
   const tool = currentTool();
@@ -2142,6 +2235,7 @@ function onMove(e) {
     view.x = g.vx + (e.clientX - g.sx); view.y = g.vy + (e.clientY - g.sy); clampView(); applyView(); return;
   }
   if (g.kind === 'obj') { objMove(g, e); return; }
+  if (g.kind === 'pbn') { if (view.z > 1.001 && g.travel >= 9) { g.panning = true; stage.classList.add('panning'); view.x = g.vx + (e.clientX - g.sx); view.y = g.vy + (e.clientY - g.sy); clampView(); applyView(); } return; }
   if (g.kind === 'fill') return;
   if (g.kind === 'pick') { g.last = toDoc(e); return; }
   if (g.kind === 'grad') {
@@ -2197,6 +2291,8 @@ function endSingle(cancelled) {
   if (!cancelled) flTipMaybe(cur);   // 3.10
   if (cur.kind === 'pick') {
     if (!cancelled) pickColorAt(cur.travel < 14 ? cur.start : cur.last);
+  } else if (cur.kind === 'pbn') {
+    if (!cancelled && !cur.panning && cur.travel < 14) pbnTap(cur.start);
   } else if (cur.kind === 'fill') {
     if (!cancelled && cur.travel < 14) { if (cur.T && cur.T.length > 1) floodFillSym(cur.start.x, cur.start.y, state.color, state.alpha, cur.T); else floodFill(cur.start.x, cur.start.y, state.color, state.alpha); }
   } else if (cur.kind === 'grad') {
@@ -3899,11 +3995,12 @@ function buildTemplateGrid() {
     b.onclick = () => {
       $$('#tplTabs button').forEach((x) => x.classList.toggle('on', x === b));
       $$('#tplGrid [data-cat]').forEach((el) => { el.hidden = key !== 'all' && el.dataset.cat !== key; });
-      $('#tplPhoto').hidden = key !== 'all';
+      $('#tplPhoto').hidden = key !== 'all' || PBN.mode === 'num';
       $('#tplSheet .scroll').scrollTop = 0;
     };
     tabs.append(b);
   }
+  try { pbnApplyMode(); } catch (_) {}   // 3.15
 }
 function loadTemplate(id) {
   cancelGesture(); flattenObjs();
@@ -5259,8 +5356,385 @@ $('#mInstall').onclick = () => { closeSheet('#menuSheet'); showHint(); };
 $('#tplGrid').addEventListener('click', (e) => {
   if (e.target.closest('#tplPhoto')) { closeSheet('#tplSheet'); openSheet('#photoSheet'); return; }
   const b = e.target.closest('[data-tpl]'); if (!b) return;
+  if (PBN.mode === 'num') { if (b.classList.contains('pbn-off')) return; closeSheet('#tplSheet'); pbnEnter(b.dataset.tpl); return; }   // 3.15
   closeSheet('#tplSheet'); loadTemplate(b.dataset.tpl);
 });
+
+/* ---------- 3.15: Colorear por número ----------
+   Cada plantilla trae su paleta numerada y sus zonas (pbn-data.js). Al empezar se cuentan las zonas cerradas por las líneas (igual que el bote),
+   se dibujan los números encima (en una capa aparte que nunca se guarda ni se exporta) y al tocar la zona correcta se pinta con su color.
+   Todo lo que se pinta va a la Capa 1 con un paso de deshacer por toque, así que guardar, compartir y el video del proceso funcionan igual. */
+Object.assign(PBN, {
+  id: null, name: '', pal: [], rgb: [], regs: [], mains: [], groups: [], lab: null, nl: 0, labBox: null, map: null, outerL: 0,
+  filled: null, sel: 1, nums: true, hintT: 0, mode: 'free', celebrated: false,
+});
+const PBN_TIP_KEY = 'colorear.pbnTip';
+const pbnData = (id) => (window.PBN_DATA || {})[id] || null;
+const pbnCv = $('#cvPbn'), pbnHintCv = $('#cvPbnHint'), pbnCtx = pbnCv.getContext('2d'), pbnHCtx = pbnHintCv.getContext('2d');
+try { const s = JSON.parse(localStorage.getItem('colorear.pbn') || 'null'); if (s && s.nums === false) PBN.nums = false; } catch (_) {}
+
+// Cuenta las zonas cerradas por las líneas (4 vecinos, las líneas con alfa ≥ LINE_T son paredes)
+function pbnLabel() {
+  const la = layers.line.ctx.getImageData(0, 0, W, H).data, n = W * H;
+  const wall = new Uint8Array(n);
+  for (let i = 0; i < n; i++) wall[i] = la[i * 4 + 3] >= LINE_T ? 1 : 0;
+  const lab = new Int32Array(n), box = [null];
+  let nl = 0; const stack = [];
+  for (let s = 0; s < n; s++) {
+    if (wall[s] || lab[s]) continue;
+    const id = ++nl; let minX = W, maxX = 0, minY = H, maxY = 0;
+    stack.push(s % W, (s / W) | 0);
+    while (stack.length) {
+      const y = stack.pop(), x0 = stack.pop(), row = y * W;
+      let x = x0;
+      if (lab[row + x] || wall[row + x]) continue;
+      while (x > 0 && !lab[row + x - 1] && !wall[row + x - 1]) x--;
+      const xs = x; let up = false, dn = false;
+      for (; x < W && !lab[row + x] && !wall[row + x]; x++) {
+        lab[row + x] = id;
+        if (y > 0) { const i = row - W + x, ok = !lab[i] && !wall[i]; if (ok && !up) stack.push(x, y - 1); up = ok; }
+        if (y < H - 1) { const i = row + W + x, ok = !lab[i] && !wall[i]; if (ok && !dn) stack.push(x, y + 1); dn = ok; }
+      }
+      if (xs < minX) minX = xs; if (x - 1 > maxX) maxX = x - 1; if (y < minY) minY = y; if (y > maxY) maxY = y;
+    }
+    box.push([minX, minY, maxX, maxY]);
+  }
+  return { lab, nl, box };
+}
+function pbnLabelAt(x, y, maxR) {   // zona en (x, y); si cae sobre una línea, la más cercana
+  x = Math.round(x); y = Math.round(y);
+  if (x < 0 || y < 0 || x >= W || y >= H) return 0;
+  const L = PBN.lab[y * W + x]; if (L) return L;
+  for (let r = 1; r <= (maxR || 14); r++) {
+    for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
+      if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
+      const xx = x + dx, yy = y + dy;
+      if (xx >= 0 && yy >= 0 && xx < W && yy < H && PBN.lab[yy * W + xx]) return PBN.lab[yy * W + xx];
+    }
+  }
+  return 0;
+}
+const pbnPal = (n) => PBN.pal[n - 1];
+const pbnTextOn = (hex) => { const [r, g, b] = hexToRgb(hex); return (0.299 * r + 0.587 * g + 0.114 * b) > 165 ? '#2b2140' : '#fff'; };
+function pbnLeft(n) { let k = 0; for (const g of PBN.mains) if (PBN.regs[g].n === n && !PBN.filled[g]) k++; return k; }
+function pbnCounts() { let done = 0; for (const g of PBN.mains) if (PBN.filled[g]) done++; return { done, total: PBN.mains.length }; }
+function pbnPct() { const c = pbnCounts(); return !c.total ? 0 : c.done >= c.total ? 100 : Math.min(99, Math.floor(100 * c.done / c.total)); }
+
+// ¿Qué zonas ya tienen su color? (se mira un punto bien adentro de cada zona: sirve también al deshacer o al abrir un dibujo)
+function pbnSample() {
+  const d = layers.color.ctx.getImageData(0, 0, W, H).data;
+  PBN.filled = new Uint8Array(PBN.regs.length);
+  for (const g of PBN.mains) {
+    const r = PBN.regs[g], c = PBN.rgb[r.n - 1], k = (r.y * W + r.x) * 4;
+    PBN.filled[g] = d[k] === c[0] && d[k + 1] === c[1] && d[k + 2] === c[2] && d[k + 3] === 255 ? 1 : 0;
+  }
+}
+// Pinta varias zonas (con sus zonitas pegadas) de un golpe y las deja como UN paso de deshacer
+function pbnPaint(gs) {
+  const { lab, regs, groups } = PBN;
+  const set = new Uint8Array(PBN.nl + 1), colorOf = new Uint8Array(PBN.nl + 1);
+  let x0 = W, y0 = H, x1 = 0, y1 = 0, any = false;
+  for (const g of gs) for (const j of groups[g]) {
+    const L = regs[j].L; if (!L) continue;
+    set[L] = 1; colorOf[L] = regs[g].n; any = true;
+    const b = PBN.labBox[L]; if (b[0] < x0) x0 = b[0]; if (b[1] < y0) y0 = b[1]; if (b[2] > x1) x1 = b[2]; if (b[3] > y1) y1 = b[3];
+  }
+  if (!any) return false;
+  x0 = Math.max(0, x0 - 3); y0 = Math.max(0, y0 - 3); x1 = Math.min(W - 1, x1 + 3); y1 = Math.min(H - 1, y1 + 3);
+  const bw = x1 - x0 + 1, bh = y1 - y0 + 1, cctx = layers.color.ctx;
+  const img = cctx.getImageData(x0, y0, bw, bh), d = img.data, m = new Uint8Array(bw * bh);
+  const put = (i, n) => { const c = PBN.rgb[n - 1], k = i * 4; d[k] = c[0]; d[k + 1] = c[1]; d[k + 2] = c[2]; d[k + 3] = 255; };
+  for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) {
+    const L = lab[(y + y0) * W + x + x0];
+    if (L && set[L]) { const i = y * bw + x; m[i] = colorOf[L]; put(i, colorOf[L]); }
+  }
+  for (let pass = 0; pass < DILATE; pass++) {      // el color también va un poquito debajo de la línea (sin halos blancos)
+    const add = [];
+    for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) {
+      const i = y * bw + x; if (m[i] || lab[(y + y0) * W + x + x0]) continue;
+      let v = 0;
+      for (let dy = -1; dy <= 1 && !v; dy++) for (let dx = -1; dx <= 1; dx++) {
+        const xx = x + dx, yy = y + dy;
+        if (xx >= 0 && yy >= 0 && xx < bw && yy < bh && m[yy * bw + xx]) { v = m[yy * bw + xx]; break; }
+      }
+      if (v) add.push(i, v);
+    }
+    for (let a = 0; a < add.length; a += 2) { m[add[a]] = add[a + 1]; put(add[a], add[a + 1]); }
+  }
+  cctx.putImageData(img, x0, y0);
+  commit([capturePart('color', { x: x0, y: y0, w: bw, h: bh })]);
+  return true;
+}
+
+function pbnDrawNums() {
+  const c = pbnCtx; c.clearRect(0, 0, pbnCv.width, pbnCv.height);
+  if (!PBN.on || !PBN.nums) return;
+  c.textAlign = 'center'; c.textBaseline = 'middle'; c.lineJoin = 'round';
+  for (const g of PBN.mains) {
+    if (PBN.filled[g]) continue;
+    const r = PBN.regs[g], fs = clamp(r.rad * 1.05, 17, 56), sel = r.n === PBN.sel;
+    if (sel) {
+      c.beginPath(); c.arc(r.x, r.y, Math.min(fs * 0.78, Math.max(r.rad * 0.96, fs * 0.5)), 0, Math.PI * 2);
+      c.fillStyle = 'rgba(255,255,255,.9)'; c.fill(); c.lineWidth = Math.max(2.5, fs * 0.09); c.strokeStyle = '#5856D6'; c.stroke();
+    }
+    c.font = `800 ${Math.round(fs)}px system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif`;
+    const s = String(r.n);
+    c.lineWidth = fs * 0.22; c.strokeStyle = 'rgba(255,255,255,.92)'; c.strokeText(s, r.x, r.y + fs * 0.04);
+    c.fillStyle = sel ? '#2b2140' : '#5a4e6c'; c.fillText(s, r.x, r.y + fs * 0.04);
+  }
+}
+function pbnClearHint() { clearTimeout(PBN.hintT); PBN.hintT = 0; pbnHCtx.clearRect(0, 0, pbnHintCv.width, pbnHintCv.height); }
+
+// Barra de abajo: progreso, pista, más y los colores con su número
+function pbnBuildPal() {
+  const box = $('#pbnPal'); box.innerHTML = '';
+  PBN.pal.forEach((hex, i) => {
+    const n = i + 1, b = document.createElement('button'); b.className = 'pbn-sw'; b.dataset.n = n; b.setAttribute('role', 'option');
+    b.style.background = hex; b.style.color = pbnTextOn(hex); b.textContent = n;
+    box.append(b);
+  });
+}
+function pbnRenderBar() {
+  const pct = pbnPct();
+  $('#pbnFill').style.width = pct + '%';
+  $('#pbnPct').textContent = tt('pbn.pct', { pct });
+  $('#pbnProg').setAttribute('aria-valuenow', pct);
+  $('#pbnProg').setAttribute('aria-label', tt('pbn.pct', { pct }));
+  $$('#pbnPal .pbn-sw').forEach((b) => {
+    const n = +b.dataset.n, left = pbnLeft(n);
+    b.classList.toggle('on', n === PBN.sel); b.classList.toggle('done', left === 0);
+    b.setAttribute('aria-selected', n === PBN.sel ? 'true' : 'false');
+    b.setAttribute('aria-label', left ? tt('pbn.sw.aria', { n, left }) : tt('pbn.sw.done', { n }));
+  });
+  $('#pbnFillNum').textContent = tt('pbn.fillnum', { n: PBN.sel });
+  $('#pbnFillNum').disabled = pbnLeft(PBN.sel) === 0;
+  $('#pbnHintBtn').disabled = pbnCounts().done >= pbnCounts().total;
+  $('#pbnNums').setAttribute('aria-pressed', PBN.nums ? 'true' : 'false');
+  $('#pbnNums .pbn-state').textContent = tt(PBN.nums ? 'pbn.on' : 'pbn.off');
+}
+function pbnRender() { pbnRenderBar(); pbnDrawNums(); }
+function pbnSelect(n, scroll) {
+  if (!PBN.on || !(n >= 1 && n <= PBN.pal.length)) return;
+  PBN.sel = n; pbnClearHint(); pbnRender();
+  if (scroll) { const b = $(`#pbnPal [data-n="${n}"]`); if (b && b.scrollIntoView) b.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' }); }
+}
+function pbnNextNum(from) {      // el siguiente número que todavía tiene zonas
+  const N = PBN.pal.length;
+  for (let k = 1; k <= N; k++) { const n = ((from - 1 + k + N) % N) + 1; if (pbnLeft(n)) return n; }
+  return 0;
+}
+function pbnNudgeSw(n) {
+  const b = $(`#pbnPal [data-n="${n}"]`); if (!b) return;
+  b.classList.remove('nudge'); void b.offsetWidth; b.classList.add('nudge');
+  if (b.scrollIntoView) b.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+}
+
+// Después de pintar: ¿se terminó el número? ¿se terminó el dibujo?
+function pbnAfterPaint(prevSel) {
+  const c = pbnCounts();
+  if (c.done >= c.total) { pbnRender(); pbnCelebrate(); return; }
+  if (!pbnLeft(prevSel)) {
+    const nx = pbnNextNum(prevSel);
+    PBN.sel = nx || prevSel; pbnRender();
+    toast(tt('pbn.numdone', { n: prevSel }), 1800, pbnPal(prevSel));
+    if (nx) pbnNudgeSw(nx);
+  } else pbnRender();
+}
+function pbnTap(p) {
+  if (!PBN.on) return;
+  pbnClearHint();
+  const L = pbnLabelAt(p.x, p.y, 14);
+  const i = L && L !== PBN.outerL ? PBN.map[L] : -1;
+  if (i == null || i < 0) return;     // fuera del dibujo o una rayita: nada que pintar
+  const g = PBN.regs[i].p < 0 ? i : PBN.regs[i].p, r = PBN.regs[g];
+  if (PBN.filled[g]) { toast(tt('pbn.already'), 1400); return; }
+  if (r.n !== PBN.sel) {                       // suave: un recordatorio, no un error
+    toast(tt('pbn.nudge', { n: r.n }), 2200, pbnPal(r.n)); pbnNudgeSw(r.n);
+    return;
+  }
+  const prev = PBN.sel;
+  if (pbnPaint([g])) { PBN.filled[g] = 1; pbnAfterPaint(prev); }
+}
+function pbnFillNumber(n) {      // opcional: rellena de una vez todas las zonas del número elegido
+  if (!PBN.on) return false;
+  n = n || PBN.sel;
+  const gs = PBN.mains.filter((g) => PBN.regs[g].n === n && !PBN.filled[g]);
+  if (!gs.length) { toast(tt('pbn.hint.none', { n }), 2200, pbnPal(n)); return false; }
+  pbnClearHint();
+  if (!pbnPaint(gs)) return false;
+  for (const g of gs) PBN.filled[g] = 1;
+  pbnAfterPaint(n);
+  return true;
+}
+function pbnHint() {
+  if (!PBN.on) return;
+  const n = PBN.sel, gs = PBN.mains.filter((g) => PBN.regs[g].n === n && !PBN.filled[g]);
+  if (!gs.length) { const nx = pbnNextNum(n); if (nx) pbnSelect(nx, true); toast(tt('pbn.hint.none', { n }), 2600, pbnPal(n)); return; }
+  pbnClearHint();
+  const set = new Uint8Array(PBN.nl + 1); let x0 = W, y0 = H, x1 = 0, y1 = 0;
+  for (const g of gs) for (const j of PBN.groups[g]) {
+    const L = PBN.regs[j].L; if (!L) continue; set[L] = 1;
+    const b = PBN.labBox[L]; if (b[0] < x0) x0 = b[0]; if (b[1] < y0) y0 = b[1]; if (b[2] > x1) x1 = b[2]; if (b[3] > y1) y1 = b[3];
+  }
+  x0 = Math.max(0, x0 - 6); y0 = Math.max(0, y0 - 6); x1 = Math.min(W - 1, x1 + 6); y1 = Math.min(H - 1, y1 + 6);
+  const bw = x1 - x0 + 1, bh = y1 - y0 + 1, img = pbnHCtx.createImageData(bw, bh), d = img.data, lab = PBN.lab, R = 3;
+  const inS = (x, y) => x >= 0 && y >= 0 && x < W && y < H && lab[y * W + x] !== 0 && set[lab[y * W + x]] === 1;
+  for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) {
+    const X = x + x0, Y = y + y0;
+    if (!inS(X, Y)) continue;
+    const k = (y * bw + x) * 4;
+    if (!inS(X - R, Y) || !inS(X + R, Y) || !inS(X, Y - R) || !inS(X, Y + R)) { d[k] = 255; d[k + 1] = 111; d[k + 2] = 97; d[k + 3] = 255; }
+    else { d[k] = 255; d[k + 1] = 214; d[k + 2] = 10; d[k + 3] = 140; }
+  }
+  pbnHCtx.putImageData(img, x0, y0);
+  PBN.hintT = setTimeout(pbnClearHint, 6500);
+  // si la zona está fuera de la pantalla (con zoom), acercar la vista hasta ella
+  const big = gs.reduce((a, g) => (PBN.regs[g].rad > PBN.regs[a].rad ? g : a), gs[0]), t = PBN.regs[big];
+  const pr = paper.getBoundingClientRect(), sr = stage.getBoundingClientRect();
+  const sx = pr.left + t.x * pr.width / W, sy = pr.top + t.y * pr.height / H;
+  if (view.z > 1.001 && (sx < sr.left + 40 || sx > sr.right - 40 || sy < sr.top + 40 || sy > sr.bottom - 40)) {
+    view.x += (sr.left + sr.width / 2) - sx; view.y += (sr.top + sr.height / 2) - sy; clampView(); applyView();
+  }
+  toast(tt('pbn.hint.toast', { n, k: gs.length }), 2600, pbnPal(n));
+}
+
+// Empezar / seguir / salir
+function pbnSetup(id, data) {
+  const t = TEMPLATES.find((x) => x.id === id);
+  PBN.id = id; PBN.name = t ? t.name : id; PBN.pal = data.p.slice(); PBN.rgb = PBN.pal.map(hexToRgb);
+  const lb = pbnLabel(); PBN.lab = lb.lab; PBN.nl = lb.nl; PBN.labBox = lb.box;
+  PBN.outerL = PBN.lab[3 * W + 3] || PBN.lab[(H - 4) * W + W - 4] || 0;
+  PBN.regs = data.r.map((r) => ({ x: r[0], y: r[1], n: r[2], rad: r[3], p: r[4], L: 0 }));
+  PBN.map = new Int32Array(PBN.nl + 1).fill(-1);
+  PBN.regs.forEach((r, i) => {
+    let L = PBN.lab[r.y * W + r.x];
+    if (!L) L = pbnLabelAt(r.x, r.y, 8);
+    r.L = L;
+    if (L && PBN.map[L] < 0) PBN.map[L] = i;
+  });
+  PBN.mains = []; PBN.groups = {};
+  PBN.regs.forEach((r, i) => { if (r.p < 0) { PBN.mains.push(i); PBN.groups[i] = [i]; } });
+  PBN.regs.forEach((r, i) => { if (r.p >= 0 && PBN.groups[r.p]) PBN.groups[r.p].push(i); });
+  for (const cv of [pbnCv, pbnHintCv]) { if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; } }
+  pbnHCtx.clearRect(0, 0, W, H);
+  PBN.celebrated = false;
+}
+function pbnEnter(id, opts) {
+  opts = opts || {};
+  const data = pbnData(id); if (!data) return false;
+  cancelGesture(); flattenObjs();
+  if (!opts.resume) loadTemplate(id);             // hoja nueva con la plantilla (se puede deshacer)
+  else if (PBN.on) pbnExit(true);
+  pbnSetup(id, data);
+  PBN.on = true; document.body.classList.add('pbn');
+  pbnBuildPal(); pbnSample();
+  PBN.sel = opts.sel > 0 && opts.sel <= PBN.pal.length ? opts.sel : (pbnNextNum(0) || 1);
+  if (!pbnLeft(PBN.sel)) PBN.sel = pbnNextNum(PBN.sel) || PBN.sel;
+  $('#pbnName').textContent = tt('pbn.title', { name: PBN.name });
+  setMode('color'); hidePop();
+  pbnRender(); layout();
+  requestAnimationFrame(layout);
+  let seen = false; try { seen = localStorage.getItem(PBN_TIP_KEY) === '1'; localStorage.setItem(PBN_TIP_KEY, '1'); } catch (_) {}
+  if (!opts.quiet) toast(tt(seen ? 'pbn.start' : 'pbn.tip.first'), seen ? 2200 : 5200);
+  return true;
+}
+function pbnExit(quiet) {
+  if (!PBN.on) return;
+  PBN.on = false; document.body.classList.remove('pbn');
+  pbnClearHint(); pbnCtx.clearRect(0, 0, pbnCv.width, pbnCv.height);
+  PBN.lab = null; PBN.map = null; PBN.labBox = null; PBN.regs = []; PBN.mains = []; PBN.groups = {}; PBN.filled = null;
+  $('#pbnAdv').hidden = true; $('#pbnMore').setAttribute('aria-expanded', 'false');
+  closeSheet('#pbnDone');
+  if (!quiet) toast(tt('pbn.exit.toast'), 2400);
+  layout(); requestAnimationFrame(layout); updateCursor();
+}
+// Al deshacer / rehacer: volver a mirar qué zonas tienen color
+function pbnAfterHistory(entry) {
+  if (!PBN.on) return;
+  if (entry && entry.resize) { pbnExit(true); return; }
+  pbnClearHint(); pbnSample();
+  if (!pbnLeft(PBN.sel)) PBN.sel = pbnNextNum(PBN.sel) || PBN.sel;
+  PBN.celebrated = false;
+  pbnRender();
+}
+async function pbnRestart() {
+  if (!PBN.on) return;
+  if (!(await confirmBox(tt('pbn.restart.confirm'), tt('pbn.restart')))) return;
+  const cc = layers.color.ctx;
+  cc.fillStyle = '#fff'; cc.fillRect(0, 0, W, H);
+  commit([capturePart('color', { x: 0, y: 0, w: W, h: H })]);
+  pbnSample(); PBN.sel = pbnNextNum(0) || 1; PBN.celebrated = false; pbnRender();
+}
+
+// ¡Terminado! confeti y una tarjeta con lo que se puede hacer
+function pbnConfetti() {
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const cv = $('#pbnConfetti'); cv.width = innerWidth; cv.height = innerHeight; cv.hidden = false;
+  const c = cv.getContext('2d'), cols = PBN.pal.length ? PBN.pal : ['#FF6F61', '#FFD54A', '#5856D6', '#34C759'];
+  const P = []; for (let i = 0; i < 110; i++) P.push({ x: Math.random() * cv.width, y: -20 - Math.random() * cv.height * 0.5, vx: (Math.random() - 0.5) * 3, vy: 2 + Math.random() * 4, s: 6 + Math.random() * 8, r: Math.random() * 6, vr: (Math.random() - 0.5) * 0.3, c: cols[i % cols.length] });
+  const t0 = performance.now();
+  (function frame(t) {
+    const k = t - t0; c.clearRect(0, 0, cv.width, cv.height);
+    for (const p of P) { p.x += p.vx; p.y += p.vy; p.r += p.vr; c.save(); c.translate(p.x, p.y); c.rotate(p.r); c.fillStyle = p.c; c.globalAlpha = k > 2400 ? Math.max(0, 1 - (k - 2400) / 600) : 1; c.fillRect(-p.s / 2, -p.s / 3, p.s, p.s * 0.66); c.restore(); }
+    if (k < 3000) requestAnimationFrame(frame); else { c.clearRect(0, 0, cv.width, cv.height); cv.hidden = true; }
+  })(t0);
+}
+function pbnCelebrate() {
+  if (PBN.celebrated) return;
+  PBN.celebrated = true;
+  pbnClearHint(); pbnConfetti();
+  $('#pbnDoneText').textContent = tt('pbn.done.text', { name: PBN.name });
+  setTimeout(() => { if (PBN.on && PBN.celebrated) openSheet('#pbnDone'); }, 900);
+}
+
+// Textos (los de la hoja de plantillas, el menú y la barra)
+function pbnApplyLang() {
+  $('#pbnExit').textContent = tt('pbn.exit'); $('#pbnExit').setAttribute('aria-label', tt('pbn.exit.aria'));
+  $('#pbnHintBtn .pbn-l').textContent = tt('pbn.hint'); $('#pbnHintBtn').title = tt('pbn.hint.tip');
+  $('#pbnMore').setAttribute('aria-label', tt('pbn.more')); $('#pbnMore').title = tt('pbn.more');
+  $('#pbnPal').setAttribute('aria-label', tt('pbn.pal.aria'));
+  $('#pbnNums .pbn-l').textContent = tt('pbn.shownums'); $('#pbnRestart').textContent = tt('pbn.restart'); $('#pbnLeave').textContent = tt('pbn.leave');
+  $('#pbnFillNum').title = tt('pbn.fillnum.tip');
+  $('#pbnBar').setAttribute('aria-label', tt('pbn.bar.aria'));
+  $('#tplMode').setAttribute('aria-label', tt('pbn.mode.aria'));
+  $('#tplMode [data-m="free"]').textContent = tt('pbn.mode.free'); $('#tplMode [data-m="num"]').textContent = tt('pbn.mode.num');
+  $('#tplModeTip').textContent = tt('pbn.mode.tip');
+  const d = $('#pbnDone'); d.querySelector('h2').textContent = tt('pbn.done.title');
+  $('#pbnDoneSave').textContent = tt('pbn.done.save'); $('#pbnDoneShare').textContent = tt('pbn.done.share'); $('#pbnDoneVideo').textContent = tt('pbn.done.video');
+  $('#pbnDoneMore').textContent = tt('pbn.done.more'); $('#pbnDoneClose').textContent = tt('pbn.done.close');
+  const mp = $('#mPbn'); mp.innerHTML = '<span class="pbn-mi" aria-hidden="true">123</span><div></div>';
+  const md = mp.querySelector('div'); md.append(tt('pbn.menu')); const sm = document.createElement('small'); sm.textContent = tt('pbn.menu.sub'); md.append(sm);
+  if (PBN.on) { $('#pbnName').textContent = tt('pbn.title', { name: PBN.name }); pbnRender(); }
+}
+// Hoja de plantillas: Libre / Por número
+function pbnApplyMode() {
+  const num = PBN.mode === 'num';
+  $$('#tplMode button').forEach((b) => { const on = b.dataset.m === (num ? 'num' : 'free'); b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+  $('#tplModeTip').hidden = !num;
+  $('#tplSheet').classList.toggle('pbn-mode', num);
+  const ph = $('#tplPhoto'), at = $('#tplTabs .on'); if (ph) ph.hidden = num || (at && at.dataset.tcat !== 'all');
+  $$('#tplGrid [data-tpl]').forEach((b) => { b.classList.toggle('pbn-off', num && (b.dataset.tpl === 'blank' || !pbnData(b.dataset.tpl))); });
+}
+function pbnSetMode(m) { PBN.mode = m === 'num' ? 'num' : 'free'; pbnApplyMode(); }
+
+// Eventos
+$('#tplMode').addEventListener('click', (e) => { const b = e.target.closest('[data-m]'); if (b) { e.stopPropagation(); pbnSetMode(b.dataset.m); } });
+$('#mPbn').onclick = () => { closeSheet('#menuSheet'); pbnSetMode('num'); openSheet('#tplSheet'); };
+$('#pbnPal').addEventListener('click', (e) => { const b = e.target.closest('.pbn-sw'); if (b) pbnSelect(+b.dataset.n, true); });
+const pbnCloseAdv = () => { $('#pbnAdv').hidden = true; $('#pbnMore').setAttribute('aria-expanded', 'false'); };
+$('#pbnHintBtn').onclick = () => { pbnCloseAdv(); pbnHint(); };
+$('#pbnMore').onclick = () => { const o = $('#pbnAdv').hidden; $('#pbnAdv').hidden = !o; $('#pbnMore').setAttribute('aria-expanded', o ? 'true' : 'false'); };
+$('#pbnFillNum').onclick = () => { pbnCloseAdv(); pbnFillNumber(PBN.sel); };
+$('#pbnNums').onclick = () => { PBN.nums = !PBN.nums; try { localStorage.setItem('colorear.pbn', JSON.stringify({ nums: PBN.nums })); } catch (_) {} pbnRender(); };
+$('#pbnRestart').onclick = () => { pbnCloseAdv(); pbnRestart(); };
+$('#pbnLeave').onclick = () => { pbnExit(false); };
+$('#pbnExit').onclick = () => { pbnExit(false); };
+$('#pbnDoneClose').onclick = () => closeSheet('#pbnDone');
+$('#pbnDoneSave').onclick = async () => { await saveToGallery(); };
+$('#pbnDoneShare').onclick = () => { closeSheet('#pbnDone'); shareDrawing('color'); };
+$('#pbnDoneVideo').onclick = () => { closeSheet('#pbnDone'); openVideoSheet(); };
+$('#pbnDoneMore').onclick = () => { closeSheet('#pbnDone'); pbnSetMode('num'); openSheet('#tplSheet'); };
+pbnApplyLang(); pbnApplyMode();
 
 /* ---------- Añadir: stickers, emojis, figuras y texto (se pueden mover, girar y cambiar de tamaño) ---------- */
 // Pequeñas funciones para escribir trazos SVG en una caja de 100×100
@@ -6300,6 +6774,7 @@ async function doSave() {
     const rec = { line, color, thumb, w: W, h: H, updated: now };
     if (extra.length || !layers.line.vis || !layers.color.vis || layers.color.op < 1) { rec.capas = extra; rec.capasInfo = layerMeta(); }
     if (ref.blob) rec.ref = refRecord();
+    if (PBN.on) rec.pbn = { id: PBN.id, sel: PBN.sel };      // 3.15: seguir Por número al abrirlo
     rec.proc = procId;                          // 3.9: el video del proceso va con el dibujo      // 3.7: la foto de referencia va con el dibujo (aparte: nunca dentro de la imagen)
     if (state.currentId != null) {
       const old = await tx('dibujos', 'readonly', (s) => s.get(state.currentId));
@@ -6361,7 +6836,9 @@ $('#galleryGrid').addEventListener('click', async (e) => {
   state.currentId = act === 'open' ? id : null;
   state.dirty = false;
   closeSheet('#gallerySheet');
+  if (PBN.on) pbnExit(true);
   setMode('color');
+  if (it.pbn && it.pbn.id) { try { pbnEnter(it.pbn.id, { resume: true, quiet: true, sel: act === 'open' ? it.pbn.sel : 0 }); } catch (e) { console.warn('pbn', e); } }
   scheduleAutosave();
   toast(act === 'open' ? tt('toast.opened') : tt('toast.again'));
 });
@@ -6374,7 +6851,7 @@ async function autosave() {
   autoBusy = true;
   try {
     const [line, color, capas] = await Promise.all([toBlob(layers.line.cv), toBlob(layers.color.cv), extraLayersData()]);
-    await tx('estado', 'readwrite', (s) => s.put({ line, color, capas, capasInfo: layerMeta(), w: W, h: H, objs: snapshotObjs(), currentId: state.currentId, dirty: state.dirty, mode: state.mode, proc: procId, t: Date.now() }, 'actual'));
+    await tx('estado', 'readwrite', (s) => s.put({ line, color, capas, capasInfo: layerMeta(), w: W, h: H, objs: snapshotObjs(), currentId: state.currentId, dirty: state.dirty, mode: state.mode, proc: procId, pbn: PBN.on ? { id: PBN.id, sel: PBN.sel } : null, t: Date.now() }, 'actual'));
   } catch (e) { console.warn('autoguardado', e); }
   autoBusy = false;
 }
@@ -6387,6 +6864,7 @@ async function restore() {
       state.currentId = s.currentId ?? null; state.dirty = !!s.dirty;
       if (s.proc) setProc(s.proc);                // 3.9
       setMode(s.mode === 'color' ? 'color' : 'draw');
+      if (s.pbn && s.pbn.id) { try { pbnEnter(s.pbn.id, { resume: true, quiet: true, sel: s.pbn.sel }); } catch (e) { console.warn('pbn', e); } }
       if (Array.isArray(s.objs) && s.objs.length) {
         objs = cloneObjs(s.objs); objSeq = Math.max(...objs.map((o) => o.id || 0)) + 1;
         selId = objs[objs.length - 1].id; enterObjMode(); renderObjs();
@@ -6515,6 +6993,7 @@ function applyLang() {
   buildQuickColors(); renderSymGuide(); renderPalPop(); renderReto();   // 3.9
   try { renderFL(); } catch (_) {}   // 3.10
   try { buildStampStrip(); renderStampUI(); } catch (_) {}   // 3.13
+  try { pbnApplyLang(); pbnApplyMode(); } catch (_) {}   // 3.15
   if (openGrp) $('#panel').setAttribute('aria-label', { tools: tt('tab.tools'), colors: tt('tab.colors'), size: tt('size.title'), more: tt('more.options') }[openGrp]);
   if ($('#hint').classList.contains('show')) { const inst = $('#hintInstall').style.display; if (hintKind === 'news') showNews(); else if (hintKind === 'mixtip') showMixTip(); else if (hintKind === 'install') showHint(); $('#hintInstall').style.display = inst; }
   if ($('#gallerySheet').classList.contains('show')) openGallery();
@@ -7854,7 +8333,7 @@ function flPrepare(e) {
   return m;
 }
 function startSingle(e) {
-  const pre = flPrepare(e);
+  const pre = PBN.on ? null : flPrepare(e);
   flPending = pre;
   try { startSingle0(e); } finally { flPending = null; }
   if (g) g.ptype = e.pointerType;
@@ -8139,6 +8618,7 @@ window.__colorear = {
   sketchLineArt, openAdjust, setAdjMode, useAdjusted, makeProcessVideo, captureFrame, procFrames, deleteProc, openVideoSheet, videoMime, get procId() { return procId; }, get procOn() { return procOn; },
   retoFor, retoStart, retoComplete, retoStreak, renderReto, dayStr, TPL_NEW, tplIsNew, markTplSeen, buildTemplateGrid,
   FL, setFL, renderFL, flMaskFor, flRegion, setFLSens, get flOn() { return flOn(); },
+  PBN, pbnEnter, pbnExit, pbnTap, pbnHint, pbnFillNumber, pbnSelect, pbnPct, pbnLeft, pbnCounts, pbnSetMode, pbnRestart, pbnSample,
 };
 </script>
 </body>
