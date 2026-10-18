@@ -8324,7 +8324,7 @@ function retoOrderGet() {
 function retoPool(tokens) {
   let pool = [];
   if (tokens) for (const tk of tokens) { if (tk.startsWith('cat:')) pool.push(...TEMPLATES.filter((t) => t.cat === tk.slice(4))); else { const t = TEMPLATES.find((x) => x.id === tk); if (t) pool.push(t); } }
-  if (!pool.length) pool = TEMPLATES.filter((t) => t.id !== 'bandera');
+  if (!pool.length) pool = TEMPLATES.filter((t) => t.id !== 'bandera' && !t.adv);
   return pool;
 }
 function retoColors(mode, h2) {
