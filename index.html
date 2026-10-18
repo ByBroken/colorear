@@ -17,7 +17,6 @@
 <script src="i18n/pt-BR.js"></script>
 <script src="i18n/fr.js"></script>
 <script src="templates-data.js"></script>
-<script src="adv-data.js"></script>
 <script src="pbn-data.js"></script>
 <script src="stamps-data.js"></script>
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
@@ -991,7 +990,6 @@ body.ui-hidden.obj-mode #miniBar{display:none}
 #retoStreak[hidden],#retoDone[hidden],#retoOk[hidden]{display:none}
 .reto.done{background:linear-gradient(135deg,#e7f8ec,#f3e8ff)}
 #tplGrid .card{position:relative}
-.card .advb{position:absolute;top:4px;left:4px;background:linear-gradient(135deg,#FFB020,#FF7A2E);color:#fff;font-size:11px;font-weight:800;border-radius:8px;padding:2px 7px;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.2);letter-spacing:.2px}
 .card .newb{position:absolute;top:4px;right:4px;background:#FF2D92;color:#fff;font-size:11px;font-weight:800;border-radius:8px;padding:2px 6px;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.2)}
 .vidbox{display:flex;justify-content:center;margin:6px 0 10px}
 .vidbox canvas,.vidbox video{display:block;max-width:100%;height:44vh;max-height:420px;aspect-ratio:9/16;border-radius:14px;background:#f1eaf7;box-shadow:0 2px 12px rgba(60,30,90,.18)}
@@ -3387,7 +3385,7 @@ function petalRing(c, cx, cy, r1, r2, n, rot = 0, fat = 1) {   // pétalos entre
   }
 }
 const grassLine = (c, y) => { c.moveTo(0, y); c.lineTo(300, y); };
-const TEMPLATE_CATS = [['avanzadas', 'Avanzadas'], ['animales', 'Animales'], ['naturaleza', 'Naturaleza'], ['pr', 'Puerto Rico'], ['monumentos', 'Monumentos del mundo'], ['mandalas', 'Mandalas'], ['halloween', 'Halloween'], ['navidad', 'Navidad'], ['cosas', 'Cosas']];
+const TEMPLATE_CATS = [['animales', 'Animales'], ['naturaleza', 'Naturaleza'], ['pr', 'Puerto Rico'], ['monumentos', 'Monumentos del mundo'], ['mandalas', 'Mandalas'], ['halloween', 'Halloween'], ['navidad', 'Navidad'], ['cosas', 'Cosas']];
 const TEMPLATES = [
   { id: 'casa', name: 'Casa', cat: 'cosas', probe: [90, 300], draw(c) {
     c.beginPath();
@@ -4055,8 +4053,6 @@ const TPL_UPG_DATE = '2026-10-15';
   // 3.12: estilo «cozy» (líneas gruesas y redondas, formas simples y zonas grandes); cada una trae su grosor de línea
   const CZ = window.TPL_COZY || {};
   for (const t of TEMPLATES) { const z = CZ[t.id]; if (!z) continue; const ds = z.d, lw = z.w; t.probe = z.p; t.draw = (c) => { c.lineWidth = lw; strokeAll(c, ds); }; }
-  // 3.16: plantillas «Avanzadas» (escenas con muchas zonas, pensadas para Colorear por número; también se pueden pintar libremente)
-  for (const a of (window.TPL_ADV || [])) { const ds = a.d, lw = a.w; TEMPLATES.push({ id: a.id, cat: 'avanzadas', adv: true, probe: a.p, draw(c) { c.lineWidth = lw; strokeAll(c, ds); } }); }
   // rayitas de tinta que cierran rendijas angostas (cuellos de menos de 4 unidades) para que cada zona se pinte por separado
   const PR = window.TPL_PROBE || {}; for (const t of TEMPLATES) if (PR[t.id]) t.probe = PR[t.id];   // punto de prueba dentro de la zona principal (para las pruebas)
   const FIX = window.TPL_FIX || {};
@@ -4099,7 +4095,6 @@ function buildTemplateGrid() {
     if (t) renderTemplate(c, t, 240, 320);
     const n = document.createElement('div'); n.className = 'name'; n.textContent = name;
     b.append(cv, n);
-    if (t && t.adv) { const ab = document.createElement('span'); ab.className = 'advb'; ab.textContent = tt('tpl.adv'); b.append(ab); }   // 3.16
     if (tplIsNew(t)) { const nb = document.createElement('span'); nb.className = 'newb'; nb.textContent = tt('tpl.new'); b.append(nb); }   // 3.9
     grid.append(b);
   };
@@ -8484,7 +8479,7 @@ function retoOrderGet() {
 function retoPool(tokens) {
   let pool = [];
   if (tokens) for (const tk of tokens) { if (tk.startsWith('cat:')) pool.push(...TEMPLATES.filter((t) => t.cat === tk.slice(4))); else { const t = TEMPLATES.find((x) => x.id === tk); if (t) pool.push(t); } }
-  if (!pool.length) pool = TEMPLATES.filter((t) => t.id !== 'bandera' && !t.adv);
+  if (!pool.length) pool = TEMPLATES.filter((t) => t.id !== 'bandera');
   return pool;
 }
 function retoColors(mode, h2) {
