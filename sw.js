@@ -12,6 +12,7 @@ const ARCHIVOS = [
   'i18n/pt-BR.js',
   'i18n/fr.js',
   'templates-data.js',
+  'adv-data.js',
   'stamps-data.js',
   'pbn-data.js',
   'icon-48.png',

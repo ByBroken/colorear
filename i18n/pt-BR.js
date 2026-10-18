@@ -1026,5 +1026,17 @@ window.COLOREAR_I18N["pt-BR"] = {
 "cn.coral_neon": "Coral neon",
 "neon.row": "Neon",
 "neon.all": "Ver todos",
-"neon.all.tip": "Ver todas as cores neon (72)"
+"neon.all.tip": "Ver todas as cores neon (72)",
+"tplcat.avanzadas": "Avançadas ★",
+"tpl.adv": "★ Avançada",
+"tpl.av-cabana": "Chalé encantado",
+"tpl.av-ballena": "Baleia no mar de estrelas",
+"tpl.av-coqui": "Coquí e flor de maga",
+"tpl.av-faroles": "Festival de lanternas",
+"tpl.av-panaderia": "Padaria do bairro",
+"tpl.av-hongos": "Vila dos cogumelos",
+"tpl.av-castillo": "Castelo nas nuvens",
+"tpl.av-koi": "Lago de carpas koi",
+"tpl.av-buho": "Coruja na floresta de outono",
+"tpl.av-gato": "Gato astronauta"
 };

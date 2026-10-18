@@ -1026,5 +1026,17 @@ window.COLOREAR_I18N["en"] = {
 "cn.coral_neon": "Neon coral",
 "neon.row": "Neon",
 "neon.all": "See all",
-"neon.all.tip": "See all neon colors (72)"
+"neon.all.tip": "See all neon colors (72)",
+"tplcat.avanzadas": "Advanced ★",
+"tpl.adv": "★ Advanced",
+"tpl.av-cabana": "Enchanted cottage",
+"tpl.av-ballena": "Whale in a starry sea",
+"tpl.av-coqui": "Coquí and flor de maga",
+"tpl.av-faroles": "Lantern festival",
+"tpl.av-panaderia": "Corner bakery",
+"tpl.av-hongos": "Mushroom village",
+"tpl.av-castillo": "Castle in the clouds",
+"tpl.av-koi": "Koi pond",
+"tpl.av-buho": "Owl in the autumn forest",
+"tpl.av-gato": "Space cat"
 };

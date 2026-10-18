@@ -1026,5 +1026,17 @@ window.COLOREAR_I18N["fr"] = {
 "cn.coral_neon": "Corail fluo",
 "neon.row": "Fluo",
 "neon.all": "Tout voir",
-"neon.all.tip": "Voir toutes les couleurs fluo (72)"
+"neon.all.tip": "Voir toutes les couleurs fluo (72)",
+"tplcat.avanzadas": "Avancées ★",
+"tpl.adv": "★ Avancée",
+"tpl.av-cabana": "Chaumière enchantée",
+"tpl.av-ballena": "Baleine sous les étoiles",
+"tpl.av-coqui": "Coquí et flor de maga",
+"tpl.av-faroles": "Fête des lanternes",
+"tpl.av-panaderia": "Boulangerie du quartier",
+"tpl.av-hongos": "Village des champignons",
+"tpl.av-castillo": "Château dans les nuages",
+"tpl.av-koi": "Bassin de carpes koï",
+"tpl.av-buho": "Chouette en forêt d'automne",
+"tpl.av-gato": "Chat astronaute"
 };

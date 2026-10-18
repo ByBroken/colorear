@@ -1026,5 +1026,17 @@ window.COLOREAR_I18N["es"] = {
 "cn.coral_neon": "Coral neón",
 "neon.row": "Neón",
 "neon.all": "Ver todos",
-"neon.all.tip": "Ver todos los colores neón (72)"
+"neon.all.tip": "Ver todos los colores neón (72)",
+"tplcat.avanzadas": "Avanzadas ★",
+"tpl.adv": "★ Avanzada",
+"tpl.av-cabana": "Cabaña encantada",
+"tpl.av-ballena": "Ballena en el mar de estrellas",
+"tpl.av-coqui": "Coquí y flor de maga",
+"tpl.av-faroles": "Festival de faroles",
+"tpl.av-panaderia": "Panadería del barrio",
+"tpl.av-hongos": "Aldea de hongos",
+"tpl.av-castillo": "Castillo en las nubes",
+"tpl.av-koi": "Estanque de koi",
+"tpl.av-buho": "Búho en el bosque de otoño",
+"tpl.av-gato": "Gato astronauta"
 };
