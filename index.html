@@ -497,9 +497,9 @@ body.pbn #toast{bottom:calc(env(safe-area-inset-bottom) + 150px)!important}
 #pbnAdv button:disabled{opacity:.45}
 #pbnAdv .pbn-state{font-size:14px;color:var(--accent2)}
 #pbnLeave{color:#c0392b}
-.pbn-mode{display:flex;gap:4px;background:#f1eaf7;border-radius:16px;padding:4px;margin-bottom:10px}
-.pbn-mode button{flex:1;min-height:46px;border:0;border-radius:12px;background:transparent;font-weight:800;font-size:15px;color:var(--muted)}
-.pbn-mode button.on{background:#fff;color:var(--accent2);box-shadow:0 1px 4px rgba(60,30,90,.18)}
+.pbn-modebar{display:flex;gap:4px;background:#f1eaf7;border-radius:16px;padding:4px;margin-bottom:10px}
+.pbn-modebar button{flex:1;min-height:46px;border:0;border-radius:12px;background:transparent;font-weight:800;font-size:15px;color:var(--muted)}
+.pbn-modebar button.on{background:#fff;color:var(--accent2);box-shadow:0 1px 4px rgba(60,30,90,.18)}
 .pbn-modetip{margin:-2px 4px 10px!important;color:var(--accent2)!important;font-weight:600}
 #tplSheet.pbn-mode .card.tpl{position:relative}
 #tplSheet.pbn-mode .card.tpl::after{content:'123';position:absolute;right:10px;top:10px;background:var(--accent2);color:#fff;font-size:10.5px;font-weight:900;letter-spacing:-.4px;border-radius:7px;padding:2px 5px}
@@ -1494,7 +1494,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
 <div class="overlay" id="tplSheet">
   <div class="sheet">
     <div class="sheet-head"><h2>Plantillas</h2><button class="ib close" aria-label="Cerrar"><svg><use href="#i-close"/></svg></button></div>
-    <div class="pbn-mode" id="tplMode" role="group"><button type="button" data-m="free"></button><button type="button" data-m="num"></button></div>
+    <div class="pbn-modebar" id="tplMode" role="group"><button type="button" data-m="free"></button><button type="button" data-m="num"></button></div>
     <p class="tip pbn-modetip" id="tplModeTip" hidden></p>
     <div class="tabs" id="tplTabs" role="tablist"></div>
     <div class="scroll"><div class="grid" id="tplGrid"></div></div>
