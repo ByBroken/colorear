@@ -1818,7 +1818,7 @@ setDocLang(); translateStatic();
 /* Colorear v3.3: crea dibujos para colorear, sube fotos de tus libros y coloréalos
    (lápiz y marcador de colores, crayón, marcadores acrílico / de agua / de alcohol, degradados, difuminar, copiar color,
    capas, ocultar botones, punta Detalle y rueda de colores con opacidad) */
-const APP_VERSION = '3.15';
+const APP_VERSION = '3.16';
 const PORTRAIT = [1200, 1600], LANDSCAPE = [1600, 1200];
 let W = 1200, H = 1600;                       // tamaño de la hoja (px internos); vertical u horizontal
 /* Grosores en píxeles de la hoja (1200×1600). "Súper fina" (xs) y "Detalle" (xxs) no son fijas: se calculan
@@ -4019,7 +4019,7 @@ const TPL_UPG_DATE = '2026-10-15';
   const CZ = window.TPL_COZY || {};
   for (const t of TEMPLATES) { const z = CZ[t.id]; if (!z) continue; const ds = z.d, lw = z.w; t.probe = z.p; t.draw = (c) => { c.lineWidth = lw; strokeAll(c, ds); }; }
   // 3.16: plantillas «Avanzadas» (escenas con muchas zonas, pensadas para Colorear por número; también se pueden pintar libremente)
-  for (const a of (window.TPL_ADV || [])) { const ds = a.d, lw = a.w; TEMPLATES.push({ id: a.id, cat: 'avanzadas', adv: true, probe: a.p, added: '2026-10-18', draw(c) { c.lineWidth = lw; strokeAll(c, ds); } }); }
+  for (const a of (window.TPL_ADV || [])) { const ds = a.d, lw = a.w; TEMPLATES.push({ id: a.id, cat: 'avanzadas', adv: true, probe: a.p, draw(c) { c.lineWidth = lw; strokeAll(c, ds); } }); }
   // rayitas de tinta que cierran rendijas angostas (cuellos de menos de 4 unidades) para que cada zona se pinte por separado
   const PR = window.TPL_PROBE || {}; for (const t of TEMPLATES) if (PR[t.id]) t.probe = PR[t.id];   // punto de prueba dentro de la zona principal (para las pruebas)
   const FIX = window.TPL_FIX || {};
