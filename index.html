@@ -143,6 +143,16 @@ footer .gh{margin:0 4px 6px;font-size:12.5px;font-weight:800;color:var(--muted)}
 #qsList .sw.fx{flex:0 0 30px;width:30px;height:30px;min-height:30px}
 #qsList .sw.on{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--ink);transform:scale(.85)}
 #qsMore{flex:0 0 auto;width:30px;height:30px;border:0;border-radius:50%;padding:0;background:conic-gradient(#ff3b30,#ffcc00,#34c759,#00c7be,#007aff,#af52de,#ff2d92,#ff3b30);box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+#neonLine{display:flex;align-items:center;gap:6px;margin-top:6px;min-width:0}
+#neonLine .rlbl{font-size:12px;font-weight:800;color:#d4189a;white-space:nowrap;text-shadow:0 0 6px rgba(255,41,176,.45)}
+.neonq{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;touch-action:pan-x;flex:1 1 auto;min-width:0;padding:5px 6px;align-items:center}
+.neonq::-webkit-scrollbar{display:none}
+.neonq .sw{flex:0 0 30px;width:30px;height:30px;min-height:30px;box-shadow:0 0 7px 1px var(--g,rgba(255,41,176,.5)),inset 0 0 0 1px rgba(255,255,255,.55)}
+.neonq .sw.on{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--ink)}
+#neonMore{flex:0 0 auto;min-height:36px;border:0;border-radius:18px;padding:0 12px;background:#2a1448;color:#ffd1f3;font-weight:800;font-size:12.5px;box-shadow:0 0 8px rgba(255,41,176,.55);touch-action:manipulation}
+#cTabs button[data-fam="neon"]{background:#2a1448;color:#ffd1f3;box-shadow:0 0 8px rgba(255,41,176,.6);font-weight:800}
+#cTabs button[data-fam="neon"].on{background:#3d1a66;color:#fff;box-shadow:0 0 0 2px #ff29b0,0 0 10px rgba(255,41,176,.8)}
+#cTabs button[data-fam="neon"] i{box-shadow:0 0 6px #ff29b0}
 #recentLine{display:flex;align-items:center;gap:6px;margin-top:6px;min-width:0}
 #recentLine .rlbl{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap}
 #recentRow #customWrap{flex:0 0 auto;height:38px;min-width:0;flex-direction:row;gap:6px;border-radius:19px;padding:0 12px 0 6px;font-size:14px;font-weight:700;color:var(--ink);background:#f1eaf7}
@@ -250,7 +260,7 @@ footer .gh{margin:0 4px 6px;font-size:12.5px;font-weight:800;color:var(--muted)}
 @media (max-width:399px){ #pickColor span{max-width:44px} #pickColor{padding-right:9px} }
 @media (max-width:374px){ #recentRow .rlbl{display:none} }
 @media (max-width:359px){ #moreColors{padding-right:8px;font-size:13px} #recentRow{gap:4px} #recentRow #customWrap{padding-right:9px} }
-/* hoja de 360 colores (3.4: media pantalla, familias en acordeón, códigos propios) */
+/* hoja de 400+ colores (3.16: 402 con los neones nuevos) (3.4: media pantalla, familias en acordeón, códigos propios) */
 #colorsSheet{background:rgba(30,20,50,.16)}
 #colorsSheet .sheet{height:48%;max-height:48%;padding-top:2px;transition:height .18s ease,max-height .18s ease}
 #colorsSheet.tall .sheet{height:88%;max-height:88%}
@@ -1097,7 +1107,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
 <div id="quickStrip" role="toolbar" aria-label="Color actual y colores rápidos">
   <button id="qsCur" title="Color actual: toca para ver todos los colores" aria-label="Color actual. Toca para ver todos los colores"><i></i>Color</button>
   <div id="qsList" aria-label="Colores rápidos"></div>
-  <button id="qsMore" title="Más colores: 360 colores" aria-label="Más colores (360 colores)"></button>
+  <button id="qsMore" title="Más colores: 400+ colores" aria-label="Más colores (400+ colores)"></button>
 </div>
 
 <main id="stage">
@@ -1225,11 +1235,12 @@ body.ui-hidden.obj-mode #miniBar{display:none}
   <div class="grp" data-grp="colors">
     <div class="palette" id="palette"></div>
     <div id="recentRow">
-    <button id="moreColors" title="Más colores: 360 colores para elegir con un toque" aria-label="Más colores (360 colores)"><span class="rainbow"></span>Más colores</button>
+    <button id="moreColors" title="Más colores: 400+ colores para elegir con un toque" aria-label="Más colores (400+ colores)"><span class="rainbow"></span>Más colores</button>
     <button class="tool" id="customWrap" title="Otro color: elige cualquier color en la rueda de colores" aria-label="Otro color: elegir cualquier color" aria-haspopup="dialog"><span class="rainbow"></span>Otro</button>
     <button id="pickColor" aria-pressed="false" aria-label="Copiar color: toca aquí y luego toca un color del dibujo o de la foto" title="Copiar color: toca aquí y luego toca cualquier color del dibujo o de tu foto"><svg><use href="#i-picker"/></svg><span>Copiar color</span></button>
     <button id="alphaChip" hidden title="Opacidad del color: toca para cambiarla" aria-label="Opacidad del color">100 %</button>
     </div>
+    <div id="neonLine"><span class="rlbl neon">Neón</span><div class="neonq" id="neonQuick" aria-label="Colores neón"></div><button id="neonMore" type="button">Ver todos</button></div>
     <div id="recentLine"><span class="rlbl">Recientes</span><div class="recent" id="recent" aria-label="Colores recientes"></div></div>
     <div id="palRow"><button id="palBtn" title="Paletas listas: grupos de colores que combinan bien" aria-haspopup="dialog"><svg><use href="#i-palette"/></svg><span>Paletas listas</span></button><div id="palCur" hidden><span class="rlbl">Paleta:</span><b></b><button id="palCurX" title="Volver a los colores de siempre" aria-label="Volver a los colores de siempre">×</button></div></div>
   </div>
@@ -1335,7 +1346,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
   </div>
   <div class="gpal" id="agPal" style="margin-top:8px"></div>
   <div class="agrow agrec"><span class="rlbl">Recientes</span><div class="recent" id="agRecent" aria-label="Colores recientes"></div></div>
-  <div class="ag2"><button id="agMoreC" title="Más colores: 360 colores para elegir con un toque"><span class="rainbow"></span><span>Más colores</span></button><button id="agOther" title="Otro color: elige cualquier color en la rueda de colores"><span class="rainbow"></span><span>Otro</span></button></div>
+  <div class="ag2"><button id="agMoreC" title="Más colores: 400+ colores para elegir con un toque"><span class="rainbow"></span><span>Más colores</span></button><button id="agOther" title="Otro color: elige cualquier color en la rueda de colores"><span class="rainbow"></span><span>Otro</span></button></div>
   <label class="agop"><span>Opacidad de este color</span><input type="range" id="agStopOp" min="0" max="100" value="100" aria-label="Opacidad de este color"><b id="agStopOpV">100 %</b></label>
   <label class="agop"><span>Opacidad total</span><input type="range" id="agOp" min="5" max="100" value="100" aria-label="Opacidad total"><b id="agOpV">100 %</b></label>
   <p class="aglbl">Tipo</p>
@@ -1847,8 +1858,8 @@ const PALETTE = ['#FF3B30','#FF6F61','#FF9500','#FFCC00','#FFE66D','#A8E063','#3
 const PALETTE_NAMES = ['Rojo','Coral','Naranja','Amarillo','Amarillo claro','Verde lima','Verde','Verde oscuro',
   'Turquesa','Celeste','Azul','Azul marino','Índigo','Morado','Lila','Rosa fuerte',
   'Rosa claro','Piel','Canela','Café','Café oscuro','Gris','Negro','Blanco'];
-/* 360 colores listos para tocar, por familias; cada fila va de claro a oscuro (6 tonos) */
-const COLOR_FAMILIES = [{"id":"rojos","n":"Rojos","rows":[["Rojo","FAC6C6 F68E8E F15555 ED1D1D BD0F0F 840B0B"],["Rojo cereza","F7C9D0 F094A0 E85E71 E02941 B3192E 7D1220"],["Rojo tomate","FDCAC4 FA9589 F8604F F52B14 C41B08 891306"],["Rojo vino","F3CDD7 E89CAF DC6A87 D0395F A52746 741B31"],["Rojo ladrillo","F2D5CF E5AA9E D8806E CC553E A13F2B 712C1E"]]},{"id":"naranjas","n":"Naranjas","rows":[["Naranja","FFDEC2 FFBE85 FF9D47 FF7C0A CC5F00 8F4300"],["Mandarina","FDD9C3 FCB288 FA8C4C F96610 C74C05 8B3504"],["Calabaza","FCE2C5 F9C58B F6A951 F38C16 C26C0A 884C07"],["Coral","FAD3C6 F6A68E F17A55 ED4D1D BD380F 84270B"],["Durazno","F9E5C8 F3CC91 EDB25A E79823 B87614 81530E"]]},{"id":"amarillos","n":"Amarillos","rows":[["Amarillo","FFF5B8 FFEF85 FFE53D FFDD00 CCB100 998500"],["Limón","FDFBB9 FCF888 FAF442 F9F106 C7C005 959004"],["Oro","FFEDB8 FFE085 FFCF3D FFBF00 CC9900 997300"],["Mostaza","F7E3B6 F1CE7E EBBA47 DCA218 AE8013 815E0E"],["Maíz","FCF3CF FAE89E F7D964 F4CB2A D5AD0B A58609"]]},{"id":"verdes","n":"Verdes","rows":[["Verde lima","E6F4CD CCEA9A B3DF68 9AD435 78A824 547619"],["Verde hoja","D8F1D0 B1E3A0 8AD671 63C841 4A9E2E 346F20"],["Verde","CEF3D3 9DE7A7 6CDA7B 3BCE4F 29A339 1D7228"],["Verde esmeralda","CDF4DF 9AEABF 68DF9F 35D47F 24A862 197644"],["Verde menta","D0F1E7 A0E3CF 71D6B7 41C8A0 2E9E7C 206F57"]]},{"id":"azules","n":"Azules","rows":[["Turquesa","CBF6F3 97EDE7 63E3DB 2FDACF 1FADA4 157973"],["Celeste","C6EDFA 8EDAF6 55C8F1 1DB5ED 0F8EBD 0B6484"],["Azul cielo","C5E4FB 8CC9F8 52AEF4 1993F0 0C72C0 095086"],["Azul","C8DAF9 91B5F3 5A90ED 236AE7 1450B8 0E3881"],["Azul marino","CCD1F5 98A3EB 6575E2 3148D8 2133AB 172478"]]},{"id":"morados","n":"Morados","rows":[["Violeta","D4CDF3 A99CE8 7D6ADC 5239D0 3C27A5 2A1B74"],["Morado","DBCCF5 B799EA 9367E0 6F34D5 5423A9 3B1877"],["Uva","E2CEF3 C49DE7 A76CDA 893BCE 6A29A3 4A1D72"],["Lila","E7D0F1 CFA0E3 B771D6 A041C8 7C2E9E 57206F"],["Berenjena","EBD2EF D7A4DF C477CF B04ABF 8A3597 61256A"]]},{"id":"rosas","n":"Rosas","rows":[["Fucsia","F6CAF3 EE96E7 E561DA DD2CCE AF1DA3 7B1472"],["Rosa chicle","F8C9EA F292D5 EB5CC0 E425AB B61686 7F105E"],["Rosa","FAC6E2 F68EC5 F155A8 ED1D8C BD0F6C 840B4B"],["Rosa fresa","FCC5D9 F98BB3 F6518D F31667 C20A4E 880736"],["Frambuesa","F9C8D3 F391A8 ED5A7C E72350 B8143A 810E29"]]},{"id":"piel","n":"Tonos de piel","rows":[["Piel rosada","F7DDD4 EABEAE D79E88 C27B61 9D5B43 6A3F2F"],["Piel dorada","F8E6D3 ECCCAC DBB085 C4915F 9F7041 6B4C2E"],["Piel canela","F5E2D6 E6C7B3 D3A98D BD8965 996848 674732"],["Piel oliva","F3E8D8 E2D0B6 CEB692 B7996C 94774C 635136"],["Piel morena","E7CABB D3A892 BD866B A0674B 744D39 4A3226"]]},{"id":"tierra","n":"Cafés y tierra","rows":[["Café","DAB395 CA9268 B57340 8F5B32 6A4325 442B18"],["Chocolate","D6AC9A C4886E AE6647 8A5138 653B29 41261B"],["Madera","D3B99C C09C72 A97E4C 86633C 63492C 3F2F1C"],["Arena","E4DBC8 D4C4A5 C0A97C AC8E53 8A7242 675532"],["Oliva","C9C99C B4B474 989852 777740 56562E 35351D"]]},{"id":"grises","n":"Grises y negros","rows":[["Blanco a gris","FFFFFF F0F0F0 DBDBDB C4C4C4 ADADAD 949494"],["Gris a negro","787878 5E5E5E 454545 2E2E2E 171717 000000"],["Gris azulado","E2E5E9 BFC6CF 96A2B0 6E7E91 4F5B69 303840"],["Gris cálido","E8E6E3 CDC7C1 ACA49A 8C8073 655C53 3E3832"]]},{"id":"pastel","n":"Pastel","rows":[["Rosa pastel","FFE5EC FFD1DD FFBDCD FFA8BE FF94AF FF809F"],["Durazno pastel","FFF0E5 FFE4D1 FFD8BD FFCCA8 FFC194 FFB580"],["Vainilla","FFFCE5 FFF9D1 FFF6BD FFF3A8 FFF194 FFEE80"],["Menta pastel","EAFBF1 D9F7E6 C8F3DA B7F0CF A7ECC4 96E9B8"],["Celeste pastel","E7F5FE D3EEFD C0E6FC ADDEFB 99D6FA 86CFF9"],["Lila pastel","F2E8FC E8D6FA DEC3F8 D4B1F6 C99FF4 BF8CF2"]]},{"id":"neon","n":"Neón y vivos","rows":[["Rosa neón","FF70CB FF4DBE FF29B0 FF0AA5 EB0095 CC0081"],["Naranja neón","FFA570 FF8E4D FF7729 FF640A EB5600 CC4B00"],["Lima neón","BCFF70 ACFF4D 9BFF29 8DFF0A 7DEB00 6DCC00"],["Verde neón","70FFA0 4DFF88 29FF70 0AFF5C 00EB4E 00CC44"],["Azul eléctrico","70D9FF 4DCFFF 29C6FF 0ABEFF 00ACEB 0096CC"]]}];
+/* 402 colores listos para tocar, por familias; cada fila va de claro a oscuro (6 tonos) */
+const COLOR_FAMILIES = [{"id":"rojos","n":"Rojos","rows":[["Rojo","FAC6C6 F68E8E F15555 ED1D1D BD0F0F 840B0B"],["Rojo cereza","F7C9D0 F094A0 E85E71 E02941 B3192E 7D1220"],["Rojo tomate","FDCAC4 FA9589 F8604F F52B14 C41B08 891306"],["Rojo vino","F3CDD7 E89CAF DC6A87 D0395F A52746 741B31"],["Rojo ladrillo","F2D5CF E5AA9E D8806E CC553E A13F2B 712C1E"]]},{"id":"naranjas","n":"Naranjas","rows":[["Naranja","FFDEC2 FFBE85 FF9D47 FF7C0A CC5F00 8F4300"],["Mandarina","FDD9C3 FCB288 FA8C4C F96610 C74C05 8B3504"],["Calabaza","FCE2C5 F9C58B F6A951 F38C16 C26C0A 884C07"],["Coral","FAD3C6 F6A68E F17A55 ED4D1D BD380F 84270B"],["Durazno","F9E5C8 F3CC91 EDB25A E79823 B87614 81530E"]]},{"id":"amarillos","n":"Amarillos","rows":[["Amarillo","FFF5B8 FFEF85 FFE53D FFDD00 CCB100 998500"],["Limón","FDFBB9 FCF888 FAF442 F9F106 C7C005 959004"],["Oro","FFEDB8 FFE085 FFCF3D FFBF00 CC9900 997300"],["Mostaza","F7E3B6 F1CE7E EBBA47 DCA218 AE8013 815E0E"],["Maíz","FCF3CF FAE89E F7D964 F4CB2A D5AD0B A58609"]]},{"id":"verdes","n":"Verdes","rows":[["Verde lima","E6F4CD CCEA9A B3DF68 9AD435 78A824 547619"],["Verde hoja","D8F1D0 B1E3A0 8AD671 63C841 4A9E2E 346F20"],["Verde","CEF3D3 9DE7A7 6CDA7B 3BCE4F 29A339 1D7228"],["Verde esmeralda","CDF4DF 9AEABF 68DF9F 35D47F 24A862 197644"],["Verde menta","D0F1E7 A0E3CF 71D6B7 41C8A0 2E9E7C 206F57"]]},{"id":"azules","n":"Azules","rows":[["Turquesa","CBF6F3 97EDE7 63E3DB 2FDACF 1FADA4 157973"],["Celeste","C6EDFA 8EDAF6 55C8F1 1DB5ED 0F8EBD 0B6484"],["Azul cielo","C5E4FB 8CC9F8 52AEF4 1993F0 0C72C0 095086"],["Azul","C8DAF9 91B5F3 5A90ED 236AE7 1450B8 0E3881"],["Azul marino","CCD1F5 98A3EB 6575E2 3148D8 2133AB 172478"]]},{"id":"morados","n":"Morados","rows":[["Violeta","D4CDF3 A99CE8 7D6ADC 5239D0 3C27A5 2A1B74"],["Morado","DBCCF5 B799EA 9367E0 6F34D5 5423A9 3B1877"],["Uva","E2CEF3 C49DE7 A76CDA 893BCE 6A29A3 4A1D72"],["Lila","E7D0F1 CFA0E3 B771D6 A041C8 7C2E9E 57206F"],["Berenjena","EBD2EF D7A4DF C477CF B04ABF 8A3597 61256A"]]},{"id":"rosas","n":"Rosas","rows":[["Fucsia","F6CAF3 EE96E7 E561DA DD2CCE AF1DA3 7B1472"],["Rosa chicle","F8C9EA F292D5 EB5CC0 E425AB B61686 7F105E"],["Rosa","FAC6E2 F68EC5 F155A8 ED1D8C BD0F6C 840B4B"],["Rosa fresa","FCC5D9 F98BB3 F6518D F31667 C20A4E 880736"],["Frambuesa","F9C8D3 F391A8 ED5A7C E72350 B8143A 810E29"]]},{"id":"piel","n":"Tonos de piel","rows":[["Piel rosada","F7DDD4 EABEAE D79E88 C27B61 9D5B43 6A3F2F"],["Piel dorada","F8E6D3 ECCCAC DBB085 C4915F 9F7041 6B4C2E"],["Piel canela","F5E2D6 E6C7B3 D3A98D BD8965 996848 674732"],["Piel oliva","F3E8D8 E2D0B6 CEB692 B7996C 94774C 635136"],["Piel morena","E7CABB D3A892 BD866B A0674B 744D39 4A3226"]]},{"id":"tierra","n":"Cafés y tierra","rows":[["Café","DAB395 CA9268 B57340 8F5B32 6A4325 442B18"],["Chocolate","D6AC9A C4886E AE6647 8A5138 653B29 41261B"],["Madera","D3B99C C09C72 A97E4C 86633C 63492C 3F2F1C"],["Arena","E4DBC8 D4C4A5 C0A97C AC8E53 8A7242 675532"],["Oliva","C9C99C B4B474 989852 777740 56562E 35351D"]]},{"id":"grises","n":"Grises y negros","rows":[["Blanco a gris","FFFFFF F0F0F0 DBDBDB C4C4C4 ADADAD 949494"],["Gris a negro","787878 5E5E5E 454545 2E2E2E 171717 000000"],["Gris azulado","E2E5E9 BFC6CF 96A2B0 6E7E91 4F5B69 303840"],["Gris cálido","E8E6E3 CDC7C1 ACA49A 8C8073 655C53 3E3832"]]},{"id":"pastel","n":"Pastel","rows":[["Rosa pastel","FFE5EC FFD1DD FFBDCD FFA8BE FF94AF FF809F"],["Durazno pastel","FFF0E5 FFE4D1 FFD8BD FFCCA8 FFC194 FFB580"],["Vainilla","FFFCE5 FFF9D1 FFF6BD FFF3A8 FFF194 FFEE80"],["Menta pastel","EAFBF1 D9F7E6 C8F3DA B7F0CF A7ECC4 96E9B8"],["Celeste pastel","E7F5FE D3EEFD C0E6FC ADDEFB 99D6FA 86CFF9"],["Lila pastel","F2E8FC E8D6FA DEC3F8 D4B1F6 C99FF4 BF8CF2"]]},{"id":"neon","n":"Neón y vivos","rows":[["Rosa neón","FF70CB FF4DBE FF29B0 FF0AA5 EB0095 CC0081"],["Naranja neón","FFA570 FF8E4D FF7729 FF640A EB5600 CC4B00"],["Lima neón","BCFF70 ACFF4D 9BFF29 8DFF0A 7DEB00 6DCC00"],["Verde neón","70FFA0 4DFF88 29FF70 0AFF5C 00EB4E 00CC44"],["Azul eléctrico","70D9FF 4DCFFF 29C6FF 0ABEFF 00ACEB 0096CC"],["Amarillo neón","FFFF70 FFFF4D FFFF29 FFFF0A EBEB00 CCCC00"],["Rojo neón","FF7070 FF4D4D FF2929 FF0A0A EB0000 CC0000"],["Cian neón","70FFF5 4DFFF2 29FFEE 0AFFEA 00EBD6 00CCBA"],["Violeta neón","C870FF BA4DFF AB29FF 9D0AFF 8800EB 7500CC"],["Magenta neón","FF70F2 FF4DEF FF29EC FF0AE9 EB00D5 CC00B9"],["Azul neón","7088FF 4D6AFF 2950FF 0A37FF 0029EB 0022CC"],["Coral neón","FF8A70 FF704D FF5629 FF3C0A EB3000 CC2A00"]]}];
 const TONE_NAMES = ['muy claro', 'claro', 'suave', 'medio', 'oscuro', 'muy oscuro'];
 const GREY_NAMES = [['Blanco', 'Gris perla', 'Gris nube', 'Gris plata', 'Gris claro', 'Gris medio'], ['Gris', 'Gris piedra', 'Gris carbón', 'Gris muy oscuro', 'Casi negro', 'Negro']];
 const ALL_COLORS = [], COLOR_NAME = {}, COLOR_CODE = {};
@@ -4612,7 +4623,7 @@ function renderRecent() {
     }
   }
 }
-/* ---------- Más colores: 360 colores por familias ---------- */
+/* ---------- Más colores: 402 colores por familias ---------- */
 function pickSheetColor(c) {
   setColor(c); addRecent(c); closeSheet('#colorsSheet');
   if (agReturn && agOn()) { agReturn = false; agReopen(); return; }
@@ -4627,7 +4638,7 @@ function buildColorSheet() {
     tabs.append(t);
   };
   mkTab('recientes', tt('recent'), 'conic-gradient(#ff3b30,#ffcc00,#34c759,#007aff,#af52de,#ff3b30)');
-  for (const f of COLOR_FAMILIES) {
+  for (const f of [COLOR_FAMILIES.find((x) => x.id === 'neon'), ...COLOR_FAMILIES.filter((x) => x.id !== 'neon')]) {
     const hexes = f.rows.map((r) => r[1].split(' '));
     mkTab(f.id, f.n, '#' + hexes[Math.min(2, hexes.length - 1)][3]);
     const sec = document.createElement('section'); sec.className = 'cfam fam'; sec.id = 'fam-' + f.id;
@@ -4713,6 +4724,20 @@ function openColorsSheet() {
   else { setFamOpen(null, false); sc.scrollTop = 0; setFamTab('recientes'); }
 }
 $('#moreColors').onclick = openColorsSheet;
+(function buildNeonQuick() {
+  const box = $('#neonQuick'), fam = COLOR_FAMILIES.find((f) => f.id === 'neon');
+  fam.rows.forEach((r) => {
+    const c = '#' + r[1].split(' ')[3], b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.style.setProperty('--g', c); b.dataset.c = c;
+    b.onclick = () => { setColor(c); addRecent(c); toast(colorLabel(c) + ' ✓ ' + (state.mode === 'draw' ? tt('toast.tapdraw') : tt('toast.tappaint')), 2200, c); };
+    box.append(b);
+  });
+})();
+function relabelNeon() {
+  $('#neonLine .rlbl').textContent = tt('neon.row'); $('#neonMore').textContent = tt('neon.all'); $('#neonMore').title = tt('neon.all.tip');
+  $$('#neonQuick .sw').forEach((b) => { const c = b.dataset.c; b.title = COLOR_NAME[c] + ' · ' + COLOR_CODE[c]; b.setAttribute('aria-label', tt('code.aria', { name: COLOR_NAME[c], code: COLOR_CODE[c] })); b.classList.toggle('on', c === curColor()); });
+}
+$('#neonMore').onclick = () => { openColorsSheet(); setFamOpen('neon', true); showFam('neon'); const sc = $('#cScroll'), sec = $('#fam-neon'); sc.scrollTop = Math.max(0, sec.offsetTop - 4); };
+relabelNeon();
 $('#cWheel').onclick = () => openPicker('sheet');
 $('#otherColor').onclick = () => openPicker('sheet');
 renderRecent();
@@ -5146,6 +5171,7 @@ function refreshMini() {
   $('#qsCur').setAttribute('aria-label', tt('qs.cur.aria2', { name: nm }));
   $$('#qsList .sw[data-black]').forEach((q) => { const k = state.mode === 'draw' ? '#000000' : '#333333'; q.dataset.c = k; q.style.background = k; });
   $$('#qsList .sw').forEach((q) => q.classList.toggle('on', q.dataset.c === c));
+  try { $$('#neonQuick .sw').forEach((q) => q.classList.toggle('on', q.dataset.c === c)); } catch (_) {}
   tb.setAttribute('aria-label', tt('mini.tool.aria2', { name: ti.name })); tb.title = tt('mini.tool.tip2', { name: ti.name });
   const sk = state.mode === 'draw' ? state.drawSize : state.colorSize, d = SIZE_DOT[sk] || 11, dot = $('#mbSize .mbdot');
   dot.style.width = dot.style.height = d + 'px';
@@ -7207,6 +7233,7 @@ function relabelSwatches() {
 function applyLang() {
   setDocLang(); buildColorNames(); translateStatic(); refreshLangButtons();
   relabelSwatches(); try { tsLabels(); } catch (_) {}
+  try { relabelNeon(); } catch (_) {}
   buildColorSheet(); buildGradPresets(); buildMiniSizes(); buildTemplateGrid();
   setBrush(state.brush); setDrawBrush(state.drawBrush); relabelGel(); relabelAg();
   updateGradUI(); renderMix(); refreshColorUI(); renderRecent(); refreshLayersUI(); updateObjBar(); renderSlots();
