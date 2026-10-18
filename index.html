@@ -4126,7 +4126,7 @@ function showPop(id, anchor) {
   const pw = Math.min(pop.offsetWidth, vw - 16);
   let ph = pop.offsetHeight;
   const above = r.top - 16;
-  if (r.bottom < vh * 0.45) {                                   // 3.4: botón arriba (pestañas / panel): el submenú va debajo, sin tapar el botón
+  if (r.bottom < vh * 0.45 || (anchor.closest && anchor.closest('#panel, #toolDock') && vh - r.bottom >= 200)) {                                   // 3.4: botón arriba (pestañas / panel): el submenú va debajo, sin tapar el botón
     const top = Math.round(r.bottom + 8);
     if (ph > vh - top - 8) { pop.style.maxHeight = (vh - top - 8) + 'px'; ph = vh - top - 8; }
     pop.style.left = clamp(r.left + r.width / 2 - pw / 2, 8, vw - pw - 8) + 'px'; pop.style.top = top + 'px';
