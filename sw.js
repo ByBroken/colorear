@@ -14,6 +14,7 @@ const ARCHIVOS = [
   'templates-data.js',
   'stamps-data.js',
   'pbn-data.js',
+  'chars-data.js',
   'icon-48.png',
   'icon-72.png',
   'icon-96.png',

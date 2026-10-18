@@ -18,6 +18,7 @@
 <script src="i18n/fr.js"></script>
 <script src="templates-data.js"></script>
 <script src="pbn-data.js"></script>
+<script src="chars-data.js"></script>
 <script src="stamps-data.js"></script>
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -3385,7 +3386,7 @@ function petalRing(c, cx, cy, r1, r2, n, rot = 0, fat = 1) {   // pétalos entre
   }
 }
 const grassLine = (c, y) => { c.moveTo(0, y); c.lineTo(300, y); };
-const TEMPLATE_CATS = [['animales', 'Animales'], ['naturaleza', 'Naturaleza'], ['pr', 'Puerto Rico'], ['monumentos', 'Monumentos del mundo'], ['mandalas', 'Mandalas'], ['halloween', 'Halloween'], ['navidad', 'Navidad'], ['cosas', 'Cosas']];
+const TEMPLATE_CATS = [['personajes', 'Personajes'], ['animales', 'Animales'], ['naturaleza', 'Naturaleza'], ['pr', 'Puerto Rico'], ['monumentos', 'Monumentos del mundo'], ['mandalas', 'Mandalas'], ['halloween', 'Halloween'], ['navidad', 'Navidad'], ['cosas', 'Cosas']];
 const TEMPLATES = [
   { id: 'casa', name: 'Casa', cat: 'cosas', probe: [90, 300], draw(c) {
     c.beginPath();
@@ -4053,6 +4054,8 @@ const TPL_UPG_DATE = '2026-10-15';
   // 3.12: estilo «cozy» (líneas gruesas y redondas, formas simples y zonas grandes); cada una trae su grosor de línea
   const CZ = window.TPL_COZY || {};
   for (const t of TEMPLATES) { const z = CZ[t.id]; if (!z) continue; const ds = z.d, lw = z.w; t.probe = z.p; t.draw = (c) => { c.lineWidth = lw; strokeAll(c, ds); }; }
+  // 3.18: «Personajes» (amigos de estilo chibi con fondo decorado; pensados para Colorear por número, también se pueden pintar libremente)
+  for (const a of (window.TPL_CHARS || [])) { const ds = a.d, es = a.e, lw = a.w, lw2 = a.w2; TEMPLATES.push({ id: a.id, cat: 'personajes', added: '2026-10-18', probe: a.p, draw(c) { c.lineWidth = lw; strokeAll(c, ds); c.lineWidth = lw2; strokeAll(c, es); } }); }
   // rayitas de tinta que cierran rendijas angostas (cuellos de menos de 4 unidades) para que cada zona se pinte por separado
   const PR = window.TPL_PROBE || {}; for (const t of TEMPLATES) if (PR[t.id]) t.probe = PR[t.id];   // punto de prueba dentro de la zona principal (para las pruebas)
   const FIX = window.TPL_FIX || {};
