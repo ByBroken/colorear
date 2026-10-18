@@ -1116,6 +1116,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
   <div id="paper" class="c-pen">
     <canvas id="cvColor"></canvas>
     <canvas id="cvLine"></canvas>
+    <canvas id="cvOver" aria-hidden="true"></canvas>
     <canvas id="cvPbn" aria-hidden="true"></canvas>
     <canvas id="cvPbnHint" aria-hidden="true"></canvas>
     <canvas id="cvObj"></canvas>
@@ -1911,6 +1912,7 @@ const paper = $('#paper'), stage = $('#stage');
 const layers = {
   color: { id: 'color', name: 'Capa 1', cv: $('#cvColor'), bak: mkCanvas(), vis: true, op: 1 },   // Capa 1: el papel y los colores de siempre
   line:  { id: 'line', name: 'Líneas del dibujo', cv: $('#cvLine'),  bak: mkCanvas(), vis: true, op: 1 },   // líneas: siempre encima
+  over:  { id: 'over', name: 'Detalles encima', cv: $('#cvOver'),  bak: mkCanvas(), vis: true, op: 1 },    // 3.16: gel y acrílico pintan AQUÍ, encima de las líneas
 };
 for (const k in layers) {
   const L = layers[k];
@@ -2059,7 +2061,7 @@ function commit(parts, extra) {
 // Foto de todas las capas (para deshacer cambios de hoja completa)
 function snapLayers() {
   const data = {};
-  for (const L of [...paint, layers.line]) data[L.id] = L.ctx.getImageData(0, 0, W, H);
+  for (const L of [...paint, layers.line, layers.over]) data[L.id] = L.ctx.getImageData(0, 0, W, H);
   return { w: W, h: H, meta: paint.map((L) => ({ id: L.id, vis: L.vis, op: L.op })), lineVis: layers.line.vis, active: state.activeLayer, data };
 }
 function restoreSnap(sn) {
@@ -2084,7 +2086,7 @@ function replaceSheet(nw, nh, drawFn) {
   setSheetSize(nw, nh);
   resetLayerStack();
   const lc = layers.line.ctx, cc = layers.color.ctx;
-  lc.clearRect(0, 0, W, H);
+  lc.clearRect(0, 0, W, H); layers.over.ctx.clearRect(0, 0, W, H);
   cc.fillStyle = '#fff'; cc.fillRect(0, 0, W, H);
   if (drawFn) drawFn(lc, cc);
   const after = snapLayers();
@@ -2180,7 +2182,9 @@ function currentTool() { return state.mode === 'draw' ? state.drawTool : state.c
 const isLiveLayer = (id) => paint.some((L) => L.id === id);
 function paintTarget() { return isLiveLayer(state.activeLayer) ? state.activeLayer : 'color'; }
 function drawTarget() { const t = paintTarget(); return t === 'color' ? 'line' : t; }
-function toolTarget(tool) { return state.mode === 'draw' ? drawTarget() : paintTarget(); }
+// 3.16: en Colorear el gel y el acrílico (opacos) pintan en la capa «encima» (sobre las líneas negras); lo demás, debajo de las líneas
+const overTool = (tool) => state.mode !== 'draw' && (tool === 'gel' || tool === 'acrylic');
+function toolTarget(tool) { return state.mode === 'draw' ? drawTarget() : overTool(tool) ? 'over' : paintTarget(); }
 // Opacidad del color elegido (rueda de colores): el trazo se pinta en una capa aparte y se mezcla con esa opacidad
 function withAlpha(st, a) {
   if (!st || a == null || a >= 0.999) return st;
@@ -2193,15 +2197,15 @@ function strokeStyleFor(tool) {
   if (tool === 'pen') return withAlpha({ layer: dl, color: state.drawColor, comp: 'source-over', lw: sizeLW('draw', state.drawSize) }, state.drawAlpha);
   if (tool === 'erase') return { layer: dl, color: '#000', comp: 'destination-out', lw: ERASE_SIZES[state.drawSize] || 18 };
   if (tool === 'marker') return withAlpha(brushStyle(state.drawBrush, dl, state.drawColor, sizeLW('mark', state.drawSize), isThin(state.drawSize)), state.drawAlpha);
-  if (isBrush(tool)) return withAlpha(brushStyle(tool, pl, state.color, sizeLW('color', state.colorSize), isThin(state.colorSize)), state.alpha);
+  if (isBrush(tool)) return withAlpha(brushStyle(tool, overTool(tool) ? 'over' : pl, state.color, sizeLW('color', state.colorSize), isThin(state.colorSize)), state.alpha);
   if (tool === 'cpencil' || tool === 'gel') {
     const draw = state.mode === 'draw', sz = draw ? state.drawSize : state.colorSize;
     const lw = isThin(sz) ? sizeLW('color', sz) : tool === 'gel' ? GEL_SIZES[sz] || 8 : PENCIL_SIZES[draw ? 'draw' : 'color'][sz] || 12;
-    const st = tool === 'gel' ? gelStyle(draw ? dl : pl, draw ? state.drawColor : state.color, lw, isThin(sz))
+    const st = tool === 'gel' ? gelStyle(draw ? dl : 'over', draw ? state.drawColor : state.color, lw, isThin(sz))
       : { layer: draw ? dl : pl, color: draw ? state.drawColor : state.color, comp: 'source-over', lw, buf: 'art', art: 'pencil', alpha: 0.6, tex: isThin(sz) ? 0.55 : 1 };
     return withAlpha(st, draw ? state.drawAlpha : state.alpha);
   }
-  if (tool === 'cerase') return pl === 'color' ? { layer: 'color', color: '#FFFFFF', comp: 'source-over', lw: sizeLW('color', state.colorSize) }
+  if (tool === 'cerase') return pl === 'color' ? { layer: 'color', also: 'over', color: '#FFFFFF', comp: 'source-over', lw: sizeLW('color', state.colorSize) }
     : { layer: pl, color: '#000', comp: 'destination-out', lw: sizeLW('color', state.colorSize) };   // en otra capa, borra de verdad (queda transparente)
   return null;
 }
@@ -2296,7 +2300,7 @@ function startSingle0(e) {
     for (const q of mir) bboxAdd(g.box, q.x, q.y, st.lw + 2);
     if (st.art) { if (e.pointerType === 'pen' && e.pressure > 0) st.alpha = clamp(st.alpha * (0.55 + 0.9 * e.pressure), 0.05, 0.98); artBegin(st, p); for (const q of mir) artSeg(st, q, q, { x: q.x + 0.01, y: q.y }); }
     else if (st.buf) { bufBegin(); for (const q of [p, ...mir]) { dot(bufCtx, st, q); bufShow(st, q.x - st.lw, q.y - st.lw, q.x + st.lw, q.y + st.lw); } }
-    else for (const q of [p, ...mir]) dot(layers[st.layer].ctx, st, q);
+    else for (const q of [p, ...mir]) { dot(layers[st.layer].ctx, st, q); if (st.also) dot(layers[st.also].ctx, Object.assign({}, st, { comp: 'destination-out', color: '#000' }), q); }
     return;
   }
   g = Object.assign(base, { kind: 'shape', tool });
@@ -2390,7 +2394,7 @@ function endSingle(cancelled) {
     if (cur.T) symSeg(cur, cur.mid, cur.last, cur.last);
     strokeFinish(cur);
     flEnd(cur);
-    commit([capturePart(cur.st.layer, rectOf(cur.box))]);
+    commit([capturePart(cur.st.layer, rectOf(cur.box)), cur.st.also ? capturePart(cur.st.also, rectOf(cur.box)) : null]);
   } else if (cur.kind === 'shape') {
     pctx.clearRect(0, 0, W, H);
     if (cancelled && !cur.forceCommit) return;
@@ -2541,7 +2545,7 @@ function grain() {
 function strokeSeg(gg, p0, p1, p2) {
   const st = gg.st;
   if (st.art) { artSeg(st, p0, p1, p2); return; }
-  if (!st.buf) { segment(layers[st.layer].ctx, st, p0, p1, p2); return; }
+  if (!st.buf) { segment(layers[st.layer].ctx, st, p0, p1, p2); if (st.also) segment(layers[st.also].ctx, Object.assign({}, st, { comp: 'destination-out', color: '#000' }), p0, p1, p2); return; }
   segment(bufCtx, st, p0, p1, p2);
   const pad = st.lw;
   bufShow(st, Math.min(p0.x, p1.x, p2.x) - pad, Math.min(p0.y, p1.y, p2.y) - pad, Math.max(p0.x, p1.x, p2.x) + pad, Math.max(p0.y, p1.y, p2.y) + pad);
@@ -4765,6 +4769,7 @@ function colorAt(x, y) {
   };
   for (const L of paint) if (L.vis) over(L);
   if (layers.line.vis) over(layers.line);
+  if (layers.over.vis) over(layers.over);
   return ('#' + c.map((v) => Math.round(v).toString(16).padStart(2, '0')).join('')).toUpperCase();
 }
 function pickColorAt(p) {
@@ -4836,7 +4841,7 @@ function layerName(L) {
 function purgeDeadLayers() {
   for (const k of Object.keys(layers)) {
     const L = layers[k];
-    if (k === 'color' || k === 'line' || paint.includes(L)) continue;
+    if (k === 'color' || k === 'line' || k === 'over' || paint.includes(L)) continue;
     L.cv.remove(); delete layers[k];
   }
 }
@@ -4844,8 +4849,8 @@ function purgeDeadLayers() {
 function mountLayers() {
   const top = layers.line.cv;
   for (const L of paint) { fitLayer(L); if (L.cv.nextSibling !== top || L.cv.parentNode !== paper) paper.insertBefore(L.cv, top); }
-  for (const k in layers) { const L = layers[k]; if (k !== 'line' && !paint.includes(L) && L.cv.parentNode) L.cv.remove(); }
-  for (const L of [...paint, layers.line]) { L.cv.style.visibility = L.vis ? '' : 'hidden'; L.cv.style.opacity = L.op < 0.999 ? String(L.op) : ''; }
+  for (const k in layers) { const L = layers[k]; if (k !== 'line' && k !== 'over' && !paint.includes(L) && L.cv.parentNode) L.cv.remove(); }
+  for (const L of [...paint, layers.line, layers.over]) { L.cv.style.visibility = L.vis ? '' : 'hidden'; L.cv.style.opacity = L.op < 0.999 ? String(L.op) : ''; }
   if (!isLiveLayer(state.activeLayer)) state.activeLayer = 'color';
   refreshLayersUI();
 }
@@ -5917,8 +5922,8 @@ async function pbnRestart() {
   if (!PBN.on) return;
   if (!(await confirmBox(tt('pbn.restart.confirm'), tt('pbn.restart')))) return;
   const cc = layers.color.ctx;
-  cc.fillStyle = '#fff'; cc.fillRect(0, 0, W, H);
-  commit([capturePart('color', { x: 0, y: 0, w: W, h: H })]);
+  cc.fillStyle = '#fff'; cc.fillRect(0, 0, W, H); layers.over.ctx.clearRect(0, 0, W, H);
+  commit([capturePart('color', { x: 0, y: 0, w: W, h: H }), capturePart('over', { x: 0, y: 0, w: W, h: H })]);
   pbnSample(); PBN.sel = pbnNextNum(0) || 1; PBN.celebrated = false; pbnRender();
 }
 
@@ -6700,9 +6705,9 @@ async function importOwn(blob, meta) {
   let info = {}; try { info = JSON.parse(meta.Colorear); } catch (_) {}
   cancelGesture(); flattenObjs();
   if (info.tipo === 'color' && meta.ColorearLineas) {
-    const [li, ci] = await Promise.all([loadImage(b64ToBlob(meta.ColorearLineas)), meta.ColorearColores ? loadImage(b64ToBlob(meta.ColorearColores)) : null]);
+    const [li, ci, oi] = await Promise.all([loadImage(b64ToBlob(meta.ColorearLineas)), meta.ColorearColores ? loadImage(b64ToBlob(meta.ColorearColores)) : null, meta.ColorearArriba ? loadImage(b64ToBlob(meta.ColorearArriba)).catch(() => null) : null]);
     const [nw, nh] = sizeForImage(li.width, li.height);
-    replaceSheet(nw, nh, (lc, cc) => { lc.drawImage(li, 0, 0, nw, nh); if (ci) cc.drawImage(ci, 0, 0, nw, nh); });
+    replaceSheet(nw, nh, (lc, cc) => { lc.drawImage(li, 0, 0, nw, nh); if (ci) cc.drawImage(ci, 0, 0, nw, nh); if (oi) layers.over.ctx.drawImage(oi, 0, 0, nw, nh); });
   } else {
     const img = await loadImage(blob), [nw, nh] = sizeForImage(img.width, img.height);
     const tmp = mkCanvas(nw, nh), tc = ctx2d(tmp);
@@ -6856,12 +6861,13 @@ document.addEventListener('drop', (e) => {
 /* ---------- imágenes ---------- */
 function toBlob(cv, type = 'image/png', q) { return new Promise((res) => cv.toBlob(res, type, q)); }
 // Imagen aplanada: todas las capas visibles (con su opacidad) y las líneas encima. onlyLine: solo las líneas (para colorear)
-function composite(w = W, h = H, onlyLine = false, withLines = true) {
+function composite(w = W, h = H, onlyLine = false, withLines = true, withOver = true) {
   const c = mkCanvas(w, h), x = c.getContext('2d');
   x.fillStyle = '#fff'; x.fillRect(0, 0, w, h);
   if (!onlyLine) for (const L of paint) if (L.vis && L.op > 0) { x.globalAlpha = L.op; x.drawImage(L.cv, 0, 0, w, h); }
   x.globalAlpha = 1;
   if (onlyLine || (withLines && layers.line.vis)) x.drawImage(layers.line.cv, 0, 0, w, h);
+  if (!onlyLine && withOver && layers.over.vis) x.drawImage(layers.over.cv, 0, 0, w, h);   // 3.16: detalles de gel / acrílico encima de las líneas
   return c;
 }
 function thumbSize() { return W > H ? [320, 240] : [240, 320]; }
@@ -6882,8 +6888,9 @@ async function setLayersFrom(lineBlob, colorBlob, extras, meta) {
   const [nw, nh] = ref && ref.width > ref.height ? LANDSCAPE : PORTRAIT;
   setSheetSize(nw, nh);
   resetLayerStack(); purgeDeadLayers();
+  const oi = meta && meta.over ? await loadImage(meta.over).catch(() => null) : null;   // 3.16: detalles encima de las líneas
   const lc = layers.line.ctx, cc = layers.color.ctx;
-  lc.clearRect(0, 0, W, H);
+  lc.clearRect(0, 0, W, H); layers.over.ctx.clearRect(0, 0, W, H); if (oi) layers.over.ctx.drawImage(oi, 0, 0, W, H);
   cc.fillStyle = '#fff'; cc.fillRect(0, 0, W, H);
   if (li) lc.drawImage(li, 0, 0, W, H);
   if (ci) cc.drawImage(ci, 0, 0, W, H);
@@ -6907,6 +6914,9 @@ async function extraLayersData() {
   for (const L of paint.slice(1)) out.push({ name: L.name, vis: L.vis, op: L.op, img: await toBlob(L.cv) });
   return out;
 }
+// 3.16: ¿hay detalles de gel / acrílico encima de las líneas?
+function overHasInk() { const d = layers.over.ctx.getImageData(0, 0, W, H).data; for (let i = 3; i < d.length; i += 4) if (d[i]) return true; return false; }
+async function overBlob() { return overHasInk() ? toBlob(layers.over.cv) : null; }
 function layerMeta() { return { lineVis: layers.line.vis, baseVis: layers.color.vis, baseOp: layers.color.op, activeIndex: Math.max(0, paint.indexOf(layers[paintTarget()])) }; }
 
 /* PNG con una marca de Colorear (texto dentro del archivo) para poder abrirlo de nuevo sin limpiar */
@@ -6953,9 +6963,11 @@ async function buildExport(kind) {        // 'outline' = solo líneas; 'color' =
     return pngWithText(blob, [['Software', 'Colorear'], ['Colorear', JSON.stringify(info)]]);
   }
   // la imagen es el dibujo aplanado (capas visibles); adentro van las líneas y los colores aplanados para abrirlo otra vez en Colorear
-  const [comp, line, color] = await Promise.all([toBlob(composite()), toBlob(layers.line.cv), toBlob(composite(W, H, false, false))]);
-  const [l64, c64] = await Promise.all([blobToB64(line), blobToB64(color)]);
-  return pngWithText(comp, [['Software', 'Colorear'], ['Colorear', JSON.stringify(info)], ['ColorearLineas', l64], ['ColorearColores', c64]]);
+  const [comp, line, color, ov] = await Promise.all([toBlob(composite()), toBlob(layers.line.cv), toBlob(composite(W, H, false, false, false)), overBlob()]);
+  const [l64, c64, o64] = await Promise.all([blobToB64(line), blobToB64(color), ov ? blobToB64(ov) : '']);
+  const chunks = [['Software', 'Colorear'], ['Colorear', JSON.stringify(info)], ['ColorearLineas', l64], ['ColorearColores', c64]];
+  if (o64) chunks.push(['ColorearArriba', o64]);      // 3.16: detalles de gel / acrílico encima de las líneas
+  return pngWithText(comp, chunks);
 }
 function stamp() { const d = new Date(), p = (n) => String(n).padStart(2, '0'); return `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}`; }
 function fileName() { return `${tt('file.drawing')}-${stamp()}.png`; }
@@ -7025,10 +7037,10 @@ async function doSave() {
   cancelGesture(); flattenObjs();
   try {
     const [tw, th] = thumbSize();
-    const [line, color, thumb, extra] = await Promise.all([toBlob(layers.line.cv), toBlob(layers.color.cv), toBlob(composite(tw, th), 'image/jpeg', 0.85), extraLayersData()]);
+    const [line, color, thumb, extra, ov] = await Promise.all([toBlob(layers.line.cv), toBlob(layers.color.cv), toBlob(composite(tw, th), 'image/jpeg', 0.85), extraLayersData(), overBlob()]);
     const now = Date.now();
     const rec = { line, color, thumb, w: W, h: H, updated: now };
-    if (extra.length || !layers.line.vis || !layers.color.vis || layers.color.op < 1) { rec.capas = extra; rec.capasInfo = layerMeta(); }
+    if (extra.length || ov || !layers.line.vis || !layers.color.vis || layers.color.op < 1) { rec.capas = extra; rec.capasInfo = Object.assign(layerMeta(), ov ? { over: ov } : {}); }
     if (ref.blob) rec.ref = refRecord();
     if (PBN.on) rec.pbn = { id: PBN.id, sel: PBN.sel };      // 3.15: seguir Por número al abrirlo
     rec.proc = procId;                          // 3.9: el video del proceso va con el dibujo      // 3.7: la foto de referencia va con el dibujo (aparte: nunca dentro de la imagen)
@@ -7106,8 +7118,8 @@ async function autosave() {
   if (autoBusy) { scheduleAutosave(); return; }
   autoBusy = true;
   try {
-    const [line, color, capas] = await Promise.all([toBlob(layers.line.cv), toBlob(layers.color.cv), extraLayersData()]);
-    await tx('estado', 'readwrite', (s) => s.put({ line, color, capas, capasInfo: layerMeta(), w: W, h: H, objs: snapshotObjs(), currentId: state.currentId, dirty: state.dirty, mode: state.mode, proc: procId, pbn: PBN.on ? { id: PBN.id, sel: PBN.sel } : null, t: Date.now() }, 'actual'));
+    const [line, color, capas, ov] = await Promise.all([toBlob(layers.line.cv), toBlob(layers.color.cv), extraLayersData(), overBlob()]);
+    await tx('estado', 'readwrite', (s) => s.put({ line, color, capas, capasInfo: Object.assign(layerMeta(), ov ? { over: ov } : {}), w: W, h: H, objs: snapshotObjs(), currentId: state.currentId, dirty: state.dirty, mode: state.mode, proc: procId, pbn: PBN.on ? { id: PBN.id, sel: PBN.sel } : null, t: Date.now() }, 'actual'));
   } catch (e) { console.warn('autoguardado', e); }
   autoBusy = false;
 }
