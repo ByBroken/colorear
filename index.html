@@ -100,16 +100,31 @@ header.top{
 /* 3.4: Añadir está en la pestaña Más */
 #objBar{left:50%;transform:translateX(-50%);top:8px;background:rgba(255,255,255,.97);border-radius:18px;padding:5px;
   box-shadow:0 3px 14px rgba(60,30,90,.25);display:none;max-width:calc(100% - 16px);overflow-x:auto;scrollbar-width:none}
+body.obj-mode #objBar{flex-wrap:wrap;justify-content:center;overflow:visible;width:max-content}
+body.obj-mode #objBar.bot{top:auto;bottom:76px}
 #objBar::-webkit-scrollbar{display:none}
 body.obj-mode #objBar{display:flex}
 body.obj-mode #addBtn{display:none}
-.ob{flex:0 0 auto;min-width:48px;height:46px;border:0;border-radius:13px;background:#f6f0ff;font-weight:700;font-size:14px;
+.ob{flex:0 0 auto;min-width:46px;height:46px;border:0;border-radius:13px;background:#f6f0ff;font-weight:700;font-size:14px;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:0 8px;white-space:nowrap}
 .ob svg{width:20px;height:20px}
 .ob.primary{background:#34C759;color:#fff;flex-direction:row;gap:6px;font-size:16px;padding:0 14px}
 .ob.primary svg{width:22px;height:22px}
 .ob:disabled{opacity:.35}
 .ob.danger{color:#d93a2f}
+.ob.sq{min-width:46px;padding:0}
+.ob.sq b{font-size:26px;line-height:1;font-weight:800}
+#objColorPop{left:50%;transform:translateX(-50%);top:62px;z-index:5;flex-direction:column;align-items:stretch;gap:8px;background:rgba(255,255,255,.98);border-radius:18px;padding:10px;max-width:calc(100% - 16px);box-shadow:0 6px 22px rgba(60,30,90,.3);display:none}
+body.obj-mode #objColorPop:not([hidden]){display:flex}
+.ocp-sw{display:grid;grid-template-columns:repeat(8,44px);gap:4px;max-height:210px;overflow-y:auto;justify-content:center}
+.ocp-sw button{width:44px;height:44px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.18)}
+.ocp-sw button.on{box-shadow:0 0 0 3px var(--accent)}
+.ocp-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:center}
+.ocp-row[hidden]{display:none}
+.ocp-row span{font-weight:700;font-size:13px;color:var(--muted)}
+.ocp-b{border:0;border-radius:12px;background:#f1eaf7;min-height:44px;padding:0 14px;font-weight:700;font-size:14px;color:var(--accent2)}
+.ocp-b.on{background:var(--sel);color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent)}
+#stampCm [hidden]{display:none}
 /* 3.4: las herramientas viven en un panel que se abre desde las pestañas de arriba (la hoja usa el resto de la pantalla) */
 footer.tools{
   position:fixed;z-index:22;left:6px;top:0;width:calc(100% - 12px);display:none;overflow-y:auto;overscroll-behavior:contain;
@@ -1053,6 +1068,9 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <symbol id="i-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linejoin="round" stroke-linecap="round"><path d="M5 6V4h14v2M12 4v16M9 20h6"/></symbol>
     <symbol id="i-style" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 010 17z" fill="currentColor"/></symbol>
     <symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></symbol>
+    <symbol id="i-flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M12 3v18" stroke-dasharray="2 2.5"/><path d="M9.5 7L3.5 18h6z"/><path d="M14.5 7l6 11h-6z" fill="currentColor"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 9V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7a2 2 0 002 2h3"/></symbol>
+    <symbol id="i-rotate" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M19.5 12a7.5 7.5 0 11-2.4-5.5"/><path d="M19.5 3.5v5h-5"/></symbol>
     <symbol id="i-front" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="3" width="11" height="11" rx="1.5"/><rect x="10" y="10" width="11" height="11" rx="1.5" fill="currentColor"/></symbol>
     <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/></symbol>
     <symbol id="i-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M12 3.5l9 4.8-9 4.8-9-4.8z"/><path d="M3 12.3l9 4.8 9-4.8"/><path d="M3 16.2l9 4.8 9-4.8"/></symbol>
@@ -1127,11 +1145,22 @@ body.ui-hidden.obj-mode #miniBar{display:none}
   </div>
   <div class="float" id="objBar" role="toolbar" aria-label="Editar lo añadido">
     <button class="ob primary" id="objDone"><svg><use href="#i-check"/></svg>Listo</button>
+    <button class="ob" id="objColor" aria-haspopup="dialog" aria-expanded="false"><svg><use href="#i-palette"/></svg>Color</button>
+    <button class="ob" id="objFlip" title="Voltear: se pone al revés como en un espejo"><svg><use href="#i-flip"/></svg>Voltear</button>
+    <button class="ob" id="objRot" title="Girar un cuarto de vuelta"><svg><use href="#i-rotate"/></svg>Girar</button>
+    <button class="ob sq" id="objSmaller" title="Más chico" aria-label="Más chico"><b>−</b></button>
+    <button class="ob sq" id="objBigger" title="Más grande" aria-label="Más grande"><b>+</b></button>
+    <button class="ob" id="objDup" title="Hacer otra copia al lado"><svg><use href="#i-copy"/></svg>Duplicar</button>
     <button class="ob" id="objStyle" title="Cambiar entre a color y para colorear"><svg><use href="#i-style"/></svg><span>Contorno</span></button>
     <button class="ob" id="objEdit"><svg><use href="#i-edit"/></svg>Editar</button>
     <button class="ob" id="objFront" title="Traer al frente"><svg><use href="#i-front"/></svg>Frente</button>
     <button class="ob danger" id="objDel"><svg><use href="#i-trash"/></svg>Borrar</button>
     <button class="ob" id="objMore"><svg><use href="#i-plus"/></svg>Más</button>
+  </div>
+  <div class="float" id="objColorPop" hidden role="dialog" aria-label="Color del dibujo">
+    <div id="ocpSw" class="ocp-sw"></div>
+    <div class="ocp-row" id="ocpNatRow"><button class="ocp-b" id="ocpNat" aria-pressed="false">Colores naturales</button></div>
+    <div class="ocp-row" id="ocpLwRow"><span>Línea</span><button class="ocp-b" data-olw="thin">Fina</button><button class="ocp-b" data-olw="norm">Normal</button><button class="ocp-b" data-olw="thick">Gruesa</button></div>
   </div>
   <div class="float" id="zoomBar" role="toolbar" aria-label="Zoom">
     <button class="ib" id="toolPan" title="Mano: mover la hoja" aria-label="Mano: mover la hoja"><svg><use href="#i-hand"/></svg></button>
@@ -1225,7 +1254,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <div id="stampAdv" hidden>
       <div class="st-row"><label for="stampRot">Girar</label><input type="range" id="stampRot" min="0" max="345" step="15"><span class="st-val" id="stampRotV">0°</span><button class="st-btn2" id="stampRot90" aria-label="Girar 90°" title="Girar 90°">↻ 90°</button></div>
       <div class="st-row"><label for="stampSpace">Separación</label><input type="range" id="stampSpace" min="40" max="260" step="10"><span class="st-val" id="stampSpaceV">100%</span></div>
-      <div class="st-row"><label>Color</label><div class="st-chips" id="stampCm"><button data-cm="mine">Mi color</button><button data-cm="rainbow">Arcoíris</button><button data-cm="random">Al azar</button></div></div>
+      <div class="st-row"><label>Color</label><div class="st-chips" id="stampCm"><button data-cm="mine">Mi color</button><button data-cm="rainbow">Arcoíris</button><button data-cm="random">Al azar</button><button data-cm="nat" hidden>Naturales</button></div></div>
       <div class="st-row"><label>Línea</label><div class="st-chips" id="stampLw"><button data-lw="thin">Fina</button><button data-lw="norm">Normal</button><button data-lw="thick">Gruesa</button></div></div>
       <label class="rchk"><input type="checkbox" id="stampRand">Girar al azar</label>
       <label class="rchk"><input type="checkbox" id="stampFollow">Girar con el dedo</label>
@@ -1819,7 +1848,7 @@ setDocLang(); translateStatic();
 /* Colorear v3.3: crea dibujos para colorear, sube fotos de tus libros y coloréalos
    (lápiz y marcador de colores, crayón, marcadores acrílico / de agua / de alcohol, degradados, difuminar, copiar color,
    capas, ocultar botones, punta Detalle y rueda de colores con opacidad) */
-const APP_VERSION = '3.16';
+const APP_VERSION = '3.17';
 const PORTRAIT = [1200, 1600], LANDSCAPE = [1600, 1200];
 let W = 1200, H = 1600;                       // tamaño de la hoja (px internos); vertical u horizontal
 /* Grosores en píxeles de la hoja (1200×1600). "Súper fina" (xs) y "Detalle" (xxs) no son fijas: se calculan
@@ -2109,8 +2138,8 @@ function applyEntry(entry, which) {
     renderObjs();
   }
 }
-function undo() { cancelGesture(); const e = undoStack.pop(); if (!e) return; applyEntry(e, 'before'); redoStack.push(e); markDirty(); updateUndoButtons(); refreshLayersUI(); if (PBN.on) pbnAfterHistory(e); }
-function redo() { cancelGesture(); const e = redoStack.pop(); if (!e) return; applyEntry(e, 'after'); undoStack.push(e); markDirty(); updateUndoButtons(); refreshLayersUI(); if (PBN.on) pbnAfterHistory(e); }
+function undo() { cancelGesture(); stLiveFlush(); const e = undoStack.pop(); if (!e) return; applyEntry(e, 'before'); redoStack.push(e); markDirty(); updateUndoButtons(); refreshLayersUI(); if (PBN.on) pbnAfterHistory(e); }
+function redo() { cancelGesture(); stLiveFlush(); const e = redoStack.pop(); if (!e) return; applyEntry(e, 'after'); undoStack.push(e); markDirty(); updateUndoButtons(); refreshLayersUI(); if (PBN.on) pbnAfterHistory(e); }
 function resetHistory() { undoStack.length = 0; redoStack.length = 0; updateUndoButtons(); }
 function updateUndoButtons() { $('#btnUndo').disabled = $('#mbUndo').disabled = !undoStack.length; $('#btnRedo').disabled = $('#mbRedo').disabled = !redoStack.length; }
 function syncBackups() { for (const k in layers) { const L = layers[k]; L.bctx.clearRect(0, 0, W, H); L.bctx.drawImage(L.cv, 0, 0); } }
@@ -2253,7 +2282,11 @@ function startSingle0(e) {
     g = Object.assign(base, { kind: 'pan', vx: view.x, vy: view.y }); stage.classList.add('panning'); return;
   }
   if (PBN.on) { g = Object.assign(base, { kind: 'pbn', vx: view.x, vy: view.y }); return; }   // 3.15: Por número: un toque pinta la zona; arrastrar mueve la hoja si tiene zoom
-  if (objMode) { g = objDown(base, p); return; }
+  if (objMode) {
+    const og = objDown(Object.assign({}, base), p);
+    if (og.action === 'empty' && currentTool() === 'stamp' && !state.picking) flattenObjs();   // 3.17: tocar fuera confirma el sello y pone otro
+    else { hideObjPop(); g = og; return; }
+  }
   if (state.picking) { g = Object.assign(base, { kind: 'pick' }); return; }     // Copiar color: se copia al soltar
   const tool = currentTool();
   const tgt = layers[toolTarget(tool)];
@@ -4131,7 +4164,7 @@ $$('#drawTools .tool, #drawArt .tool').forEach((b) => b.onclick = () => {
   else if (b.dataset.tool === 'gel' && !state.gelSeen) { state.gelSeen = true; showPop('gelPop', b); }
   else if (b.dataset.tool === 'mixb' && !state.mixSeen) { state.mixSeen = true; showPop('mixPop', b); }
 });
-function setDrawTool(t) { state.drawTool = t; $$('#drawTools .tool, #drawArt .tool').forEach((x) => x.classList.toggle('on', x.dataset.tool === t)); updateCursor(); }
+function setDrawTool(t) { if (t !== 'stamp' && stSel()) flattenObjs(); state.drawTool = t; $$('#drawTools .tool, #drawArt .tool').forEach((x) => x.classList.toggle('on', x.dataset.tool === t)); updateCursor(); }
 // Tipo de marcador de Dibujar (liso, acrílico, de agua, de alcohol)
 const MARK_NAMES = { get crayon() { return tt('mark.k.crayon'); }, get acrylic() { return tt('mark.k.acrylic'); }, get water() { return tt('mark.k.water'); }, get alcohol() { return tt('mark.k.alcohol'); }, get blender0() { return tt('mark.k.blender0'); } };
 function setDrawBrush(b) {
@@ -4150,6 +4183,7 @@ $$('#markPop [data-mark]').forEach((b) => b.onclick = () => {
 });
 const isBrush = (t) => t in BRUSHES;
 function setColorTool(t) {
+  if (t !== 'stamp' && stSel()) flattenObjs();
   if (isBrush(t)) setBrush(t);
   const wasAg = state.colorTool === 'agrad';
   state.colorTool = t;
@@ -4577,7 +4611,8 @@ function refreshColorUI() {
   refreshMini();
 }
 // alpha: opacidad (solo la da la rueda de colores; cualquier otro color vuelve a 100 %)
-function setColor(hex, alpha) {
+function setColor(hex, alpha) { setColor0(hex, alpha); if (window.stColorHook) window.stColorHook(); }
+function setColor0(hex, alpha) {
   hex = String(hex).toUpperCase();
   const a = alpha == null ? 1 : clamp(+alpha || 0, 0.05, 1);
   if (state.mode === 'draw') {
@@ -6096,18 +6131,38 @@ const snapshotObjs = () => cloneObjs(objs);
 const selected = () => objs.find((o) => o.id === selId) || null;
 let measureCtx = null;
 function textWidth(t) { if (!measureCtx) measureCtx = mkCanvas(4, 4).getContext('2d'); measureCtx.font = TEXT_FONT; return measureCtx.measureText(t || ' ').width; }
+// 3.17: caja ajustada al dibujo de un sello (en la caja de 100×100), para que el marco no quede enorme
+const stBoundsC = new Map();
+function stTight(it) {
+  let b = stBoundsC.get(it.id); if (b) return b;
+  const cv = mkCanvas(100, 100), c = cv.getContext('2d');
+  drawStamp(c, it, 50, 50, 100, 0, false, '#000', 1, { nat: false, lm: 1.3 });
+  const d = c.getImageData(0, 0, 100, 100).data; let x1 = 100, y1 = 100, x2 = -1, y2 = -1;
+  for (let y = 0; y < 100; y++) for (let x = 0; x < 100; x++) if (d[(y * 100 + x) * 4 + 3] > 10) { if (x < x1) x1 = x; if (x > x2) x2 = x; if (y < y1) y1 = y; if (y > y2) y2 = y; }
+  if (x2 < x1) { x1 = y1 = 15; x2 = y2 = 85; }
+  b = { x1, y1, x2: x2 + 1, y2: y2 + 1, cx: (x1 + x2 + 1) / 2 - 50, cy: (y1 + y2 + 1) / 2 - 50, hw: Math.max(6, (x2 + 1 - x1) / 2), hh: Math.max(6, (y2 + 1 - y1) / 2) };
+  stBoundsC.set(it.id, b); return b;
+}
 function objBounds(o) {               // caja local (sin escala ni giro)
   if (o.kind === 'text') { const w = textWidth(o.text) / 2 + 10; return { x1: -w, y1: -64, x2: w, y2: 64 }; }
+  if (o.kind === 'stamp') { const it = STI[o.key]; if (it) { const t = stTight(it); return { x1: -t.hw, y1: -t.hh, x2: t.hw, y2: t.hh }; } }
   return { x1: -50, y1: -50, x2: 50, y2: 50 };
 }
-function objMinS(o) { return o.kind === 'text' ? 0.2 : 0.3; }
-function objMaxS(o) { return o.kind === 'text' ? 10 : 14; }
+function objMinS(o) { return o.kind === 'text' ? 0.2 : o.kind === 'stamp' ? 0.1 : 0.3; }
+function objMaxS(o) { return o.kind === 'text' ? 10 : o.kind === 'stamp' ? 9 : 14; }
 function toWorld(o, lx, ly) { const c = Math.cos(o.r), s = Math.sin(o.r); return { x: o.x + (lx * c - ly * s) * o.s, y: o.y + (lx * s + ly * c) * o.s }; }
 function toLocal(o, x, y) { const c = Math.cos(o.r), s = Math.sin(o.r), dx = (x - o.x) / o.s, dy = (y - o.y) / o.s; return { x: dx * c + dy * s, y: -dx * s + dy * c }; }
 // Dibuja un objeto. target: 'view' (vista previa), 'line' (capa de contorno) o 'color' (capa de color)
 function drawObj(c, o, target) {
+  if (o.kind === 'stamp') {         // 3.17: un sello que se puede mover, girar, voltear y cambiar de color antes de dejarlo en la hoja
+    if (target === 'color' || target === 'line') return;
+    const it = STI[o.key]; if (!it) return;
+    const t = stTight(it), w = toWorld(o, -(o.mir ? -1 : 1) * t.cx, -t.cy);
+    drawStamp(c, it, w.x, w.y, 100 * o.s, o.r, !!o.mir, o.color, o.alpha == null ? 1 : o.alpha, { nat: !!o.nat, lm: o.lm || 1, h: true });
+    return;
+  }
   c.save();
-  c.translate(o.x, o.y); c.rotate(o.r); c.scale(o.s, o.s);
+  c.translate(o.x, o.y); c.rotate(o.r); c.scale(o.s, o.s); if (o.mir) c.scale(-1, 1);
   if (o.kind === 'text') {
     if (target !== 'color') {
       c.font = TEXT_FONT; c.textAlign = 'center'; c.textBaseline = 'middle';
@@ -6140,29 +6195,50 @@ function drawObj(c, o, target) {
   }
   c.restore();
 }
+const objCanFlip = (o) => o.kind !== 'text';
+const objCanColor = (o) => o.kind !== 'emoji' && !(o.style === 'outline' && o.kind !== 'text');
+// Marco con un mínimo cómodo para el dedo (aunque el sello sea chiquito) y botones de ≥44 px en las esquinas
+function objFrame(o) {
+  const k = docPerCss(), b = objBounds(o), pad = 6 * k / o.s, mn = 46 * k / o.s;
+  const hx = Math.max(b.x2 + pad, mn), hy = Math.max(b.y2 + pad, mn);
+  return { x1: -hx, y1: -hy, x2: hx, y2: hy };
+}
+function objHandles(o) {
+  const k = docPerCss(), f = objFrame(o);
+  return { del: toWorld(o, f.x1, f.y1), done: toWorld(o, f.x2, f.y1), scale: toWorld(o, f.x2, f.y2), flip: objCanFlip(o) ? toWorld(o, f.x1, f.y2) : null, hr: 23 * k, hit: 29 * k, f };
+}
 function drawChrome(o) {
-  const k = docPerCss(), b = objBounds(o), pad = 6 * k / o.s;
-  const pts = [[b.x1 - pad, b.y1 - pad], [b.x2 + pad, b.y1 - pad], [b.x2 + pad, b.y2 + pad], [b.x1 - pad, b.y2 + pad]].map(([x, y]) => toWorld(o, x, y));
+  const k = docPerCss(), h = objHandles(o), f = h.f;
+  const pts = [[f.x1, f.y1], [f.x2, f.y1], [f.x2, f.y2], [f.x1, f.y2]].map(([x, y]) => toWorld(o, x, y));
   octx.save();
   octx.lineWidth = 2.5 * k; octx.setLineDash([8 * k, 6 * k]); octx.strokeStyle = '#5856D6';
   octx.beginPath(); pts.forEach((p, i) => i ? octx.lineTo(p.x, p.y) : octx.moveTo(p.x, p.y)); octx.closePath(); octx.stroke();
   octx.setLineDash([]);
-  const hr = 17 * k;
+  const hr = h.hr;
+  octx.strokeStyle = '#fff'; octx.lineWidth = 3 * k; octx.lineCap = 'round'; octx.lineJoin = 'round';
+  const dot = (p, col) => { octx.fillStyle = col; octx.beginPath(); octx.arc(p.x, p.y, hr, 0, Math.PI * 2); octx.fill(); octx.stroke(); };
   // borrar (arriba a la izquierda)
-  const d = pts[0];
-  octx.fillStyle = '#FF3B30'; octx.strokeStyle = '#fff'; octx.lineWidth = 3 * k;
-  octx.beginPath(); octx.arc(d.x, d.y, hr, 0, Math.PI * 2); octx.fill(); octx.stroke();
-  octx.beginPath(); const q = hr * 0.42;
+  let d = h.del; dot(d, '#FF3B30');
+  octx.beginPath(); const q = hr * 0.4;
   octx.moveTo(d.x - q, d.y - q); octx.lineTo(d.x + q, d.y + q); octx.moveTo(d.x + q, d.y - q); octx.lineTo(d.x - q, d.y + q); octx.stroke();
+  // listo ✓ (arriba a la derecha)
+  d = h.done; dot(d, '#34C759');
+  octx.beginPath(); octx.moveTo(d.x - hr * 0.42, d.y + hr * 0.02); octx.lineTo(d.x - hr * 0.1, d.y + hr * 0.34); octx.lineTo(d.x + hr * 0.44, d.y - hr * 0.3); octx.stroke();
+  // voltear (abajo a la izquierda)
+  if (h.flip) {
+    d = h.flip; dot(d, '#8E8AE6');
+    const a = hr * 0.5, t = hr * 0.22;
+    octx.beginPath(); octx.moveTo(d.x - a, d.y); octx.lineTo(d.x + a, d.y);
+    octx.moveTo(d.x - a, d.y); octx.lineTo(d.x - a + t, d.y - t); octx.moveTo(d.x - a, d.y); octx.lineTo(d.x - a + t, d.y + t);
+    octx.moveTo(d.x + a, d.y); octx.lineTo(d.x + a - t, d.y - t); octx.moveTo(d.x + a, d.y); octx.lineTo(d.x + a - t, d.y + t); octx.stroke();
+  }
   // girar y cambiar tamaño (abajo a la derecha)
-  const s = pts[2];
-  octx.fillStyle = '#5856D6';
-  octx.beginPath(); octx.arc(s.x, s.y, hr, 0, Math.PI * 2); octx.fill(); octx.stroke();
-  octx.beginPath(); octx.arc(s.x, s.y, hr * 0.5, -Math.PI * 0.9, Math.PI * 0.4); octx.stroke();
-  const ax = s.x + hr * 0.5 * Math.cos(Math.PI * 0.4), ay = s.y + hr * 0.5 * Math.sin(Math.PI * 0.4);
+  const sc = h.scale; dot(sc, '#5856D6');
+  octx.beginPath(); octx.arc(sc.x, sc.y, hr * 0.5, -Math.PI * 0.9, Math.PI * 0.4); octx.stroke();
+  const ax = sc.x + hr * 0.5 * Math.cos(Math.PI * 0.4), ay = sc.y + hr * 0.5 * Math.sin(Math.PI * 0.4);
   octx.beginPath(); octx.moveTo(ax - hr * 0.35, ay); octx.lineTo(ax, ay); octx.lineTo(ax, ay - hr * 0.35); octx.stroke();
   octx.restore();
-  return { del: pts[0], scale: pts[2], hr };
+  return { del: h.del, scale: h.scale, done: h.done, flip: h.flip, hr };
 }
 function renderObjs() {
   octx.clearRect(0, 0, W, H);
@@ -6174,10 +6250,26 @@ function renderObjs() {
 function updateObjBar() {
   const s = selected();
   $('#objDel').disabled = !s; $('#objFront').disabled = !s || objs.length < 2;
-  const canStyle = s && s.kind !== 'emoji';
+  const canStyle = s && s.kind !== 'emoji' && s.kind !== 'stamp';
+  const isSt = !!s && s.kind === 'stamp';
   $('#objStyle').disabled = !canStyle;
   $('#objStyle span').textContent = s && s.style === 'outline' ? tt('add.color') : tt('obj.outline');
+  $('#objStyle').style.display = isSt ? 'none' : '';
   $('#objEdit').style.display = s && s.kind === 'text' ? '' : 'none';
+  $('#objMore').style.display = isSt ? 'none' : '';
+  $('#objFront').style.display = isSt && objs.length < 2 ? 'none' : '';
+  $('#objColor').disabled = !s || !objCanColor(s); $('#objFlip').disabled = !s || !objCanFlip(s);
+  for (const id of ['objRot', 'objSmaller', 'objBigger', 'objDup']) $('#' + id).disabled = !s;
+  if (!s || !objCanColor(s)) hideObjPop();
+  placeObjBar();
+  if (window.stampRefresh) window.stampRefresh();
+}
+// 3.17: la barra se pasa abajo cuando el objeto está arriba, para no taparlo ni tapar sus botones
+function placeObjBar() {
+  const bar = $('#objBar'), s = selected(); if (!s || !objMode) return;
+  const st = stage.getBoundingClientRect(), pr = paper.getBoundingClientRect(), cy = pr.top + s.y * pr.height / H - st.top, bh = bar.offsetHeight || 60, bot = bar.classList.contains('bot');
+  const nearTop = cy < bh + 112, nearBottom = cy > st.height - bh - 140;
+  if (!bot && nearTop && !nearBottom) bar.classList.add('bot'); else if (bot && nearBottom) bar.classList.remove('bot');
 }
 function enterObjMode() {
   if (!objMode) { objMode = true; document.body.classList.add('obj-mode'); }
@@ -6186,7 +6278,7 @@ function enterObjMode() {
 }
 function exitObjMode() {
   objMode = false; selId = null;
-  document.body.classList.remove('obj-mode');
+  document.body.classList.remove('obj-mode'); $('#objBar').classList.remove('bot');
   updateCursor();
 }
 function commitObjs(before) {
@@ -6210,13 +6302,16 @@ function addObject(o) {
 }
 function deleteSelected() {
   const s = selected(); if (!s) return;
+  stLiveFlush(); hideObjPop();
   const before = snapshotObjs();
   objs = objs.filter((o) => o !== s); selId = objs.length ? objs[objs.length - 1].id : null;
+  if (!objs.length && s.kind === 'stamp') exitObjMode();      // 3.17: sin sellos flotando, se vuelve a poner sellos
   renderObjs(); commitObjs(before);
   if (!objs.length) toast(tt('toast.objdel'));
 }
 // Pasa todo lo añadido a la hoja (queda como parte del dibujo). Se puede deshacer.
 function flattenObjs() {
+  stLiveFlush(); hideObjPop();
   if (!objs.length) { if (objMode) exitObjMode(); renderObjs(); return; }
   if (g && g.kind === 'obj') endSingle(true);
   if (pinch && pinch.obj) endPinch();
@@ -6226,26 +6321,32 @@ function flattenObjs() {
     const b = objBounds(o), m = 8;
     for (const [x, y] of [[b.x1 - m, b.y1 - m], [b.x2 + m, b.y1 - m], [b.x2 + m, b.y2 + m], [b.x1 - m, b.y2 + m]]) { const p = toWorld(o, x, y); bboxAdd(box, p.x, p.y, 6); }
   }
-  const pt = paintTarget();
-  for (const o of objs) { drawObj(layers[pt].ctx, o, 'color'); drawObj(layers.line.ctx, o, 'line'); }
+  const pt = paintTarget(), names = new Set();
+  for (const o of objs) {
+    if (o.kind === 'stamp') { const L = layers[o.layer] ? o.layer : pt; names.add(L); drawObj(layers[L].ctx, o, 'stamp'); continue; }
+    names.add('line'); names.add(pt);
+    drawObj(layers[pt].ctx, o, 'color'); drawObj(layers.line.ctx, o, 'line');
+  }
   objs = []; selId = null;
   exitObjMode(); renderObjs();
-  commit([capturePart('line', rectOf(box)), capturePart(pt, rectOf(box))], { objsBefore: before, objsAfter: [] });
+  commit([...names].map((n) => capturePart(n, rectOf(box))), { objsBefore: before, objsAfter: [] });
 }
 function objDown(base, p) {
+  stLiveFlush();
   const s = selected();
   if (s) {
-    const k = docPerCss(), b = objBounds(s), pad = 6 * k / s.s, hr = 26 * k;
-    const del = toWorld(s, b.x1 - pad, b.y1 - pad), sc = toWorld(s, b.x2 + pad, b.y2 + pad);
-    if (Math.hypot(p.x - del.x, p.y - del.y) <= hr) return Object.assign(base, { kind: 'obj', action: 'delete', obj: s });
-    if (Math.hypot(p.x - sc.x, p.y - sc.y) <= hr) {
+    const h = objHandles(s), near = (q) => q && Math.hypot(p.x - q.x, p.y - q.y) <= h.hit;
+    if (near(h.del)) return Object.assign(base, { kind: 'obj', action: 'delete', obj: s });
+    if (near(h.done)) return Object.assign(base, { kind: 'obj', action: 'done', obj: s });
+    if (near(h.flip)) return Object.assign(base, { kind: 'obj', action: 'flip', obj: s });
+    if (near(h.scale)) {
       return Object.assign(base, { kind: 'obj', action: 'scale', obj: s, before: snapshotObjs(), o0: { s: s.s, r: s.r },
         d0: Math.max(1, Math.hypot(p.x - s.x, p.y - s.y)), a0: Math.atan2(p.y - s.y, p.x - s.x) });
     }
   }
   for (let i = objs.length - 1; i >= 0; i--) {
-    const o = objs[i], l = toLocal(o, p.x, p.y), b = objBounds(o), m = 8 / o.s;
-    if (l.x >= b.x1 - m && l.x <= b.x2 + m && l.y >= b.y1 - m && l.y <= b.y2 + m) {
+    const o = objs[i], l = toLocal(o, p.x, p.y), f = objFrame(o);
+    if (l.x >= f.x1 && l.x <= f.x2 && l.y >= f.y1 && l.y <= f.y2) {
       selId = o.id; renderObjs();
       return Object.assign(base, { kind: 'obj', action: 'move', obj: o, before: snapshotObjs(), ox: o.x, oy: o.y });
     }
@@ -6268,9 +6369,68 @@ function objMove(cur, e) {
 }
 function objUp(cur, cancelled) {
   if (cur.action === 'delete') { if (!cancelled && cur.travel < 20) { selId = cur.obj.id; deleteSelected(); } return; }
+  if (cur.action === 'done') { if (!cancelled && cur.travel < 24) { flattenObjs(); toast(tt('toast.objdone')); } return; }
+  if (cur.action === 'flip') { if (!cancelled && cur.travel < 24) flipSelected(); return; }
   if (cur.action === 'move' || cur.action === 'scale') { commitObjs(cur.before); renderObjs(); return; }
   if (cur.action === 'empty' && !cancelled && cur.travel < 10) { selId = null; renderObjs(); }
 }
+// 3.17: arreglos de un objeto elegido (sellos, stickers, figuras, emojis y letras)
+function objEditStep(fn) {
+  const s = selected(); if (!s) return;
+  stLiveFlush();
+  const before = snapshotObjs(); fn(s); renderObjs(); commitObjs(before);
+}
+function flipSelected() { objEditStep((o) => { if (objCanFlip(o)) o.mir = !o.mir; }); }
+function dupSelected() {
+  const s = selected(); if (!s) return;
+  if (objs.length >= 40) { toast(tt('obj.many')); return; }
+  stLiveFlush();
+  const before = snapshotObjs(), k = docPerCss(), c = JSON.parse(JSON.stringify(s));
+  c.id = objSeq++; c.x = clamp(s.x + 34 * k, 0, W); c.y = clamp(s.y + 34 * k, 0, H);
+  objs.push(c); selId = c.id; renderObjs(); commitObjs(before);
+}
+const objSizeBy = (m) => objEditStep((o) => { o.s = clamp(o.s * m, objMinS(o), objMaxS(o)); });
+function applyObjColor(hex) { objEditStep((o) => { if (o.kind === 'stamp') o.nat = false; o.color = hex; }); renderObjColorPop(); }
+function applyObjNat(on) { objEditStep((o) => { if (o.kind === 'stamp' && STI[o.key] && STI[o.key].nat) o.nat = on; }); renderObjColorPop(); }
+function applyObjLw(k) { objEditStep((o) => { if (o.kind === 'stamp') o.lm = ST_LWM[k] || 1; }); renderObjColorPop(); }
+const stampLwKey = (o) => { const m = o.lm || 1; return Object.keys(ST_LWM).reduce((a, k) => Math.abs(ST_LWM[k] - m) < Math.abs(ST_LWM[a] - m) ? k : a, 'norm'); };
+function renderObjColorPop() {
+  const o = selected(), pop = $('#objColorPop'); if (!o || pop.hidden) return;
+  const cur = String(o.color || '').toUpperCase(), nat = o.kind === 'stamp' && !!o.nat;
+  $$('#ocpSw button').forEach((b) => b.classList.toggle('on', !nat && b.dataset.c.toUpperCase() === cur));
+  const canNat = o.kind === 'stamp' && !!(STI[o.key] && STI[o.key].nat);
+  $('#ocpNatRow').hidden = !canNat; $('#ocpNat').classList.toggle('on', nat); $('#ocpNat').setAttribute('aria-pressed', String(nat));
+  $('#ocpLwRow').hidden = o.kind !== 'stamp';
+  $('#ocpLwRow span').textContent = tt('tool.line'); $$('#ocpLwRow [data-olw]').forEach((b) => { b.textContent = tt('stamp.lw.' + b.dataset.olw); });
+  const lk = o.kind === 'stamp' ? stampLwKey(o) : '';
+  $$('#ocpLwRow [data-olw]').forEach((b) => b.classList.toggle('on', b.dataset.olw === lk));
+}
+function hideObjPop() { const pop = $('#objColorPop'); if (pop && !pop.hidden) { pop.hidden = true; $('#objColor').setAttribute('aria-expanded', 'false'); } }
+function toggleObjPop() {
+  const pop = $('#objColorPop'), s = selected(); if (!s) return;
+  if (!pop.hidden) { hideObjPop(); return; }
+  pop.hidden = false; $('#objColor').setAttribute('aria-expanded', 'true'); renderObjColorPop();
+  { // la cajita va del lado contrario al sello, para que se siga viendo mientras cambias el color
+    const bar = $('#objBar'), st = stage.getBoundingClientRect(), pr = paper.getBoundingClientRect(), cy = pr.top + s.y * pr.height / H, barBot = bar.classList.contains('bot');
+    if (cy - st.top < st.height * 0.5) { pop.style.top = 'auto'; pop.style.bottom = (78 + (barBot ? bar.offsetHeight + 8 : 0)) + 'px'; }
+    else { pop.style.bottom = 'auto'; pop.style.top = (bar.offsetTop + bar.offsetHeight + 6) + 'px'; }
+  }
+}
+(function buildObjPop() {
+  const sw = $('#ocpSw');
+  for (const c of PALETTE) {
+    const b = document.createElement('button'); b.type = 'button'; b.style.background = c; b.dataset.c = c; b.setAttribute('aria-label', tt('color.aria', { name: COLOR_NAME[c] || c }));
+    b.onclick = () => applyObjColor(c); sw.append(b);
+  }
+  $('#ocpNat').onclick = () => { const o = selected(); applyObjNat(!(o && o.nat)); };
+  $$('#ocpLwRow [data-olw]').forEach((b) => b.onclick = () => applyObjLw(b.dataset.olw));
+})();
+$('#objColor').onclick = toggleObjPop;
+$('#objFlip').onclick = flipSelected;
+$('#objRot').onclick = () => objEditStep((o) => { o.r = Math.round(o.r / (Math.PI / 2) + 1) * (Math.PI / 2); });
+$('#objSmaller').onclick = () => objSizeBy(0.85);
+$('#objBigger').onclick = () => objSizeBy(1 / 0.85);
+$('#objDup').onclick = dupSelected;
 $('#objDone').onclick = () => { flattenObjs(); toast(tt('toast.objdone')); };
 $('#objDel').onclick = deleteSelected;
 $('#objMore').onclick = () => openAdd(lastAddTab);
@@ -8683,7 +8843,8 @@ try {
     if (isFinite(+s0.rot)) ST.rot = ((Math.round(+s0.rot / 15) * 15) % 360 + 360) % 360;
     if (isFinite(+s0.space)) ST.space = clamp(Math.round(+s0.space / 10) * 10, 40, 260);
     ST.rand = !!s0.rand; ST.follow = !!s0.follow; ST.rain = !!s0.rain;
-    if (['mine', 'rainbow', 'random'].includes(s0.cm)) ST.cm = s0.cm;
+    if (['mine', 'rainbow', 'random', 'nat'].includes(s0.cm)) ST.cm = s0.cm;
+    if (ST.cm === 'nat' && !(STI[ST.id] && STI[ST.id].nat)) ST.cm = 'mine';
     if (Array.isArray(s0.favs)) ST.favs = s0.favs.filter((k) => STI[k]).slice(0, 40);
   }
 } catch (_) {}
@@ -8693,17 +8854,21 @@ const stName = (it) => it.n[stLang()] || it.n[0];
 const stCatName = (c) => c.n[stLang()] || c.n[0];
 const stampPx = () => Math.round(24 + 426 * Math.pow(ST.size / 100, 1.5));      // tamaño en píxeles de la hoja (de 28 a 450); lo normal es chiquito
 const ST_LWM = { thin: 0.7, norm: 1, thick: 1.8 };
-function stPaths(it) { if (!it._p) it._p = it.p.map((q) => ({ t: q[0], path: new Path2D(q[1]), w: q[2] })); return it._p; }
-// Dibuja un sello centrado en (x, y), de lado «size», girado «ang» (radianes) y, si flip, en espejo
-function drawStamp(c, it, x, y, size, ang, flip, color, alpha) {
-  const k = size / 100;
+function stPaths(it) { if (!it._p) it._p = it.p.map((q) => ({ t: q[0], path: new Path2D(q[1]), w: q[2], col: q[3] || '', fl: q[4] || '' })); return it._p; }
+// Dibuja un sello centrado en (x, y), de lado «size», girado «ang» (radianes) y, si flip, en espejo.
+// o (opcional): { nat: colores naturales (frutas, cerezas…), lm: grosor de línea, h: espejo de izquierda a derecha }
+function drawStamp(c, it, x, y, size, ang, flip, color, alpha, o) {
+  const k = size / 100, nat = !!(o && o.nat && it.nat);
   c.save();
   c.globalCompositeOperation = 'source-over'; c.globalAlpha = alpha == null ? 1 : alpha;
-  c.translate(x, y); c.rotate(ang); if (flip) c.scale(1, -1);
+  c.translate(x, y); c.rotate(ang); if (o && o.h) { if (flip) c.scale(-1, 1); } else if (flip) c.scale(1, -1);
   c.scale(k, k); c.translate(-50, -50);
   c.fillStyle = c.strokeStyle = color; c.lineCap = 'round'; c.lineJoin = 'round';
-  const minw = 2.2 / k, lm = ST_LWM[ST.lw] || 1;         // las líneas finas nunca quedan más finas que ~2 px
+  const minw = 2.2 / k, lm = (o && o.lm) || ST_LWM[ST.lw] || 1;         // las líneas finas nunca quedan más finas que ~2 px
   for (const q of stPaths(it)) {
+    if (q.fl === 'n' && !nat) continue;
+    if (q.fl === 'm' && nat) continue;
+    if (nat) c.fillStyle = c.strokeStyle = q.col || '#2b2b2b';
     if (q.t === 's') { c.lineWidth = Math.max((q.w || it.w || 3.6) * lm, minw); c.stroke(q.path); }
     else if (q.t === 'e') c.fill(q.path, 'evenodd');
     else { c.fill(q.path); if (it.j) { c.lineWidth = it.w * lm; c.stroke(q.path); } }
@@ -8716,9 +8881,10 @@ function stampColor(n) {
   if (ST.cm === 'random') return `hsl(${Math.floor(Math.random() * 360)},80%,62%)`;
   return draw ? state.drawColor : state.color;
 }
+const stNat = () => ST.cm === 'nat' && !!(STI[ST.id] && STI[ST.id].nat);
 function stampStart(base, p) {
   const draw = state.mode === 'draw', layer = draw ? drawTarget() : paintTarget(), sz = stampPx();
-  const gg = Object.assign(base, { kind: 'stamp', st: { layer, lw: sz * (ST.rain ? 2.6 : 1.5) }, box: { x1: Infinity, y1: Infinity, x2: -Infinity, y2: -Infinity }, T: symFor('stamp'), n: 0, last: p, startP: p });
+  const gg = Object.assign(base, { kind: 'stamp', stKey: ST.id, st: { layer, lw: sz * (ST.rain ? 2.6 : 1.5) }, box: { x1: Infinity, y1: Infinity, x2: -Infinity, y2: -Infinity }, T: symFor('stamp'), n: 0, last: p, startP: p });
   gg.follow = !ST.rain && (ST.follow || !!(STI[ST.id] && STI[ST.id].d));
   gg.sp = Math.max(8, sz * (ST.rain ? 0.4 : 0.95) * ST.space / 100); gg.rem = gg.sp;
   gg.alpha = draw ? state.drawAlpha : state.alpha;
@@ -8744,7 +8910,8 @@ function stampPlace(gg, p, dir) {
   for (const T of (gg.T || [(u) => u])) {
     const a = T(q), b = T({ x: q.x + 1, y: q.y }), c2 = T({ x: q.x, y: q.y + 1 });
     const th = Math.atan2(b.y - a.y, b.x - a.x), det = (b.x - a.x) * (c2.y - a.y) - (b.y - a.y) * (c2.x - a.x);
-    drawStamp(L.ctx, it, a.x, a.y, size, ang * (det < 0 ? -1 : 1) + th, det < 0, color, gg.alpha);
+    drawStamp(L.ctx, it, a.x, a.y, size, ang * (det < 0 ? -1 : 1) + th, det < 0, color, gg.alpha, { nat: stNat() });
+    if (gg.n === 0 && !gg.stFirst) gg.stFirst = { x: a.x, y: a.y, size, ang: ang * (det < 0 ? -1 : 1) + th, color, flip: det < 0, nat: stNat() };
     bboxAdd(gg.box, a.x, a.y, size * 0.75 + 6);
   }
   gg.n++;
@@ -8758,7 +8925,7 @@ function stampMove(gg, p) {
     gg.fixed = true;
     const r = clampRect(rectOf(gg.box));
     if (r) { const L = layers[gg.st.layer]; L.ctx.putImageData(L.bctx.getImageData(r.x, r.y, r.w, r.h), r.x, r.y); }
-    gg.n = 0; stampPlace(gg, gg.startP, dir);
+    gg.n = 0; gg.stFirst = null; stampPlace(gg, gg.startP, dir);
   }
   let pos = 0;
   while (len - pos >= gg.rem) {
@@ -8769,14 +8936,48 @@ function stampMove(gg, p) {
 }
 function stampEnd(cur) {
   if (cur.rainIv) { clearInterval(cur.rainIv); cur.rainIv = 0; }
+  if (stampFloatable(cur)) { floatStamp(cur); return; }
   flEnd(cur);
   if (cur.n) commit([capturePart(cur.st.layer, rectOf(cur.box))]);
 }
+// 3.17: un toque suelto deja el sello «flotando» (con marco y botones) hasta que lo confirmes; arrastrar, lluvia, simetría y «No salirme de las líneas» lo dejan en la hoja de una vez
+function stampFloatable(cur) {
+  return cur.n === 1 && cur.travel < 12 && !!cur.stFirst && !ST.rain && !cur.fl && !(cur.T && cur.T.length > 1) && objs.length < 40 && !!STI[cur.stKey] && !PBN.on;
+}
+function floatStamp(cur) {
+  const r = clampRect(rectOf(cur.box)), L = layers[cur.st.layer];
+  if (r) L.ctx.putImageData(L.bctx.getImageData(r.x, r.y, r.w, r.h), r.x, r.y);       // saca el sello de la hoja: pasa a ser un objeto
+  const f = cur.stFirst, it = STI[cur.stKey], t = stTight(it), s = f.size / 100, c = Math.cos(f.ang), sn = Math.sin(f.ang);
+  const before = snapshotObjs();
+  const o = { id: objSeq++, kind: 'stamp', key: cur.stKey, x: f.x + (t.cx * c - t.cy * sn) * s, y: f.y + (t.cx * sn + t.cy * c) * s, s, r: f.ang, mir: false,
+    color: f.color, nat: !!f.nat, lm: ST_LWM[ST.lw] || 1, alpha: cur.alpha == null ? 1 : cur.alpha, layer: cur.st.layer };
+  objs.push(o); selId = o.id; enterObjMode(); renderObjs(); commitObjs(before);
+}
+/* 3.17: mientras un sello flota, los controles del panel (tamaño, giro, línea y color) lo cambian en vivo */
+var stLiveT = 0, stLiveB = null;
+function stSel() { const o = objMode ? selected() : null; return o && o.kind === 'stamp' ? o : null; }
+function stLive(fn) {
+  const o = stSel(); if (!o) return false;
+  if (!stLiveB) stLiveB = snapshotObjs();
+  fn(o); renderObjs();
+  clearTimeout(stLiveT); stLiveT = setTimeout(stLiveFlush, 700);
+  return true;
+}
+function stLiveFlush() { clearTimeout(stLiveT); stLiveT = 0; if (stLiveB) { const b = stLiveB; stLiveB = null; commitObjs(b); } }
+window.stColorHook = stColorHook;
+function stColorHook() {
+  const o = stSel();
+  if (ST.cm === 'nat') { ST.cm = 'mine'; saveST(); renderStampUI(); }
+  if (o) stLive((x) => { x.nat = false; x.color = stampColor(0); x.alpha = state.mode === 'draw' ? state.drawAlpha : state.alpha; });
+}
 /* ---------- panel de sellos: una sola fila que se desliza; lo demás, escondido en «Más opciones» ---------- */
 const stThumb = (it) => '<svg viewBox="0 0 100 100" aria-hidden="true">' + it.p.map((q) => {
-  const w = Math.min(9, (q[2] || it.w || 3.6) * 1.5);
-  if (q[0] === 's') return `<path d="${q[1]}" stroke-width="${w}"/>`;
-  return `<path d="${q[1]}" fill="currentColor" stroke="${it.j ? 'currentColor' : 'none'}" stroke-width="${it.j ? w : 0}"${q[0] === 'e' ? ' fill-rule="evenodd"' : ''}/>`;
+  const nat = !!it.nat;
+  if (q[4] === 'n' && !nat) return '';
+  if (q[4] === 'm' && nat) return '';
+  const w = Math.min(9, (q[2] || it.w || 3.6) * 1.5), col = nat ? (q[3] || '#2b2b2b') : '';
+  if (q[0] === 's') return `<path d="${q[1]}" stroke-width="${w}"${col ? ` stroke="${col}"` : ''}/>`;
+  return `<path d="${q[1]}" fill="${col || 'currentColor'}" stroke="${it.j ? (col || 'currentColor') : 'none'}" stroke-width="${it.j ? w : 0}"${q[0] === 'e' ? ' fill-rule="evenodd"' : ''}/>`;
 }).join('') + '</svg>';
 const stHasCat = (id) => id === 'favs' ? ST.favs.length > 0 : STAMPS.items.some((it) => it.c === id);
 function buildStampStrip() {
@@ -8809,14 +9010,15 @@ function renderStampUI() {
   $('#stampSpace').value = ST.space; $('#stampSpaceV').textContent = ST.space + '%';
   $('#stampRand').checked = ST.rand; $('#stampFollow').checked = ST.follow;
   $('#stampRain').classList.toggle('on', ST.rain); $('#stampRain').setAttribute('aria-pressed', String(ST.rain));
-  $$('#stampCm [data-cm]').forEach((b) => b.classList.toggle('on', b.dataset.cm === ST.cm));
+  const natOk = !!(STI[ST.id] && STI[ST.id].nat);
+  $$('#stampCm [data-cm]').forEach((b) => { if (b.dataset.cm === 'nat') b.hidden = !natOk; b.classList.toggle('on', b.dataset.cm === ST.cm); });
   $$('#stampLw [data-lw]').forEach((b) => { b.textContent = tt('stamp.lw.' + b.dataset.lw); b.classList.toggle('on', b.dataset.lw === ST.lw); });
   stMarkSel();
 }
 let stSeen = false;
 window.stampRefresh = function () {
   const box = $('#stampBox'); if (!box) return;
-  const on = currentTool() === 'stamp' && !objMode;
+  const on = currentTool() === 'stamp' && (!objMode || !!stSel());
   box.hidden = !on;
   if (on && !stSeen) { stSeen = true; try { if (!localStorage.getItem(ST_KEY + 'Hint')) { localStorage.setItem(ST_KEY + 'Hint', '1'); toast(tt('stamp.hint'), 4200); } } catch (_) {} }
   if (on) {
@@ -8826,6 +9028,7 @@ window.stampRefresh = function () {
 function setStamp(id, opts = {}) {
   if (!STI[id]) return;
   ST.id = id; const itc = STI[id].c; if (ST.cat !== 'favs' && ST.cat !== itc) { ST.cat = itc; saveST(); buildStampStrip(); } else if (ST.cat === 'favs' && !ST.favs.includes(id)) { ST.cat = itc; buildStampStrip(); }
+  { const nat = !!STI[id].nat; if (nat && ST.cm === 'mine') ST.cm = 'nat'; else if (!nat && ST.cm === 'nat') ST.cm = 'mine'; renderStampUI(); }
   saveST(); stMarkSel();
   if (!opts.quiet) { const strip = $('#stampStrip'); strip.dataset.last = id; }
 }
@@ -8839,16 +9042,16 @@ function toggleStampFav() {
 }
 $('#stampStrip').addEventListener('click', (e) => { const b = e.target.closest('.st-b'); if (b) setStamp(b.dataset.st); });
 $('#stampFav').onclick = toggleStampFav;
-$('#stampSize').addEventListener('input', (e) => { ST.size = clamp(Math.round(+e.target.value), 1, 100); saveST(); });
+$('#stampSize').addEventListener('input', (e) => { ST.size = clamp(Math.round(+e.target.value), 1, 100); saveST(); stLive((o) => { o.s = stampPx() / 100; }); });
 $('#stampRain').onclick = () => { ST.rain = !ST.rain; saveST(); renderStampUI(); toast(tt(ST.rain ? 'stamp.rain.on' : 'stamp.rain.off'), 2000); };
 $('#stampMore').onclick = () => { const b = $('#stampAdv'), open = b.hidden; b.hidden = !open; $('#stampMore').setAttribute('aria-expanded', String(open)); };
-$('#stampRot').addEventListener('input', (e) => { ST.rot = clamp(Math.round(+e.target.value / 15) * 15, 0, 345); $('#stampRotV').textContent = ST.rot + '°'; saveST(); });
-$('#stampRot90').onclick = () => { ST.rot = (ST.rot + 90) % 360; saveST(); renderStampUI(); };
+$('#stampRot').addEventListener('input', (e) => { ST.rot = clamp(Math.round(+e.target.value / 15) * 15, 0, 345); $('#stampRotV').textContent = ST.rot + '°'; saveST(); stLive((o) => { o.r = ST.rot * Math.PI / 180; }); });
+$('#stampRot90').onclick = () => { ST.rot = (ST.rot + 90) % 360; saveST(); renderStampUI(); stLive((o) => { o.r += Math.PI / 2; }); };
 $('#stampSpace').addEventListener('input', (e) => { ST.space = clamp(Math.round(+e.target.value / 10) * 10, 40, 260); $('#stampSpaceV').textContent = ST.space + '%'; saveST(); });
 $('#stampRand').addEventListener('change', (e) => { ST.rand = e.target.checked; saveST(); });
 $('#stampFollow').addEventListener('change', (e) => { ST.follow = e.target.checked; saveST(); });
-$$('#stampCm [data-cm]').forEach((b) => b.onclick = () => { ST.cm = b.dataset.cm; saveST(); renderStampUI(); });
-$$('#stampLw [data-lw]').forEach((b) => b.onclick = () => { ST.lw = b.dataset.lw; saveST(); renderStampUI(); });
+$$('#stampCm [data-cm]').forEach((b) => b.onclick = () => { ST.cm = b.dataset.cm; saveST(); renderStampUI(); stLive((o) => { const nat = stNat() && !!(STI[o.key] && STI[o.key].nat); o.nat = nat; if (!nat) o.color = stampColor(0); }); });
+$$('#stampLw [data-lw]').forEach((b) => b.onclick = () => { ST.lw = b.dataset.lw; saveST(); renderStampUI(); stLive((o) => { o.lm = ST_LWM[ST.lw] || 1; }); });
 $('#stampCats').addEventListener('click', (e) => { const b = e.target.closest('.st-cc'); if (b) { e.stopPropagation(); setStampCat(b.dataset.cat); } });
 $('#stampReset').onclick = () => { Object.assign(ST, { size: 22, lw: 'norm', rot: 0, rand: false, follow: false, rain: false, space: 100, cm: 'mine' }); saveST(); renderStampUI(); };
 buildStampStrip(); renderStampUI();
@@ -8889,6 +9092,7 @@ window.__colorear = {
   setMix(o) { if (o.start) state.mixStart = o.start; if (o.str != null) state.mixStr = clamp(+o.str, 0.1, 1); if (o.tex != null) state.mixTex = clamp(+o.tex, 0, 1); if (o.lines != null) state.mixLines[state.mode === 'draw' ? 'draw' : 'color'] = !!o.lines; renderMix(); refreshColorUI(); },
   renderMix, showMixTip, get mixAdvOpen() { return mixAdvOpen; },
   ST, STI, STAMPS, setStamp, stampPx, drawStamp, toggleStampFav, buildStampStrip, renderStampUI, setStampCat, ST_LWM,
+  selected, get selId() { return selId; }, objHandles, objFrame, stTight, flipSelected, dupSelected, stLiveFlush, deleteSelected, undo, redo,
   SYM, setSym, symTransforms, floodFillSym, WC, SPR, newToolStyle, PALETTES, applyPalette, resetPalette, monoPalette, saveMyPalette, get quickPal() { return quickPal; }, get myPals() { return myPals; },
   sketchLineArt, openAdjust, setAdjMode, useAdjusted, makeProcessVideo, captureFrame, procFrames, deleteProc, openVideoSheet, videoMime, get procId() { return procId; }, get procOn() { return procOn; },
   retoFor, retoStart, retoComplete, retoStreak, renderReto, dayStr, TPL_NEW, tplIsNew, markTplSeen, buildTemplateGrid,
