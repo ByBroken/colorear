@@ -950,7 +950,7 @@ window.COLOREAR_I18N["en"] = {
 "pbn.mode.tip": "Every area has a number. Choose a template, pick a number at the bottom and tap the areas that have it.",
 "pbn.menu": "Color by number",
 "pbn.menu.sub": "follow the numbers",
-"pbn.title": "By number · {name}",
+"pbn.title": "{name}",
 "pbn.exit": "Exit",
 "pbn.exit.aria": "Leave color by number",
 "pbn.pct": "{pct}% done",
@@ -983,5 +983,8 @@ window.COLOREAR_I18N["en"] = {
 "pbn.done.share": "Share",
 "pbn.done.video": "Process video",
 "pbn.done.more": "Another template",
-"pbn.done.close": "Keep looking"
+"pbn.done.close": "Keep looking",
+"ptool.more": "All",
+"ptool.more.tip": "All tools and settings",
+"ptool.aria": "Tools: tap one to use it"
 };

@@ -950,7 +950,7 @@ window.COLOREAR_I18N["fr"] = {
 "pbn.mode.tip": "Chaque zone a un numéro. Choisis un modèle, choisis un numéro en bas et touche les zones qui l'ont.",
 "pbn.menu": "Colorier par numéro",
 "pbn.menu.sub": "suis les numéros",
-"pbn.title": "Par numéro · {name}",
+"pbn.title": "{name}",
 "pbn.exit": "Quitter",
 "pbn.exit.aria": "Quitter Par numéro",
 "pbn.pct": "{pct} % terminé",
@@ -983,5 +983,8 @@ window.COLOREAR_I18N["fr"] = {
 "pbn.done.share": "Partager",
 "pbn.done.video": "Vidéo du processus",
 "pbn.done.more": "Un autre modèle",
-"pbn.done.close": "Continuer à regarder"
+"pbn.done.close": "Continuer à regarder",
+"ptool.more": "Toutes",
+"ptool.more.tip": "Tous les outils et réglages",
+"ptool.aria": "Outils : touche-en un pour l'utiliser"
 };

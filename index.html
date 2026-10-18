@@ -133,7 +133,7 @@ footer .gh{margin:0 4px 6px;font-size:12.5px;font-weight:800;color:var(--muted)}
 .tb .tbgrad{display:block;width:24px;height:21px;border-radius:6px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
 #tbTools{flex-grow:1.5}
 @media (max-width:359px){ .tb{font-size:10px;letter-spacing:-.3px;padding:0 1px} #tabBar{gap:3px} }
-#quickStrip{grid-row:3;grid-column:1;display:flex;align-items:center;gap:6px;padding:2px calc(env(safe-area-inset-right) + 8px) 4px calc(env(safe-area-inset-left) + 8px);background:var(--panel);box-shadow:0 1px 0 var(--line);z-index:2;min-width:0}
+#quickStrip{display:flex;align-items:center;gap:6px;padding:2px calc(env(safe-area-inset-right) + 8px) 4px calc(env(safe-area-inset-left) + 8px);background:var(--panel);box-shadow:0 1px 0 var(--line);z-index:2;min-width:0}
 #qsCur{flex:0 0 auto;height:30px;border:0;border-radius:15px;padding:0 8px 0 3px;display:flex;align-items:center;gap:4px;background:#f1eaf7;font-size:11.5px;font-weight:800;color:var(--accent2)}
 #qsCur i{display:block;width:24px;height:24px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.22),0 0 0 2px #fff}
 #qsList{flex:1 1 auto;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;touch-action:pan-x;min-width:0;padding:2px}
@@ -483,7 +483,7 @@ body.pbn #toast{bottom:calc(env(safe-area-inset-bottom) + 150px)!important}
 .pbn-btn.pbn-sq{background:#f6f0ff;box-shadow:none;font-size:22px;padding:0;width:44px}
 .pbn-btn:disabled{opacity:.4}
 .pbn-btn:active{transform:scale(.96)}
-#pbnPal{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 6px;scrollbar-width:none;touch-action:pan-x;-webkit-overflow-scrolling:touch}
+#pbnPal{display:flex;gap:8px;overflow-x:auto;padding:7px 8px 8px;scrollbar-width:none;touch-action:pan-x;-webkit-overflow-scrolling:touch}
 #pbnPal::-webkit-scrollbar{display:none}
 .pbn-sw{position:relative;flex:0 0 auto;width:46px;height:46px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1.5px rgba(40,28,60,.28),0 2px 5px rgba(40,28,60,.18);font-weight:900;font-size:19px;display:flex;align-items:center;justify-content:center;padding:0;transition:transform .12s}
 .pbn-sw.on{transform:scale(1.14);box-shadow:0 0 0 3px var(--accent2),0 3px 8px rgba(40,28,60,.3)}
@@ -515,6 +515,34 @@ body.pbn #toast{bottom:calc(env(safe-area-inset-bottom) + 150px)!important}
 .pbn-close{width:100%;min-height:46px;margin-top:8px;border:0;background:transparent;font-weight:700;font-size:15px;color:var(--muted)}
 @media (orientation:landscape) and (max-height:560px){ #pbnBar{grid-column:2;grid-row:2;align-self:start} body.pbn #toast{bottom:20px!important} }
 
+/* 3.15: tira de herramientas (un toque por herramienta) */
+#toolDock{grid-row:3;grid-column:1;min-width:0;background:var(--panel);z-index:2}
+#toolStrip{display:flex;align-items:stretch;gap:4px;padding:2px calc(env(safe-area-inset-right) + 6px) 4px calc(env(safe-area-inset-left) + 6px);min-width:0}
+#tsList{flex:1 1 auto;min-width:0;display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;padding:2px 14px 4px 2px;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x;overscroll-behavior-x:contain;
+  -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 22px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 22px),transparent)}
+#tsList::-webkit-scrollbar{display:none}
+.ts-t,.ts-more{position:relative;flex:0 0 auto;width:72px;height:66px;border:0;border-radius:15px;background:#faf6f1;color:var(--ink);padding:5px 3px 3px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.ts-t>*,.ts-more>*{pointer-events:none}
+.ts-t svg{width:28px;height:28px;color:var(--ink);flex:0 0 auto}
+.ts-t .gk{width:26px;height:26px;border-radius:50%;flex:0 0 auto;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
+.ts-t .gswatch{width:30px;height:26px;flex:0 0 auto}
+.ts-l{font-size:11.5px;font-weight:700;line-height:1.08;text-align:center;max-width:100%;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere;color:var(--muted)}
+.ts-t.on{background:var(--sel);box-shadow:inset 0 0 0 2.5px var(--accent)}
+.ts-t.on svg{color:var(--accent)}
+.ts-t.on .ts-l{color:var(--accent)}
+.ts-t:active,.ts-more:active{transform:scale(.95)}
+.ts-o{position:absolute;right:5px;top:3px;font-size:10px;font-style:normal;color:var(--accent);opacity:0}
+.ts-t.on .ts-o{opacity:1}
+.ts-more{width:56px;background:#f1eaf7;margin:2px 0 4px;flex-grow:0}
+.ts-more .ts-dots{font-size:26px;font-weight:900;line-height:20px;color:var(--accent2)}
+.ts-more .tbl{font-size:11.5px;font-weight:700;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ts-more.on{background:var(--sel);box-shadow:inset 0 0 0 2.5px var(--accent)}
+#quickStrip{box-shadow:none}
+body.pbn #toolDock,body.ui-hidden #toolDock{display:none!important}
+@media (max-width:359px){ .ts-t{width:66px} }
+@media (orientation:landscape) and (max-height:560px){ #toolDock{grid-column:2;grid-row:3;align-self:start} .ts-t,.ts-more{height:60px} }
+@media (min-width:700px) and (min-height:600px){ .ts-t{width:84px;height:74px} .ts-l{font-size:12.5px} }
 #toast{
   position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 76px);transform:translateX(-50%) translateY(20px);
   background:rgba(40,28,60,.92);color:#fff;padding:12px 18px;border-radius:14px;font-weight:600;font-size:15px;
@@ -547,7 +575,6 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
   #stage{grid-column:1;grid-row:1 / span 4;padding:6px}
   header.top{grid-column:2;grid-row:1}
   #tabBar{grid-column:2;grid-row:2}
-  #quickStrip{grid-column:2;grid-row:3;align-self:start}
   footer .row{flex-wrap:wrap}
   footer .tool{flex:1 0 56px;height:52px}
   :root{--btn:44px}
@@ -583,7 +610,7 @@ body.dragover #stage{outline:4px dashed var(--accent2);outline-offset:-10px}
 #layersBtn .lcount{position:absolute;right:2px;top:1px;min-width:19px;height:19px;border-radius:10px;background:var(--accent2);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 5px;box-shadow:0 0 0 2px #fff}
 body.obj-mode #viewBar{display:none}
 body.ui-hidden{display:block}
-body.ui-hidden header.top,body.ui-hidden footer.tools,body.ui-hidden #tabBar,body.ui-hidden #quickStrip,body.ui-hidden #zoomBar,body.ui-hidden #addBtn,body.ui-hidden #viewBar{display:none!important}
+body.ui-hidden header.top,body.ui-hidden footer.tools,body.ui-hidden #tabBar,body.ui-hidden #toolDock,body.ui-hidden #quickStrip,body.ui-hidden #zoomBar,body.ui-hidden #addBtn,body.ui-hidden #viewBar{display:none!important}
 body.ui-hidden #stage{position:absolute;inset:0;padding:calc(env(safe-area-inset-top) + 4px) calc(env(safe-area-inset-right) + 4px) calc(env(safe-area-inset-bottom) + 4px) calc(env(safe-area-inset-left) + 4px)}
 body.ui-hidden #toast{bottom:calc(env(safe-area-inset-bottom) + 40px)}
 /* 3.4: botones rápidos con los botones ocultos (se pueden mover a otro borde y achicar a un punto) */
@@ -1040,16 +1067,21 @@ body.ui-hidden.obj-mode #miniBar{display:none}
   <button class="ib" id="btnMenu" title="Menú" aria-label="Menú"><svg><use href="#i-menu"/></svg></button>
 </header>
 <nav id="tabBar" role="toolbar" aria-label="Herramientas y opciones">
-  <button class="tb" id="tbTools" data-grp="tools" aria-haspopup="dialog" aria-expanded="false" title="Herramientas: lápiz, crayón, marcadores, bote, degradado, difuminar, borrador…" aria-label="Herramientas"><span class="tbi"><svg><use href="#i-pen"/></svg></span><span class="tbl">Herramientas</span></button>
   <button class="tb" id="tbColors" data-grp="colors" aria-haspopup="dialog" aria-expanded="false" title="Colores: colores rápidos, Más colores, Otro y Copiar color" aria-label="Colores"><span class="tbi"><i class="tbsw"></i></span><span class="tbl">Colores</span></button>
   <button class="tb" id="tbSize" data-grp="size" aria-haspopup="dialog" aria-expanded="false" title="Tamaño de la punta: de Detalle a Gruesa" aria-label="Tamaño"><span class="tbi"><i class="tbdot"></i></span><span class="tbl">Tamaño</span></button>
   <button class="tb" id="layersBtn" title="Capas: pinta en hojas transparentes, una encima de otra" aria-label="Capas" aria-haspopup="dialog" aria-expanded="false"><span class="tbi"><svg><use href="#i-layers"/></svg></span><span class="tbl">Capas</span><span class="lcount" hidden></span></button>
   <button class="tb" id="tbMore" data-grp="more" aria-haspopup="dialog" aria-expanded="false" title="Más: añadir stickers y texto, limpiar la hoja, ocultar botones" aria-label="Más opciones"><span class="tbi"><svg><use href="#i-grip"/></svg></span><span class="tbl">Más</span></button>
 </nav>
+<div id="toolDock">
+<div id="toolStrip" role="toolbar" aria-label="Herramientas: toca una para usarla">
+  <div id="tsList" role="group"></div>
+  <button class="ts-more" id="tbTools" data-grp="tools" aria-haspopup="dialog" aria-expanded="false" title="Todas las herramientas y ajustes" aria-label="Todas las herramientas y ajustes"><span class="tbi" hidden></span><span class="ts-dots" aria-hidden="true">⋯</span><span class="tbl"></span></button>
+</div>
 <div id="quickStrip" role="toolbar" aria-label="Color actual y colores rápidos">
   <button id="qsCur" title="Color actual: toca para ver todos los colores" aria-label="Color actual. Toca para ver todos los colores"><i></i>Color</button>
   <div id="qsList" aria-label="Colores rápidos"></div>
   <button id="qsMore" title="Más colores: 360 colores" aria-label="Más colores (360 colores)"></button>
+</div>
 </div>
 
 <main id="stage">
@@ -4832,7 +4864,7 @@ function placePanel() {
   const vw = innerWidth, vh = innerHeight, w = Math.min(bar.width - (vw < 400 ? 4 : 8), 620);
   const tab = openGrp && $('#' + GRP_TAB[openGrp]).getBoundingClientRect();
   const m = vw < 400 ? 2 : 4, left = clamp(tab ? tab.left + tab.width / 2 - w / 2 : bar.left + m, bar.left + m, bar.right - m - w);
-  const top = Math.round(bar.bottom + 2);
+  const top = Math.round((openGrp === 'tools' ? $('#toolStrip').getBoundingClientRect().bottom : bar.bottom) + 2);
   p.style.width = w + 'px'; p.style.left = Math.round(left) + 'px'; p.style.top = top + 'px';
   p.style.maxHeight = Math.max(160, vh - top - 10) + 'px';
 }
@@ -4854,10 +4886,88 @@ for (const g in GRP_TAB) $('#' + GRP_TAB[g]).onclick = () => { if (openGrp === g
 // (se escucha al final del clic, cuando el botón ya hizo lo suyo; así un toque rápido en la hoja justo después ya pinta)
 $('#panel').addEventListener('click', (e) => { if (e.target.closest('button') && !e.target.closest('#flSensMore, #stampCats button, #stampCtl button, #stampAdv button') && !openPop) hidePanel(); });
 document.addEventListener('click', (e) => { if (openGrp && e.target.closest && e.target.closest('.pop button') && !e.target.closest('#gMore, #gAdv') && !openPop) hidePanel(); });
+/* ---------- 3.15: una sola tira de herramientas ----------
+   Cada herramienta (y cada tipo de marcador o de gel) tiene su propio botón grande, a un toque, en una tira que se desliza de lado.
+   No hace falta buscar la pestaña correcta ni tocar «otra vez». Tocar otra vez la que ya está elegida abre sus opciones (si tiene).
+   «Todas» abre el panel de siempre con todas las herramientas y los ajustes. */
+const TS_GEL = { normal: 'gk-normal', white: 'gk-white', metal: 'gk-metal', glitter: 'gk-glitter' };
+function tsDefs() {
+  const draw = state.mode === 'draw', L = [];
+  const dt = (k, icon, key, pop) => L.push({ k, icon, label: () => tt(key), pop, on: () => state.drawTool === k, pick: () => { pickTool(); setDrawTool(k); } });
+  const ct = (k, icon, key, pop, pick) => L.push({ k, icon, label: () => tt(key), pop, on: () => state.colorTool === k, pick: pick || (() => { pickTool(); setColorTool(k); }) });
+  const gels = () => GEL_KINDS.forEach((g) => L.push({
+    k: 'gel-' + g, gk: TS_GEL[g], label: () => tt(g === 'normal' ? 'tool.gel' : 'gel.' + g), pop: 'gelPop',
+    on: () => currentTool() === 'gel' && state.gelKind === g,
+    pick: () => { pickGelTool(); setGelKind(g); state.gelSeen = true; },
+  }));
+  const marks = () => ['crayon', 'acrylic', 'water', 'alcohol', 'blender0'].forEach((b) => L.push({
+    k: 'marker-' + b, icon: b === 'crayon' ? 'i-marker' : BRUSH_ICONS[b], label: () => tt('mark.n.' + b),
+    on: () => state.drawTool === 'marker' && state.drawBrush === b,
+    pick: () => { pickTool(); setDrawBrush(b); state.markSeen = true; state.drawTool = 'marker'; $$('#drawTools .tool, #drawArt .tool').forEach((x) => x.classList.toggle('on', x.id === 'markBtn')); updateCursor(); },
+  }));
+  if (draw) {
+    dt('pen', 'i-pen', 'tool.pen'); marks(); dt('line', 'i-line', 'tool.line'); dt('ellipse', 'i-ellipse', 'tool.ellipse'); dt('rect', 'i-rect', 'tool.rect');
+    dt('star', 'i-star', 'tool.star'); dt('heart', 'i-heart', 'tool.heart'); dt('erase', 'i-eraser', 'tool.erase');
+    dt('cpencil', 'i-cpencil', 'tool.cpencil'); gels(); dt('mixb', 'i-mixb', 'tool.mixb', 'mixPop'); dt('wcolor', 'i-wcolor', 'tool.wcolor', 'wcPop'); dt('spray', 'i-spray', 'tool.spray', 'spPop');
+    L.push({ k: 'stamp', icon: 'i-stamp', label: () => tt('tool.stamp'), on: () => state.drawTool === 'stamp', pick: () => { pickTool(); setDrawTool('stamp'); showPanel('tools'); }, panel: true });
+  } else {
+    ct('fill', 'i-fill', 'tool.fill');
+    for (const b of ['crayon', 'acrylic', 'water', 'alcohol', 'blender0']) L.push({ k: b, icon: BRUSH_ICONS[b], label: () => tt(b === 'crayon' ? 'brush.short.crayon' : 'mark.n.' + b), on: () => state.colorTool === b, pick: () => { pickTool(); setColorTool(b); state.brushSeen = true; } });
+    ct('cpencil', 'i-cpencil', 'tool.cpencil'); gels(); ct('wcolor', 'i-wcolor', 'tool.wcolor', 'wcPop'); ct('spray', 'i-spray', 'tool.spray', 'spPop');
+    ct('grad', null, 'tool.grad', 'gradPop');
+    ct('agrad', 'i-agrad', 'tool.agrad', 'agradPop', () => { pickTool(); setColorTool('agrad'); state.agSeen = true; renderAg(); });
+    ct('mixb', 'i-mixb', 'tool.mixb', 'mixPop'); ct('blend', 'i-blend', 'tool.blend');
+    L.push({ k: 'stamp', icon: 'i-stamp', label: () => tt('tool.stamp'), on: () => state.colorTool === 'stamp', pick: () => { pickTool(); setColorTool('stamp'); showPanel('tools'); }, panel: true });
+    ct('cerase', 'i-eraser', 'tool.cerase.short');
+  }
+  return L;
+}
+var tsMode = null, tsList = [];
+function tsBuild() {
+  const box = $('#tsList'); if (!box) return;
+  tsList = tsDefs(); tsMode = state.mode; box.textContent = '';
+  for (const d of tsList) {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'ts-t'; b.dataset.st = d.k;
+    if (d.gk) b.innerHTML = `<span class="gk ${d.gk}" aria-hidden="true"></span>`;
+    else if (d.k === 'grad') b.innerHTML = '<span class="gswatch" aria-hidden="true"></span>';
+    else b.innerHTML = `<svg aria-hidden="true"><use href="#${d.icon}"/></svg>`;
+    const l = document.createElement('span'); l.className = 'ts-l'; b.append(l);
+    if (d.pop) { const o = document.createElement('i'); o.className = 'ts-o'; o.setAttribute('aria-hidden', 'true'); o.textContent = '▾'; b.append(o); }
+    box.append(b);
+  }
+  tsLabels(); tsRefresh(true);
+}
+function tsLabels() {
+  $$('#tsList .ts-t').forEach((b, i) => { const d = tsList[i]; if (!d) return; const n = d.label(); b.querySelector('.ts-l').textContent = n; b.setAttribute('aria-label', n); b.title = n; });
+  const m = $('#tbTools'); if (m) { m.querySelector('.tbl').textContent = tt('ptool.more'); m.setAttribute('aria-label', tt('ptool.more.tip')); m.title = tt('ptool.more.tip'); }
+  const s = $('#toolStrip'); if (s) s.setAttribute('aria-label', tt('ptool.aria'));
+}
+function tsRefresh(scroll) {
+  if (!tsMode) return;
+  if (tsMode !== state.mode) { tsBuild(); return; }
+  let onEl = null;
+  $$('#tsList .ts-t').forEach((b, i) => { const d = tsList[i]; if (!d) return; const on = !!d.on(); b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); if (on) onEl = b; });
+  if (onEl && scroll) tsReveal(onEl);
+}
+function tsReveal(el) {
+  const sc = $('#tsList'), l = el.offsetLeft, r = l + el.offsetWidth;
+  if (l < sc.scrollLeft + 8) sc.scrollLeft = Math.max(0, l - 8); else if (r > sc.scrollLeft + sc.clientWidth - 8) sc.scrollLeft = r - sc.clientWidth + 8;
+}
+$('#tsList').addEventListener('click', (e) => {
+  const b = e.target.closest('.ts-t'); if (!b) return;
+  const d = tsList.find((x) => x.k === b.dataset.st); if (!d) return;
+  const wasOn = d.on();
+  hidePanel();
+  if (wasOn && d.pop) { if (openPop && openPop.anchor === b) hidePop(); else showPop(d.pop, b); return; }   // otra vez: opciones
+  hidePop();
+  d.pick(); tsRefresh(); tsReveal(b);
+});
+tsBuild();
+
 document.addEventListener('pointerdown', (e) => {
   if (!openGrp) return;
   const t = e.target;
-  if ($('#panel').contains(t) || (t.closest && (t.closest('#tabBar') || t.closest('.pop') || t.closest('.overlay')))) return;
+  if ($('#panel').contains(t) || (t.closest && (t.closest('#tabBar') || t.closest('#toolStrip') || t.closest('.pop') || t.closest('.overlay')))) return;
   const onPaper = stage.contains(t) && !isUI(t);
   hidePanel();
   if (onPaper) { e.stopPropagation(); e.preventDefault(); }   // tocar la hoja solo cierra el panel
@@ -4909,6 +5019,7 @@ function miniToolInfo() {
   return { icon: TOOL_ICON[t], name: TOOL_NAME[t] || t, tint: t === 'fill' || t === 'cpencil' || t === 'wcolor' || t === 'spray' || t === 'stamp' || (t === 'gel' && state.gelKind !== 'white') || (t === 'mixb' && state.mixStart === 'color'), grad: t === 'grad' };
 }
 function refreshMini() {
+  try { tsRefresh(); } catch (_) {}
   const bar = document.getElementById('miniBar'); if (!bar) return;
   const c = curColor(), a = curAlpha(), rgb = hexToRgb(c);
   const fill = a < 0.999 ? `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${a})` : c;
@@ -6981,7 +7092,7 @@ function relabelSwatches() {
 }
 function applyLang() {
   setDocLang(); buildColorNames(); translateStatic(); refreshLangButtons();
-  relabelSwatches();
+  relabelSwatches(); try { tsLabels(); } catch (_) {}
   buildColorSheet(); buildGradPresets(); buildMiniSizes(); buildTemplateGrid();
   setBrush(state.brush); setDrawBrush(state.drawBrush); relabelGel(); relabelAg();
   updateGradUI(); renderMix(); refreshColorUI(); renderRecent(); refreshLayersUI(); updateObjBar(); renderSlots();

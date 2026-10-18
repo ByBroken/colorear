@@ -950,7 +950,7 @@ window.COLOREAR_I18N["es"] = {
 "pbn.mode.tip": "Cada zona lleva un número. Elige una plantilla, escoge un número abajo y toca las zonas que lo llevan.",
 "pbn.menu": "Colorear por número",
 "pbn.menu.sub": "sigue los números",
-"pbn.title": "Por número · {name}",
+"pbn.title": "{name}",
 "pbn.exit": "Salir",
 "pbn.exit.aria": "Salir de Por número",
 "pbn.pct": "{pct}% listo",
@@ -983,5 +983,8 @@ window.COLOREAR_I18N["es"] = {
 "pbn.done.share": "Compartir",
 "pbn.done.video": "Video del proceso",
 "pbn.done.more": "Otra plantilla",
-"pbn.done.close": "Seguir mirando"
+"pbn.done.close": "Seguir mirando",
+"ptool.more": "Todas",
+"ptool.more.tip": "Todas las herramientas y ajustes",
+"ptool.aria": "Herramientas: toca una para usarla"
 };

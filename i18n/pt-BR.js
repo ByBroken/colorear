@@ -950,7 +950,7 @@ window.COLOREAR_I18N["pt-BR"] = {
 "pbn.mode.tip": "Cada área tem um número. Escolha um modelo, escolha um número embaixo e toque nas áreas que o têm.",
 "pbn.menu": "Colorir por número",
 "pbn.menu.sub": "siga os números",
-"pbn.title": "Por número · {name}",
+"pbn.title": "{name}",
 "pbn.exit": "Sair",
 "pbn.exit.aria": "Sair de Por número",
 "pbn.pct": "{pct}% pronto",
@@ -983,5 +983,8 @@ window.COLOREAR_I18N["pt-BR"] = {
 "pbn.done.share": "Compartilhar",
 "pbn.done.video": "Vídeo do processo",
 "pbn.done.more": "Outro modelo",
-"pbn.done.close": "Continuar olhando"
+"pbn.done.close": "Continuar olhando",
+"ptool.more": "Todas",
+"ptool.more.tip": "Todas as ferramentas e ajustes",
+"ptool.aria": "Ferramentas: toque em uma para usar"
 };
