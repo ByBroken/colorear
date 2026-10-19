@@ -1084,5 +1084,5 @@ window.COLOREAR_I18N["en"] = {
 "neon.row": "Neon",
 "neon.all": "See all",
 "neon.all.tip": "See all neon colors (72)",
-"neon.quick.aria": "Neon colors",
+"neon.quick.aria": "Neon colors"
 };
