@@ -1869,7 +1869,7 @@ setDocLang(); translateStatic();
 /* Colorear v3.3: crea dibujos para colorear, sube fotos de tus libros y coloréalos
    (lápiz y marcador de colores, crayón, marcadores acrílico / de agua / de alcohol, degradados, difuminar, copiar color,
    capas, ocultar botones, punta Detalle y rueda de colores con opacidad) */
-const APP_VERSION = '3.19';
+const APP_VERSION = '3.20';
 const PORTRAIT = [1200, 1600], LANDSCAPE = [1600, 1200];
 let W = 1200, H = 1600;                       // tamaño de la hoja (px internos); vertical u horizontal
 /* Grosores en píxeles de la hoja (1200×1600). "Súper fina" (xs) y "Detalle" (xxs) no son fijas: se calculan
@@ -2864,17 +2864,43 @@ function tooth() {
   return (toothT = t);
 }
 function hash2(x, y) { let h = (Math.imul(x, 374761393) + Math.imul(y, 668265263)) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); h ^= h >>> 16; return (h >>> 0) / 4294967296; }
-// Bolígrafo de gel: cuerpo (borde un poco más oscuro), centro con el color y una línea de brillo hacia arriba a la izquierda (se ve en relieve)
+// Bolígrafo de gel (3.20, más realista): la tinta se acumula en los bordes (más densa y oscura), el centro es un poco
+// más claro y translúcido, hay un reflejo húmedo fino desplazado hacia arriba a la izquierda, la tinta varía un poco a lo
+// largo del trazo y, al cruzar otro trazo de gel, se nota la doble capa (más intensa, sin ponerse negra).
+// El perfil del trazo se dibuja con 3 trazos anidados y el reflejo con 2 (una sola pasada por píxel, texturas en caché).
+const GEL_P = {
+  normal: { dk: 0.5, sat: 1.35, ac: 0.92, ar: 0.985, lift: 0.12, hiA: 1, mult: 0.32, var: 0.08 },
+  white: { dk: 0.85, sat: 1, ac: 0.985, ar: 0.995, lift: 0, hiA: 0.6, mult: 0, var: 0 },
+  metal: { dk: 0.58, sat: 1, ac: 0.97, ar: 0.99, lift: 0.04, hiA: 1.3, mult: 0.1, var: 0.05 },
+  glitter: { dk: 0.7, sat: 1.15, ac: 0.94, ar: 0.985, lift: 0.08, hiA: 0.7, mult: 0.15, var: 0.06 },
+  core: [[0.8, 0.5], [0.55, 0.55], [0.3, 0.6]], hi: [[0.26, 0.45], [0.12, 0.95]], hiOff: [-0.16, -0.19], hiN: [0.6, 0.5],
+};
+let gelNoiseT = null; const GEL_NN = 256;
+function gelNoise() {      // ruido suave (2 octavas, se repite cada 256 px) para la variación de la tinta y del reflejo
+  if (gelNoiseT) return gelNoiseT;
+  const N = GEL_NN, t = new Float32Array(N * N);
+  const oct = (x, y, c) => {
+    const n = N / c, cx = x / c, cy = y / c, ix = Math.floor(cx), iy = Math.floor(cy);
+    let fx = cx - ix, fy = cy - iy; fx = fx * fx * (3 - 2 * fx); fy = fy * fy * (3 - 2 * fy);
+    const v = (i, j) => hash2(((i % n) + n) % n + c * 7919, ((j % n) + n) % n);
+    return (v(ix, iy) * (1 - fx) + v(ix + 1, iy) * fx) * (1 - fy) + (v(ix, iy + 1) * (1 - fx) + v(ix + 1, iy + 1) * fx) * fy;
+  };
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) t[y * N + x] = 0.65 * oct(x, y, 32) + 0.35 * oct(x, y, 8);
+  return (gelNoiseT = t);
+}
 function gelStyle(layer, color, lw, thin) {
-  const k = state.gelKind;
-  const c = k === 'white' ? '#FFFFFF' : color, [r, g, b] = hexToRgb(c);
-  const dk = k === 'white' ? 0.9 : k === 'metal' ? 0.58 : k === 'glitter' ? 0.78 : 0.72;
-  const st = { layer, color: c, comp: 'source-over', lw, buf: 'art', art: 'gel', gel: k, alpha: k === 'white' ? 0.97 : 0.98,
-    rgb: [r, g, b], rim: [r * dk, g * dk, b * dk], coreW: lw, hiW: 0, hiA: 0 };
+  const k = state.gelKind, P = GEL_P[k] || GEL_P.normal;
+  const c = k === 'white' ? '#FFFFFF' : color, rgb = k === 'white' ? [255, 252, 244] : hexToRgb(c);
+  // borde: tinta acumulada (más oscura y un poco más saturada)
+  const [r, g, b] = rgb, dk = P.dk, m = (r + g + b) / 3 * dk;
+  const rim = k === 'white' ? [232, 228, 218] : [r, g, b].map((v) => clamp(m + (v * dk - m) * P.sat, 0, 255));
+  const st = { layer, color: c, comp: 'source-over', lw, buf: 'art', art: 'gel', gel: k, alpha: 0.98, alpha0: 0.98,
+    rgb, rim, P, coreL: [[lw, 1]], prof: 1, hiL: null, hiA: 0 };
   if (!thin && lw >= 4) {
-    st.coreW = lw * 0.62; st.hiW = Math.max(1, lw * 0.24);
-    st.hiA = k === 'white' ? 0.2 : k === 'metal' ? 0.85 : k === 'glitter' ? 0.45 : 0.55;
-    st.hiOff = { x: -lw * 0.13, y: -lw * 0.16 };
+    st.coreL = GEL_P.core.map(([w, a]) => [lw * w, a]);
+    st.prof = 1 - GEL_P.core.reduce((q, [, a]) => q * (1 - a), 1);
+    st.hiL = GEL_P.hi.map(([w, a]) => [Math.max(0.8, lw * w), a]); st.hiA = P.hiA;
+    st.hiOff = { x: lw * GEL_P.hiOff[0], y: lw * GEL_P.hiOff[1] };
   }
   return st;
 }
@@ -2892,16 +2918,18 @@ function artBegin(st, p) {
 // Cada vez se repinta (recortado al tramo nuevo) el camino entero como UN solo trazo: así las uniones entre tramos
 // no se acumulan en el borde suavizado y la línea fina queda pareja, sin puntitos más oscuros.
 function artPaint(ctx, st, lw, o, r) {
-  const m = lw / 2 + 2, ox = o ? o.x : 0, oy = o ? o.y : 0;
+  const m = (Array.isArray(lw) ? lw[0][0] : lw) / 2 + 2, ox = o ? o.x : 0, oy = o ? o.y : 0;
   ctx.save(); ctx.beginPath(); ctx.rect(r.x, r.y, r.w, r.h); ctx.clip(); ctx.clearRect(r.x, r.y, r.w, r.h);
   ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1; ctx.strokeStyle = '#000';
-  ctx.lineWidth = lw; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.lineWidth = Array.isArray(lw) ? lw[0][0] : lw; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
   ctx.beginPath();
   for (const g of st.segs) {
     if (g.x2 + ox + m < r.x || g.x1 + ox - m > r.x + r.w || g.y2 + oy + m < r.y || g.y1 + oy - m > r.y + r.h) continue;
     ctx.moveTo(g.a.x + ox, g.a.y + oy); ctx.quadraticCurveTo(g.b.x + ox, g.b.y + oy, g.c.x + ox, g.c.y + oy);
   }
-  ctx.stroke(); ctx.restore();
+  if (Array.isArray(lw)) { for (const [w, a] of lw) { ctx.lineWidth = w; ctx.globalAlpha = a; ctx.stroke(); } }
+  else ctx.stroke();
+  ctx.restore();
 }
 function artSeg(st, p0, p1, p2) {
   st.segs.push({ a: p0, b: p1, c: p2, x1: Math.min(p0.x, p1.x, p2.x), y1: Math.min(p0.y, p1.y, p2.y), x2: Math.max(p0.x, p1.x, p2.x), y2: Math.max(p0.y, p1.y, p2.y) });
@@ -2909,8 +2937,8 @@ function artSeg(st, p0, p1, p2) {
   const r = clampRect({ x: Math.floor(g.x1 - pad), y: Math.floor(g.y1 - pad), w: Math.ceil(g.x2 - g.x1 + 2 * pad), h: Math.ceil(g.y2 - g.y1 + 2 * pad) }); if (!r) return;
   artPaint(bufCtx, st, st.lw, null, r);
   if (st.art === 'gel') {
-    artPaint(gelCtx, st, st.coreW, null, r);
-    if (st.hiW) artPaint(hiCtx, st, st.hiW, st.hiOff, r);
+    artPaint(gelCtx, st, st.coreL, null, r);
+    if (st.hiL) artPaint(hiCtx, st, st.hiL, st.hiOff, r);
   }
   artShow(st, r.x, r.y, r.x + r.w, r.y + r.h);
 }
@@ -2933,25 +2961,35 @@ function artShow(st, x1, y1, x2, y2) {
       }
     }
   } else {
-    const core = gelCtx.getImageData(r.x, r.y, r.w, r.h).data, hi = st.hiW ? hiCtx.getImageData(r.x, r.y, r.w, r.h).data : null;
-    const [cr, cg, cb] = st.rgb, [rr, rg, rb] = st.rim, K = st.gel, A = st.alpha, hiA = st.hiA;
+    const core = gelCtx.getImageData(r.x, r.y, r.w, r.h).data, hi = st.hiL ? hiCtx.getImageData(r.x, r.y, r.w, r.h).data : null;
+    const [cr, cg, cb] = st.rgb, [rr, rg, rb] = st.rim, K = st.gel, P = st.P, hiA = st.hiA, GN = gelNoise(), NN = GEL_NN;
+    const hn0 = GEL_P.hiN[0], hn1 = GEL_P.hiN[1], press = st.alpha / (st.alpha0 || 0.98), ip = 1 / (st.prof * 255), lift = P.lift, vr = P.var, mult = P.mult;
     const lr = cr + (255 - cr) * 0.55, lg = cg + (255 - cg) * 0.55, lb = cb + (255 - cb) * 0.55;
     for (let y = 0; y < r.h; y++) {
-      const Y = r.y + y;
+      const Y = r.y + y, ny = (Y % NN) * NN, ny2 = ((Y + 97) % NN) * NN;
       for (let x = 0; x < r.w; x++) {
         const k = (y * r.w + x) * 4, cov = m[k + 3]; if (!cov) continue;
-        const X = r.x + x, cc = core[k + 3] / 255;
-        let R = rr + (cr - rr) * cc, G = rg + (cg - rg) * cc, B = rb + (cb - rb) * cc;
+        const X = r.x + x, n = GN[ny + (X % NN)];
+        let t = Math.min(1, core[k + 3] * ip); t = t * t * (3 - 2 * t);           // 0 en el borde, 1 en el centro
+        let R = rr + (cr - rr) * t, G = rg + (cg - rg) * t, B = rb + (cb - rb) * t;
+        const l = lift * t * (0.6 + 0.8 * n);                                   // el centro, un poco más claro (tinta más fina)
+        R += (255 - R) * l; G += (255 - G) * l; B += (255 - B) * l;
         if (K === 'metal') {               // reflejos metálicos: bandas de luz y sombra a lo largo del trazo
-          const t = T[((Y >> 1) % N) * N + ((X >> 1) % N)], f = 0.66 + 0.75 * t;
+          const tt2 = T[((Y >> 1) % N) * N + ((X >> 1) % N)], f = 0.66 + 0.75 * tt2;
           R *= f; G *= f; B *= f;
         } else if (K === 'glitter') {      // brillantina: puntitos que brillan
           const h = hash2(X >> 1, Y >> 1);
           if (h > 0.95) { R += (255 - R) * 0.92; G += (255 - G) * 0.92; B += (255 - B) * 0.92; }
           else if (h > 0.89) { R = R + (lr - R) * 0.7; G = G + (lg - G) * 0.7; B = B + (lb - B) * 0.7; }
         }
-        if (hi) { const a = hi[k + 3] / 255 * hiA; if (a) { R += (255 - R) * a; G += (255 - G) * a; B += (255 - B) * a; } }
-        overPx(d, k, clamp(Math.round(R), 0, 255), clamp(Math.round(G), 0, 255), clamp(Math.round(B), 0, 255), (cov / 255) * A);
+        let A = (P.ar + (P.ac - P.ar) * t) * (1 - vr + vr * 2 * n * t + vr * (1 - t));   // más denso en el borde; varía a lo largo
+        if (mult) {                        // doble capa: sobre otra tinta de gel se intensifica (multiplica un poco)
+          const da = d[k + 3]; if (da) { const q = mult * da / 255; R -= R * (1 - d[k] / 255) * q; G -= G * (1 - d[k + 1] / 255) * q; B -= B * (1 - d[k + 2] / 255) * q; A = Math.min(1, A + 0.06 * q); }
+        }
+        if (hi) {
+          let a = hi[k + 3] / 255 * hiA; if (a) { a *= (hn0 + hn1 * GN[ny2 + ((X + 131) % NN)]) * Math.min(1, t * 2.2); if (a > 1) a = 1; R += (255 - R) * a; G += (255 - G) * a; B += (255 - B) * a; A = Math.max(A, Math.min(1, a * 1.2)); }
+        }
+        overPx(d, k, clamp(Math.round(R), 0, 255), clamp(Math.round(G), 0, 255), clamp(Math.round(B), 0, 255), clamp((cov / 255) * A * press, 0, 1));
       }
     }
   }
@@ -9146,7 +9184,7 @@ window.__colorear = {
   sketchLineArt, openAdjust, setAdjMode, useAdjusted, makeProcessVideo, captureFrame, procFrames, deleteProc, openVideoSheet, videoMime, get procId() { return procId; }, get procOn() { return procOn; },
   retoFor, retoStart, retoComplete, retoStreak, renderReto, dayStr, TPL_NEW, tplIsNew, markTplSeen, buildTemplateGrid,
   FL, setFL, renderFL, flMaskFor, flRegion, setFLSens, get flOn() { return flOn(); },
-  PBN, pbnEnter, pbnExit, pbnTap, pbnHint, pbnFillNumber, pbnSelect, pbnPct, pbnLeft, pbnCounts, pbnSetMode, pbnRestart, pbnSample,
+  PBN, pbnEnter, pbnExit, pbnTap, pbnHint, pbnFillNumber, pbnSelect, pbnPct, pbnLeft, pbnCounts, pbnSetMode, pbnRestart, pbnSample, GEL_P,
 };
 </script>
 </body>
