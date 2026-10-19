@@ -18,7 +18,7 @@
 <script src="i18n/fr.js"></script>
 <script src="templates-data.js"></script>
 <script src="pbn-data.js"></script>
-<script src="chars-data.js"></script>
+<script src="il-data.js"></script>
 <script src="stamps-data.js"></script>
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -1869,7 +1869,7 @@ setDocLang(); translateStatic();
 /* Colorear v3.3: crea dibujos para colorear, sube fotos de tus libros y coloréalos
    (lápiz y marcador de colores, crayón, marcadores acrílico / de agua / de alcohol, degradados, difuminar, copiar color,
    capas, ocultar botones, punta Detalle y rueda de colores con opacidad) */
-const APP_VERSION = '3.18';
+const APP_VERSION = '3.19';
 const PORTRAIT = [1200, 1600], LANDSCAPE = [1600, 1200];
 let W = 1200, H = 1600;                       // tamaño de la hoja (px internos); vertical u horizontal
 /* Grosores en píxeles de la hoja (1200×1600). "Súper fina" (xs) y "Detalle" (xxs) no son fijas: se calculan
@@ -4076,8 +4076,8 @@ const TPL_UPG_DATE = '2026-10-15';
   // 3.12: estilo «cozy» (líneas gruesas y redondas, formas simples y zonas grandes); cada una trae su grosor de línea
   const CZ = window.TPL_COZY || {};
   for (const t of TEMPLATES) { const z = CZ[t.id]; if (!z) continue; const ds = z.d, lw = z.w; t.probe = z.p; t.draw = (c) => { c.lineWidth = lw; strokeAll(c, ds); }; }
-  // 3.18: «Personajes» (amigos de estilo chibi con fondo decorado; pensados para Colorear por número, también se pueden pintar libremente)
-  for (const a of (window.TPL_CHARS || [])) { const ds = a.d, es = a.e, lw = a.w, lw2 = a.w2; TEMPLATES.push({ id: a.id, cat: 'personajes', added: '2026-10-18', probe: a.p, draw(c) { c.lineWidth = lw; strokeAll(c, ds); c.lineWidth = lw2; strokeAll(c, es); } }); }
+  // 3.19: «Personajes» ilustrados (estilo anime/cuento, 80–150 zonas): plantillas pensadas para Colorear por número; también se pueden pintar libremente. n = nombre en 4 idiomas; f = rellenos de tinta (pupilas, brillos)
+  for (const a of (window.TPL_IL || [])) { const ds = a.d, es = a.e, fs = a.f || [], lw = a.w, lw2 = a.w2; TEMPLATES.push({ id: a.id, cat: 'personajes', added: '2026-10-18', probe: a.p, land: !!a.land, n: a.n, draw(c) { c.fillStyle = '#000'; for (const f of fs) c.fill(new Path2D(f), 'evenodd'); c.lineWidth = lw; strokeAll(c, ds); c.lineWidth = lw2; strokeAll(c, es); } }); }
   // rayitas de tinta que cierran rendijas angostas (cuellos de menos de 4 unidades) para que cada zona se pinte por separado
   const PR = window.TPL_PROBE || {}; for (const t of TEMPLATES) if (PR[t.id]) t.probe = PR[t.id];   // punto de prueba dentro de la zona principal (para las pruebas)
   const FIX = window.TPL_FIX || {};
@@ -4098,9 +4098,9 @@ function markTplSeen(id) {
   const b = document.querySelector(`#tplGrid [data-tpl="${id}"] .newb`); if (b) b.remove();
 }
 function renderTemplate(c, t, w, h) {
-  const s = Math.min(w / 300, h / 400);
+  const uw = t.land ? 400 : 300, uh = t.land ? 300 : 400, s = Math.min(w / uw, h / uh);
   c.save();
-  c.translate((w - 300 * s) / 2, (h - 400 * s) / 2);
+  c.translate((w - uw * s) / 2, (h - uh * s) / 2);
   c.scale(s, s);
   c.lineWidth = 2.6; c.lineJoin = 'round'; c.lineCap = 'round'; c.strokeStyle = '#000';
   t.draw(c);
@@ -4145,7 +4145,7 @@ function loadTemplate(id) {
   cancelGesture(); flattenObjs();
   const t = TEMPLATES.find((x) => x.id === id);
   if (t) markTplSeen(t.id);
-  replaceSheet(PORTRAIT[0], PORTRAIT[1], (lc) => { if (t) renderTemplate(lc, t, W, H); });
+  { const sz = t && t.land ? LANDSCAPE : PORTRAIT; replaceSheet(sz[0], sz[1], (lc) => { if (t) renderTemplate(lc, t, W, H); }); }
   state.currentId = null;
   setMode(t ? 'color' : 'draw');
   toast(t ? tt('toast.tpl', { name: t.name }) : tt('toast.newsheet'));
@@ -5788,7 +5788,7 @@ function pbnDrawNums() {
   c.textAlign = 'center'; c.textBaseline = 'middle'; c.lineJoin = 'round';
   for (const g of PBN.mains) {
     if (PBN.filled[g]) continue;
-    const r = PBN.regs[g], fs = clamp(r.rad * 1.05, 17, 56), sel = r.n === PBN.sel;
+    const r = PBN.regs[g], fs = clamp(r.rad * 1.05, Math.min(17, Math.max(9, r.rad * 1.5)), 56), sel = r.n === PBN.sel;
     if (sel) {
       c.beginPath(); c.arc(r.x, r.y, Math.min(fs * 0.78, Math.max(r.rad * 0.96, fs * 0.5)), 0, Math.PI * 2);
       c.fillStyle = 'rgba(255,255,255,.9)'; c.fill(); c.lineWidth = Math.max(2.5, fs * 0.09); c.strokeStyle = '#5856D6'; c.stroke();
@@ -5818,7 +5818,7 @@ function pbnColorKey(hex) {
   for (const [k, r] of PBN_CN_RGB) { const d = (c[0] - r[0]) ** 2 + (c[1] - r[1]) ** 2 + (c[2] - r[2]) ** 2; if (d < bd) { bd = d; best = k; } }
   return best;
 }
-const pbnColorName = (hex) => tt('pbn.c.' + pbnColorKey(hex));
+const pbnColorName = (hex) => { const d = PBN.on && pbnData(PBN.id); if (d && d.n) { const i = d.p.indexOf(hex), l = d.n[LANG] || d.n.es; if (i >= 0 && l && l[i]) return l[i]; } return tt('pbn.c.' + pbnColorKey(hex)); };
 function pbnLegendBuild() {
   const box = $('#pbnLegList'); box.innerHTML = '';
   PBN.pal.forEach((hex, i) => {
@@ -8533,7 +8533,7 @@ function retoOrderGet() {
 function retoPool(tokens) {
   let pool = [];
   if (tokens) for (const tk of tokens) { if (tk.startsWith('cat:')) pool.push(...TEMPLATES.filter((t) => t.cat === tk.slice(4))); else { const t = TEMPLATES.find((x) => x.id === tk); if (t) pool.push(t); } }
-  if (!pool.length) pool = TEMPLATES.filter((t) => t.id !== 'bandera' && t.cat !== 'personajes');   // 3.18: los Personajes (60–110 zonas) son para Por número, no para el reto del día
+  if (!pool.length) pool = TEMPLATES.filter((t) => t.id !== 'bandera' && t.cat !== 'personajes');   // 3.18: los Personajes (80–150 zonas) son para Por número, no para el reto del día
   return pool;
 }
 function retoColors(mode, h2) {
