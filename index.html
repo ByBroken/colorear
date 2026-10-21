@@ -1913,17 +1913,23 @@ const PALETTE_NAMES = ['Rojo','Coral','Naranja','Amarillo','Amarillo claro','Ver
   'Rosa claro','Piel','Canela','Café','Café oscuro','Gris','Negro','Blanco'];
 /* 402 colores listos para tocar, por familias; cada fila va de claro a oscuro (6 tonos) */
 const COLOR_FAMILIES = [{"id":"rojos","n":"Rojos","rows":[["Rojo","FAC6C6 F68E8E F15555 ED1D1D BD0F0F 840B0B"],["Rojo cereza","F7C9D0 F094A0 E85E71 E02941 B3192E 7D1220"],["Rojo tomate","FDCAC4 FA9589 F8604F F52B14 C41B08 891306"],["Rojo vino","F3CDD7 E89CAF DC6A87 D0395F A52746 741B31"],["Rojo ladrillo","F2D5CF E5AA9E D8806E CC553E A13F2B 712C1E"]]},{"id":"naranjas","n":"Naranjas","rows":[["Naranja","FFDEC2 FFBE85 FF9D47 FF7C0A CC5F00 8F4300"],["Mandarina","FDD9C3 FCB288 FA8C4C F96610 C74C05 8B3504"],["Calabaza","FCE2C5 F9C58B F6A951 F38C16 C26C0A 884C07"],["Coral","FAD3C6 F6A68E F17A55 ED4D1D BD380F 84270B"],["Durazno","F9E5C8 F3CC91 EDB25A E79823 B87614 81530E"]]},{"id":"amarillos","n":"Amarillos","rows":[["Amarillo","FFF5B8 FFEF85 FFE53D FFDD00 CCB100 998500"],["Limón","FDFBB9 FCF888 FAF442 F9F106 C7C005 959004"],["Oro","FFEDB8 FFE085 FFCF3D FFBF00 CC9900 997300"],["Mostaza","F7E3B6 F1CE7E EBBA47 DCA218 AE8013 815E0E"],["Maíz","FCF3CF FAE89E F7D964 F4CB2A D5AD0B A58609"]]},{"id":"verdes","n":"Verdes","rows":[["Verde lima","E6F4CD CCEA9A B3DF68 9AD435 78A824 547619"],["Verde hoja","D8F1D0 B1E3A0 8AD671 63C841 4A9E2E 346F20"],["Verde","CEF3D3 9DE7A7 6CDA7B 3BCE4F 29A339 1D7228"],["Verde esmeralda","CDF4DF 9AEABF 68DF9F 35D47F 24A862 197644"],["Verde menta","D0F1E7 A0E3CF 71D6B7 41C8A0 2E9E7C 206F57"]]},{"id":"azules","n":"Azules","rows":[["Turquesa","CBF6F3 97EDE7 63E3DB 2FDACF 1FADA4 157973"],["Celeste","C6EDFA 8EDAF6 55C8F1 1DB5ED 0F8EBD 0B6484"],["Azul cielo","C5E4FB 8CC9F8 52AEF4 1993F0 0C72C0 095086"],["Azul","C8DAF9 91B5F3 5A90ED 236AE7 1450B8 0E3881"],["Azul marino","CCD1F5 98A3EB 6575E2 3148D8 2133AB 172478"]]},{"id":"morados","n":"Morados","rows":[["Violeta","D4CDF3 A99CE8 7D6ADC 5239D0 3C27A5 2A1B74"],["Morado","DBCCF5 B799EA 9367E0 6F34D5 5423A9 3B1877"],["Uva","E2CEF3 C49DE7 A76CDA 893BCE 6A29A3 4A1D72"],["Lila","E7D0F1 CFA0E3 B771D6 A041C8 7C2E9E 57206F"],["Berenjena","EBD2EF D7A4DF C477CF B04ABF 8A3597 61256A"]]},{"id":"rosas","n":"Rosas","rows":[["Fucsia","F6CAF3 EE96E7 E561DA DD2CCE AF1DA3 7B1472"],["Rosa chicle","F8C9EA F292D5 EB5CC0 E425AB B61686 7F105E"],["Rosa","FAC6E2 F68EC5 F155A8 ED1D8C BD0F6C 840B4B"],["Rosa fresa","FCC5D9 F98BB3 F6518D F31667 C20A4E 880736"],["Frambuesa","F9C8D3 F391A8 ED5A7C E72350 B8143A 810E29"]]},{"id":"piel","n":"Tonos de piel","rows":[["Piel rosada","F7DDD4 EABEAE D79E88 C27B61 9D5B43 6A3F2F"],["Piel dorada","F8E6D3 ECCCAC DBB085 C4915F 9F7041 6B4C2E"],["Piel canela","F5E2D6 E6C7B3 D3A98D BD8965 996848 674732"],["Piel oliva","F3E8D8 E2D0B6 CEB692 B7996C 94774C 635136"],["Piel morena","E7CABB D3A892 BD866B A0674B 744D39 4A3226"]]},{"id":"tierra","n":"Cafés y tierra","rows":[["Café","DAB395 CA9268 B57340 8F5B32 6A4325 442B18"],["Chocolate","D6AC9A C4886E AE6647 8A5138 653B29 41261B"],["Madera","D3B99C C09C72 A97E4C 86633C 63492C 3F2F1C"],["Arena","E4DBC8 D4C4A5 C0A97C AC8E53 8A7242 675532"],["Oliva","C9C99C B4B474 989852 777740 56562E 35351D"]]},{"id":"grises","n":"Grises y negros","rows":[["Blanco a gris","FFFFFF F0F0F0 DBDBDB C4C4C4 ADADAD 949494"],["Gris a negro","787878 5E5E5E 454545 2E2E2E 171717 000000"],["Gris azulado","E2E5E9 BFC6CF 96A2B0 6E7E91 4F5B69 303840"],["Gris cálido","E8E6E3 CDC7C1 ACA49A 8C8073 655C53 3E3832"]]},{"id":"pastel","n":"Pastel","rows":[["Rosa pastel","FFE5EC FFD1DD FFBDCD FFA8BE FF94AF FF809F"],["Durazno pastel","FFF0E5 FFE4D1 FFD8BD FFCCA8 FFC194 FFB580"],["Vainilla","FFFCE5 FFF9D1 FFF6BD FFF3A8 FFF194 FFEE80"],["Menta pastel","EAFBF1 D9F7E6 C8F3DA B7F0CF A7ECC4 96E9B8"],["Celeste pastel","E7F5FE D3EEFD C0E6FC ADDEFB 99D6FA 86CFF9"],["Lila pastel","F2E8FC E8D6FA DEC3F8 D4B1F6 C99FF4 BF8CF2"]]},{"id":"neon","n":"Neón y vivos","rows":[["Rosa neón","FF70CB FF4DBE FF29B0 FF0AA5 EB0095 CC0081"],["Naranja neón","FFA570 FF8E4D FF7729 FF640A EB5600 CC4B00"],["Lima neón","BCFF70 ACFF4D 9BFF29 8DFF0A 7DEB00 6DCC00"],["Verde neón","70FFA0 4DFF88 29FF70 0AFF5C 00EB4E 00CC44"],["Azul eléctrico","70D9FF 4DCFFF 29C6FF 0ABEFF 00ACEB 0096CC"],["Amarillo neón","FFFF70 FFFF4D FFFF29 FFFF0A EBEB00 CCCC00"],["Rojo neón","FF7070 FF4D4D FF2929 FF0A0A EB0000 CC0000"],["Cian neón","70FFF5 4DFFF2 29FFEE 0AFFEA 00EBD6 00CCBA"],["Violeta neón","C870FF BA4DFF AB29FF 9D0AFF 8800EB 7500CC"],["Magenta neón","FF70F2 FF4DEF FF29EC FF0AE9 EB00D5 CC00B9"],["Azul neón","7088FF 4D6AFF 2950FF 0A37FF 0029EB 0022CC"],["Coral neón","FF8A70 FF704D FF5629 FF3C0A EB3000 CC2A00"]]}];
+// 3.21: metálicos (sirven con el bote: el relleno sale con brillo; con los pinceles pintan el tono base)
+const METAL_COLORS = [['Oro metálico', 'D5B03A'], ['Oro claro', 'EBD27A'], ['Oro rosa', 'DB9C90'], ['Plata', 'C1C5CC'], ['Plata oscura', '80868F'], ['Cobre', 'B96B3C'],
+  ['Bronce', 'A87538'], ['Champán', 'E5D1A4'], ['Verde metálico', '2F9668'], ['Azul metálico', '4079C6'], ['Morado metálico', '8654BA'], ['Rojo metálico', 'B52C38']];
+COLOR_FAMILIES.push({ id: 'metal', n: 'Metálicos', rows: [[null, METAL_COLORS.slice(0, 6).map((m) => m[1]).join(' ')], [null, METAL_COLORS.slice(6).map((m) => m[1]).join(' ')]] });
+const METAL_HEX = new Set(METAL_COLORS.map((m) => '#' + m[1]));
+const isMetal = (hex) => METAL_HEX.has(String(hex || '').toUpperCase());
 const TONE_NAMES = ['muy claro', 'claro', 'suave', 'medio', 'oscuro', 'muy oscuro'];
 const GREY_NAMES = [['Blanco', 'Gris perla', 'Gris nube', 'Gris plata', 'Gris claro', 'Gris medio'], ['Gris', 'Gris piedra', 'Gris carbón', 'Gris muy oscuro', 'Casi negro', 'Negro']];
 const ALL_COLORS = [], COLOR_NAME = {}, COLOR_CODE = {};
 // 3.4: códigos propios (letra de la familia + número, de claro a oscuro fila por fila). No son códigos de ninguna marca.
-const FAM_CODES = { rojos: 'R', naranjas: 'N', amarillos: 'AM', verdes: 'V', azules: 'A', morados: 'M', rosas: 'RS', piel: 'P', tierra: 'T', grises: 'G', pastel: 'PA', neon: 'NE' };
+const FAM_CODES = { rojos: 'R', naranjas: 'N', amarillos: 'AM', verdes: 'V', azules: 'A', morados: 'M', rosas: 'RS', piel: 'P', tierra: 'T', grises: 'G', pastel: 'PA', neon: 'NE', metal: 'MT' };
 // los nombres se guardan en español (fuente) y se traducen con buildColorNames(); los códigos (R3, A5…) no cambian
 const COLOR_SRC = {};
 PALETTE.forEach((c, i) => { COLOR_SRC[c] = { n: PALETTE_NAMES[i] }; });
 for (const f of COLOR_FAMILIES) f.rows.forEach(([rn, hexes], ri) => hexes.split(' ').forEach((h, i) => {
   const c = '#' + h; ALL_COLORS.push(c);
-  COLOR_SRC[c] = f.id === 'grises' && ri < 2 ? { n: GREY_NAMES[ri][i] } : { n: rn, tone: i };
+  COLOR_SRC[c] = f.id === 'metal' ? { n: METAL_COLORS[ri * 6 + i][0] } : f.id === 'grises' && ri < 2 ? { n: GREY_NAMES[ri][i] } : { n: rn, tone: i };
   COLOR_CODE[c] = (FAM_CODES[f.id] || f.id.slice(0, 2).toUpperCase()) + (ri * 6 + i + 1);
 }));
 function buildColorNames() {
@@ -1935,7 +1941,7 @@ function buildColorNames() {
 buildColorNames();
 for (const f of COLOR_FAMILIES) Object.defineProperty(f, 'n', { get: () => tt('fam.' + f.id), enumerable: true });
 // tonos que se ven en la fila compacta de cada familia (el tono medio de cada fila; en grises también blanco y negro)
-const famReps = (f) => f.id === 'grises' ? [[0, 0], [0, 3], [1, 0], [1, 5], [2, 3], [3, 3]] : f.id === 'neon' ? [0, 2, 5, 7, 10].filter((r) => r < f.rows.length).map((r) => [r, 3]) : f.rows.map((_, ri) => [ri, 3]);   // neón: solo 5 de muestra (son 12 filas y no caben cerradas)
+const famReps = (f) => f.id === 'grises' ? [[0, 0], [0, 3], [1, 0], [1, 5], [2, 3], [3, 3]] : f.id === 'neon' ? [0, 2, 5, 7, 10].filter((r) => r < f.rows.length).map((r) => [r, 3]) : f.id === 'metal' ? [[0, 0], [0, 3], [0, 5], [1, 1], [1, 3]] : f.rows.map((_, ri) => [ri, 3]);   // neón: solo 5 de muestra (son 12 filas y no caben cerradas)
 const colorLabel = (c) => (COLOR_CODE[c] ? COLOR_CODE[c] + ' · ' : '') + (COLOR_NAME[c] || tt('qs.cur'));
 /* degradados listos (de arriba a abajo) */
 const GRAD_PRESETS = [
@@ -3271,6 +3277,30 @@ function overPx(d, k, r, g, b, A) {
 }
 // Las paredes del bote siempre son las líneas del dibujo (plantilla, foto o lo dibujado en Dibujar con la Capa 1),
 // aunque se pinte en otra capa o las líneas estén ocultas. El color va a la capa elegida.
+// 3.21: relleno metálico. Da un reflejo diagonal (franja clara + brillo fino), sombra suave en los extremos y un leve
+// cepillado, igual que el gel metálico. Devuelve null si el color no es metálico (relleno plano de siempre).
+function metalShader(hex, minX, minY, bw, bh) {
+  if (!isMetal(hex)) return null;
+  const [r0, g0, b0] = hexToRgb(hex), N = gelNoise(), NN = GEL_NN;
+  const lum = (0.299 * r0 + 0.587 * g0 + 0.114 * b0) / 255;
+  const hiK = 0.62 - lum * 0.25, shK = 0.42 + lum * 0.12;          // los claros (plata, champán) se oscurecen más para que se note
+  const sc = 1 / Math.max(24, bw + bh), out = [0, 0, 0];
+  return (px, py) => {
+    const t = ((px - minX) + (py - minY)) * sc;                      // 0..1 en diagonal (arriba-izq → abajo-der)
+    const n = N[(py & (NN - 1)) * NN + (px & (NN - 1))] - 0.5;
+    const brush = (N[((py >> 2) & (NN - 1)) * NN + ((px * 3) & (NN - 1))] - 0.5) * 0.10;
+    let L = 0.55 * Math.cos(6.2832 * (t * 1.15 - 0.30)) - 0.05;       // banda clara arriba, sombra abajo
+    L += 0.75 * Math.exp(-(((t - 0.30) / 0.045) ** 2));               // brillo fino
+    L += 0.35 * Math.exp(-(((t - 0.72) / 0.06) ** 2));                // segundo reflejo suave
+    L += n * 0.08 + brush;
+    const k = L > 0 ? Math.min(1, L) * hiK : L * shK;
+    for (let j = 0; j < 3; j++) {
+      const c = j === 0 ? r0 : j === 1 ? g0 : b0;
+      out[j] = clamp(Math.round(k > 0 ? c + (255 - c) * k : c * (1 + k)), 0, 255);
+    }
+    return out;
+  };
+}
 function floodFill(fx, fy, hex, alpha = 1) {
   const reg = regionMask(fx, fy); if (!reg) return false;
   const { mask, minX, minY, maxX, maxY } = reg;
@@ -3278,12 +3308,14 @@ function floodFill(fx, fy, hex, alpha = 1) {
   const target = paintTarget(), cctx = layers[target].ctx;
   const img = cctx.getImageData(minX, minY, bw, bh), d = img.data;
   const [r, gg, b] = hexToRgb(hex), A = clamp(alpha == null ? 1 : +alpha, 0, 1);
+  const ms = metalShader(hex, minX, minY, bw, bh);
   let changed = false;
   for (let y = 0; y < bh; y++) {
     const mrow = (y + minY) * W + minX, drow = y * bw;
     for (let x = 0; x < bw; x++) {
       if (!mask[mrow + x]) continue;
       const k = (drow + x) * 4;
+      if (ms) { const m = ms(x + minX, y + minY); if (A < 0.999 || d[k] !== m[0] || d[k + 1] !== m[1] || d[k + 2] !== m[2] || d[k + 3] !== 255) changed = true; overPx(d, k, m[0], m[1], m[2], A); continue; }
       if (A < 0.999 || d[k] !== r || d[k + 1] !== gg || d[k + 2] !== b || d[k + 3] !== 255) changed = true;
       overPx(d, k, r, gg, b, A);
     }
@@ -4754,6 +4786,7 @@ function buildColorSheet() {
     const reps = new Set(famReps(f).map(([r, i]) => r * 6 + i));
     hexes.forEach((row, ri) => row.forEach((h6, i) => {
       const c = '#' + h6, b = document.createElement('button'); b.className = 'sw' + (reps.has(ri * 6 + i) ? ' rep' : ''); b.style.background = c; b.dataset.c = c;
+      if (f.id === 'metal') { b.classList.add('metal'); b.style.background = 'linear-gradient(135deg,' + c + ' 0%,#fff 32%,' + c + ' 48%,rgba(0,0,0,.28) 100%),' + c; b.style.backgroundBlendMode = 'soft-light,normal'; }
       const nv = parseInt(h6, 16), lum = 0.299 * (nv >> 16 & 255) + 0.587 * (nv >> 8 & 255) + 0.114 * (nv & 255);
       if (lum < 150) b.classList.add('dk');
       b.title = COLOR_NAME[c] + ' · ' + COLOR_CODE[c]; b.setAttribute('aria-label', tt('code.aria', { name: COLOR_NAME[c], code: COLOR_CODE[c] }));
@@ -7919,13 +7952,14 @@ function floodFillSym(fx, fy, hex, alpha = 1, Ts) {
     if (qx < 0 || qy < 0 || qx >= W || qy >= H || done[qy * W + qx]) continue;
     const reg = regionMask(q.x, q.y); if (!reg) continue;
     const { mask, minX, minY, maxX, maxY } = reg, bw = maxX - minX + 1, bh = maxY - minY + 1;
-    const img = cctx.getImageData(minX, minY, bw, bh), d = img.data;
+    const img = cctx.getImageData(minX, minY, bw, bh), d = img.data, ms = metalShader(hex, minX, minY, bw, bh);
     for (let y = 0; y < bh; y++) {
       const mrow = (y + minY) * W + minX, drow = y * bw;
       for (let x = 0; x < bw; x++) {
         if (!mask[mrow + x] || done[mrow + x]) continue;
         done[mrow + x] = 1;
         const k = (drow + x) * 4;
+        if (ms) { const m = ms(x + minX, y + minY); if (A < 0.999 || d[k] !== m[0] || d[k + 1] !== m[1] || d[k + 2] !== m[2] || d[k + 3] !== 255) changed = true; overPx(d, k, m[0], m[1], m[2], A); continue; }
         if (A < 0.999 || d[k] !== r || d[k + 1] !== gg || d[k + 2] !== b || d[k + 3] !== 255) changed = true;
         overPx(d, k, r, gg, b, A);
       }
