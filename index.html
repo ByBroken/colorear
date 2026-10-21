@@ -5813,7 +5813,7 @@ function pbnSample() {
   const d = layers.color.ctx.getImageData(0, 0, W, H).data;
   PBN.filled = new Uint8Array(PBN.regs.length);
   for (const g of PBN.mains) {
-    const r = PBN.regs[g], c = PBN.rgb[r.n - 1], k = (r.y * W + r.x) * 4;
+    const r = PBN.regs[g], c = PBN.rgb[r.n - 1], k = ((r.sy ?? r.y) * W + (r.sx ?? r.x)) * 4;
     PBN.filled[g] = d[k] === c[0] && d[k + 1] === c[1] && d[k + 2] === c[2] && d[k + 3] === 255 ? 1 : 0;
   }
 }
@@ -6010,6 +6010,24 @@ function pbnHint() {
   toast(tt('pbn.hint.toast', { n, k: gs.length }), 2600, pbnPal(n));
 }
 
+// 3.21: las zonitas que no salen en los datos se pegan a la zona vecina (se pintan con ella), así no queda nada en blanco
+function pbnAdopt() {
+  const { lab, map, regs } = PBN, n = W * H, ow = new Int32Array(n).fill(-1), q = new Int32Array(n);
+  let h = 0, t = 0;
+  const mainOf = (L) => { const m = map[L]; return m < 0 ? -1 : (regs[m].p < 0 ? m : regs[m].p); };
+  for (let i = 0; i < n; i++) { const L = lab[i]; if (L && L !== PBN.outerL && map[L] >= 0) { ow[i] = mainOf(L); q[t++] = i; } }
+  while (h < t) {
+    const i = q[h++], x = i % W, o = ow[i];
+    const nb = [x > 0 ? i - 1 : -1, x < W - 1 ? i + 1 : -1, i - W, i + W];
+    for (const j of nb) { if (j < 0 || j >= n || ow[j] >= 0) continue; const L = lab[j]; if (L && (L === PBN.outerL || map[L] >= 0)) continue; ow[j] = o; q[t++] = j; }
+  }
+  const done = new Uint8Array(PBN.nl + 1);
+  for (let i = 0; i < n; i++) {
+    const L = lab[i]; if (!L || done[L] || map[L] >= 0 || L === PBN.outerL || ow[i] < 0) continue;
+    done[L] = 1; const g = ow[i];
+    regs.push({ x: i % W, y: (i / W) | 0, n: regs[g].n, rad: 0, p: g, L }); map[L] = regs.length - 1; PBN.groups[g].push(regs.length - 1);
+  }
+}
 // Empezar / seguir / salir
 function pbnSetup(id, data) {
   const t = TEMPLATES.find((x) => x.id === id);
@@ -6025,8 +6043,22 @@ function pbnSetup(id, data) {
     if (L && PBN.map[L] < 0) PBN.map[L] = i;
   });
   PBN.mains = []; PBN.groups = {};
-  PBN.regs.forEach((r, i) => { if (r.p < 0) { PBN.mains.push(i); PBN.groups[i] = [i]; } });
-  PBN.regs.forEach((r, i) => { if (r.p >= 0 && PBN.groups[r.p]) PBN.groups[r.p].push(i); });
+  // 3.21: los datos se calcularon fuera del navegador; aquí se cuadran con las zonas reales para que TODO se pueda pintar
+  const own = (i) => { const m = PBN.map[PBN.regs[i].L]; if (m < 0) return -1; return PBN.regs[m].p < 0 ? m : PBN.regs[m].p; };
+  PBN.regs.forEach((r, i) => { if (r.p < 0 && r.L && PBN.map[r.L] === i) { PBN.mains.push(i); PBN.groups[i] = [i]; } });
+  PBN.regs.forEach((r, i) => {
+    if (!r.L || PBN.groups[i]) return;
+    let g = r.p >= 0 && PBN.groups[r.p] && PBN.map[r.L] === i ? r.p : own(i);   // zona repetida: va con la que ya tiene esa zona
+    if (g >= 0 && PBN.groups[g]) PBN.groups[g].push(i); else if (r.p >= 0 && PBN.groups[r.p]) { PBN.groups[r.p].push(i); PBN.map[r.L] = r.p; }
+  });
+  for (const g of PBN.mains) for (const j of PBN.groups[g]) if (PBN.map[PBN.regs[j].L] !== g && PBN.regs[PBN.map[PBN.regs[j].L]].p !== g) PBN.map[PBN.regs[j].L] = g;
+  { const inG = new Uint8Array(PBN.regs.length); for (const g of PBN.mains) for (const j of PBN.groups[g]) inG[j] = 1;
+    PBN.regs.forEach((r, i) => { if (r.L && PBN.map[r.L] === i && !inG[i]) PBN.map[r.L] = -1; }); }
+  if (PBN.map[PBN.outerL] >= 0) PBN.outerL = 0;        // el cielo puede tocar el borde: entonces no es «fuera»
+  pbnAdopt();
+  const first = new Int32Array(PBN.nl + 1).fill(-1);  // un punto seguro dentro de cada zona (para saber si ya está pintada)
+  for (let i = 0; i < W * H; i++) { const L = PBN.lab[i]; if (L && first[L] < 0) first[L] = i; }
+  for (const g of PBN.mains) { const r = PBN.regs[g]; if (PBN.lab[r.y * W + r.x] !== r.L) { const i = first[r.L]; r.sx = i % W; r.sy = (i / W) | 0; } else { r.sx = r.x; r.sy = r.y; } }
   for (const cv of [pbnCv, pbnHintCv]) { if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; } }
   pbnHCtx.clearRect(0, 0, W, H);
   PBN.celebrated = false;
