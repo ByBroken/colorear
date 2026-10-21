@@ -4147,7 +4147,7 @@ const TPL_UPG_DATE = '2026-10-15';
   const CZ = window.TPL_COZY || {};
   for (const t of TEMPLATES) { const z = CZ[t.id]; if (!z) continue; const ds = z.d, lw = z.w; t.probe = z.p; const es = z.e || [], fs = z.f || [], lw2 = z.w2 || lw; t.draw = (c) => { if (fs.length) { c.fillStyle = '#000'; for (const f of fs) c.fill(new Path2D(f), 'evenodd'); } c.lineWidth = lw; strokeAll(c, ds); c.lineWidth = lw2; strokeAll(c, es); }; }
   // 3.19: «Personajes» ilustrados (estilo anime/cuento, 80–150 zonas): plantillas pensadas para Colorear por número; también se pueden pintar libremente. n = nombre en 4 idiomas; f = rellenos de tinta (pupilas, brillos)
-  for (const a of (window.TPL_IL || [])) { const ds = a.d, es = a.e, fs = a.f || [], lw = a.w, lw2 = a.w2; TEMPLATES.push({ id: a.id, cat: 'personajes', added: '2026-10-18', probe: a.p, land: !!a.land, n: a.n, draw(c) { c.fillStyle = '#000'; for (const f of fs) c.fill(new Path2D(f), 'evenodd'); c.lineWidth = lw; strokeAll(c, ds); c.lineWidth = lw2; strokeAll(c, es); } }); }
+  for (const a of (window.TPL_IL || [])) { const ds = a.d, es = a.e, fs = a.f || [], lw = a.w, lw2 = a.w2; TEMPLATES.push({ id: a.id, cat: 'personajes', added: '2026-10-18', probe: a.p, land: !!a.land, n: a.n, draw(c) { c.fillStyle = '#000'; const ey = window.__pbnEyes && a.ey ? a.ey : null; fs.forEach((f, i) => { if (ey && ey.includes(i)) { const w0 = c.lineWidth; c.lineWidth = lw; c.stroke(new Path2D(f)); c.lineWidth = w0; } else c.fill(new Path2D(f), 'evenodd'); }); c.lineWidth = lw; strokeAll(c, ds); c.lineWidth = lw2; strokeAll(c, es); } }); }
   // rayitas de tinta que cierran rendijas angostas (cuellos de menos de 4 unidades) para que cada zona se pinte por separado
   const PR = window.TPL_PROBE || {}; for (const t of TEMPLATES) if (PR[t.id]) t.probe = PR[t.id];   // punto de prueba dentro de la zona principal (para las pruebas)
   const FIX = window.TPL_FIX || {};
@@ -5959,6 +5959,15 @@ function pbnTap(p) {
   const i = L && L !== PBN.outerL ? PBN.map[L] : -1;
   if (i == null || i < 0) return;     // fuera del dibujo o una rayita: nada que pintar
   const g = PBN.regs[i].p < 0 ? i : PBN.regs[i].p, r = PBN.regs[g];
+  if (r.n !== PBN.sel || PBN.filled[g]) {      // 3.22: zonitas (ojos): si al lado hay una del número elegido, se pinta esa
+    const X = Math.round(p.x), Y = Math.round(p.y);
+    for (let d = 1, hit = -1; d <= 7 && hit < 0; d++) for (let dy = -d; dy <= d && hit < 0; dy++) for (let dx = -d; dx <= d; dx++) {
+      const xx = X + dx, yy = Y + dy; if (xx < 0 || yy < 0 || xx >= W || yy >= H) continue;
+      const k = PBN.map[PBN.lab[yy * W + xx]]; if (k == null || k < 0) continue;
+      const gg = PBN.regs[k].p < 0 ? k : PBN.regs[k].p;
+      if (PBN.regs[gg].n === PBN.sel && !PBN.filled[gg]) { hit = gg; const prev = PBN.sel; if (pbnPaint([gg])) { PBN.filled[gg] = 1; pbnAfterPaint(prev); } return; }
+    }
+  }
   if (PBN.filled[g]) { toast(tt('pbn.already'), 1400); return; }
   if (r.n !== PBN.sel) {                       // suave: un recordatorio, no un error
     toast(tt('pbn.nudge', { n: r.n }), 2200, pbnPal(r.n)); pbnNudgeSw(r.n);
@@ -6015,15 +6024,15 @@ function pbnAdopt() {
   const { lab, map, regs } = PBN, n = W * H, ow = new Int32Array(n).fill(-1), q = new Int32Array(n);
   let h = 0, t = 0;
   const mainOf = (L) => { const m = map[L]; return m < 0 ? -1 : (regs[m].p < 0 ? m : regs[m].p); };
-  for (let i = 0; i < n; i++) { const L = lab[i]; if (L && L !== PBN.outerL && map[L] >= 0) { ow[i] = mainOf(L); q[t++] = i; } }
+  for (let i = 0; i < n; i++) { const L = lab[i]; if (L && L !== PBN.outerL && map[L] >= 0 && !PBN.keep[L]) { ow[i] = mainOf(L); q[t++] = i; } }
   while (h < t) {
     const i = q[h++], x = i % W, o = ow[i];
     const nb = [x > 0 ? i - 1 : -1, x < W - 1 ? i + 1 : -1, i - W, i + W];
-    for (const j of nb) { if (j < 0 || j >= n || ow[j] >= 0) continue; const L = lab[j]; if (L && (L === PBN.outerL || map[L] >= 0)) continue; ow[j] = o; q[t++] = j; }
+    for (const j of nb) { if (j < 0 || j >= n || ow[j] >= 0) continue; const L = lab[j]; if (L && (L === PBN.outerL || map[L] >= 0 || PBN.keep[L])) continue; ow[j] = o; q[t++] = j; }
   }
   const done = new Uint8Array(PBN.nl + 1);
   for (let i = 0; i < n; i++) {
-    const L = lab[i]; if (!L || done[L] || map[L] >= 0 || L === PBN.outerL || ow[i] < 0) continue;
+    const L = lab[i]; if (!L || done[L] || map[L] >= 0 || L === PBN.outerL || PBN.keep[L] || ow[i] < 0) continue;
     done[L] = 1; const g = ow[i];
     regs.push({ x: i % W, y: (i / W) | 0, n: regs[g].n, rad: 0, p: g, L }); map[L] = regs.length - 1; PBN.groups[g].push(regs.length - 1);
   }
@@ -6034,11 +6043,14 @@ function pbnSetup(id, data) {
   PBN.id = id; PBN.name = t ? t.name : id; PBN.pal = data.p.slice(); PBN.rgb = PBN.pal.map(hexToRgb);
   const lb = pbnLabel(); PBN.lab = lb.lab; PBN.nl = lb.nl; PBN.labBox = lb.box;
   PBN.outerL = PBN.lab[3 * W + 3] || PBN.lab[(H - 4) * W + W - 4] || 0;
-  PBN.regs = data.r.map((r) => ({ x: r[0], y: r[1], n: r[2], rad: r[3], p: r[4], L: 0 }));
+  PBN.regs = data.r.map((r) => ({ x: r[0], y: r[1], n: r[2], rad: r[3], p: r[4], L: 0, eye: r[5] === 1 }));
+  PBN.keep = new Uint8Array(PBN.nl + 1);      // brillos de los ojos: siempre blancos, sin número
+  for (const [x, y] of (data.w || [])) { const L = PBN.lab[y * W + x]; if (L) PBN.keep[L] = 1; }
   PBN.map = new Int32Array(PBN.nl + 1).fill(-1);
-  PBN.regs.forEach((r, i) => {
+  const order = PBN.regs.map((r, i) => i).sort((a, b) => (PBN.regs[b].eye ? 1 : 0) - (PBN.regs[a].eye ? 1 : 0));   // los ojos primero
+  order.forEach((i) => { const r = PBN.regs[i];
     let L = PBN.lab[r.y * W + r.x];
-    if (!L) L = pbnLabelAt(r.x, r.y, 8);
+    if (!L && !r.eye) L = pbnLabelAt(r.x, r.y, 8);
     r.L = L;
     if (L && PBN.map[L] < 0) PBN.map[L] = i;
   });
@@ -6067,7 +6079,7 @@ function pbnEnter(id, opts) {
   opts = opts || {};
   const data = pbnData(id); if (!data) return false;
   cancelGesture(); flattenObjs();
-  if (!opts.resume) loadTemplate(id);             // hoja nueva con la plantilla (se puede deshacer)
+  if (!opts.resume) { window.__pbnEyes = true; try { loadTemplate(id); } finally { window.__pbnEyes = false; } }   // 3.22: en Por número los ojos se pintan (iris de color, brillos blancos)
   else if (PBN.on) pbnExit(true);
   pbnSetup(id, data);
   PBN.on = true; document.body.classList.add('pbn');
