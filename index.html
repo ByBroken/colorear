@@ -4151,7 +4151,8 @@ const TPL_UPG_DATE = '2026-10-15';
   // rayitas de tinta que cierran rendijas angostas (cuellos de menos de 4 unidades) para que cada zona se pinte por separado
   const PR = window.TPL_PROBE || {}; for (const t of TEMPLATES) if (PR[t.id]) t.probe = PR[t.id];   // punto de prueba dentro de la zona principal (para las pruebas)
   const FIX = window.TPL_FIX || {};
-  for (const t of TEMPLATES) { const fx = FIX[t.id]; if (!fx || !fx.length) continue; const o = t.draw; t.draw = (c) => { o(c); strokeAll(c, fx); }; }
+  // 3.20: arreglos de líneas: las rendijas blancas finas (terminan en Z) se rellenan de tinta; las rayitas abiertas cierran huecos con el grosor de la línea
+  for (const t of TEMPLATES) { const fx = FIX[t.id]; if (!fx || !fx.length) continue; const o = t.draw; t.draw = (c) => { o(c); const lw = c.lineWidth; c.fillStyle = '#000'; for (const d of fx) { const p = new Path2D(d); if (d.endsWith('Z')) { c.fill(p); c.lineWidth = 0.7; c.stroke(p); c.lineWidth = lw; } else c.stroke(p); } }; }
 })();
 /* «Nuevo» en las plantillas recién añadidas (hasta TPL_NEW_DAYS días o hasta que se abren) */
 const TPL_SEEN_KEY = 'colorear.tplVistos';
