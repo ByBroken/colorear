@@ -4113,7 +4113,7 @@ const TPL_UPG_DATE = '2026-10-15';
   for (const a of ADD) { const ds = a.d; TEMPLATES.push({ id: a.id, cat: a.cat, probe: a.p, added: TPL_UPG_DATE, draw(c) { strokeAll(c, ds); } }); }
   // 3.12: estilo «cozy» (líneas gruesas y redondas, formas simples y zonas grandes); cada una trae su grosor de línea
   const CZ = window.TPL_COZY || {};
-  for (const t of TEMPLATES) { const z = CZ[t.id]; if (!z) continue; const ds = z.d, lw = z.w; t.probe = z.p; t.draw = (c) => { c.lineWidth = lw; strokeAll(c, ds); }; }
+  for (const t of TEMPLATES) { const z = CZ[t.id]; if (!z) continue; const ds = z.d, lw = z.w; t.probe = z.p; const es = z.e || [], fs = z.f || [], lw2 = z.w2 || lw; t.draw = (c) => { if (fs.length) { c.fillStyle = '#000'; for (const f of fs) c.fill(new Path2D(f), 'evenodd'); } c.lineWidth = lw; strokeAll(c, ds); c.lineWidth = lw2; strokeAll(c, es); }; }
   // 3.19: «Personajes» ilustrados (estilo anime/cuento, 80–150 zonas): plantillas pensadas para Colorear por número; también se pueden pintar libremente. n = nombre en 4 idiomas; f = rellenos de tinta (pupilas, brillos)
   for (const a of (window.TPL_IL || [])) { const ds = a.d, es = a.e, fs = a.f || [], lw = a.w, lw2 = a.w2; TEMPLATES.push({ id: a.id, cat: 'personajes', added: '2026-10-18', probe: a.p, land: !!a.land, n: a.n, draw(c) { c.fillStyle = '#000'; for (const f of fs) c.fill(new Path2D(f), 'evenodd'); c.lineWidth = lw; strokeAll(c, ds); c.lineWidth = lw2; strokeAll(c, es); } }); }
   // rayitas de tinta que cierran rendijas angostas (cuellos de menos de 4 unidades) para que cada zona se pinte por separado
