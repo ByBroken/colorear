@@ -13,31 +13,41 @@
 <meta name="format-detection" content="telephone=no">
 <link rel="manifest" href="manifest.webmanifest">
 <script>
-/* Bloqueo web en iPhone/iPad (v38): solo navegadores web; la app iOS (Capacitor, capacitor://) no se bloquea */
+/* Bloqueo web (v39): todos los navegadores. No se bloquea: app iOS (Capacitor), app Android (TWA: referrer android-app://com.bybroken.coloring + marca guardada), localhost */
 (function () {
   var ua = navigator.userAgent || '';
   var ios = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
-  var web = /^https?:$/.test(location.protocol) && location.hostname !== 'localhost';
+  var android = /Android/.test(ua);
+  var web = /^https?:$/.test(location.protocol) && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname);
   var nativo = !!(window.Capacitor || window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge);
-  if (!ios || !web || nativo) return;
-  window.__BLOQUEO_IOS = true; try { window.stop(); } catch (e) {}
+  var K = 'colorear.twa';
+  var twa = /^android-app:\/\/com\.bybroken\.coloring/.test(document.referrer || '');
+  if (twa) { try { localStorage.setItem(K, '1'); sessionStorage.setItem(K, '1'); } catch (e) {} }
+  else if (android) { try { twa = localStorage.getItem(K) === '1' || sessionStorage.getItem(K) === '1'; } catch (e) {} }
+  if (!web || nativo || twa) return;
+  window.__BLOQUEO_WEB = true; try { window.stop(); } catch (e) {}
   var T = {
-    es: ['Disponible en la App Store', 'En iPhone y iPad, ByBroken Coloring se usa con la app oficial.', 'Ver en la App Store', 'Si el enlace aún no abre, la app llegará muy pronto.'],
-    en: ['Available on the App Store', 'On iPhone and iPad, ByBroken Coloring works through the official app.', 'View on the App Store', 'If the link doesn\u2019t open yet, the app is coming very soon.'],
-    pt: ['Dispon\u00edvel na App Store', 'No iPhone e iPad, o ByBroken Coloring \u00e9 usado pelo app oficial.', 'Ver na App Store', 'Se o link ainda n\u00e3o abrir, o app chegar\u00e1 em breve.'],
-    fr: ['Disponible sur l\u2019App Store', 'Sur iPhone et iPad, ByBroken Coloring s\u2019utilise avec l\u2019app officielle.', 'Voir sur l\u2019App Store', 'Si le lien ne s\u2019ouvre pas encore, l\u2019app arrive tr\u00e8s bient\u00f4t.']
+    es: ['Disponible en las tiendas de apps', 'ByBroken Coloring se usa con la app oficial.', 'Ver en la App Store', 'Ver en Google Play', 'Si el enlace aún no abre, la app llegará muy pronto.', 'Disponible en la App Store', 'Disponible en Google Play'],
+    en: ['Available on the app stores', 'ByBroken Coloring works through the official app.', 'View on the App Store', 'View on Google Play', 'If the link doesn\u2019t open yet, the app is coming very soon.', 'Available on the App Store', 'Available on Google Play'],
+    pt: ['Dispon\u00edvel nas lojas de apps', 'O ByBroken Coloring \u00e9 usado pelo app oficial.', 'Ver na App Store', 'Ver no Google Play', 'Se o link ainda n\u00e3o abrir, o app chegar\u00e1 em breve.', 'Dispon\u00edvel na App Store', 'Dispon\u00edvel no Google Play'],
+    fr: ['Disponible sur les boutiques d\u2019apps', 'ByBroken Coloring s\u2019utilise avec l\u2019app officielle.', 'Voir sur l\u2019App Store', 'Voir sur Google Play', 'Si le lien ne s\u2019ouvre pas encore, l\u2019app arrive tr\u00e8s bient\u00f4t.', 'Disponible sur l\u2019App Store', 'Disponible sur Google Play']
   };
   var l = null; try { l = localStorage.getItem('colorear.idioma'); } catch (e) {}
   l = (l || (navigator.languages && navigator.languages[0]) || navigator.language || 'es').slice(0, 2).toLowerCase();
   var t = T[l] || T.es;
+  var AS = '<a class="b" href="https://apps.apple.com/app/id6824778636">' + t[2] + '</a>';
+  var GP = '<a class="b g" href="https://play.google.com/store/apps/details?id=com.bybroken.coloring">' + t[3] + '</a>';
+  var h = ios ? t[5] : android ? t[6] : t[0];
+  var btns = ios ? AS : android ? GP : AS + GP;
+  var nota = android ? '' : '<small>' + t[4] + '</small>';
   document.documentElement.innerHTML = '<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>ByBroken Coloring</title><style>' +
     'html,body{margin:0;height:100%;font-family:-apple-system,system-ui,sans-serif}' +
     'body{display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#ffd6e8,#d9e8ff 55%,#e6ffef);color:#2b2340;text-align:center}' +
-    '.c{background:#fffffff0;border-radius:28px;padding:36px 26px;margin:20px;max-width:380px;box-shadow:0 14px 40px #6a4c9a33}' +
+    '.c{background:#fffffff0;border-radius:28px;padding:36px 26px;margin:20px;max-width:400px;box-shadow:0 14px 40px #6a4c9a33}' +
     'img{width:112px;height:112px;border-radius:26px;box-shadow:0 6px 18px #0002}h1{font-size:26px;margin:20px 0 10px}p{font-size:16px;line-height:1.45;margin:0 0 22px;color:#544a6b}' +
-    'a{display:inline-block;background:#111;color:#fff;text-decoration:none;font-weight:600;font-size:17px;padding:15px 26px;border-radius:14px}small{display:block;margin-top:18px;color:#7a7090;font-size:13px}</style></head>' +
-    '<body><div class="c"><img src="icon-256.png" alt=""><h1>' + t[0] + '</h1><p>' + t[1] + '</p><a href="https://apps.apple.com/app/id6824778636">' + t[2] + '</a><small>' + t[3] + '</small></div></body>';
-  throw new Error('bloqueo-ios');
+    '.b{display:block;background:#111;color:#fff;text-decoration:none;font-weight:600;font-size:17px;padding:15px 26px;border-radius:14px;margin:10px auto;max-width:260px}.g{background:#1a7f4b}small{display:block;margin-top:18px;color:#7a7090;font-size:13px}</style></head>' +
+    '<body><div class="c"><img src="icon-256.png" alt=""><h1>' + h + '</h1><p>' + t[1] + '</p>' + btns + nota + '</div></body>';
+  throw new Error('bloqueo-web');
 })();
 </script>
 <script src="i18n/es.js"></script>
