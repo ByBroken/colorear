@@ -1752,7 +1752,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
   </div>
   <div id="pdfStage"><canvas id="pdfPrev" aria-label="Página del PDF"></canvas></div>
   <div class="apanel">
-    <p class="pdfhint">Elige la página que quieres colorear.</p>
+    <p class="pdfhint">Elige la página. Luego puedes recortar una parte y sale aún más nítida.</p>
     <div class="pdfnav">
       <button id="pdfPrevBtn">‹ Anterior</button>
       <b id="pdfPageTxt" aria-live="polite"></b>
@@ -2031,10 +2031,10 @@ const octx = objCv.getContext('2d');
 for (const c of [layers.color.ctx, layers.color.bctx]) { c.fillStyle = '#fff'; c.fillRect(0, 0, W, H); }
 /* 3.21: «Foto a color»: la foto queda debajo de todo, a color. La Capa 1 es transparente encima de ella:
    borrar deja ver la foto, deshacer no la quita, y sale al guardar y exportar. La hoja toma el tamaño de la foto. */
-let bgPhoto = null;
+let bgPhoto = null, islandFill = false;   // 3.22: islandFill = la hoja vino de una foto/PDF: el bote cubre los numeritos impresos
 const photoCv = $('#cvPhoto');
 function setBgPhoto(cv) {
-  bgPhoto = cv || null; ZMAX = bgPhoto ? 14 : 6;
+  bgPhoto = cv || null; ZMAX = bgPhoto ? 14 : 6; islandFill = false;
   photoCv.hidden = !bgPhoto;
   if (bgPhoto) { photoCv.width = bgPhoto.width; photoCv.height = bgPhoto.height; photoCv.getContext('2d').drawImage(bgPhoto, 0, 0); }
   else { photoCv.width = photoCv.height = 1; }
@@ -3325,13 +3325,14 @@ function regionMask(fx, fy, laIn) {
     if (y < minY) minY = y;
     if (y > maxY) maxY = y;
   }
+  const keep = islandFill ? fillIslands(mask, la, minX, minY, maxX, maxY) : null;
   // Dilatar la zona bajo las líneas (solo sobre píxeles con tinta) para no dejar halos
-  for (let pass = 0; pass < DILATE; pass++) {
+  for (let pass = 0; pass < (keep ? 0 : DILATE); pass++) {   // 3.22: foto/PDF a color: no comerse la letra fina impresa
     const x1 = Math.max(0, minX - 1), x2 = Math.min(W - 1, maxX + 1), y1 = Math.max(0, minY - 1), y2 = Math.min(H - 1, maxY + 1);
     const add = [];
     for (let y = y1; y <= y2; y++) for (let x = x1; x <= x2; x++) {
       const i = y * W + x;
-      if (mask[i] || la[i * 4 + 3] === 0) continue;
+      if (mask[i] || la[i * 4 + 3] === 0 || (keep && keep[i])) continue;
       const l = x > 0, r = x < W - 1, u = y > 0, d = y < H - 1;
       if ((l && mask[i - 1]) || (r && mask[i + 1]) || (u && mask[i - W]) || (d && mask[i + W]) ||
           (l && u && mask[i - W - 1]) || (r && u && mask[i - W + 1]) || (l && d && mask[i + W - 1]) || (r && d && mask[i + W + 1])) add.push(i);
@@ -3340,6 +3341,43 @@ function regionMask(fx, fy, laIn) {
     minX = x1; maxX = x2; minY = y1; maxY = y2;
   }
   return { mask, minX, minY, maxX, maxY };
+}
+/* 3.22: libros de pintar por número: los numeritos impresos dentro de una zona son "islas" pequeñas de tinta
+   (con huequitos blancos dentro, como en 0, 6, 8). Se rellenan con la zona para que no queden halos blancos.
+   Una isla cuenta si no toca el borde de la zona, es pequeña y casi toda es tinta (un ojo, con mucho blanco dentro, no).
+   En líneas, la tinta del número sigue encima; sobre la foto a color, se pinta solo el blanco y el número queda visible. */
+function fillIslands(mask, la, minX, minY, maxX, maxY) {
+  const bw = maxX - minX + 1, bh = maxY - minY + 1, n = bw * bh;
+  let area = 0; for (let y = minY; y <= maxY; y++) for (let x = minX; x <= maxX; x++) area += mask[y * W + x];
+  const seen = new Uint8Array(n), comp = [], st = [];
+  const keep = bgPhoto ? new Uint8Array(W * H) : null;
+  const LIM = Math.max(80, area * 0.12);
+  for (let s0 = 0; s0 < n; s0++) {
+    if (seen[s0]) continue;
+    const gi0 = (minY + ((s0 / bw) | 0)) * W + minX + (s0 % bw);
+    if (mask[gi0]) { seen[s0] = 1; continue; }
+    comp.length = 0; st.length = 0; st.push(s0); seen[s0] = 1;
+    let edge = false, ink = 0, big = false;
+    while (st.length) {
+      const q = st.pop(), qx = q % bw, qy = (q / bw) | 0, gi = (minY + qy) * W + minX + qx;
+      if (!big) comp.push(gi);
+      if (la[gi * 4 + 3] >= LINE_T) ink++;
+      if (comp.length > LIM) big = true;
+      if (qx === 0 || qy === 0 || qx === bw - 1 || qy === bh - 1) edge = true;
+      if (qx > 0 && !seen[q - 1] && !mask[gi - 1]) { seen[q - 1] = 1; st.push(q - 1); }
+      if (qx < bw - 1 && !seen[q + 1] && !mask[gi + 1]) { seen[q + 1] = 1; st.push(q + 1); }
+      if (qy > 0 && !seen[q - bw] && !mask[gi - W]) { seen[q - bw] = 1; st.push(q - bw); }
+      if (qy < bh - 1 && !seen[q + bw] && !mask[gi + W]) { seen[q + bw] = 1; st.push(q + bw); }
+    }
+    if (edge || big) continue;
+    const white = comp.length - ink;
+    if (white > ink * 1.5 + 6) continue;
+    for (const gi of comp) {
+      if (keep && la[gi * 4 + 3] >= LINE_T) { keep[gi] = 1; continue; }   // foto a color: el número no se tapa
+      mask[gi] = 1;
+    }
+  }
+  return keep;
 }
 // Pinta un píxel encima de lo que hay (con opacidad A: 1 = tapa todo)
 function overPx(d, k, r, g, b, A) {
@@ -7044,12 +7082,17 @@ if (window.ResizeObserver) new ResizeObserver(() => { if ($('#adjust').classList
 function closeAdjust() {
   $('#adjust').classList.remove('show');
   adj.orig = adj.rotCv = adj.prev = adj.prevData = adj.prevOut = null;
+  if (adj.pdf) { try { adj.pdf.doc.destroy(); } catch (_) {} adj.pdf = null; }
 }
 async function openAdjust(img, want, opts = {}) {
-  const MAX = 4096, s = Math.min(1, MAX / Math.max(img.width, img.height), Math.sqrt(12e6 / (img.width * img.height)));   // 3.21: capturas largas, nítidas
+  const PL = opts.pdf ? pdfLimits() : null;
+  const MAX = PL ? PL.side : 4096, s = Math.min(1, MAX / Math.max(img.width, img.height), Math.sqrt((PL ? PL.area : 12e6) / (img.width * img.height)));   // 3.21: capturas largas, nítidas
   const w = Math.max(1, Math.round(img.width * s)), h = Math.max(1, Math.round(img.height * s));
   const cv = mkCanvas(w, h), c = cv.getContext('2d');
   c.imageSmoothingQuality = 'high'; c.fillStyle = '#fff'; c.fillRect(0, 0, w, h); c.drawImage(img, 0, 0, w, h);
+  if (img !== cv && opts.pdf) { img.width = img.height = 1; }
+  if (adj.pdf && adj.pdf !== opts.pdf) { try { adj.pdf.doc.destroy(); } catch (_) {} }
+  adj.pdf = opts.pdf || null;
   Object.assign(adj, { orig: cv, rot: 0, rotCv: null, crop: { x0: 0, y0: 0, x1: 1, y1: 1 }, limp: 50, detail: 50, thick: false, drag: null });
   $('#adjLimp').value = 50; $('#adjDetail').value = 50; $('#adjThick').classList.remove('on');
   $('#adjust').classList.add('show');
@@ -7058,7 +7101,7 @@ async function openAdjust(img, want, opts = {}) {
   const clean = !sk && looksLikeLineArt(cv);
   const page = clean || sk || opts.pdf ? null : detectPage(adj.prev);   // una página de PDF ya es la página: no se busca el papel
   if (page) adj.crop = page;
-  adjHintKey = sk ? 'adj.sketch.hint' : page ? 'adj.found' : 'adj.hint'; $('#adjHint').textContent = tt(adjHintKey);
+  adjHintKey = opts.pdf ? 'pdf.crop.hint' : sk ? 'adj.sketch.hint' : page ? 'adj.found' : 'adj.hint'; $('#adjHint').textContent = tt(adjHintKey);
   setAdjMode(sk ? 'sketch' : clean ? 'asis' : 'photo');
 }
 async function useAdjusted() {
@@ -7069,12 +7112,19 @@ async function useAdjusted() {
     const rc = rotatedCanvas(), k = adj.crop;
     const cx = Math.round(k.x0 * rc.width), cy = Math.round(k.y0 * rc.height);
     const cw = Math.max(1, Math.round((k.x1 - k.x0) * rc.width)), ch = Math.max(1, Math.round((k.y1 - k.y0) * rc.height));
+    const P = adj.pdf, vec = P && adj.rot === 0;   // 3.22: PDF: se vuelve a dibujar desde el vector
+    const srcAt = async (ow, oh) => {
+      if (vec) { try { return await renderPdfRegion(P.doc, P.num, k, ow, oh); } catch (e) { console.warn('pdf crop', e); } }
+      const t = mkCanvas(ow, oh), c = t.getContext('2d'); c.imageSmoothingQuality = 'high'; c.fillStyle = '#fff'; c.fillRect(0, 0, ow, oh);
+      c.drawImage(rc, cx, cy, cw, ch, 0, 0, ow, oh); return t;
+    };
     if (adj.mode === 'color') {            // 3.21: Foto a color: la foto entera, nítida, debajo del dibujo
-      const [pw, ph] = photoSheetSize(cw, ch);
-      const pcv = mkCanvas(pw, ph), pc = pcv.getContext('2d');
-      pc.imageSmoothingQuality = 'high'; pc.drawImage(rc, cx, cy, cw, ch, 0, 0, pw, ph);
+      const [pw, ph] = P ? pdfSheetSize(cw, ch) : photoSheetSize(cw, ch);
+      const pcv = P ? await srcAt(pw, ph) : mkCanvas(pw, ph);
+      if (!P) { const pc = pcv.getContext('2d'); pc.imageSmoothingQuality = 'high'; pc.drawImage(rc, cx, cy, cw, ch, 0, 0, pw, ph); }
       cancelGesture(); flattenObjs();
       replaceSheet(pw, ph, null, pcv);
+      islandFill = true; if (P) { ZMAX = 24; applyView(); }
       window.__colorear.lastImport = { crop: { x: cx, y: cy, w: cw, h: ch }, src: { w: rc.width, h: rc.height }, dest: { x: 0, y: 0, w: pw, h: ph }, sheet: [pw, ph], color: true };
       state.currentId = null;
       closeAdjust();
@@ -7083,17 +7133,18 @@ async function useAdjusted() {
       $('#adjBusy').classList.remove('show');
       return;
     }
-    const [nw, nh] = cw > ch * 1.08 ? LANDSCAPE : PORTRAIT;     // la hoja toma la orientación de la página
-    const M = 24, s = Math.min((nw - 2 * M) / cw, (nh - 2 * M) / ch);
+    let [nw, nh] = cw > ch * 1.08 ? LANDSCAPE : PORTRAIT;     // la hoja toma la orientación de la página
+    let M = 24;
+    if (P) { [nw, nh] = pdfSheetSize(cw, ch); M = Math.round(Math.max(nw, nh) / 70); }   // 3.22: PDF: hoja grande, del tamaño de la página
+    const s = Math.min((nw - 2 * M) / cw, (nh - 2 * M) / ch);
     const dw = Math.max(1, Math.round(cw * s)), dh = Math.max(1, Math.round(ch * s));
-    const tmp = mkCanvas(dw, dh), tc = ctx2d(tmp);
-    tc.imageSmoothingQuality = 'high'; tc.fillStyle = '#fff'; tc.fillRect(0, 0, dw, dh);
-    tc.drawImage(rc, cx, cy, cw, ch, 0, 0, dw, dh);
+    const tmp = await srcAt(dw, dh), tc = ctx2d(tmp);
     const alpha = processLineArt(tc.getImageData(0, 0, dw, dh), adjParams());
     const ink = alphaToCanvas(alpha, dw, dh, false);
     const ox = Math.round((nw - dw) / 2), oy = Math.round((nh - dh) / 2);
     cancelGesture(); flattenObjs();
     replaceSheet(nw, nh, (lc) => lc.drawImage(ink, ox, oy));
+    islandFill = true; if (P) { ZMAX = 24; applyView(); }
     window.__colorear.lastImport = { crop: { x: cx, y: cy, w: cw, h: ch }, src: { w: rc.width, h: rc.height }, dest: { x: ox, y: oy, w: dw, h: dh }, sheet: [nw, nh] };
     state.currentId = null;
     const wasSketch = adj.mode === 'sketch';
@@ -7109,9 +7160,9 @@ async function importImageFile(file) {
   if (!file) return;
   closeSheet('#photoSheet'); closeSheet('#tplSheet');
   try {
-    if (isPdfLike(file)) { const pg = await choosePdfPage(file); if (pg) await openAdjust(pg, want, { pdf: true }); return; }   // 3.10.2: PDF
+    if (isPdfLike(file)) { const pg = await choosePdfPage(file); if (pg) await openAdjust(pg.cv, want, { pdf: pg }); return; }   // 3.10.2: PDF
     const buf = await file.arrayBuffer();
-    if (hasPdfMagic(buf)) { const pg = await choosePdfPage(file, buf); if (pg) await openAdjust(pg, want, { pdf: true }); return; }
+    if (hasPdfMagic(buf)) { const pg = await choosePdfPage(file, buf); if (pg) await openAdjust(pg.cv, want, { pdf: pg }); return; }
     const meta = readPngText(buf);
     if (meta && meta.Colorear) { await importOwn(new Blob([buf], { type: 'image/png' }), meta); return; }
     const img = await loadImage(new Blob([buf], { type: file.type || 'image/*' }));
@@ -7141,7 +7192,37 @@ async function importOwn(blob, meta) {
    PDF.js (en pdfjs/, sin CDN, guardado en el caché para funcionar sin internet) se carga solo al abrir un PDF.
    Una página sola pasa directo; con varias, se elige cuál. La página se dibuja sobre fondo blanco a un máximo de
    PDF_SIDE px y entra por el mismo camino que una foto subida (openAdjust → useAdjusted). */
-const PDF_SIDE = 2000, PDF_MAX_BYTES = 60 * 1024 * 1024;
+const PDF_MAX_BYTES = 60 * 1024 * 1024;
+/* 3.22: PDF en alta: la página se dibuja hasta 8000 px (6000 en iPhone/iPad) y ~24 MP (16 MP en iOS, que no deja más);
+   se mide cuánto canvas aguanta el aparato. La hoja de pintar llega a 16 MP (8 MP en móvil) y el zoom a 24×.
+   Si se recorta una parte, esa parte se vuelve a dibujar desde el PDF (vector), no se agranda la imagen. */
+let PDF_LIM = null;
+function canvasOk(a) {
+  try { const w = Math.floor(Math.sqrt(a / 1.3)), h = Math.floor(a / w), c = mkCanvas(w, h), x = c.getContext('2d');
+    x.fillStyle = '#f00'; x.fillRect(w - 1, h - 1, 1, 1); const ok = x.getImageData(w - 1, h - 1, 1, 1).data[0] === 255; c.width = c.height = 1; return ok; } catch (_) { return false; }
+}
+function pdfLimits() {
+  if (PDF_LIM) return PDF_LIM;
+  const ios = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const mob = ios || (window.matchMedia && matchMedia('(pointer:coarse)').matches);
+  let area = 4e6; for (const a of [ios ? 16e6 : 24e6, 16e6, 12e6, 8e6]) if (canvasOk(a)) { area = a; break; }
+  return (PDF_LIM = { area, side: mob ? 6000 : 8000, sheet: Math.min(area, mob ? 8e6 : 16e6), sheetSide: mob ? 6000 : 8192 });
+}
+function pdfSheetSize(w, h) {
+  const L = pdfLimits(), s = Math.min(L.sheetSide / Math.max(w, h), Math.sqrt(L.sheet / (w * h)));
+  return [Math.max(1, Math.round(w * s)), Math.max(1, Math.round(h * s))];
+}
+// Vuelve a dibujar una parte (k en 0..1) de la página a ow×oh px, desde el vector
+async function renderPdfRegion(doc, num, k, ow, oh) {
+  const page = await doc.getPage(num);
+  try {
+    const v1 = page.getViewport({ scale: 1 }), rw = (k.x1 - k.x0) * v1.width;
+    const sc = ow / rw, vp = page.getViewport({ scale: sc });
+    const cv = mkCanvas(ow, oh), c = cv.getContext('2d'); c.fillStyle = '#fff'; c.fillRect(0, 0, ow, oh);
+    await page.render({ canvasContext: c, viewport: vp, background: '#ffffff', transform: [1, 0, 0, 1, -k.x0 * vp.width, -k.y0 * vp.height] }).promise;
+    return cv;
+  } finally { try { page.cleanup(); } catch (_) {} }
+}
 const PDF = { lib: null, doc: null, n: 0, i: 1, done: null, seq: 0, busy: 0 };
 function isPdfLike(f) { return !!f && (f.type === 'application/pdf' || /\.pdf$/i.test(f.name || '')); }
 function hasPdfMagic(buf) {
@@ -7162,11 +7243,11 @@ async function loadPdfLib() {
   return (PDF.lib = lib);
 }
 // Dibuja una página sobre fondo blanco, con su lado más largo = side px
-async function renderPdfPage(doc, num, side) {
+async function renderPdfPage(doc, num, side, maxArea) {
   const page = await doc.getPage(num);
   try {
     const v1 = page.getViewport({ scale: 1 });
-    const k = side / Math.max(v1.width, v1.height), vp = page.getViewport({ scale: k });
+    const k = Math.min(side / Math.max(v1.width, v1.height), maxArea ? Math.sqrt(maxArea / (v1.width * v1.height)) : 1e9), vp = page.getViewport({ scale: k });
     const cv = mkCanvas(Math.max(1, Math.round(vp.width)), Math.max(1, Math.round(vp.height)));
     await page.render({ canvasContext: cv.getContext('2d'), viewport: vp, background: '#ffffff' }).promise;
     return cv;
@@ -7189,9 +7270,9 @@ async function choosePdfPage(file, buf) {
     const lib = await loadPdfLib();
     doc = await lib.getDocument({ data: new Uint8Array(buf), isEvalSupported: false, enableXfa: false }).promise;
     if (!doc.numPages) throw new Error('empty');
-    if (doc.numPages === 1) return await renderPdfPage(doc, 1, PDF_SIDE);
+    if (doc.numPages === 1) { const r = await pdfHi(doc, 1); doc = null; return r; }
     pdfBusy(false);
-    try { return await pdfPicker(doc); } finally { pdfBusy(true); }
+    try { const r = await pdfPicker(doc); if (r) doc = null; return r; } finally { pdfBusy(true); }
   } catch (e) {
     console.warn('pdf', e);
     toast(tt(pdfErrorKey(e)), 6000);
@@ -7202,6 +7283,8 @@ async function choosePdfPage(file, buf) {
     if (doc) { try { doc.destroy(); } catch (_) {} }
   }
 }
+// la página entera en alta + el documento para volver a dibujar un recorte
+async function pdfHi(doc, num) { const L = pdfLimits(); return { cv: await renderPdfPage(doc, num, L.side, L.area), doc, num }; }
 // Selector de página (varias páginas): vista grande, Anterior/Siguiente, miniaturas y «Usar esta página»
 function pdfPicker(doc) {
   return new Promise((resolve) => {
@@ -7248,7 +7331,7 @@ $('#pdfNextBtn').onclick = () => PDF.show && PDF.show(PDF.i + 1);
 $('#pdfUse').onclick = async () => {
   const doc = PDF.doc, done = PDF.done; if (!doc || !done) return;
   pdfBusy(true, 'pdf.rendering');
-  try { const c = await renderPdfPage(doc, PDF.i, PDF_SIDE); done(c); }
+  try { const c = await pdfHi(doc, PDF.i); done(c); }
   catch (e) { console.warn('pdf use', e); toast(tt('pdf.err.corrupt'), 6000); done(null); }
   finally { pdfBusy(false); }
 };
@@ -9367,6 +9450,7 @@ window.__colorear = {
   sketchLineArt, openAdjust, setAdjMode, useAdjusted, makeProcessVideo, captureFrame, procFrames, deleteProc, openVideoSheet, videoMime, get procId() { return procId; }, get procOn() { return procOn; },
   retoFor, retoStart, retoComplete, retoStreak, renderReto, dayStr, TPL_NEW, tplIsNew, markTplSeen, buildTemplateGrid,
   FL, setFL, renderFL, flMaskFor, flRegion, setFLSens, get flOn() { return flOn(); },
+  pdfLimits, get islandFill() { return islandFill; }, get ZMAX() { return ZMAX; },
   PBN, pbnEnter, pbnExit, pbnTap, pbnHint, pbnFillNumber, pbnSelect, pbnPct, pbnLeft, pbnCounts, pbnSetMode, pbnRestart, pbnSample, GEL_P,
 };
 </script>
