@@ -295,6 +295,8 @@ window.COLOREAR_I18N["fr"] = {
 "adj.busy": "Traitement…",
 "adj.photo": "Photo d'un cahier",
 "adj.asis": "Dessin tel quel",
+"adj.pcolor": "Photo en couleur",
+"toast.colorphotoready": "C’est prêt ! Ta photo reste en couleur dessous : dessine, coche et colorie par-dessus. Zoome à deux doigts pour les détails",
 "adj.clean": "Nettoyage",
 "adj.more": "Plus de traits",
 "adj.cleaner": "Plus net",

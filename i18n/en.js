@@ -295,6 +295,8 @@ window.COLOREAR_I18N["en"] = {
 "adj.busy": "Working on it…",
 "adj.photo": "Photo of a book",
 "adj.asis": "Drawing as is",
+"adj.pcolor": "Color photo",
+"toast.colorphotoready": "Done! Your photo stays in color underneath: draw, mark and paint on top. Pinch to zoom for small details",
 "adj.clean": "Cleanup",
 "adj.more": "More lines",
 "adj.cleaner": "Cleaner",

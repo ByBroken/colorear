@@ -1032,6 +1032,11 @@ body.ui-hidden.obj-mode #miniBar{display:none}
 #adjust .apanel .arow{min-width:0}
 #adjust .apanel .arow .tool{min-width:0;flex:1 1 0;white-space:normal}
 #palCur b{white-space:normal;overflow:visible;line-height:1.15}
+/* 3.21: 4 modos (Foto a color): en 2 filas de 2 en el teléfono */
+#adjust .apanel .seg{flex-wrap:wrap;gap:3px}
+#adjust .apanel .seg button{flex:1 1 calc(50% - 3px)}
+@media (min-width:640px){ #adjust .apanel .seg button{flex:1 1 0} }
+#adjust.pcolor .only-photo,#adjust.pcolor #adjThick{display:none!important}
 </style>
 </head>
 <body class="mode-draw">
@@ -1144,6 +1149,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
 
 <main id="stage">
   <div id="paper" class="c-pen">
+    <canvas id="cvPhoto" hidden aria-hidden="true"></canvas>
     <canvas id="cvColor"></canvas>
     <canvas id="cvLine"></canvas>
     <canvas id="cvOver" aria-hidden="true"></canvas>
@@ -1677,6 +1683,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
       <button id="adjModePhoto" class="on">Foto de un libro</button>
       <button id="adjModeAsis">Dibujo tal cual</button>
       <button id="adjModeSketch">Foto a dibujo</button>
+      <button id="adjModeColor">Foto a color</button>
     </div>
     <div class="slider only-photo">
       <b>Limpieza</b><span>Más líneas</span>
@@ -1904,7 +1911,7 @@ const GEL_METALS = [['gold', '#D4AF37'], ['rose', '#E0A3A0'], ['silver', '#C0C2C
   ['graphite', '#6B7280'], ['chrome', '#4F8FD8'], ['turquoise', '#2AA7A0'], ['emerald', '#2FA36B'], ['violet', '#8E5BD1'], ['ruby', '#C8323C']];
 const GEL_GLITTERS = [['pink', '#FF4FA3'], ['gold', '#FFC93C'], ['silver', '#D5DBE6'], ['blue', '#4DA3FF'], ['purple', '#B06CFF'], ['green', '#46D38A'],
   ['red', '#FF4B4B'], ['turquoise', '#38E0D0'], ['orange', '#FF9A3C'], ['lilac', '#E3B8FF']];
-const ZMIN = 1, ZMAX = 6;
+const ZMIN = 1; let ZMAX = 6;   // 3.21: con «Foto a color» se acerca hasta 14×
 const PALETTE = ['#FF3B30','#FF6F61','#FF9500','#FFCC00','#FFE66D','#A8E063','#34C759','#0B8F3C',
   '#00C7BE','#5AC8FA','#007AFF','#1E3A8A','#5856D6','#AF52DE','#D291FF','#FF2D92',
   '#FFB6C1','#F4C095','#C68642','#8B4513','#5D3A1A','#9E9E9E','#333333','#FFFFFF'];
@@ -1984,6 +1991,22 @@ const pctx = preview.getContext('2d');
 const objCv = $('#cvObj'); objCv.width = W; objCv.height = H;
 const octx = objCv.getContext('2d');
 for (const c of [layers.color.ctx, layers.color.bctx]) { c.fillStyle = '#fff'; c.fillRect(0, 0, W, H); }
+/* 3.21: «Foto a color»: la foto queda debajo de todo, a color. La Capa 1 es transparente encima de ella:
+   borrar deja ver la foto, deshacer no la quita, y sale al guardar y exportar. La hoja toma el tamaño de la foto. */
+let bgPhoto = null;
+const photoCv = $('#cvPhoto');
+function setBgPhoto(cv) {
+  bgPhoto = cv || null; ZMAX = bgPhoto ? 14 : 6;
+  photoCv.hidden = !bgPhoto;
+  if (bgPhoto) { photoCv.width = bgPhoto.width; photoCv.height = bgPhoto.height; photoCv.getContext('2d').drawImage(bgPhoto, 0, 0); }
+  else { photoCv.width = photoCv.height = 1; }
+}
+// tamaño de la hoja para una foto: nítida (sin achicar de más), lados ≤ 4096 y ≤ 4,2 MP; las chicas se agrandan a 1200 de ancho mínimo
+function photoSheetSize(w, h) {
+  let s = Math.max(1, 1200 / Math.min(w, h));
+  s = Math.min(s, 4096 / Math.max(w, h), Math.sqrt(4.2e6 / (w * h)));
+  return [Math.max(1, Math.round(w * s)), Math.max(1, Math.round(h * s))];
+}
 
 // Cambia el tamaño/orientación de la hoja (borra el contenido: quien llama debe redibujar)
 function setSheetSize(w, h) {
@@ -2118,9 +2141,10 @@ function commit(parts, extra) {
 function snapLayers() {
   const data = {};
   for (const L of [...paint, layers.line, layers.over]) data[L.id] = L.ctx.getImageData(0, 0, W, H);
-  return { w: W, h: H, meta: paint.map((L) => ({ id: L.id, vis: L.vis, op: L.op })), lineVis: layers.line.vis, active: state.activeLayer, data };
+  return { photo: bgPhoto, w: W, h: H, meta: paint.map((L) => ({ id: L.id, vis: L.vis, op: L.op })), lineVis: layers.line.vis, active: state.activeLayer, data };
 }
 function restoreSnap(sn) {
+  setBgPhoto(sn.photo || null);
   setSheetSize(sn.w, sn.h);
   paint.length = 0;
   for (const m of sn.meta) { const L = layers[m.id]; if (!L) continue; L.vis = m.vis; L.op = m.op; fitLayer(L); paint.push(L); }
@@ -2136,14 +2160,15 @@ function resetLayerStack() {
   layers.color.vis = true; layers.color.op = 1; layers.line.vis = true; state.activeLayer = 'color';
 }
 // Reemplaza la hoja completa (plantilla, foto, hoja nueva…) de forma que se pueda deshacer, aunque cambie de orientación
-function replaceSheet(nw, nh, drawFn) {
+function replaceSheet(nw, nh, drawFn, photo) {
   if (PBN.on) pbnExit(true);          // 3.15: una hoja nueva termina el modo Por número
   const before = snapLayers();
+  setBgPhoto(photo || null);
   setSheetSize(nw, nh);
   resetLayerStack();
   const lc = layers.line.ctx, cc = layers.color.ctx;
   lc.clearRect(0, 0, W, H); layers.over.ctx.clearRect(0, 0, W, H);
-  cc.fillStyle = '#fff'; cc.fillRect(0, 0, W, H);
+  if (photo) cc.clearRect(0, 0, W, H); else { cc.fillStyle = '#fff'; cc.fillRect(0, 0, W, H); }
   if (drawFn) drawFn(lc, cc);
   const after = snapLayers();
   syncBackups(); mountLayers();
@@ -2261,7 +2286,7 @@ function strokeStyleFor(tool) {
       : { layer: draw ? dl : pl, color: draw ? state.drawColor : state.color, comp: 'source-over', lw, buf: 'art', art: 'pencil', alpha: 0.6, tex: isThin(sz) ? 0.55 : 1 };
     return withAlpha(st, draw ? state.drawAlpha : state.alpha);
   }
-  if (tool === 'cerase') return pl === 'color' ? { layer: 'color', also: 'over', color: '#FFFFFF', comp: 'source-over', lw: sizeLW('color', state.colorSize) }
+  if (tool === 'cerase') return pl === 'color' && !bgPhoto ? { layer: 'color', also: 'over', color: '#FFFFFF', comp: 'source-over', lw: sizeLW('color', state.colorSize) }
     : { layer: pl, color: '#000', comp: 'destination-out', lw: sizeLW('color', state.colorSize) };   // en otra capa, borra de verdad (queda transparente)
   return null;
 }
@@ -3217,10 +3242,20 @@ function hexToRgb(h) { h = h.replace('#', ''); if (h.length === 3) h = h.split('
 const LINE_T = 110;   // alfa desde el cual un píxel del contorno cuenta como "pared"
 const DILATE = 2;     // píxeles extra bajo el borde suavizado (evita halos blancos)
 // Zona cerrada por las líneas alrededor de (fx, fy): máscara + rectángulo que la contiene
+// 3.21: sobre una foto a color, el bote rellena la zona de color parecido (con tolerancia) de lo que se ve,
+// pero pinta solo en la capa de dibujo: la foto nunca cambia y se recupera con el borrador o deshacer.
+const PHOTO_TOL = 40;
+function photoWalls(sx, sy) {
+  const d = composite(W, H, false, true, true).getContext('2d').getImageData(0, 0, W, H).data;
+  if (sx < 0 || sy < 0 || sx >= W || sy >= H) return d;
+  const k = (sy * W + sx) * 4, r = d[k], g = d[k + 1], b = d[k + 2], T = PHOTO_TOL * PHOTO_TOL * 3;
+  for (let i = 0; i < d.length; i += 4) { const dr = d[i] - r, dg = d[i + 1] - g, db = d[i + 2] - b; d[i + 3] = dr * dr + dg * dg + db * db > T ? 255 : 0; }
+  return d;
+}
 function regionMask(fx, fy, laIn) {
   let sx = Math.round(fx), sy = Math.round(fy);
   if (sx < 0 || sy < 0 || sx >= W || sy >= H) return null;
-  const la = laIn || layers.line.ctx.getImageData(0, 0, W, H).data;
+  const la = laIn || (bgPhoto ? photoWalls(sx, sy) : layers.line.ctx.getImageData(0, 0, W, H).data);
   const wall = (i) => la[i * 4 + 3] >= LINE_T;
   if (wall(sy * W + sx)) {                  // tocó encima de una línea: busca un hueco cercano
     let found = false;
@@ -6877,6 +6912,7 @@ function processPreview() {
   requestAnimationFrame(() => {
     adj.pending = false;
     if (!adj.prevData) return;
+    if (adj.mode === 'color') { adj.prevOut = adj.prev; drawAdjust(); return; }   // 3.21: Foto a color: se ve tal cual
     const a = processLineArt(adj.prevData, adjParams());
     adj.prevOut = alphaToCanvas(a, adj.prevData.width, adj.prevData.height, true);
     drawAdjust();
@@ -6947,10 +6983,12 @@ function setAdjMode(m) {
   $('#adjModePhoto').classList.toggle('on', m === 'photo'); $('#adjModeAsis').classList.toggle('on', m === 'asis');
   $('#adjust').classList.toggle('asis', m === 'asis');
   $('#adjModeSketch').classList.toggle('on', m === 'sketch'); $('#adjust').classList.toggle('sketch', m === 'sketch');   // 3.9
+  $('#adjModeColor').classList.toggle('on', m === 'color'); $('#adjust').classList.toggle('pcolor', m === 'color');   // 3.21
   processPreview();
 }
 $('#adjModePhoto').onclick = () => setAdjMode('photo');
 $('#adjModeAsis').onclick = () => setAdjMode('asis');
+$('#adjModeColor').onclick = () => setAdjMode('color');
 $('#adjLimp').addEventListener('input', (e) => { adj.limp = +e.target.value; processPreview(); });
 $('#adjThick').onclick = () => { adj.thick = !adj.thick; $('#adjThick').classList.toggle('on', adj.thick); processPreview(); };
 $('#adjReset').onclick = () => { adj.crop = { x0: 0, y0: 0, x1: 1, y1: 1 }; drawAdjust(); };
@@ -6968,7 +7006,7 @@ function closeAdjust() {
   adj.orig = adj.rotCv = adj.prev = adj.prevData = adj.prevOut = null;
 }
 async function openAdjust(img, want, opts = {}) {
-  const MAX = 2600, s = Math.min(1, MAX / Math.max(img.width, img.height));
+  const MAX = 4096, s = Math.min(1, MAX / Math.max(img.width, img.height), Math.sqrt(12e6 / (img.width * img.height)));   // 3.21: capturas largas, nítidas
   const w = Math.max(1, Math.round(img.width * s)), h = Math.max(1, Math.round(img.height * s));
   const cv = mkCanvas(w, h), c = cv.getContext('2d');
   c.imageSmoothingQuality = 'high'; c.fillStyle = '#fff'; c.fillRect(0, 0, w, h); c.drawImage(img, 0, 0, w, h);
@@ -6991,6 +7029,20 @@ async function useAdjusted() {
     const rc = rotatedCanvas(), k = adj.crop;
     const cx = Math.round(k.x0 * rc.width), cy = Math.round(k.y0 * rc.height);
     const cw = Math.max(1, Math.round((k.x1 - k.x0) * rc.width)), ch = Math.max(1, Math.round((k.y1 - k.y0) * rc.height));
+    if (adj.mode === 'color') {            // 3.21: Foto a color: la foto entera, nítida, debajo del dibujo
+      const [pw, ph] = photoSheetSize(cw, ch);
+      const pcv = mkCanvas(pw, ph), pc = pcv.getContext('2d');
+      pc.imageSmoothingQuality = 'high'; pc.drawImage(rc, cx, cy, cw, ch, 0, 0, pw, ph);
+      cancelGesture(); flattenObjs();
+      replaceSheet(pw, ph, null, pcv);
+      window.__colorear.lastImport = { crop: { x: cx, y: cy, w: cw, h: ch }, src: { w: rc.width, h: rc.height }, dest: { x: 0, y: 0, w: pw, h: ph }, sheet: [pw, ph], color: true };
+      state.currentId = null;
+      closeAdjust();
+      setMode('draw');
+      toast(tt('toast.colorphotoready'));
+      $('#adjBusy').classList.remove('show');
+      return;
+    }
     const [nw, nh] = cw > ch * 1.08 ? LANDSCAPE : PORTRAIT;     // la hoja toma la orientación de la página
     const M = 24, s = Math.min((nw - 2 * M) / cw, (nh - 2 * M) / ch);
     const dw = Math.max(1, Math.round(cw * s)), dh = Math.max(1, Math.round(ch * s));
@@ -7030,9 +7082,10 @@ async function importOwn(blob, meta) {
   let info = {}; try { info = JSON.parse(meta.Colorear); } catch (_) {}
   cancelGesture(); flattenObjs();
   if (info.tipo === 'color' && meta.ColorearLineas) {
-    const [li, ci, oi] = await Promise.all([loadImage(b64ToBlob(meta.ColorearLineas)), meta.ColorearColores ? loadImage(b64ToBlob(meta.ColorearColores)) : null, meta.ColorearArriba ? loadImage(b64ToBlob(meta.ColorearArriba)).catch(() => null) : null]);
-    const [nw, nh] = sizeForImage(li.width, li.height);
-    replaceSheet(nw, nh, (lc, cc) => { lc.drawImage(li, 0, 0, nw, nh); if (ci) cc.drawImage(ci, 0, 0, nw, nh); if (oi) layers.over.ctx.drawImage(oi, 0, 0, nw, nh); });
+    const [li, ci, oi, pi] = await Promise.all([loadImage(b64ToBlob(meta.ColorearLineas)), meta.ColorearColores ? loadImage(b64ToBlob(meta.ColorearColores)) : null, meta.ColorearArriba ? loadImage(b64ToBlob(meta.ColorearArriba)).catch(() => null) : null, meta.ColorearFoto ? loadImage(b64ToBlob(meta.ColorearFoto)).catch(() => null) : null]);
+    let pcv = null; if (pi) { pcv = mkCanvas(pi.width, pi.height); pcv.getContext('2d').drawImage(pi, 0, 0); }
+    const [nw, nh] = pcv ? [pcv.width, pcv.height] : sizeForImage(li.width, li.height);
+    replaceSheet(nw, nh, (lc, cc) => { lc.drawImage(li, 0, 0, nw, nh); if (ci) cc.drawImage(ci, 0, 0, nw, nh); if (oi) layers.over.ctx.drawImage(oi, 0, 0, nw, nh); }, pcv);
   } else {
     const img = await loadImage(blob), [nw, nh] = sizeForImage(img.width, img.height);
     const tmp = mkCanvas(nw, nh), tc = ctx2d(tmp);
@@ -7189,13 +7242,14 @@ function toBlob(cv, type = 'image/png', q) { return new Promise((res) => cv.toBl
 function composite(w = W, h = H, onlyLine = false, withLines = true, withOver = true) {
   const c = mkCanvas(w, h), x = c.getContext('2d');
   x.fillStyle = '#fff'; x.fillRect(0, 0, w, h);
+  if (bgPhoto && !onlyLine) { x.imageSmoothingQuality = 'high'; x.drawImage(bgPhoto, 0, 0, w, h); }
   if (!onlyLine) for (const L of paint) if (L.vis && L.op > 0) { x.globalAlpha = L.op; x.drawImage(L.cv, 0, 0, w, h); }
   x.globalAlpha = 1;
   if (onlyLine || (withLines && layers.line.vis)) x.drawImage(layers.line.cv, 0, 0, w, h);
   if (!onlyLine && withOver && layers.over.vis) x.drawImage(layers.over.cv, 0, 0, w, h);   // 3.16: detalles de gel / acrílico encima de las líneas
   return c;
 }
-function thumbSize() { return W > H ? [320, 240] : [240, 320]; }
+function thumbSize() { if (bgPhoto) { const s = 320 / Math.max(W, H); return [Math.max(1, Math.round(W * s)), Math.max(1, Math.round(H * s))]; } return W > H ? [320, 240] : [240, 320]; }
 function loadImage(blob) {
   return new Promise((res, rej) => {
     const url = URL.createObjectURL(blob), img = new Image();
@@ -7205,18 +7259,21 @@ function loadImage(blob) {
   });
 }
 // Carga un dibujo (líneas + Capa 1 y, desde la 3.3, las otras capas si las tiene). Los dibujos viejos traen solo líneas y color.
-async function setLayersFrom(lineBlob, colorBlob, extras, meta) {
+async function setLayersFrom(lineBlob, colorBlob, extras, meta, photoBlob) {
+  const pi = photoBlob ? await loadImage(photoBlob).catch(() => null) : null;   // 3.21: Foto a color
+  let pcv = null; if (pi) { pcv = mkCanvas(pi.width, pi.height); pcv.getContext('2d').drawImage(pi, 0, 0); }
+  setBgPhoto(pcv);
   extras = Array.isArray(extras) ? extras.filter((x) => x && x.img).slice(0, MAX_LAYERS - 1) : [];
   const [li, ci, ...xi] = await Promise.all([lineBlob ? loadImage(lineBlob) : null, colorBlob ? loadImage(colorBlob) : null,
     ...extras.map((x) => loadImage(x.img).catch(() => null))]);
   const ref = li || ci;
-  const [nw, nh] = ref && ref.width > ref.height ? LANDSCAPE : PORTRAIT;
+  const [nw, nh] = pcv ? [pcv.width, pcv.height] : ref && ref.width > ref.height ? LANDSCAPE : PORTRAIT;
   setSheetSize(nw, nh);
   resetLayerStack(); purgeDeadLayers();
   const oi = meta && meta.over ? await loadImage(meta.over).catch(() => null) : null;   // 3.16: detalles encima de las líneas
   const lc = layers.line.ctx, cc = layers.color.ctx;
   lc.clearRect(0, 0, W, H); layers.over.ctx.clearRect(0, 0, W, H); if (oi) layers.over.ctx.drawImage(oi, 0, 0, W, H);
-  cc.fillStyle = '#fff'; cc.fillRect(0, 0, W, H);
+  if (pcv) cc.clearRect(0, 0, W, H); else { cc.fillStyle = '#fff'; cc.fillRect(0, 0, W, H); }
   if (li) lc.drawImage(li, 0, 0, W, H);
   if (ci) cc.drawImage(ci, 0, 0, W, H);
   extras.forEach((x, i) => {
@@ -7241,6 +7298,8 @@ async function extraLayersData() {
 }
 // 3.16: ¿hay detalles de gel / acrílico encima de las líneas?
 function overHasInk() { const d = layers.over.ctx.getImageData(0, 0, W, H).data; for (let i = 3; i < d.length; i += 4) if (d[i]) return true; return false; }
+let photoBlobCache = null;
+async function photoBlob() { if (!bgPhoto) return null; if (photoBlobCache && photoBlobCache.cv === bgPhoto) return photoBlobCache.blob; const blob = await toBlob(bgPhoto, 'image/png'); photoBlobCache = { cv: bgPhoto, blob }; return blob; }
 async function overBlob() { return overHasInk() ? toBlob(layers.over.cv) : null; }
 function layerMeta() { return { lineVis: layers.line.vis, baseVis: layers.color.vis, baseOp: layers.color.op, activeIndex: Math.max(0, paint.indexOf(layers[paintTarget()])) }; }
 
@@ -7278,6 +7337,8 @@ function readPngText(buf) {
   }
   return out;
 }
+// 3.21: las capas de pintura aplanadas, transparentes (sin papel blanco), para guardar encima de la foto
+function flatPaint() { const c = mkCanvas(W, H), x = c.getContext('2d'); for (const L of paint) if (L.vis && L.op > 0) { x.globalAlpha = L.op; x.drawImage(L.cv, 0, 0); } return c; }
 function blobToB64(blob) { return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1] || ''); r.onerror = rej; r.readAsDataURL(blob); }); }
 function b64ToBlob(b64) { const s = atob(b64), u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); return new Blob([u], { type: 'image/png' }); }
 async function buildExport(kind) {        // 'outline' = solo líneas; 'color' = con colores (y capas guardadas dentro)
@@ -7288,10 +7349,12 @@ async function buildExport(kind) {        // 'outline' = solo líneas; 'color' =
     return pngWithText(blob, [['Software', 'Colorear'], ['Colorear', JSON.stringify(info)]]);
   }
   // la imagen es el dibujo aplanado (capas visibles); adentro van las líneas y los colores aplanados para abrirlo otra vez en Colorear
-  const [comp, line, color, ov] = await Promise.all([toBlob(composite()), toBlob(layers.line.cv), toBlob(composite(W, H, false, false, false)), overBlob()]);
-  const [l64, c64, o64] = await Promise.all([blobToB64(line), blobToB64(color), ov ? blobToB64(ov) : '']);
+  const pb = bgPhoto;
+  const [comp, line, color, ov, ph] = await Promise.all([toBlob(composite()), toBlob(layers.line.cv), toBlob(pb ? flatPaint() : composite(W, H, false, false, false)), overBlob(), photoBlob()]);
+  const [l64, c64, o64, p64] = await Promise.all([blobToB64(line), blobToB64(color), ov ? blobToB64(ov) : '', ph ? blobToB64(ph) : '']);
   const chunks = [['Software', 'Colorear'], ['Colorear', JSON.stringify(info)], ['ColorearLineas', l64], ['ColorearColores', c64]];
-  if (o64) chunks.push(['ColorearArriba', o64]);      // 3.16: detalles de gel / acrílico encima de las líneas
+  if (o64) chunks.push(['ColorearArriba', o64]);
+  if (p64) chunks.push(['ColorearFoto', p64]);        // 3.21: la foto a color, para abrirlo otra vez con la foto debajo      // 3.16: detalles de gel / acrílico encima de las líneas
   return pngWithText(comp, chunks);
 }
 function stamp() { const d = new Date(), p = (n) => String(n).padStart(2, '0'); return `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}`; }
@@ -7362,9 +7425,10 @@ async function doSave() {
   cancelGesture(); flattenObjs();
   try {
     const [tw, th] = thumbSize();
-    const [line, color, thumb, extra, ov] = await Promise.all([toBlob(layers.line.cv), toBlob(layers.color.cv), toBlob(composite(tw, th), 'image/jpeg', 0.85), extraLayersData(), overBlob()]);
+    const [line, color, thumb, extra, ov, photo] = await Promise.all([toBlob(layers.line.cv), toBlob(layers.color.cv), toBlob(composite(tw, th), 'image/jpeg', 0.85), extraLayersData(), overBlob(), photoBlob()]);
     const now = Date.now();
     const rec = { line, color, thumb, w: W, h: H, updated: now };
+    if (photo) rec.photo = photo;
     if (extra.length || ov || !layers.line.vis || !layers.color.vis || layers.color.op < 1) { rec.capas = extra; rec.capasInfo = Object.assign(layerMeta(), ov ? { over: ov } : {}); }
     if (ref.blob) rec.ref = refRecord();
     if (PBN.on) rec.pbn = { id: PBN.id, sel: PBN.sel };      // 3.15: seguir Por número al abrirlo
@@ -7422,7 +7486,7 @@ $('#galleryGrid').addEventListener('click', async (e) => {
   if (!it) return;
   cancelGesture();
   objs = []; exitObjMode(); renderObjs();
-  await setLayersFrom(it.line, act === 'open' ? it.color : null, act === 'open' ? it.capas : null, act === 'open' ? it.capasInfo : null);
+  await setLayersFrom(it.line, act === 'open' ? it.color : null, act === 'open' ? it.capas : null, act === 'open' ? it.capasInfo : null, it.photo || null);
   await setRef(it.ref || null);
   setProc(act === 'open' && it.proc ? it.proc : null);   // 3.9
   resetHistory();
@@ -7443,8 +7507,8 @@ async function autosave() {
   if (autoBusy) { scheduleAutosave(); return; }
   autoBusy = true;
   try {
-    const [line, color, capas, ov] = await Promise.all([toBlob(layers.line.cv), toBlob(layers.color.cv), extraLayersData(), overBlob()]);
-    await tx('estado', 'readwrite', (s) => s.put({ line, color, capas, capasInfo: Object.assign(layerMeta(), ov ? { over: ov } : {}), w: W, h: H, objs: snapshotObjs(), currentId: state.currentId, dirty: state.dirty, mode: state.mode, proc: procId, pbn: PBN.on ? { id: PBN.id, sel: PBN.sel } : null, t: Date.now() }, 'actual'));
+    const [line, color, capas, ov, photo] = await Promise.all([toBlob(layers.line.cv), toBlob(layers.color.cv), extraLayersData(), overBlob(), photoBlob()]);
+    await tx('estado', 'readwrite', (s) => s.put({ line, color, photo, capas, capasInfo: Object.assign(layerMeta(), ov ? { over: ov } : {}), w: W, h: H, objs: snapshotObjs(), currentId: state.currentId, dirty: state.dirty, mode: state.mode, proc: procId, pbn: PBN.on ? { id: PBN.id, sel: PBN.sel } : null, t: Date.now() }, 'actual'));
   } catch (e) { console.warn('autoguardado', e); }
   autoBusy = false;
 }
@@ -7453,7 +7517,7 @@ async function restore() {
   try {
     const s = await tx('estado', 'readonly', (st) => st.get('actual'));
     if (s && s.line) {
-      await setLayersFrom(s.line, s.color, s.capas, s.capasInfo);
+      await setLayersFrom(s.line, s.color, s.capas, s.capasInfo, s.photo || null);
       state.currentId = s.currentId ?? null; state.dirty = !!s.dirty;
       if (s.proc) setProc(s.proc);                // 3.9
       setMode(s.mode === 'color' ? 'color' : 'draw');
@@ -9252,7 +9316,7 @@ window.__colorear = {
   get recentColors() { return recentColors.slice(); },
   paint, addLayer, deleteLayer, moveLayer, selectLayer, setLayerVisible, setLayerOpacity, composite, setUIHidden, openPicker, pk, pkSetHex, hsvToRgb, rgbToHsv, docPerScreenPx,
   get mySlots() { return mySlots.slice(); }, COLOR_CODE, placeMini, showPanel, hidePanel, get openPanel() { return openGrp; }, setMiniPos, setMiniFolded, get mini() { return { ...MINI }; }, setFamOpen, openColorsSheet, get activeLayer() { return paintTarget(); },
-  get W() { return W; }, get lang() { return LANG; }, setLang, tt, LANGS, get H() { return H; }, get objs() { return objs; }, get objMode() { return objMode; }, version: APP_VERSION,
+  get bgPhoto() { return bgPhoto; }, get W() { return W; }, get lang() { return LANG; }, setLang, tt, LANGS, get H() { return H; }, get objs() { return objs; }, get objMode() { return objMode; }, version: APP_VERSION,
   get ref() { return Object.assign(refSettings(), { has: !!ref.blob, iw: ref.iw, ih: ref.ih, adjust: ref.adjust }); }, setRef, setRefMode, refAdjust, openRef,
   AG, agApply, agAddStop, agDelStop, agSelect, agSetPreset, renderAg, setGelKind, setDrawTool, tooth, hasConic,
   setMix(o) { if (o.start) state.mixStart = o.start; if (o.str != null) state.mixStr = clamp(+o.str, 0.1, 1); if (o.tex != null) state.mixTex = clamp(+o.tex, 0, 1); if (o.lines != null) state.mixLines[state.mode === 'draw' ? 'draw' : 'color'] = !!o.lines; renderMix(); refreshColorUI(); },
