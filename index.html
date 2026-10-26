@@ -635,6 +635,24 @@ body.pbn #toolDock,body.ui-hidden #toolDock{display:none!important}
 @media (max-width:359px){ .ts-t{width:66px} }
 @media (orientation:landscape) and (max-height:560px){ #toolDock{grid-column:2;grid-row:2;align-self:start} .ts-t,.ts-more{height:60px} }
 @media (min-width:700px) and (min-height:600px){ .ts-t{width:84px;height:74px} .ts-l{font-size:12.5px} }
+/* 4.3: en el celular las herramientas van por grupos (Marcadores, Lápices, Gel…): sin tira larga hacia el lado */
+#tsCats{display:none}
+body.ts-phone #tsList,body.ts-phone #tbTools{display:none}
+body.ts-phone #tsCats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;flex:1 1 auto;min-width:0;padding:2px 0 4px}
+#tsCats .ts-t{width:auto;min-width:0;height:62px;padding:5px 2px 3px}
+#tsCats .ts-l{font-size:10px;letter-spacing:-.2px;-webkit-line-clamp:1;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;display:block}
+#tsCats .ts-t svg{width:26px;height:26px}
+#tsSheetBg{position:fixed;inset:0;background:rgba(30,20,50,.28);z-index:60}
+#tsSheet{position:fixed;left:0;right:0;bottom:0;z-index:61;background:var(--panel,#fff);border-radius:22px 22px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,.18);
+  padding:8px 12px calc(env(safe-area-inset-bottom) + 12px);max-height:72vh;overflow-y:auto;overscroll-behavior:contain}
+#tsSheet[hidden],#tsSheetBg[hidden]{display:none}
+#tsSheet .tsgrab{width:44px;height:5px;border-radius:3px;background:#ddd3e6;margin:2px auto 8px}
+#tsSheet h4{margin:10px 2px 6px;font-size:13px;font-weight:800;color:var(--muted);letter-spacing:.02em}
+#tsSheet h4.hl{color:var(--accent)}
+#tsSheet .tsg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+#tsSheet .ts-t{width:auto;height:70px}
+#tsSheet .ts-l{font-size:11px}
+#tsSheet .tsall{width:100%;min-height:48px;margin-top:12px;border:0;border-radius:14px;background:#f1eaf7;font-weight:800;font-size:14px;color:var(--accent2)}
 #toast{
   position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 76px);transform:translateX(-50%) translateY(20px);
   background:rgba(40,28,60,.92);color:#fff;padding:12px 18px;border-radius:14px;font-weight:600;font-size:15px;
@@ -1170,6 +1188,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
 <div id="toolDock">
 <div id="toolStrip" role="toolbar" aria-label="Herramientas: toca una para usarla">
   <div id="tsList" role="group"></div>
+  <div id="tsCats" role="group"></div>
   <button class="ts-more" id="tbTools" data-grp="tools" aria-haspopup="dialog" aria-expanded="false" title="Todas las herramientas y ajustes" aria-label="Todas las herramientas y ajustes"><span class="tbi" hidden></span><span class="ts-dots" aria-hidden="true">⋯</span><span class="tbl"></span></button>
 </div>
 <nav id="tabBar" role="toolbar" aria-label="Herramientas y opciones">
@@ -1179,6 +1198,8 @@ body.ui-hidden.obj-mode #miniBar{display:none}
   <button class="tb" id="tbMore" data-grp="more" aria-haspopup="dialog" aria-expanded="false" title="Más: añadir stickers y texto, limpiar la hoja, ocultar botones" aria-label="Más opciones"><span class="tbi"><svg><use href="#i-grip"/></svg></span><span class="tbl">Más</span></button>
 </nav>
 </div>
+<div id="tsSheetBg" hidden></div>
+<div id="tsSheet" role="dialog" aria-modal="true" hidden><div class="tsgrab" aria-hidden="true"></div><div id="tsSheetBody"></div><button type="button" class="tsall" id="tsAll"></button></div>
 <div id="quickStrip" role="toolbar" aria-label="Color actual y colores rápidos">
   <button id="qsCur" title="Color actual: toca para ver todos los colores" aria-label="Color actual. Toca para ver todos los colores"><i></i>Color</button>
   <div id="qsList" aria-label="Colores rápidos"></div>
@@ -3290,6 +3311,38 @@ function photoWalls(sx, sy) {
   for (let i = 0; i < d.length; i += 4) { const dr = d[i] - r, dg = d[i + 1] - g, db = d[i + 2] - b; d[i + 3] = dr * dr + dg * dg + db * db > T ? 255 : 0; }
   return d;
 }
+/* 4.3: rendijas. Zona «rendija» = tan angosta que no cabe un cuadrito de 5×5 px, o un pedacito de menos de 50 px que no es redondo
+   (los brillos redondos de los ojos se respetan). Cada rendija se le asigna a las zonas grandes que tiene a menos de 16 px (al otro lado
+   de la línea) y se pinta junto con ellas. Se calcula una vez por dibujo de líneas (se guarda con una huella de la capa). */
+let sliverCache = null;
+function sliverInfo(la) {
+  const n = W * H; let hk = W * 31 + H;
+  for (let i = 3; i < la.length; i += 4 * 61) hk = (Math.imul(hk, 16777619) ^ la[i]) >>> 0;
+  if (sliverCache && sliverCache.hk === hk && sliverCache.W === W && sliverCache.H === H) return sliverCache;
+  const wall = new Uint8Array(n); for (let i = 0; i < n; i++) wall[i] = la[i * 4 + 3] >= LINE_T ? 1 : 0;
+  const lab = new Int32Array(n), area = [0], bb = [null], st = []; let nl = 0;
+  for (let s0 = 0; s0 < n; s0++) { if (wall[s0] || lab[s0]) continue; const id = ++nl; let a = 0, x1 = W, x2 = 0, y1 = H, y2 = 0; st.push(s0);
+    while (st.length) { const i = st.pop(); if (lab[i] || wall[i]) continue; lab[i] = id; a++; const x = i % W, y = (i / W) | 0;
+      if (x < x1) x1 = x; if (x > x2) x2 = x; if (y < y1) y1 = y; if (y > y2) y2 = y;
+      if (x > 0) st.push(i - 1); if (x < W - 1) st.push(i + 1); if (i >= W) st.push(i - W); if (i < n - W) st.push(i + W); }
+    area.push(a); bb.push([x1, y1, x2, y2]); }
+  const fat = new Uint8Array(nl + 1);
+  for (let y = 2; y < H - 2; y++) for (let x = 2; x < W - 2; x++) { const i = y * W + x, L = lab[i]; if (!L || fat[L]) continue;
+    let ok = true; for (let dy = -2; dy <= 2 && ok; dy++) for (let dx = -2; dx <= 2; dx++) if (lab[i + dy * W + dx] !== L) { ok = false; break; } if (ok) fat[L] = 1; }
+  const isSl = new Uint8Array(nl + 1);
+  for (let L = 1; L <= nl; L++) { const [x1, y1, x2, y2] = bb[L], w = x2 - x1 + 1, h = y2 - y1 + 1, a = area[L];
+    const round = a >= 0.6 * w * h && Math.max(w, h) <= 2.2 * Math.min(w, h);
+    if (round && a < 400) continue; if (a < 50 || (!fat[L] && a < 6000)) isSl[L] = 1; }
+  const px = {}, own = new Map(), seen = new Int32Array(n);
+  for (let i = 0; i < n; i++) { const L = lab[i]; if (L && isSl[L]) (px[L] || (px[L] = [])).push(i); }
+  for (const k in px) { const S = +k, q = px[S].slice(), dep = new Map(); let h = 0; const got = new Set();
+    for (const i of q) { seen[i] = S; dep.set(i, 0); }
+    while (h < q.length) { const i = q[h++], d = dep.get(i); if (d >= 16) continue; const x = i % W;
+      for (const j of [x > 0 ? i - 1 : -1, x < W - 1 ? i + 1 : -1, i - W, i + W]) { if (j < 0 || j >= n || seen[j] === S) continue; seen[j] = S;
+        const L = lab[j]; if (L && !isSl[L]) { got.add(L); continue; } dep.set(j, d + 1); q.push(j); } }
+    for (const L of got) { if (!own.has(L)) own.set(L, []); own.get(L).push(S); } }
+  return (sliverCache = { hk, W, H, lab, px, own, count: Object.keys(px).length });
+}
 function regionMask(fx, fy, laIn) {
   let sx = Math.round(fx), sy = Math.round(fy);
   if (sx < 0 || sy < 0 || sx >= W || sy >= H) return null;
@@ -3325,6 +3378,9 @@ function regionMask(fx, fy, laIn) {
     if (y < minY) minY = y;
     if (y > maxY) maxY = y;
   }
+  // 4.3: las rendijas finas y los pedacitos blancos sueltos pegados a esta zona se pintan con ella (antes se quedaban en blanco)
+  if (!bgPhoto && !islandFill) { const sv = sliverInfo(la), L = sv && sv.lab[sy * W + sx], list = L && sv.own.get(L);
+    if (list) for (const S of list) for (const i of sv.px[S]) { mask[i] = 1; const x = i % W, y = (i / W) | 0; if (x < minX) minX = x; if (x > maxX) maxX = x; if (y < minY) minY = y; if (y > maxY) maxY = y; } }
   const keep = islandFill ? fillIslands(mask, la, minX, minY, maxX, maxY) : null;
   // Dilatar la zona bajo las líneas (solo sobre píxeles con tinta) para no dejar halos
   for (let pass = 0; pass < (keep ? 0 : DILATE); pass++) {   // 3.22: foto/PDF a color: no comerse la letra fina impresa
@@ -5335,6 +5391,7 @@ function tsRefresh(scroll) {
   let onEl = null;
   $$('#tsList .ts-t').forEach((b, i) => { const d = tsList[i]; if (!d) return; const on = !!d.on(); b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); if (on) onEl = b; });
   if (onEl && scroll) tsReveal(onEl);
+  try { tsCatsBuild(); } catch (_) {}
 }
 function tsReveal(el) {
   const sc = $('#tsList'), l = el.offsetLeft, r = l + el.offsetWidth;
@@ -5350,6 +5407,77 @@ $('#tsList').addEventListener('click', (e) => {
   d.pick(); tsRefresh(); tsReveal(b);
 });
 tsBuild();
+/* 4.3: celular: 6 grupos que caben sin desplazar; al tocar un grupo sale una hoja abajo con todas sus herramientas en cuadrícula */
+const TS_PHONE_MQ = window.matchMedia ? matchMedia('(max-width: 600px)') : null;
+const tsIsPhone = () => !!(TS_PHONE_MQ && TS_PHONE_MQ.matches);
+const TS_GROUPS = { draw: ['basic', 'marks', 'pencils', 'gel', 'brushes', 'more'], color: ['fill', 'marks', 'pencils', 'gel', 'brushes', 'more'] };
+function tsGroupOf(k) {
+  if (k.startsWith('marker-') || ['crayon', 'acrylic', 'water', 'alcohol', 'blender0'].includes(k)) return 'marks';
+  if (k.startsWith('gel-')) return 'gel';
+  if (k === 'cpencil') return 'pencils';
+  if (['wcolor', 'spray', 'mixb', 'blend'].includes(k)) return 'brushes';
+  if (['fill', 'grad', 'agrad'].includes(k)) return 'fill';
+  if (['stamp', 'cerase'].includes(k)) return 'more';
+  return 'basic';
+}
+function tsBtnFor(d) {
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'ts-t'; b.dataset.st = d.k;
+  if (d.gk) b.innerHTML = `<span class="gk ${d.gk}" aria-hidden="true"></span>`;
+  else if (d.k === 'grad') b.innerHTML = '<span class="gswatch" aria-hidden="true"></span>';
+  else b.innerHTML = `<svg aria-hidden="true"><use href="#${d.icon}"/></svg>`;
+  const l = document.createElement('span'); l.className = 'ts-l'; l.textContent = d.label(); b.append(l);
+  b.setAttribute('aria-label', d.label()); b.title = d.label();
+  if (d.pop) { const o = document.createElement('i'); o.className = 'ts-o'; o.setAttribute('aria-hidden', 'true'); o.textContent = '▾'; b.append(o); }
+  return b;
+}
+const tsGroupDefs = (g) => tsList.filter((d) => tsGroupOf(d.k) === g);
+function tsCatsBuild() {
+  const box = $('#tsCats'); if (!box) return;
+  document.body.classList.toggle('ts-phone', tsIsPhone());
+  box.textContent = '';
+  for (const g of TS_GROUPS[state.mode === 'draw' ? 'draw' : 'color']) {
+    const ds = tsGroupDefs(g); if (!ds.length) continue;
+    const act = ds.find((d) => d.on()) || ds[0];
+    const b = tsBtnFor(act); b.dataset.st = ''; b.dataset.tg = g; b.classList.toggle('on', !!ds.find((d) => d.on()));
+    b.querySelector('.ts-l').textContent = tt('ts.g.' + g); b.setAttribute('aria-label', tt('ts.g.' + g)); b.title = tt('ts.g.' + g);
+    const o = b.querySelector('.ts-o'); if (o) o.remove();
+    if (ds.length > 1) { const o2 = document.createElement('i'); o2.className = 'ts-o'; o2.style.opacity = '1'; o2.textContent = '▾'; b.append(o2); }
+    box.append(b);
+  }
+}
+function tsSheetOpen(g) {
+  const body = $('#tsSheetBody'); body.textContent = '';
+  for (const k of TS_GROUPS[state.mode === 'draw' ? 'draw' : 'color']) {
+    const ds = tsGroupDefs(k); if (!ds.length) continue;
+    const h = document.createElement('h4'); h.textContent = tt('ts.g.' + k); h.dataset.tg = k; h.classList.toggle('hl', k === g); body.append(h);
+    const grid = document.createElement('div'); grid.className = 'tsg';
+    for (const d of ds) { const b = tsBtnFor(d); b.classList.toggle('on', !!d.on()); grid.append(b); }
+    body.append(grid);
+  }
+  $('#tsAll').textContent = tt('ptool.more.tip');
+  $('#tsSheet').setAttribute('aria-label', tt('ptool.aria'));
+  $('#tsSheet').hidden = false; $('#tsSheetBg').hidden = false;
+  const h = body.querySelector(`h4[data-tg="${g}"]`); if (h) $('#tsSheet').scrollTop = Math.max(0, h.offsetTop - 30);
+}
+function tsSheetClose() { $('#tsSheet').hidden = true; $('#tsSheetBg').hidden = true; }
+$('#tsSheetBg').addEventListener('click', tsSheetClose);
+$('#tsAll').addEventListener('click', () => { tsSheetClose(); showPanel('tools'); });
+$('#tsSheetBody').addEventListener('click', (e) => {
+  const b = e.target.closest('.ts-t'); if (!b) return;
+  const d = tsList.find((x) => x.k === b.dataset.st); if (!d) return;
+  const wasOn = d.on(); tsSheetClose(); hidePanel(); hidePop();
+  const chip = document.querySelector(`#tsCats [data-tg="${tsGroupOf(d.k)}"]`);
+  if (wasOn && d.pop) { if (chip) showPop(d.pop, chip); return; }
+  d.pick(); tsRefresh();
+});
+$('#tsCats').addEventListener('click', (e) => {
+  const b = e.target.closest('.ts-t'); if (!b) return;
+  const ds = tsGroupDefs(b.dataset.tg); hidePanel();
+  if (ds.length === 1) { const d = ds[0]; if (d.on() && d.pop) { if (openPop && openPop.anchor === b) hidePop(); else showPop(d.pop, b); return; } hidePop(); d.pick(); tsRefresh(); return; }
+  hidePop(); tsSheetOpen(b.dataset.tg);
+});
+if (TS_PHONE_MQ) { const f = () => { tsCatsBuild(); layout(); }; if (TS_PHONE_MQ.addEventListener) TS_PHONE_MQ.addEventListener('change', f); else if (TS_PHONE_MQ.addListener) TS_PHONE_MQ.addListener(f); }
+tsCatsBuild();
 
 document.addEventListener('pointerdown', (e) => {
   if (!openGrp) return;
@@ -9435,7 +9563,7 @@ restore().then(async (restored) => {
 window.__colorear = {
   layers, state, view, floodFill, loadTemplate, undo, redo, saveToGallery, openGallery, exportPng, buildExport, shareDrawing, undoStack, redoStack, tx,
   processLineArt, importImageFile, choosePdfPage, isPdfLike, readPngText, addObject, flattenObjs, zoomAt, zoomFit, adj,
-  gradientFill, regionMask, setColorTool, setColorSize, setColor, showNews, setMode, setDrawBrush, setPicking, colorAt, pickColorAt, thinLW, sizeLW, templates: TEMPLATES, COLOR_FAMILIES, ALL_COLORS, GRAD_PRESETS, gradStops, lighterOf,
+  gradientFill, regionMask, sliverInfo, setColorTool, setColorSize, setColor, showNews, setMode, setDrawBrush, setPicking, colorAt, pickColorAt, thinLW, sizeLW, templates: TEMPLATES, COLOR_FAMILIES, ALL_COLORS, GRAD_PRESETS, gradStops, lighterOf,
   get recentColors() { return recentColors.slice(); },
   paint, addLayer, deleteLayer, moveLayer, selectLayer, setLayerVisible, setLayerOpacity, composite, setUIHidden, openPicker, pk, pkSetHex, hsvToRgb, rgbToHsv, docPerScreenPx,
   get mySlots() { return mySlots.slice(); }, COLOR_CODE, placeMini, showPanel, hidePanel, get openPanel() { return openGrp; }, setMiniPos, setMiniFolded, get mini() { return { ...MINI }; }, setFamOpen, openColorsSheet, get activeLayer() { return paintTarget(); },
