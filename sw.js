@@ -15,6 +15,7 @@ const ARCHIVOS = [
   'stamps-data.js',
   'pbn-data.js',
   'il-data.js',
+  'cozy2-data.js',
   'icon-48.png',
   'icon-72.png',
   'icon-96.png',

@@ -57,6 +57,7 @@
 <script src="templates-data.js"></script>
 <script src="pbn-data.js"></script>
 <script src="il-data.js"></script>
+<script src="cozy2-data.js"></script>
 <script src="stamps-data.js"></script>
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -1057,7 +1058,8 @@ body.ui-hidden.obj-mode #miniBar{display:none}
 .rbtns2 button.primary{background:var(--accent);color:#fff;box-shadow:none}
 .rbtns2 button:active{transform:scale(.97)}
 #retoOk{font-weight:800;color:#15803d;font-size:14px}
-#retoStreak[hidden],#retoDone[hidden],#retoOk[hidden]{display:none}
+#retoStreak[hidden],#retoDone[hidden],#retoOk[hidden],#retoGoals[hidden]{display:none}
+#retoGoals{margin:4px 0 6px;padding:0;list-style:none;font-size:12.5px;line-height:1.35}#retoGoals li{display:flex;gap:6px;align-items:flex-start}#retoGoals li::before{content:'○';flex:none;color:#999}#retoGoals li.ok::before{content:'✓';color:#2E8B3E;font-weight:700}#retoGoals li.no::before{content:'✗';color:#D33}
 .reto.done{background:linear-gradient(135deg,#e7f8ec,#f3e8ff)}
 #tplGrid .card{position:relative}
 .card .newb{position:absolute;top:4px;right:4px;background:#FF2D92;color:#fff;font-size:11px;font-weight:800;border-radius:8px;padding:2px 6px;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.2)}
@@ -1600,7 +1602,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
           <div class="rhead"><b><span aria-hidden="true">🎯</span> Reto del día</b><span id="retoStreak" hidden></span></div>
           <div class="rtitle" id="retoTitle"></div>
           <div class="rmeta"><span class="rstars" id="retoStars"></span><span id="retoLvl"></span><span class="rdot" aria-hidden="true">·</span><span class="rname" id="retoName"></span></div>
-          <p id="retoPrompt"></p>
+          <p id="retoPrompt"></p><ul id="retoGoals" hidden></ul>
           <div class="rcols" id="retoCols" aria-hidden="true"></div>
           <div class="rbtns2"><button class="primary" id="retoStart">Empezar</button><button id="retoDone" hidden>¡Lo terminé!</button><span id="retoOk" hidden>✓ ¡Hecho hoy!</span></div>
         </div>
@@ -2628,6 +2630,7 @@ function endPinch() {
   if (p && p.obj) commitObjs(p.before);
 }
 stage.addEventListener('pointerdown', onDown);
+stage.addEventListener('pointerdown', () => { try { retoTrackTool(); } catch (_) {} }, true);
 stage.addEventListener('pointermove', onMove);
 stage.addEventListener('pointerup', onUp);
 stage.addEventListener('pointercancel', onUp);
@@ -3496,6 +3499,7 @@ function floodFill(fx, fy, hex, alpha = 1) {
 /* ---------- degradado: rellena una zona (como el bote) pasando de un color a otro ---------- */
 // a = donde empieza (primer color); b = donde termina (segundo color). Sin b: usa la dirección elegida sobre la zona entera.
 function gradientFill(a, b, opts) {
+  try { retoTrackGrad(); } catch (_) {}
   opts = opts || {};
   const S = (opts.stops || (opts.c1 || opts.c2 ? [opts.c1 || state.color, opts.c2 || state.color2] : gradStops())).map(hexToRgb);
   const type = opts.type || state.gradType, dir = opts.dir || state.gradDir, ns = S.length - 1;
@@ -3645,7 +3649,7 @@ function petalRing(c, cx, cy, r1, r2, n, rot = 0, fat = 1) {   // pétalos entre
   }
 }
 const grassLine = (c, y) => { c.moveTo(0, y); c.lineTo(300, y); };
-const TEMPLATE_CATS = [['personajes', 'Personajes'], ['animales', 'Animales'], ['naturaleza', 'Naturaleza'], ['pr', 'Puerto Rico'], ['monumentos', 'Monumentos del mundo'], ['mandalas', 'Mandalas'], ['halloween', 'Halloween'], ['navidad', 'Navidad'], ['cosas', 'Cosas']];
+const TEMPLATE_CATS = [['otono', 'Otoño y Acción de Gracias'], ['cozy', 'Cozy'], ['personajes', 'Personajes'], ['animales', 'Animales'], ['naturaleza', 'Naturaleza'], ['pr', 'Puerto Rico'], ['monumentos', 'Monumentos del mundo'], ['mandalas', 'Mandalas'], ['halloween', 'Halloween'], ['navidad', 'Navidad'], ['cosas', 'Cosas']];
 const TEMPLATES = [
   { id: 'casa', name: 'Casa', cat: 'cosas', probe: [90, 300], draw(c) {
     c.beginPath();
@@ -4315,6 +4319,8 @@ const TPL_UPG_DATE = '2026-10-15';
   for (const t of TEMPLATES) { const z = CZ[t.id]; if (!z) continue; const ds = z.d, lw = z.w; t.probe = z.p; const es = z.e || [], fs = z.f || [], lw2 = z.w2 || lw; t.draw = (c) => { if (fs.length) { c.fillStyle = '#000'; for (const f of fs) c.fill(new Path2D(f), 'evenodd'); } c.lineWidth = lw; strokeAll(c, ds); c.lineWidth = lw2; strokeAll(c, es); }; }
   // 3.19: «Personajes» ilustrados (estilo anime/cuento, 80–150 zonas): plantillas pensadas para Colorear por número; también se pueden pintar libremente. n = nombre en 4 idiomas; f = rellenos de tinta (pupilas, brillos)
   for (const a of (window.TPL_IL || [])) { const ds = a.d, es = a.e, fs = a.f || [], lw = a.w, lw2 = a.w2; TEMPLATES.push({ id: a.id, ex: a.ex, cat: 'personajes', added: '2026-10-18', probe: a.p, land: !!a.land, n: a.n, draw(c) { c.fillStyle = '#000'; const pe = !!window.__pbnEyes, ey = pe && a.ey ? a.ey : null, ex = pe && a.ex ? a.ex : null, sk = (k, i) => ex && a.exs && a.exs[k] && a.exs[k].includes(i); fs.forEach((f, i) => { if (sk('f', i)) return; if (ey && ey.includes(i)) { const w0 = c.lineWidth; c.lineWidth = lw; c.stroke(new Path2D(f)); c.lineWidth = w0; } else c.fill(new Path2D(f), 'evenodd'); }); c.lineWidth = lw; strokeAll(c, ds.filter((_, i) => !sk('d', i))); c.lineWidth = lw2; strokeAll(c, es.filter((_, i) => !sk('e', i))); if (ex) pbnEyeDraw(c, ex, lw); } }); }
+  // 4.3: «Cozy» y «Otoño y Acción de Gracias»: líneas gruesas y cerradas, ojos con blanco, iris de color y brillo
+  for (const a of (window.TPL_CZ2 || [])) { const ds = a.d, es = a.e, fs = a.f; TEMPLATES.push({ id: a.id, cat: a.cat, added: '2026-10-26', probe: a.p, n: a.n, draw(c) { c.fillStyle = '#000'; for (const f of fs) c.fill(new Path2D(f), 'evenodd'); c.lineWidth = a.w; strokeAll(c, ds); c.lineWidth = a.w2; strokeAll(c, es); } }); }
 // 4.0: en Por número, los ojos que eran tinta sólida se dibujan como ojo de verdad: blanco, iris de color, pupila chiquita y brillo
 function pbnEyeDraw(c, ex, lw) { const arc = (x, y, r) => { c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); }; for (const [x, y, r, rx, xe] of ex) { const ry = r, rr = rx || r, e = xe || 0.5; c.save(); c.globalCompositeOperation = 'destination-out'; c.beginPath(); c.rect(x - rr * 0.3, y - ry - lw * 3, rr * 1.3 + lw * 3, ry * 2 + lw * 6); c.clip(); c.beginPath(); c.ellipse(x, y, rr + lw * e, ry + lw * e, 0, 0, Math.PI * 2); c.fill(); c.restore(); c.lineWidth = lw * 0.9; c.beginPath(); c.ellipse(x, y, rr, ry, 0, 0, Math.PI * 2); c.stroke(); const ir = Math.min(rr, ry) * 0.55; c.lineWidth = lw * 0.5; arc(x, y, ir); c.stroke(); arc(x, y, ir * 0.36); c.fill(); arc(x - ir * 0.42, y - ir * 0.38, ir * 0.24); c.stroke(); } }
   // rayitas de tinta que cierran rendijas angostas (cuellos de menos de 4 unidades) para que cada zona se pinte por separado
@@ -8932,7 +8938,16 @@ const RETO_DEFS = [
   ['vitral', 2, 'gems', null],
   ['joyas', 1, 'gems', null],
   ['playa', 1, 'beach', ["flamenco", "luquillo", "buye", "islaverde", "palmera", "bahia", "tortuga", "pez"]],
-  ['fiesta', 2, 'party', ["vejigante", "pava", "flamboyan", "coqui", "coqui2", "mariposa", "sol"]]
+  ['fiesta', 2, 'party', ["vejigante", "pava", "flamboyan", "coqui", "coqui2", "mariposa", "sol"]],
+  // 4.3: retos más difíciles y variados, con metas que la app revisa al tocar «¡Lo terminé!»
+  ['ocho', 3, 'none', ['cat:cozy'], { minC: 8, grad: 1, cov: 85 }],
+  ['otonocalido', 3, 'otono', ['cat:otono'], { warm: 1, cov: 90 }],
+  ['contrarreloj', 2, 'pal5', ['cat:cozy'], { time: 15, cov: 75 }],
+  ['completo', 3, 'none', ['cat:cozy', 'cat:otono'], { cov: 97, minC: 10 }],
+  ['trespasos', 3, 'otono', ['cat:otono'], { grad: 1, minC: 6, tool: 'gel', cov: 85 }],
+  ['gracias', 2, 'otono', ['cat:otono'], { minC: 6, cov: 90 }],
+  ['acogedor', 2, 'pastel', ['cat:cozy'], { minC: 7, cov: 90, tool: 'cpencil' }],
+  ['rapidito', 1, 'pal4', ['cat:cozy', 'cat:otono'], { time: 10, cov: 60 }]
 ];
 const RETO_FIXED = {
   warm: ['#B3001B', '#FF3B1F', '#FF7A00', '#FFB300', '#FFE259'],
@@ -8946,7 +8961,7 @@ const RETO_FIXED = {
   party: ['#ED1C24', '#FFD100', '#00A651', '#0050F0', '#FF5A1F', '#AF52DE'],
   nature: ['#2E8B3E', '#7BC950', '#8B5E3C', '#C9A66B', '#48C6EF'],
 };
-const RETO_PAL = { pastel: 'pastel', neon: 'neon', boricua: 'boricua' };
+const RETO_PAL = { pastel: 'pastel', neon: 'neon', boricua: 'boricua', otono: 'otono' };
 const RETO_COMPL = [['#1E6FD9', '#FF8A1F'], ['#E53935', '#2E9B4E'], ['#7B2FFF', '#FFD100'], ['#00A6A6', '#E8505B']];
 function hslHex(h, s, l) {
   s /= 100; l /= 100; const k = (n) => (n + h / 30) % 12, a = s * Math.min(l, 1 - l), f = (n) => l - a * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1));
@@ -8985,9 +9000,9 @@ function retoColors(mode, h2) {
 function retoFor(ds) {
   const h = hashStr('reto:' + ds), h2 = hashStr(ds + ':colores');
   const def = RETO_DEFS[retoOrderGet()[((dayNum(ds) % RETO_DEFS.length) + RETO_DEFS.length) % RETO_DEFS.length]];
-  const [id, level, mode, tokens] = def;
+  const [id, level, mode, tokens, goals] = def;
   const pool = retoPool(tokens), tpl = pool[h % pool.length];
-  return { date: ds, id, level, tpl: tpl.id, pal: mode, colors: retoColors(mode, h2), prompt: 'reto.p.' + id, title: 'reto.t.' + id };
+  return { date: ds, id, level, tpl: tpl.id, pal: mode, colors: retoColors(mode, h2), prompt: 'reto.p.' + id, title: 'reto.t.' + id, goals: goals || null };
 }
 function retoData() { try { const s = JSON.parse(localStorage.getItem(RETO_KEY) || 'null'); if (s && Array.isArray(s.done)) return s; } catch (_) {} return { done: [] }; }
 function retoSave(s) { try { localStorage.setItem(RETO_KEY, JSON.stringify(s)); } catch (_) {} }
@@ -9004,6 +9019,7 @@ function renderReto() {
   $('#retoTitle').textContent = tt(r.title);
   $('#retoPrompt').textContent = tt(r.prompt, { name: t ? t.name : '' });
   $('#retoName').textContent = t ? t.name : '';
+  retoGoalsRender(r, started && !done);
   const lv = tt('reto.lvl.' + r.level), st = $('#retoStars');
   st.textContent = '★'.repeat(r.level) + '☆'.repeat(3 - r.level); st.title = tt('reto.diff') + ': ' + lv; st.setAttribute('aria-label', tt('reto.diff') + ': ' + lv);
   $('#retoLvl').textContent = lv;
@@ -9022,6 +9038,7 @@ function retoStart(ds = dayStr()) {
   closeSheet('#menuSheet'); hidePanel();
   const cont = s.started === r.date && s.proc === procId && !s.done.includes(r.date);
   if (!cont) loadTemplate(r.tpl);          // se puede deshacer, como al elegir cualquier plantilla
+  if (!cont) { s.t0 = Date.now(); s.tools = []; s.grad = 0; }
   s.started = r.date; s.proc = procId; retoSave(s);
   if (r.colors.length) applyPalette({ id: 'reto', name: tt('reto.title'), c: r.colors }, { quiet: true });
   setMode('color'); setColorTool('fill');
@@ -9029,8 +9046,39 @@ function retoStart(ds = dayStr()) {
   renderReto();
   return r;
 }
-function retoComplete(ds = dayStr()) {
-  const s = retoData();
+// 4.3: metas que se revisan solas: % pintado, colores distintos, degradado, solo cálidos, herramienta, tiempo
+function retoTrackTool() { const s = retoData(); if (s.started !== dayStr() || s.done.includes(s.started)) return; const t = currentTool(); s.tools = s.tools || []; if (!s.tools.includes(t)) { s.tools.push(t); retoSave(s); } }
+function retoTrackGrad() { const s = retoData(); if (s.started !== dayStr() || s.grad) return; s.grad = 1; retoSave(s); }
+function retoStats() {
+  const lc = layers.line.ctx.getImageData(0, 0, W, H).data, cc = layers.color.ctx.getImageData(0, 0, W, H).data, oc = layers.over.ctx.getImageData(0, 0, W, H).data;
+  let free = 0, painted = 0; const hist = new Map(); let warmBad = 0;
+  for (let i = 0; i < W * H; i += 3) { const k = i * 4; if (lc[k + 3] >= LINE_T) continue; free++;
+    let r = cc[k], g = cc[k + 1], b = cc[k + 2], a = cc[k + 3]; if (oc[k + 3] > 128) { r = oc[k]; g = oc[k + 1]; b = oc[k + 2]; a = 255; }
+    if (a < 128 || (r > 242 && g > 242 && b > 242)) continue; painted++;
+    const q = (r >> 5) * 64 + (g >> 5) * 8 + (b >> 5); hist.set(q, (hist.get(q) || 0) + 1);
+    const mx = Math.max(r, g, b), mn = Math.min(r, g, b), sat = mx ? (mx - mn) / mx : 0;
+    if (sat > 0.22 && mx > 40) { let h = mx === r ? ((g - b) / (mx - mn)) * 60 : mx === g ? (2 + (b - r) / (mx - mn)) * 60 : (4 + (r - g) / (mx - mn)) * 60; if (h < 0) h += 360; if (h > 75 && h < 320) warmBad++; } }
+  const minPx = Math.max(40, painted * 0.004); let colors = 0; for (const v of hist.values()) if (v >= minPx) colors++;
+  return { cov: free ? Math.round(100 * painted / free) : 0, colors, warmBad: painted ? warmBad / painted : 0 };
+}
+function retoCheck(r, s) {
+  const g = r.goals, st = retoStats(), out = [];
+  if (g.cov) out.push({ ok: st.cov >= g.cov, txt: tt('reto.g.cov', { n: g.cov }) + ' (' + Math.min(st.cov, 100) + '%)' });
+  if (g.minC) out.push({ ok: st.colors >= g.minC, txt: tt('reto.g.minC', { n: g.minC }) + ' (' + st.colors + ')' });
+  if (g.grad) out.push({ ok: !!s.grad, txt: tt('reto.g.grad') });
+  if (g.warm) out.push({ ok: st.warmBad < 0.03, txt: tt('reto.g.warm') });
+  if (g.tool) out.push({ ok: (s.tools || []).includes(g.tool), txt: tt('reto.g.tool.' + g.tool) });
+  if (g.time) { const m = s.t0 ? (Date.now() - s.t0) / 60000 : 0; out.push({ ok: !!s.t0 && m <= g.time, txt: tt('reto.g.time', { n: g.time }) + (s.t0 ? ' (' + Math.ceil(m) + ' min)' : '') }); }
+  return out;
+}
+function retoGoalsRender(r, live, res) {
+  const ul = $('#retoGoals'); if (!ul) return; ul.textContent = ''; ul.hidden = !r.goals; if (!r.goals) return;
+  const g = r.goals, items = res || [g.cov && { txt: tt('reto.g.cov', { n: g.cov }) }, g.minC && { txt: tt('reto.g.minC', { n: g.minC }) }, g.grad && { txt: tt('reto.g.grad') }, g.warm && { txt: tt('reto.g.warm') }, g.tool && { txt: tt('reto.g.tool.' + g.tool) }, g.time && { txt: tt('reto.g.time', { n: g.time }) }].filter(Boolean);
+  for (const it of items) { const li = document.createElement('li'); li.textContent = it.txt; if (res) li.className = it.ok ? 'ok' : 'no'; ul.append(li); }
+}
+function retoComplete(ds = dayStr(), force) {
+  const s = retoData(), r = retoFor(ds);
+  if (r.goals && !force) { const res = retoCheck(r, s); retoGoalsRender(r, true, res); if (res.some((x) => !x.ok)) { toast('🎯 ' + tt('reto.notyet') + ' ' + res.filter((x) => !x.ok).map((x) => x.txt).join(' · '), 5200); return 0; } }
   if (!s.done.includes(ds)) s.done.push(ds);
   s.done = s.done.slice(-120); retoSave(s);
   const n = retoStreak(s);
@@ -9563,7 +9611,7 @@ restore().then(async (restored) => {
 window.__colorear = {
   layers, state, view, floodFill, loadTemplate, undo, redo, saveToGallery, openGallery, exportPng, buildExport, shareDrawing, undoStack, redoStack, tx,
   processLineArt, importImageFile, choosePdfPage, isPdfLike, readPngText, addObject, flattenObjs, zoomAt, zoomFit, adj,
-  gradientFill, regionMask, sliverInfo, setColorTool, setColorSize, setColor, showNews, setMode, setDrawBrush, setPicking, colorAt, pickColorAt, thinLW, sizeLW, templates: TEMPLATES, COLOR_FAMILIES, ALL_COLORS, GRAD_PRESETS, gradStops, lighterOf,
+  gradientFill, regionMask, sliverInfo, retoStats, retoCheck, RETO_DEFS, setColorTool, setColorSize, setColor, showNews, setMode, setDrawBrush, setPicking, colorAt, pickColorAt, thinLW, sizeLW, templates: TEMPLATES, COLOR_FAMILIES, ALL_COLORS, GRAD_PRESETS, gradStops, lighterOf,
   get recentColors() { return recentColors.slice(); },
   paint, addLayer, deleteLayer, moveLayer, selectLayer, setLayerVisible, setLayerOpacity, composite, setUIHidden, openPicker, pk, pkSetHex, hsvToRgb, rgbToHsv, docPerScreenPx,
   get mySlots() { return mySlots.slice(); }, COLOR_CODE, placeMini, showPanel, hidePanel, get openPanel() { return openGrp; }, setMiniPos, setMiniFolded, get mini() { return { ...MINI }; }, setFamOpen, openColorsSheet, get activeLayer() { return paintTarget(); },
