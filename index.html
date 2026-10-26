@@ -7792,6 +7792,14 @@ async function restore() {
 /* ---------- aviso para instalar ---------- */
 let deferredPrompt = null, hintKind = null;
 const isStandalone = () => (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+/* v45: dentro de la app (TWA Android, PWA instalada o app iOS) nunca se muestra el aviso de instalar */
+const isInApp = () => {
+  const K = 'colorear.inapp';
+  let v = /^android-app:\/\/com\.bybroken\.coloring/.test(document.referrer || '') || isStandalone() || !!window.Capacitor;
+  try { if (v) { localStorage.setItem(K, '1'); sessionStorage.setItem(K, '1'); } else v = localStorage.getItem(K) === '1' || sessionStorage.getItem(K) === '1' || localStorage.getItem('colorear.twa') === '1'; } catch (e) {}
+  return v;
+};
+isInApp();
 const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 function showHint() {
   hintKind = 'install';
@@ -9604,7 +9612,7 @@ restore().then(async (restored) => {
   let seen = false, prevVer = null;
   try { seen = localStorage.getItem('colorear.hintVisto') === '1'; prevVer = localStorage.getItem('colorear.version'); localStorage.setItem('colorear.version', APP_VERSION); } catch (_) {}
   const busy = $('#adjust').classList.contains('show');
-  if (!seen && !isStandalone() && !busy) showHint();
+  if (!seen && !isInApp() && !busy) showHint();
   else if ((seen || restored) && prevVer !== APP_VERSION && !busy) showNews();   // quien ya usaba la app: contarle lo nuevo una vez
 });
 // Acceso para pruebas / depuración
