@@ -1095,6 +1095,19 @@ body.ui-hidden.obj-mode #miniBar{display:none}
 #adjust .apanel .seg button{flex:1 1 calc(50% - 3px)}
 @media (min-width:640px){ #adjust .apanel .seg button{flex:1 1 0} }
 #adjust.pcolor .only-photo,#adjust.pcolor #adjThick{display:none!important}
+/* 4.6: nada se desliza hacia el lado: herramientas, colores rápidos y neón se acomodan en filas */
+#tsList{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));overflow:visible;padding:2px 2px 4px;touch-action:manipulation;-webkit-mask-image:none;mask-image:none}
+#tsList .ts-t{width:auto;min-width:0}
+@media (min-width:700px) and (min-height:600px){ #tsList{grid-template-columns:repeat(auto-fill,minmax(80px,1fr))} #tsList .ts-t{height:66px} }
+#qsList{overflow:hidden;touch-action:manipulation;gap:4px}
+#toolStrip .ts-more{flex:0 0 56px;width:56px}
+#tsList{flex:1 1 0}
+#qsList .sw,#qsList .sw.fx{flex:1 1 0;width:auto;max-width:30px;min-width:0;height:auto;min-height:0;aspect-ratio:1/1}
+@media (max-width:600px){ #qsList{justify-content:space-between} }
+@media (min-width:601px){ #qsList{gap:8px} }
+@media (max-width:440px){ #qsCur{font-size:0;gap:0;padding:0 3px} #quickStrip{gap:5px} }
+#neonLine{flex-wrap:wrap}
+.neonq{flex-wrap:wrap;overflow:visible;touch-action:manipulation;row-gap:8px}
 </style>
 </head>
 <body class="mode-draw">
@@ -3344,13 +3357,53 @@ function sliverInfo(la) {
       for (const j of [x > 0 ? i - 1 : -1, x < W - 1 ? i + 1 : -1, i - W, i + W]) { if (j < 0 || j >= n || seen[j] === S) continue; seen[j] = S;
         const L = lab[j]; if (L && !isSl[L]) { got.add(L); continue; } dep.set(j, d + 1); q.push(j); } }
     for (const L of got) { if (!own.has(L)) own.set(L, []); own.get(L).push(S); } }
-  return (sliverCache = { hk, W, H, lab, px, own, count: Object.keys(px).length });
+  return (sliverCache = { hk, W, H, lab, px, own, area, bb, isSl, count: Object.keys(px).length });
 }
-function regionMask(fx, fy, laIn) {
+/* 4.6: zona «chica para el dedo»: menos de ~12×12 px de pantalla con el zoom actual (con zoom grande ya no se agrupa nada) */
+const TAP_SCR = 150, TAP_DOC = 420, TAP_GAP = 9, TAP_MAXA = 14000;
+// Tocó encima de una línea: entre las zonas a la distancia más corta (+3 px) gana la más grande (el dedo casi nunca busca un huequito)
+function tapNearest(sv, la, sx, sy, dpp) {
+  const R = clamp(Math.round(6 * dpp), 14, 30); let dmin = 1e9; const cand = [];
+  for (let r = 1; r <= R && r <= dmin + 3; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
+    if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
+    const x = sx + dx, y = sy + dy; if (x < 0 || y < 0 || x >= W || y >= H) continue;
+    const i = y * W + x, L = sv.lab[i]; if (!L || la[i * 4 + 3] >= LINE_T) continue;
+    const d = Math.hypot(dx, dy); if (d < dmin) dmin = d; cand.push([d, L, x, y]);
+  }
+  let best = null;
+  for (const c of cand) if (c[0] <= dmin + 3 && (!best || sv.area[c[1]] > sv.area[best[1]] || (sv.area[c[1]] === sv.area[best[1]] && c[0] < best[0]))) best = c;
+  return best && [best[2], best[3]];
+}
+// La zona tocada es diminuta en la pantalla: se pinta junto con las zonas diminutas vecinas (al otro lado de una línea fina),
+// así una cesta, un ladrillo o una textura se pinta con un toque. Las zonas normales nunca se juntan.
+function tapCluster(sv, la, L0, dpp) {
+  const k = 1 / (dpp * dpp), small = (L) => sv.area[L] <= TAP_DOC && sv.area[L] * k < TAP_SCR;
+  if (!small(L0)) return [L0];
+  const out = [L0], seen = new Set(out); let tot = sv.area[L0];
+  for (let h = 0; h < out.length && out.length < 300; h++) {
+    const L = out[h], [x1, y1, x2, y2] = sv.bb[L];
+    for (let y = y1; y <= y2; y++) for (let x = x1; x <= x2; x++) { const i = y * W + x; if (sv.lab[i] !== L) continue;
+      for (const [ddx, ddy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+        let xx = x + ddx, yy = y + ddy, n = 0;
+        while (n < TAP_GAP && xx >= 0 && yy >= 0 && xx < W && yy < H && la[(yy * W + xx) * 4 + 3] >= LINE_T) { xx += ddx; yy += ddy; n++; }
+        if (!n || n >= TAP_GAP || xx < 0 || yy < 0 || xx >= W || yy >= H) continue;
+        const M = sv.lab[yy * W + xx]; if (!M || seen.has(M)) continue; seen.add(M);
+        if (small(M) && tot + sv.area[M] <= TAP_MAXA) { out.push(M); tot += sv.area[M]; }
+      } }
+  }
+  return out;
+}
+function regionMask(fx, fy, laIn, tap) {
   let sx = Math.round(fx), sy = Math.round(fy);
   if (sx < 0 || sy < 0 || sx >= W || sy >= H) return null;
   const la = laIn || (bgPhoto ? photoWalls(sx, sy) : layers.line.ctx.getImageData(0, 0, W, H).data);
   const wall = (i) => la[i * 4 + 3] >= LINE_T;
+  // 4.6: ayuda al dedo (solo bote/degradado tocando la hoja, plantillas y dibujos de líneas). Las plantillas detalladas tienen
+  // cientos de zonas diminutas (texturas, cestas, pétalos) que en el teléfono miden menos que la yema del dedo: antes el toque
+  // pintaba un puntito o caía en la línea y elegía un huequito cualquiera, y la zona «se quedaba en blanco».
+  const tv = tap && !bgPhoto && !islandFill ? sliverInfo(la) : null;
+  const dpp = tv ? Math.max(0.5, docPerScreenPx()) : 1;
+  if (tv && wall(sy * W + sx)) { const pick = tapNearest(tv, la, sx, sy, dpp); if (pick) { sx = pick[0]; sy = pick[1]; } }
   if (wall(sy * W + sx)) {                  // tocó encima de una línea: busca un hueco cercano
     let found = false;
     for (let r = 1; r <= 14 && !found; r++) {
@@ -3382,8 +3435,13 @@ function regionMask(fx, fy, laIn) {
     if (y > maxY) maxY = y;
   }
   // 4.3: las rendijas finas y los pedacitos blancos sueltos pegados a esta zona se pintan con ella (antes se quedaban en blanco)
-  if (!bgPhoto && !islandFill) { const sv = sliverInfo(la), L = sv && sv.lab[sy * W + sx], list = L && sv.own.get(L);
-    if (list) for (const S of list) for (const i of sv.px[S]) { mask[i] = 1; const x = i % W, y = (i / W) | 0; if (x < minX) minX = x; if (x > maxX) maxX = x; if (y < minY) minY = y; if (y > maxY) maxY = y; } }
+  if (!bgPhoto && !islandFill) { const sv = sliverInfo(la), L0 = sv && sv.lab[sy * W + sx];
+    const Ls = L0 ? (tv ? tapCluster(sv, la, L0, dpp) : [L0]) : [];
+    const addPx = (i) => { mask[i] = 1; const x = i % W, y = (i / W) | 0; if (x < minX) minX = x; if (x > maxX) maxX = x; if (y < minY) minY = y; if (y > maxY) maxY = y; };
+    for (const L of Ls) {
+      if (L !== L0) { const [x1, y1, x2, y2] = sv.bb[L]; for (let y = y1; y <= y2; y++) for (let x = x1, i = y * W + x1; x <= x2; x++, i++) if (sv.lab[i] === L) addPx(i); }
+      const list = sv.own.get(L); if (list) for (const S of list) for (const i of sv.px[S]) addPx(i);
+    } }
   const keep = islandFill ? fillIslands(mask, la, minX, minY, maxX, maxY) : null;
   // Dilatar la zona bajo las líneas (solo sobre píxeles con tinta) para no dejar halos
   for (let pass = 0; pass < (keep ? 0 : DILATE); pass++) {   // 3.22: foto/PDF a color: no comerse la letra fina impresa
@@ -3472,7 +3530,7 @@ function metalShader(hex, minX, minY, bw, bh) {
   };
 }
 function floodFill(fx, fy, hex, alpha = 1) {
-  const reg = regionMask(fx, fy); if (!reg) return false;
+  const reg = regionMask(fx, fy, null, true); if (!reg) return false;
   const { mask, minX, minY, maxX, maxY } = reg;
   const bw = maxX - minX + 1, bh = maxY - minY + 1;
   const target = paintTarget(), cctx = layers[target].ctx;
@@ -3503,7 +3561,7 @@ function gradientFill(a, b, opts) {
   opts = opts || {};
   const S = (opts.stops || (opts.c1 || opts.c2 ? [opts.c1 || state.color, opts.c2 || state.color2] : gradStops())).map(hexToRgb);
   const type = opts.type || state.gradType, dir = opts.dir || state.gradDir, ns = S.length - 1;
-  const reg = regionMask(a.x, a.y); if (!reg) return false;
+  const reg = regionMask(a.x, a.y, null, true); if (!reg) return false;
   const { mask, minX, minY, maxX, maxY } = reg;
   // la zona real (sin la parte bajo las líneas) para que el degradado se vea completo
   let zx1 = maxX, zx2 = minX, zy1 = maxY, zy2 = minY;
@@ -8324,7 +8382,7 @@ function floodFillSym(fx, fy, hex, alpha = 1, Ts) {
   for (const T of Ts) {
     const q = T({ x: fx, y: fy }), qx = Math.round(q.x), qy = Math.round(q.y);
     if (qx < 0 || qy < 0 || qx >= W || qy >= H || done[qy * W + qx]) continue;
-    const reg = regionMask(q.x, q.y); if (!reg) continue;
+    const reg = regionMask(q.x, q.y, null, true); if (!reg) continue;
     const { mask, minX, minY, maxX, maxY } = reg, bw = maxX - minX + 1, bh = maxY - minY + 1;
     const img = cctx.getImageData(minX, minY, bw, bh), d = img.data, ms = metalShader(hex, minX, minY, bw, bh);
     for (let y = 0; y < bh; y++) {
