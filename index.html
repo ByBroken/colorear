@@ -1114,7 +1114,8 @@ body.ui-hidden.obj-mode #miniBar{display:none}
 #signPop{width:340px;overflow-y:auto;overscroll-behavior:contain}
 #signPop .agchips button.on{outline:3px solid #5856D6;outline-offset:-3px}
 #signFonts button{font-size:26px;line-height:1.1;padding:6px 4px;text-transform:none}
-#signText{width:100%;box-sizing:border-box;font-size:18px;padding:10px 12px;border-radius:12px;border:2px solid #d0d0e0;margin:4px 0 8px}
+input[type=text],input[type=search],input:not([type]),textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+#signText{touch-action:manipulation;pointer-events:auto;font-size:max(16px,18px);width:100%;box-sizing:border-box;font-size:18px;padding:10px 12px;border-radius:12px;border:2px solid #d0d0e0;margin:4px 0 8px}
 #signPut{width:100%}
 .sink{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:4px;border:1px solid #0003}
 </style>
@@ -2720,6 +2721,8 @@ $$('#signFonts button').forEach((b) => b.onclick = () => { state.signFont = +b.d
 $('#signPut').onclick = signPutText;
 $('#signText').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); signPutText(); } });
 $('#signPop').addEventListener('click', (e) => e.stopPropagation());
+['pointerdown', 'touchstart', 'mousedown'].forEach((t) => $('#signText').addEventListener(t, (e) => { e.stopPropagation(); }, { passive: true }));
+$('#signText').addEventListener('click', (e) => { const i = e.currentTarget; if (document.activeElement !== i) i.focus(); });
 new MutationObserver(() => { if ($('#signPop').classList.contains('show')) signUI(); }).observe($('#signPop'), { attributes: true, attributeFilter: ['class'] });
 function abortSingle() {
   const cur = g; g = null;
@@ -4713,7 +4716,8 @@ document.addEventListener('pointerdown', (e) => {
   hidePop();
   if (onPaper) { e.stopPropagation(); e.preventDefault(); }   // tocar la hoja solo cierra el submenú
 }, true);
-window.addEventListener('resize', hidePop);
+const typingInPop = () => { const a = document.activeElement; return !!(openPop && a && /^(INPUT|TEXTAREA)$/.test(a.tagName) && a.type !== 'range' && openPop.pop.contains(a)); };
+window.addEventListener('resize', () => { if (!typingInPop()) hidePop(); });   // el teclado del móvil cambia el tamaño: no cerrar mientras se escribe
 $$('#colorTools [data-ctool], #colorArt [data-ctool]').forEach((b) => b.onclick = () => {
   const t = b.dataset.ctool, wasOn = b.classList.contains('on');
   if (b.dataset.pop && (wasOn || openPop)) {                   // tocar otra vez: abrir / cerrar opciones
