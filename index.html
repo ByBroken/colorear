@@ -1108,11 +1108,21 @@ body.ui-hidden.obj-mode #miniBar{display:none}
 @media (max-width:440px){ #qsCur{font-size:0;gap:0;padding:0 3px} #quickStrip{gap:5px} }
 #neonLine{flex-wrap:wrap}
 .neonq{flex-wrap:wrap;overflow:visible;touch-action:manipulation;row-gap:8px}
+@font-face{font-family:"Great Vibes";src:url(fonts/GreatVibes-Regular.woff2) format("woff2");font-display:swap}
+@font-face{font-family:"Allura";src:url(fonts/Allura-Regular.woff2) format("woff2");font-display:swap}
+@font-face{font-family:"Dancing Script";src:url(fonts/DancingScript.woff2) format("woff2");font-weight:400 700;font-display:swap}
+#signPop{width:340px;overflow-y:auto;overscroll-behavior:contain}
+#signPop .agchips button.on{outline:3px solid #5856D6;outline-offset:-3px}
+#signFonts button{font-size:26px;line-height:1.1;padding:6px 4px;text-transform:none}
+#signText{width:100%;box-sizing:border-box;font-size:18px;padding:10px 12px;border-radius:12px;border:2px solid #d0d0e0;margin:4px 0 8px}
+#signPut{width:100%}
+.sink{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:4px;border:1px solid #0003}
 </style>
 </head>
 <body class="mode-draw">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
+    <symbol id="i-sign" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 3.5l3 3L9 15l-3.8.8L6 12z"/><path d="M3 20c2.2-1.6 3.6-1.8 4.4-.6.7 1 1.6 1.1 2.8.2 1.4-1 2.4-1.2 3.3-.2.8.9 2.3.9 4.5-.4"/></symbol>
     <symbol id="i-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1-4.5L16 4.5l3.5 3.5L8.5 19z"/><path d="M14 7l3 3"/></symbol>
     <symbol id="i-line" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 19L19 5"/><circle cx="5" cy="19" r="1.6" fill="currentColor"/><circle cx="19" cy="5" r="1.6" fill="currentColor"/></symbol>
     <symbol id="i-ellipse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><ellipse cx="12" cy="12" rx="8.5" ry="6.5"/></symbol>
@@ -1319,6 +1329,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <button class="tool has-pop" data-tool="wcolor" data-pop="wcPop" title="Pincel de acuarela: color transparente con agua; la orilla se oscurece al secar. Toca otra vez para ver las opciones" aria-label="Pincel de acuarela (toca otra vez para ver las opciones)"><svg><use href="#i-wcolor"/></svg><span>Pincel de acuarela</span></button>
     <button class="tool has-pop" data-tool="spray" data-pop="spPop" title="Spray: pintura en puntitos suaves; si vas despacio sale más. Toca otra vez para ver las opciones" aria-label="Spray (toca otra vez para ver las opciones)"><svg><use href="#i-spray"/></svg><span>Spray</span></button>
     <button class="tool" data-tool="stamp" title="Sellos: toca la hoja para poner un sello; arrastra para dejar una estela de sellos" aria-label="Sellos"><svg><use href="#i-stamp"/></svg><span>Sellos</span></button>
+    <button class="tool has-pop" data-tool="sign" data-pop="signPop" title="Firma: un bolígrafo fino para firmar tu dibujo. Toca otra vez para ver las opciones" aria-label="Firma"><svg><use href="#i-sign"/></svg><span data-i18n="tool.sign">Firma</span></button>
   </div>
   <div class="row only-color" id="colorTools">
     <button class="tool on" data-ctool="fill" title="Bote: toca una zona para rellenarla de color" aria-label="Bote de pintura"><svg><use href="#i-fill"/></svg>Bote</button>
@@ -1335,6 +1346,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <button class="tool has-pop" data-ctool="wcolor" data-pop="wcPop" title="Pincel de acuarela: color transparente con agua; la orilla se oscurece al secar. Toca otra vez para ver las opciones" aria-label="Pincel de acuarela (toca otra vez para ver las opciones)"><svg><use href="#i-wcolor"/></svg><span>Pincel de acuarela</span></button>
     <button class="tool has-pop" data-ctool="spray" data-pop="spPop" title="Spray: pintura en puntitos suaves; si vas despacio sale más. Toca otra vez para ver las opciones" aria-label="Spray (toca otra vez para ver las opciones)"><svg><use href="#i-spray"/></svg><span>Spray</span></button>
     <button class="tool" data-ctool="stamp" title="Sellos: toca la hoja para poner un sello; arrastra para dejar una estela de sellos" aria-label="Sellos"><svg><use href="#i-stamp"/></svg><span>Sellos</span></button>
+    <button class="tool has-pop" data-ctool="sign" data-pop="signPop" title="Firma: un bolígrafo fino para firmar tu dibujo. Toca otra vez para ver las opciones" aria-label="Firma"><svg><use href="#i-sign"/></svg><span data-i18n="tool.sign">Firma</span></button>
   </div>
   <div id="stampBox" hidden>
     <div id="stampCats" role="tablist" aria-label="Grupos de sellos"></div>
@@ -1510,6 +1522,18 @@ body.ui-hidden.obj-mode #miniBar{display:none}
     <p class="aglbl">Respetar las líneas</p>
     <div class="agchips c2" id="mixLines"><button data-ml="1" title="No mezcla las líneas negras ni pasa color al otro lado de una línea">Sí: no cruza las líneas</button><button data-ml="0" title="Mezcla libremente, también encima de las líneas">No: mezcla libre</button></div>
   </div>
+</div>
+<div class="pop" id="signPop" role="dialog" aria-label="Firma">
+  <h4 data-i18n="sign.title">Firma</h4>
+  <p class="ghint" data-i18n="sign.hint">Firma con el dedo o con el lápiz: un trazo fino y suave que queda encima de todo ✍️</p>
+  <p class="aglbl" data-i18n="sign.ink">Tinta</p>
+  <div class="agchips c2" id="signInk"><button data-ink="ink"><i class="sink" id="signInkSw"></i><span data-i18n="sign.ink.color">Color elegido</span></button><button data-ink="white"><i class="sink" style="background:#fff"></i><span data-i18n="sign.ink.white">Gel blanco</span></button><button data-ink="gold"><i class="sink" style="background:linear-gradient(135deg,#8a6a1c,#f7e08a,#b8902e)"></i><span data-i18n="sign.ink.gold">Dorado</span></button><button data-ink="silver"><i class="sink" style="background:linear-gradient(135deg,#6d7277,#f4f6f8,#9aa0a6)"></i><span data-i18n="sign.ink.silver">Plateado</span></button></div>
+  <p class="aglbl" data-i18n="sign.width">Grosor</p>
+  <div class="agchips" id="signW"><button data-w="1" data-i18n="sign.w.1">Fina</button><button data-w="2" data-i18n="sign.w.2">Media</button><button data-w="3" data-i18n="sign.w.3">Gruesa</button></div>
+  <p class="aglbl" data-i18n="sign.type">O escríbela con letra bonita</p>
+  <input id="signText" type="text" maxlength="40" autocomplete="off" enterkeyhint="done" placeholder="Tu nombre">
+  <div class="agchips" id="signFonts"><button data-f="0" style="font-family:'Great Vibes',cursive">Firma</button><button data-f="1" style="font-family:'Allura',cursive">Firma</button><button data-f="2" style="font-family:'Dancing Script',cursive">Firma</button></div>
+  <button class="bigbtn" id="signPut" data-i18n="sign.put">Poner firma</button>
 </div>
 <div class="pop" id="wcPop" role="dialog" aria-label="Pincel de acuarela">
   <h4>Pincel de acuarela</h4>
@@ -2339,7 +2363,7 @@ function paintTarget() { return isLiveLayer(state.activeLayer) ? state.activeLay
 function drawTarget() { const t = paintTarget(); return t === 'color' ? 'line' : t; }
 // 3.16: en Colorear el gel y el acrílico (opacos) pintan en la capa «encima» (sobre las líneas negras); lo demás, debajo de las líneas
 const overTool = (tool) => state.mode !== 'draw' && (tool === 'gel' || tool === 'acrylic');
-function toolTarget(tool) { return state.mode === 'draw' ? drawTarget() : overTool(tool) ? 'over' : paintTarget(); }
+function toolTarget(tool) { if (tool === 'sign') return 'over'; return state.mode === 'draw' ? drawTarget() : overTool(tool) ? 'over' : paintTarget(); }
 // Opacidad del color elegido (rueda de colores): el trazo se pinta en una capa aparte y se mezcla con esa opacidad
 function withAlpha(st, a) {
   if (!st || a == null || a >= 0.999) return st;
@@ -2451,6 +2475,7 @@ function startSingle0(e) {
     return;
   }
   if (tool === 'stamp') { g = stampStart(base, p); return; }   // 3.13: Sellos
+  if (tool === 'sign') { g = signStart(base, p, e); return; }   // v47: Firma
   const st = strokeStyleFor(tool);
   if (st) {
     g = Object.assign(base, { kind: 'stroke', st, box: { x1: Infinity, y1: Infinity, x2: -Infinity, y2: -Infinity }, T: symFor(tool) });
@@ -2490,6 +2515,7 @@ function onMove(e) {
   const evs = co && co.length ? co : [e];
   for (const ev of evs) {
     const p = toDoc(ev);
+    if (g.kind === 'sign') { signMove(g, p, ev); continue; }
     if (g.kind === 'stroke') {
       if (Math.hypot(p.x - g.last.x, p.y - g.last.y) < 1.5) continue;
       const mid = { x: (g.last.x + p.x) / 2, y: (g.last.y + p.y) / 2 };
@@ -2548,6 +2574,8 @@ function endSingle(cancelled) {
     newToolEnd(cur);
   } else if (cur.kind === 'stamp') {
     stampEnd(cur);
+  } else if (cur.kind === 'sign') {
+    signEnd(cur);
   } else if (cur.kind === 'stroke') {
     strokeSeg(cur, cur.mid, cur.last, cur.last);
     if (cur.T) symSeg(cur, cur.mid, cur.last, cur.last);
@@ -2570,6 +2598,129 @@ function endSingle(cancelled) {
   }
 }
 // Llega un segundo dedo: deshacer lo que el primero empezó (si fue un toque breve) para no dejar rayas sueltas
+/* ---------- v47: Firma (bolígrafo fino) ----------
+   Trazo suave de ancho variable (presión del lápiz o velocidad del dedo), con estabilizador para que no tiemble.
+   Se pinta en la capa «encima» (sobre las líneas y el color): el relleno nunca la tapa; se guarda, se exporta y sale en el video. */
+const SIGN_FONTS = ['Great Vibes', 'Allura', 'Dancing Script'];
+const SIGN_W = [0, 1.2, 2, 3.2];
+function signInkColor() { return state.mode === 'draw' ? state.drawColor : state.color; }
+function signPaint(c, ink, x0, y0, x1, y1) {          // aplica el acabado a lo que ya está dibujado en c (en negro)
+  if (ink === 'gold' || ink === 'silver') {
+    const gr = c.createLinearGradient(x0, y0, x1, y1), st = ink === 'gold' ? ['#7a5a12', '#f7e08a', '#b8902e', '#fff3b0', '#9c7621', '#f2d36b', '#7a5a12'] : ['#5f646a', '#f4f6f8', '#9aa0a6', '#ffffff', '#7d838a', '#e3e6e9', '#5f646a'];
+    st.forEach((col, i) => gr.addColorStop(i / (st.length - 1), col));
+    c.save(); c.globalCompositeOperation = 'source-in'; c.fillStyle = gr; c.fillRect(x0, y0, x1 - x0, y1 - y0); c.restore();
+  }
+}
+function signColorOf(ink, color) { return ink === 'white' ? '#FFFFFF' : ink === 'gold' ? '#c9a23a' : ink === 'silver' ? '#b9bec4' : color; }
+function signStart(base, p, e) {
+  const k = docPerCss(), lw = SIGN_W[state.signW || 2] * k * 1.15;
+  const pen = e.pointerType === 'pen' && e.pressure > 0 && e.pressure !== 0.5;
+  const g0 = Object.assign(base, { kind: 'sign', k, lw, pen, ink: state.signInk || 'ink', color: signColorOf(state.signInk || 'ink', signInkColor()), s: { x: p.x, y: p.y }, pts: [], t: performance.now(), w: lw * 0.55, box: { x1: Infinity, y1: Infinity, x2: -Infinity, y2: -Infinity } });
+  signAdd(g0, p, e.pressure, performance.now());
+  return g0;
+}
+function signAdd(gg, p, pr, t) {
+  // estabilizador: sigue al dedo con un poco de inercia (quita el temblor sin que se sienta lento)
+  const a = gg.pts.length ? 0.5 : 1;
+  gg.s.x += (p.x - gg.s.x) * a; gg.s.y += (p.y - gg.s.y) * a;
+  const q = gg.pts[gg.pts.length - 1];
+  const d = q ? Math.hypot(gg.s.x - q.x, gg.s.y - q.y) : 0;
+  if (q && d < gg.k * 0.9) return false;
+  let tw;
+  if (gg.pen) tw = gg.lw * (0.3 + 1.2 * Math.pow(clamp(pr || 0.5, 0, 1), 0.8));
+  else { const v = q ? d / gg.k / Math.max(4, t - gg.t) : 0; tw = gg.lw * clamp(1.3 - 0.55 * v, 0.42, 1.3); }   // rápido = más fino, como una pluma
+  const n = gg.pts.length;
+  gg.w = n < 3 ? gg.w + (tw - gg.w) * 0.35 : gg.w + (tw - gg.w) * 0.25;      // el ancho cambia suave, y empieza afinado
+  gg.t = t;
+  gg.pts.push({ x: gg.s.x, y: gg.s.y, w: gg.w });
+  bboxAdd(gg.box, gg.s.x, gg.s.y, gg.lw * 2 + 4);
+  return true;
+}
+// dibuja los puntos [i0..] como curvas cuadráticas por los puntos medios, con el ancho interpolado en pasos pequeños
+function signDraw(c, pts, i0, color, tail) {
+  c.save(); c.fillStyle = c.strokeStyle = color; c.lineCap = 'round'; c.lineJoin = 'round';
+  const n = pts.length;
+  if (n === 1) { c.beginPath(); c.arc(pts[0].x, pts[0].y, pts[0].w / 2, 0, Math.PI * 2); c.fill(); c.restore(); return; }
+  const mid = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2, w: (a.w + b.w) / 2 });
+  for (let i = Math.max(1, i0); i < n; i++) {
+    const a = i === 1 ? pts[0] : mid(pts[i - 2], pts[i - 1]), ctl = pts[i - 1], b = (i === n - 1 && tail) ? pts[i] : mid(pts[i - 1], pts[i]);
+    const len = Math.hypot(ctl.x - a.x, ctl.y - a.y) + Math.hypot(b.x - ctl.x, b.y - ctl.y);
+    const steps = Math.max(1, Math.ceil(len / Math.max(0.6, Math.min(a.w, b.w) * 0.5)));
+    let px = a.x, py = a.y;
+    for (let s2 = 1; s2 <= steps; s2++) {
+      const t = s2 / steps, u = 1 - t;
+      const x = u * u * a.x + 2 * u * t * ctl.x + t * t * b.x, y = u * u * a.y + 2 * u * t * ctl.y + t * t * b.y;
+      c.lineWidth = a.w + (b.w - a.w) * t;
+      c.beginPath(); c.moveTo(px, py); c.lineTo(x, y); c.stroke();
+      px = x; py = y;
+    }
+  }
+  c.restore();
+}
+function signMove(gg, p, ev) {
+  const n0 = gg.pts.length;
+  if (!signAdd(gg, p, ev.pressure, ev.timeStamp || performance.now())) return;
+  // vista previa (encima de todo): se redibuja solo el tramo nuevo
+  if (!gg.prev) { gg.prev = true; pctx.clearRect(0, 0, W, H); }
+  signDraw(pctx, gg.pts, Math.max(1, n0 - 1), gg.ink === 'white' ? '#FFFFFF' : gg.color, false);
+}
+function signEnd(gg) {
+  pctx.clearRect(0, 0, W, H);
+  const r = clampRect(rectOf(gg.box)); if (!r || !gg.pts.length) return;
+  // termina afinando la punta, como una pluma
+  const last = gg.pts[gg.pts.length - 1]; gg.pts.push({ x: last.x + 0.01, y: last.y, w: last.w * 0.5 });
+  const t = mkCanvas(r.w, r.h), tc = t.getContext('2d');
+  tc.translate(-r.x, -r.y);
+  signDraw(tc, gg.pts, 1, gg.ink === 'white' || gg.ink === 'ink' ? gg.color : '#000', true);
+  if (gg.pts.length <= 2) signDraw(tc, [gg.pts[0]], 1, gg.ink === 'white' || gg.ink === 'ink' ? gg.color : '#000', true);
+  signPaint(tc, gg.ink, r.x, r.y, r.x + r.w, r.y + r.h);
+  const c = layers.over.ctx;
+  c.save();
+  if (gg.ink === 'white') { c.shadowColor = 'rgba(0,0,0,0.28)'; c.shadowBlur = Math.max(1, gg.k * 1.2); }   // el gel blanco se ve también sobre el papel blanco
+  c.drawImage(t, r.x, r.y);
+  c.restore();
+  commit([capturePart('over', r)]);
+}
+// Firma escrita con letra bonita (fuentes OFL incluidas en la app, funcionan sin internet)
+const signFontCss = (o) => `100px "${SIGN_FONTS[o.font] || SIGN_FONTS[0]}", cursive`;
+function signTextW(o) { if (!measureCtx) measureCtx = mkCanvas(4, 4).getContext('2d'); measureCtx.font = signFontCss(o); return measureCtx.measureText(o.text || ' ').width; }
+function signTextDraw(c, o) {
+  c.font = signFontCss(o); c.textAlign = 'center'; c.textBaseline = 'middle';
+  if (o.ink === 'gold' || o.ink === 'silver') {
+    const w = signTextW(o) / 2 + 10, t = mkCanvas(1, 1);
+    const gr = c.createLinearGradient(-w, -50, w, 50), st = o.ink === 'gold' ? ['#7a5a12', '#f7e08a', '#b8902e', '#fff3b0', '#9c7621', '#f2d36b', '#7a5a12'] : ['#5f646a', '#f4f6f8', '#9aa0a6', '#ffffff', '#7d838a', '#e3e6e9', '#5f646a'];
+    st.forEach((col, i) => gr.addColorStop(i / (st.length - 1), col)); c.fillStyle = gr;
+  } else {
+    if (o.ink === 'white') { c.shadowColor = 'rgba(0,0,0,0.3)'; c.shadowBlur = 2; }
+    c.fillStyle = o.ink === 'white' ? '#FFFFFF' : o.color;
+  }
+  c.fillText(o.text, 0, 6);
+}
+async function signPutText() {
+  const text = ($('#signText').value || '').trim();
+  if (!text) { $('#signText').focus(); return; }
+  const font = state.signFont || 0;
+  try { await document.fonts.load(`100px "${SIGN_FONTS[font]}"`, text); } catch (_) {}
+  hidePop();
+  const o = { kind: 'sign', text, font, ink: state.signInk || 'ink', color: signColorOf(state.signInk || 'ink', signInkColor()) };
+  const visW = stage.clientWidth * docPerCss();
+  o.s = clamp(visW * 0.5 / Math.max(60, signTextW(o)), 0.2, 10);
+  addObject(o);
+}
+function signUI() {
+  $$('#signInk button').forEach((b) => b.classList.toggle('on', b.dataset.ink === (state.signInk || 'ink')));
+  $$('#signW button').forEach((b) => b.classList.toggle('on', +b.dataset.w === (state.signW || 2)));
+  $$('#signFonts button').forEach((b) => b.classList.toggle('on', +b.dataset.f === (state.signFont || 0)));
+  const sw = $('#signInkSw'); if (sw) sw.style.background = signInkColor();
+  const ph = $('#signText'); if (ph) ph.placeholder = tt('sign.ph');
+}
+$$('#signInk button').forEach((b) => b.onclick = () => { state.signInk = b.dataset.ink; signUI(); });
+$$('#signW button').forEach((b) => b.onclick = () => { state.signW = +b.dataset.w; signUI(); });
+$$('#signFonts button').forEach((b) => b.onclick = () => { state.signFont = +b.dataset.f; signUI(); });
+$('#signPut').onclick = signPutText;
+$('#signText').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); signPutText(); } });
+$('#signPop').addEventListener('click', (e) => e.stopPropagation());
+new MutationObserver(() => { if ($('#signPop').classList.contains('show')) signUI(); }).observe($('#signPop'), { attributes: true, attributeFilter: ['class'] });
 function abortSingle() {
   const cur = g; g = null;
   stage.classList.remove('panning');
@@ -2593,7 +2744,7 @@ function abortSingle() {
       flEnd(cur);
       commit([capturePart(layer, rectOf(cur.box))]);
     }
-  } else if (cur.kind === 'shape' || cur.kind === 'grad') {
+  } else if (cur.kind === 'shape' || cur.kind === 'grad' || cur.kind === 'sign') {
     pctx.clearRect(0, 0, W, H);
   } else if (cur.kind === 'agrad') {
     agEnd(cur, true);
@@ -5416,6 +5567,7 @@ function tsDefs() {
     dt('pen', 'i-pen', 'tool.pen'); marks(); dt('line', 'i-line', 'tool.line'); dt('ellipse', 'i-ellipse', 'tool.ellipse'); dt('rect', 'i-rect', 'tool.rect');
     dt('star', 'i-star', 'tool.star'); dt('heart', 'i-heart', 'tool.heart'); dt('erase', 'i-eraser', 'tool.erase');
     dt('cpencil', 'i-cpencil', 'tool.cpencil'); gels(); dt('mixb', 'i-mixb', 'tool.mixb', 'mixPop'); dt('wcolor', 'i-wcolor', 'tool.wcolor', 'wcPop'); dt('spray', 'i-spray', 'tool.spray', 'spPop');
+    dt('sign', 'i-sign', 'tool.sign', 'signPop');
     L.push({ k: 'stamp', icon: 'i-stamp', label: () => tt('tool.stamp'), on: () => state.drawTool === 'stamp', pick: () => { pickTool(); setDrawTool('stamp'); showPanel('tools'); }, panel: true });
   } else {
     ct('fill', 'i-fill', 'tool.fill');
@@ -5425,6 +5577,7 @@ function tsDefs() {
     ct('agrad', 'i-agrad', 'tool.agrad', 'agradPop', () => { pickTool(); setColorTool('agrad'); state.agSeen = true; renderAg(); });
     ct('mixb', 'i-mixb', 'tool.mixb', 'mixPop'); ct('blend', 'i-blend', 'tool.blend');
     L.push({ k: 'stamp', icon: 'i-stamp', label: () => tt('tool.stamp'), on: () => state.colorTool === 'stamp', pick: () => { pickTool(); setColorTool('stamp'); showPanel('tools'); }, panel: true });
+    ct('sign', 'i-sign', 'tool.sign', 'signPop');
     ct('cerase', 'i-eraser', 'tool.cerase.short');
   }
   return L;
@@ -5481,7 +5634,7 @@ function tsGroupOf(k) {
   if (k === 'cpencil') return 'pencils';
   if (['wcolor', 'spray', 'mixb', 'blend'].includes(k)) return 'brushes';
   if (['fill', 'grad', 'agrad'].includes(k)) return 'fill';
-  if (['stamp', 'cerase'].includes(k)) return 'more';
+  if (['stamp', 'cerase', 'sign'].includes(k)) return 'more';
   return 'basic';
 }
 function tsBtnFor(d) {
@@ -6614,12 +6767,13 @@ function stTight(it) {
   stBoundsC.set(it.id, b); return b;
 }
 function objBounds(o) {               // caja local (sin escala ni giro)
+  if (o.kind === 'sign') { const w = signTextW(o) / 2 + 12; return { x1: -w, y1: -62, x2: w, y2: 62 }; }
   if (o.kind === 'text') { const w = textWidth(o.text) / 2 + 10; return { x1: -w, y1: -64, x2: w, y2: 64 }; }
   if (o.kind === 'stamp') { const it = STI[o.key]; if (it) { const t = stTight(it); return { x1: -t.hw, y1: -t.hh, x2: t.hw, y2: t.hh }; } }
   return { x1: -50, y1: -50, x2: 50, y2: 50 };
 }
-function objMinS(o) { return o.kind === 'text' ? 0.2 : o.kind === 'stamp' ? 0.1 : 0.3; }
-function objMaxS(o) { return o.kind === 'text' ? 10 : o.kind === 'stamp' ? 9 : 14; }
+function objMinS(o) { return o.kind === 'text' || o.kind === 'sign' ? 0.2 : o.kind === 'stamp' ? 0.1 : 0.3; }
+function objMaxS(o) { return o.kind === 'text' || o.kind === 'sign' ? 10 : o.kind === 'stamp' ? 9 : 14; }
 function toWorld(o, lx, ly) { const c = Math.cos(o.r), s = Math.sin(o.r); return { x: o.x + (lx * c - ly * s) * o.s, y: o.y + (lx * s + ly * c) * o.s }; }
 function toLocal(o, x, y) { const c = Math.cos(o.r), s = Math.sin(o.r), dx = (x - o.x) / o.s, dy = (y - o.y) / o.s; return { x: dx * c + dy * s, y: -dx * s + dy * c }; }
 // Dibuja un objeto. target: 'view' (vista previa), 'line' (capa de contorno) o 'color' (capa de color)
@@ -6633,7 +6787,9 @@ function drawObj(c, o, target) {
   }
   c.save();
   c.translate(o.x, o.y); c.rotate(o.r); c.scale(o.s, o.s); if (o.mir) c.scale(-1, 1);
-  if (o.kind === 'text') {
+  if (o.kind === 'sign') {
+    if (target === 'view' || target === 'over') signTextDraw(c, o);
+  } else if (o.kind === 'text') {
     if (target !== 'color') {
       c.font = TEXT_FONT; c.textAlign = 'center'; c.textBaseline = 'middle';
       if (o.style === 'outline') { c.lineJoin = 'round'; c.lineWidth = 6; c.strokeStyle = '#000'; c.strokeText(o.text, 0, 4); }
@@ -6665,7 +6821,7 @@ function drawObj(c, o, target) {
   }
   c.restore();
 }
-const objCanFlip = (o) => o.kind !== 'text';
+const objCanFlip = (o) => o.kind !== 'text' && o.kind !== 'sign';
 const objCanColor = (o) => o.kind !== 'emoji' && !(o.style === 'outline' && o.kind !== 'text');
 // Marco con un mínimo cómodo para el dedo (aunque el sello sea chiquito) y botones de ≥44 px en las esquinas
 function objFrame(o) {
@@ -6794,6 +6950,7 @@ function flattenObjs() {
   const pt = paintTarget(), names = new Set();
   for (const o of objs) {
     if (o.kind === 'stamp') { const L = layers[o.layer] ? o.layer : pt; names.add(L); drawObj(layers[L].ctx, o, 'stamp'); continue; }
+    if (o.kind === 'sign') { names.add('over'); drawObj(layers.over.ctx, o, 'over'); continue; }   // v47: la firma va encima de todo
     names.add('line'); names.add(pt);
     drawObj(layers[pt].ctx, o, 'color'); drawObj(layers.line.ctx, o, 'line');
   }
@@ -7353,8 +7510,8 @@ async function importImageFile(file) {
   closeSheet('#photoSheet'); closeSheet('#tplSheet');
   try {
     if (isPdfLike(file)) { const pg = await choosePdfPage(file); if (pg) await openAdjust(pg.cv, want, { pdf: pg }); return; }   // 3.10.2: PDF
+    if (hasPdfMagic(await file.slice(0, 1024).arrayBuffer())) { const pg = await choosePdfPage(file); if (pg) await openAdjust(pg.cv, want, { pdf: pg }); return; }
     const buf = await file.arrayBuffer();
-    if (hasPdfMagic(buf)) { const pg = await choosePdfPage(file, buf); if (pg) await openAdjust(pg.cv, want, { pdf: pg }); return; }
     const meta = readPngText(buf);
     if (meta && meta.Colorear) { await importOwn(new Blob([buf], { type: 'image/png' }), meta); return; }
     const img = await loadImage(new Blob([buf], { type: file.type || 'image/*' }));
@@ -7384,7 +7541,29 @@ async function importOwn(blob, meta) {
    PDF.js (en pdfjs/, sin CDN, guardado en el caché para funcionar sin internet) se carga solo al abrir un PDF.
    Una página sola pasa directo; con varias, se elige cuál. La página se dibuja sobre fondo blanco a un máximo de
    PDF_SIDE px y entra por el mismo camino que una foto subida (openAdjust → useAdjusted). */
-const PDF_MAX_BYTES = 60 * 1024 * 1024;
+const PDF_MAX_BYTES = 100 * 1024 * 1024;
+/* 4.7: PDF grandes (hasta 100 MB): el archivo no se lee entero. PDF.js pide solo los pedazos que necesita
+   (file.slice por rangos de 1 MB), así un libro escaneado de 100 MB no llena la memoria del iPhone/iPad. */
+const PDF_CHUNK = 1 << 20;
+async function openPdfDoc(lib, file, buf) {
+  const base = { isEvalSupported: false, enableXfa: false };
+  if (!buf && file && typeof file.slice === 'function' && lib.PDFDataRangeTransport) {
+    try {
+      const head = new Uint8Array(await file.slice(0, Math.min(file.size, PDF_CHUNK)).arrayBuffer());
+      if (!hasPdfMagic(head.buffer)) { const er = new Error('not pdf'); er.name = 'InvalidPDFException'; throw er; }
+      class FileRange extends lib.PDFDataRangeTransport {
+        requestDataRange(begin, end) {
+          file.slice(begin, end).arrayBuffer().then((ab) => this.onDataRange(begin, new Uint8Array(ab)), (e) => console.warn('pdf range', e));
+        }
+      }
+      const tr = new FileRange(file.size, head);
+      const doc = await lib.getDocument({ ...base, range: tr, rangeChunkSize: PDF_CHUNK, disableAutoFetch: true, disableStream: true, length: file.size }).promise;
+      doc.__tr = tr; return doc;
+    } catch (e) { if (e && (e.name === 'PasswordException' || e.name === 'InvalidPDFException')) throw e; console.warn('pdf range off', e); }
+  }
+  buf = buf || await file.arrayBuffer();
+  return lib.getDocument({ ...base, data: new Uint8Array(buf) }).promise;   // el ArrayBuffer pasa al worker sin copia
+}
 /* 3.22: PDF en alta: la página se dibuja hasta 8000 px (6000 en iPhone/iPad) y ~24 MP (16 MP en iOS, que no deja más);
    se mide cuánto canvas aguanta el aparato. La hoja de pintar llega a 16 MP (8 MP en móvil) y el zoom a 24×.
    Si se recorta una parte, esa parte se vuelve a dibujar desde el PDF (vector), no se agranda la imagen. */
@@ -7458,9 +7637,8 @@ async function choosePdfPage(file, buf) {
   pdfBusy(true, 'pdf.loading');
   try {
     if (file.size > PDF_MAX_BYTES) { const er = new Error('big'); er.name = 'TooBigError'; throw er; }
-    buf = buf || await file.arrayBuffer();
     const lib = await loadPdfLib();
-    doc = await lib.getDocument({ data: new Uint8Array(buf), isEvalSupported: false, enableXfa: false }).promise;
+    doc = await openPdfDoc(lib, file, buf); buf = null;
     if (!doc.numPages) throw new Error('empty');
     if (doc.numPages === 1) { const r = await pdfHi(doc, 1); doc = null; return r; }
     pdfBusy(false);

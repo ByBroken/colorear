@@ -1,6 +1,6 @@
 /* Service worker de Colorear: guarda todo en caché para funcionar sin internet
    y recibe imágenes compartidas desde otras apps (Web Share Target). */
-const CACHE = 'colorear-v46';
+const CACHE = 'colorear-v47';
 const CACHE_COMPARTIDO = 'colorear-compartido';
 const ARCHIVOS = [
   './',
@@ -15,6 +15,9 @@ const ARCHIVOS = [
   'stamps-data.js',
   'pbn-data.js',
   'il-data.js',
+  'fonts/GreatVibes-Regular.woff2',
+  'fonts/Allura-Regular.woff2',
+  'fonts/DancingScript.woff2',
   'cozy2-data.js',
   'icon-48.png',
   'icon-72.png',
