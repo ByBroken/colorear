@@ -3597,13 +3597,18 @@ function regionMask(fx, fy, laIn, tap) {
       const list = sv.own.get(L); if (list) for (const S of list) for (const i of sv.px[S]) addPx(i);
     } }
   const keep = islandFill ? fillIslands(mask, la, minX, minY, maxX, maxY) : null;
+  // 4.8: huequitos encerrados entre líneas (entre rizos, en cruces de trazos) pegados a la zona se pintan con ella
+  { const b = absorbPockets(mask, la, minX, minY, maxX, maxY); if (b) { minX = b[0]; minY = b[1]; maxX = b[2]; maxY = b[3]; } }
   // Dilatar la zona bajo las líneas (solo sobre píxeles con tinta) para no dejar halos
-  for (let pass = 0; pass < (keep ? 0 : DILATE); pass++) {   // 3.22: foto/PDF a color: no comerse la letra fina impresa
+  // 4.8: foto/PDF a color: también se cubre el borde suavizado (gris claro) de la línea, nunca el negro del trazo ni la letra impresa
+  const sk = (sy * W + sx) * 4, seedL = bgPhoto ? 0.299 * la[sk] + 0.587 * la[sk + 1] + 0.114 * la[sk + 2] : 0;
+  for (let pass = 0; pass < (bgPhoto ? DILATE + 1 : DILATE); pass++) {
     const x1 = Math.max(0, minX - 1), x2 = Math.min(W - 1, maxX + 1), y1 = Math.max(0, minY - 1), y2 = Math.min(H - 1, maxY + 1);
     const add = [];
     for (let y = y1; y <= y2; y++) for (let x = x1; x <= x2; x++) {
       const i = y * W + x;
       if (mask[i] || la[i * 4 + 3] === 0 || (keep && keep[i])) continue;
+      if (bgPhoto) { const k = i * 4, l = 0.299 * la[k] + 0.587 * la[k + 1] + 0.114 * la[k + 2]; if (l < 60 || l > seedL + 10) continue; }
       const l = x > 0, r = x < W - 1, u = y > 0, d = y < H - 1;
       if ((l && mask[i - 1]) || (r && mask[i + 1]) || (u && mask[i - W]) || (d && mask[i + W]) ||
           (l && u && mask[i - W - 1]) || (r && u && mask[i - W + 1]) || (l && d && mask[i + W - 1]) || (r && d && mask[i + W + 1])) add.push(i);
@@ -3612,6 +3617,50 @@ function regionMask(fx, fy, laIn, tap) {
     minX = x1; maxX = x2; minY = y1; maxY = y2;
   }
   return { mask, minX, minY, maxX, maxY };
+}
+/* 4.8: huequitos. Tras el relleno, los pedacitos sin pintar (no línea) muy chicos que quedan cerca de la zona, separados de ella
+   solo por un trazo (≈ grosor de línea), se pintan con ella: entre rizos, barbas y cruces de líneas ya no quedan puntitos blancos.
+   El brillo de un ojo (rodeado de negro grueso) no se toca: queda más lejos que el grosor de la línea. */
+function absorbPockets(mask, la, minX, minY, maxX, maxY) {
+  const wall = (i) => la[i * 4 + 3] >= LINE_T;
+  // grosor típico de la línea: recorridos de tinta desde el borde de la zona
+  const runs = []; let tries = 0;
+  for (let y = minY; y <= maxY && runs.length < 300 && tries < 4000; y += 3) for (let x = minX; x <= maxX && runs.length < 300; x += 3) {
+    const i = y * W + x; if (!mask[i]) continue;
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const xx = x + dx, yy = y + dy; if (xx < 0 || yy < 0 || xx >= W || yy >= H) continue;
+      if (!wall(yy * W + xx)) continue; tries++; let n = 0, ax = xx, ay = yy;
+      while (n < 60 && ax >= 0 && ay >= 0 && ax < W && ay < H && wall(ay * W + ax)) { ax += dx; ay += dy; n++; }
+      if (n < 60 && ax >= 0 && ay >= 0 && ax < W && ay < H) runs.push(n); }
+  }
+  if (!runs.length) return null;
+  runs.sort((a, b) => a - b);
+  const lw = runs[runs.length >> 1], G = Math.min(30, Math.round(lw * 1.4) + 2);
+  const PK = Math.max(60, Math.round(W * H * 0.00004));
+  const x1 = Math.max(0, minX - G - 1), x2 = Math.min(W - 1, maxX + G + 1), y1 = Math.max(0, minY - G - 1), y2 = Math.min(H - 1, maxY + G + 1);
+  const bw = x2 - x1 + 1, bh = y2 - y1 + 1, seen = new Uint8Array(bw * bh), dep = new Int16Array(bw * bh);
+  const st = [], comp = [], q = []; let bx1 = minX, by1 = minY, bx2 = maxX, by2 = maxY, any = false;
+  for (let s0 = 0; s0 < bw * bh; s0++) {
+    if (seen[s0]) continue; const g0 = (y1 + ((s0 / bw) | 0)) * W + x1 + (s0 % bw);
+    if (mask[g0] || wall(g0)) { seen[s0] = 1; continue; }
+    comp.length = 0; st.length = 0; st.push(s0); seen[s0] = 1; let edge = false;
+    while (st.length) { const t = st.pop(), tx = t % bw, ty = (t / bw) | 0; comp.push(t);
+      if (tx === 0 || ty === 0 || tx === bw - 1 || ty === bh - 1) edge = true;
+      for (const u of [tx > 0 ? t - 1 : -1, tx < bw - 1 ? t + 1 : -1, ty > 0 ? t - bw : -1, ty < bh - 1 ? t + bw : -1]) {
+        if (u < 0 || seen[u]) continue; const g = (y1 + ((u / bw) | 0)) * W + x1 + (u % bw);
+        if (mask[g] || wall(g)) continue; seen[u] = 1; st.push(u); } }
+    if (edge || comp.length > PK) continue;
+    // ¿llega a la zona cruzando solo tinta, a menos de G px?
+    q.length = 0; const vis = new Set(comp); for (const t of comp) { q.push(t); dep[t] = 0; } let hit = false;
+    for (let h = 0; h < q.length && !hit; h++) { const t = q[h], d = dep[t]; if (d >= G) continue; const tx = t % bw, ty = (t / bw) | 0;
+      for (const u of [tx > 0 ? t - 1 : -1, tx < bw - 1 ? t + 1 : -1, ty > 0 ? t - bw : -1, ty < bh - 1 ? t + bw : -1]) {
+        if (u < 0 || vis.has(u)) continue; const g = (y1 + ((u / bw) | 0)) * W + x1 + (u % bw);
+        if (mask[g]) { hit = true; break; } if (!wall(g)) continue; vis.add(u); dep[u] = d + 1; q.push(u); } }
+    if (!hit) continue;
+    any = true;
+    for (const t of comp) { const x = x1 + t % bw, y = y1 + ((t / bw) | 0); mask[y * W + x] = 1;
+      if (x < bx1) bx1 = x; if (x > bx2) bx2 = x; if (y < by1) by1 = y; if (y > by2) by2 = y; }
+  }
+  return any ? [bx1, by1, bx2, by2] : null;
 }
 /* 3.22: libros de pintar por número: los numeritos impresos dentro de una zona son "islas" pequeñas de tinta
    (con huequitos blancos dentro, como en 0, 6, 8). Se rellenan con la zona para que no queden halos blancos.
@@ -3644,7 +3693,7 @@ function fillIslands(mask, la, minX, minY, maxX, maxY) {
     const white = comp.length - ink;
     if (white > ink * 1.5 + 6) continue;
     for (const gi of comp) {
-      if (keep && la[gi * 4 + 3] >= LINE_T) { keep[gi] = 1; continue; }   // foto a color: el número no se tapa
+      if (keep && la[gi * 4 + 3] >= LINE_T && (0.299 * la[gi * 4] + 0.587 * la[gi * 4 + 1] + 0.114 * la[gi * 4 + 2]) < 60) { keep[gi] = 1; continue; }   // foto a color: el número no se tapa (4.8: su borde gris sí)
       mask[gi] = 1;
     }
   }
