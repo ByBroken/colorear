@@ -58,6 +58,7 @@
 <script src="pbn-data.js"></script>
 <script src="il-data.js"></script>
 <script src="cozy2-data.js"></script>
+<script src="navidad-data.js"></script>
 <script src="stamps-data.js"></script>
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -4582,6 +4583,7 @@ const TPL_UPG_DATE = '2026-10-15';
   for (const a of (window.TPL_IL || [])) { const ds = a.d, es = a.e, fs = a.f || [], lw = a.w, lw2 = a.w2; TEMPLATES.push({ id: a.id, ex: a.ex, cat: 'personajes', added: '2026-10-18', probe: a.p, land: !!a.land, n: a.n, draw(c) { c.fillStyle = '#000'; const pe = !!window.__pbnEyes, ey = pe && a.ey ? a.ey : null, ex = pe && a.ex ? a.ex : null, sk = (k, i) => ex && a.exs && a.exs[k] && a.exs[k].includes(i); fs.forEach((f, i) => { if (sk('f', i)) return; if (ey && ey.includes(i)) { const w0 = c.lineWidth; c.lineWidth = lw; c.stroke(new Path2D(f)); c.lineWidth = w0; } else c.fill(new Path2D(f), 'evenodd'); }); c.lineWidth = lw; strokeAll(c, ds.filter((_, i) => !sk('d', i))); c.lineWidth = lw2; strokeAll(c, es.filter((_, i) => !sk('e', i))); if (ex) pbnEyeDraw(c, ex, lw); } }); }
   // 4.3: «Cozy» y «Otoño y Acción de Gracias»: líneas gruesas y cerradas, ojos con blanco, iris de color y brillo
   for (const a of (window.TPL_CZ2 || [])) { const ds = a.d, es = a.e, fs = a.f; TEMPLATES.push({ id: a.id, cat: a.cat, added: '2026-10-26', probe: a.p, n: a.n, draw(c) { c.fillStyle = '#000'; for (const f of fs) c.fill(new Path2D(f), 'evenodd'); c.lineWidth = a.w; strokeAll(c, ds); c.lineWidth = a.w2; strokeAll(c, es); } }); }
+  for (const a of (window.TPL_NAV || [])) { const ds = a.d, es = a.e, fs = a.f; TEMPLATES.push({ id: a.id, cat: a.cat, added: a.added || '2026-11-06', probe: a.p, n: a.n, draw(c) { c.fillStyle = '#000'; for (const f of fs) c.fill(new Path2D(f), 'evenodd'); c.lineWidth = a.w; strokeAll(c, ds); c.lineWidth = a.w2; strokeAll(c, es); } }); }
 // 4.0: en Por número, los ojos que eran tinta sólida se dibujan como ojo de verdad: blanco, iris de color, pupila chiquita y brillo
 function pbnEyeDraw(c, ex, lw) { const arc = (x, y, r) => { c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); }; for (const [x, y, r, rx, xe] of ex) { const ry = r, rr = rx || r, e = xe || 0.5; c.save(); c.globalCompositeOperation = 'destination-out'; c.beginPath(); c.rect(x - rr * 0.3, y - ry - lw * 3, rr * 1.3 + lw * 3, ry * 2 + lw * 6); c.clip(); c.beginPath(); c.ellipse(x, y, rr + lw * e, ry + lw * e, 0, 0, Math.PI * 2); c.fill(); c.restore(); c.lineWidth = lw * 0.9; c.beginPath(); c.ellipse(x, y, rr, ry, 0, 0, Math.PI * 2); c.stroke(); const ir = Math.min(rr, ry) * 0.55; c.lineWidth = lw * 0.5; arc(x, y, ir); c.stroke(); arc(x, y, ir * 0.36); c.fill(); arc(x - ir * 0.42, y - ir * 0.38, ir * 0.24); c.stroke(); } }
   // rayitas de tinta que cierran rendijas angostas (cuellos de menos de 4 unidades) para que cada zona se pinte por separado
