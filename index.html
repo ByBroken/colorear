@@ -9247,14 +9247,21 @@ $('#vidClear').onclick = async () => {
   await deleteProc(procId); $('#vidInfo').textContent = tt('vid.none'); toast(tt('vid.cleared'));
 };
 
-/* ---------- Reto del día (calendario v1, estable) ----------
-   La fecha es la del aparato (día local), igual en todo el mundo.
-   RETO_PAGES no se reordena ni se acorta: un dibujo nuevo entra en otra versión
-   con su fecha de inicio, para no cambiar el reto de los días ya pasados.
-   Cada página se midió en teléfono a 100 % (ancho útil 374 px sobre la hoja de 1200):
-   al menos el 75 % del área pintable está en zonas de 12 000 px o más (unos 34 px en pantalla). */
+/* ---------- Reto del día ----------
+   La fecha es la del aparato (día local), en cualquier país. No hay zona fija.
+   A partir de 2026-11-08 el calendario es por temporada y se repite solo:
+   otoño del 8 al 30 de noviembre; Navidad del 1 de diciembre al 14 de enero
+   (octavitas, inclusive). El 15 de enero vuelve el calendario general.
+   Las listas de temporada no se reordenan: un dibujo nuevo entra al final
+   solo en una versión futura, para no cambiar los días ya definidos.
+   Medición en teléfono a 100 % (374 px de ancho sobre la hoja de 1200):
+   zona cómoda = 12 000 px o más. Navidad: todas superan el 75 % del área.
+   Otoño publicado y sin Acción de Gracias: ninguna llega al 75 %; se usan
+   las dos que sí son otoño claro y más se acercan (70 % y 69 %). */
 const RETO_COV = 40;
 const RETO_V1_START = '2020-01-01';
+const RETO_SEASON_FROM = '2026-11-08';
+const RETO_OCTAVITAS_END = '01-14';
 const RETO_PAGES = [
   { tpl: 'casa', level: 1, cov: RETO_COV, colors: [['#5AC8FA', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu'], ['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho'], ['#34C759', 'Verde', 'Green', 'Vert', 'Verde'], ['#F4C095', 'Crema', 'Cream', 'Crème', 'Creme'], ['#8B5A3C', 'Marrón', 'Brown', 'Marron', 'Marrom']] },
   { tpl: 'flor', level: 1, cov: RETO_COV, colors: [['#FF8AD0', 'Rosa', 'Pink', 'Rose', 'Rosa'], ['#FFD54A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo'], ['#34C759', 'Verde', 'Green', 'Vert', 'Verde'], ['#5AC8FA', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu']] },
@@ -9271,24 +9278,39 @@ const RETO_PAGES = [
   { tpl: 'hw-fantasmas', level: 2, cov: RETO_COV, colors: [['#1E3A8A', 'Azul noche', 'Night blue', 'Bleu nuit', 'Azul-noite'], ['#FF9A3D', 'Naranja', 'Orange', 'Orange', 'Laranja'], ['#F4C095', 'Crema', 'Cream', 'Crème', 'Creme'], ['#34C759', 'Verde', 'Green', 'Vert', 'Verde']] },
   { tpl: 'nv-pr-parranda', level: 2, cov: RETO_COV, colors: [['#5AC8FA', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu'], ['#F4D35A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo'], ['#2F7DE1', 'Azul', 'Blue', 'Bleu', 'Azul'], ['#E24B8A', 'Rosa', 'Pink', 'Rose', 'Rosa'], ['#7CBF4A', 'Verde', 'Green', 'Vert', 'Verde']] },
 ];
+const RETO_OTONO = [
+  { tpl: 'ot-chocolate', level: 1, cov: RETO_COV, colors: [['#8B5A3C', 'Marrón', 'Brown', 'Marron', 'Marrom'], ['#F4C095', 'Crema', 'Cream', 'Crème', 'Creme'], ['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho'], ['#FF9A3D', 'Naranja', 'Orange', 'Orange', 'Laranja']] },
+  { tpl: 'ot-hojas', level: 1, cov: RETO_COV, colors: [['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho'], ['#FF9A3D', 'Naranja', 'Orange', 'Orange', 'Laranja'], ['#FFD54A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo'], ['#8B5A3C', 'Marrón', 'Brown', 'Marron', 'Marrom']] },
+];
+const RETO_NAVIDAD = [
+  { tpl: 'arbolnav', level: 1, cov: RETO_COV, colors: [['#2E8B3E', 'Verde', 'Green', 'Vert', 'Verde'], ['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho'], ['#FFD54A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo'], ['#8B5A3C', 'Marrón', 'Brown', 'Marron', 'Marrom']] },
+  { tpl: 'muneco', level: 1, cov: RETO_COV, colors: [['#9AD8FF', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu'], ['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho'], ['#FF9A3D', 'Naranja', 'Orange', 'Orange', 'Laranja'], ['#8B5A3C', 'Marrón', 'Brown', 'Marron', 'Marrom']] },
+  { tpl: 'regalo', level: 1, cov: RETO_COV, colors: [['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho'], ['#FFD54A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo'], ['#2E8B3E', 'Verde', 'Green', 'Vert', 'Verde'], ['#F4C095', 'Crema', 'Cream', 'Crème', 'Creme']] },
+  { tpl: 'bota', level: 1, cov: RETO_COV, colors: [['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho'], ['#F4C095', 'Crema', 'Cream', 'Crème', 'Creme'], ['#2E8B3E', 'Verde', 'Green', 'Vert', 'Verde'], ['#FFD54A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo']] },
+  { tpl: 'nv-pr-parranda', level: 2, cov: RETO_COV, colors: [['#5AC8FA', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu'], ['#F4D35A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo'], ['#2F7DE1', 'Azul', 'Blue', 'Bleu', 'Azul'], ['#E24B8A', 'Rosa', 'Pink', 'Rose', 'Rosa'], ['#7CBF4A', 'Verde', 'Green', 'Vert', 'Verde']] },
+  { tpl: 'nv-pr-pasteles', level: 2, cov: RETO_COV, colors: [['#2E8B3E', 'Verde', 'Green', 'Vert', 'Verde'], ['#F4C095', 'Crema', 'Cream', 'Crème', 'Creme'], ['#FFD54A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo'], ['#8B5A3C', 'Marrón', 'Brown', 'Marron', 'Marrom']] },
+];
 const RETO_KEY = 'colorear.reto';
 let retoWatch = null, retoPaintT = 0;
 function dayStr(d = new Date()) { const p = (n) => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`; }
 function dayNum(ds) { const [y, m, d] = ds.split('-').map(Number); return Math.floor(Date.UTC(y, m - 1, d) / 864e5); }
 function dayShift(ds, n) { const [y, m, d] = ds.split('-').map(Number); return dayStr(new Date(y, m - 1, d + n)); }
-function retoCalendar(ds) {
-  const versions = [{ start: RETO_V1_START, pages: RETO_PAGES }];
-  let cal = versions[0];
-  for (const v of versions) if (ds >= v.start) cal = v;
-  return cal;
+function retoSeason(ds) {
+  const [y, m, d] = ds.split('-').map(Number), key = m * 100 + d;
+  if (ds >= RETO_SEASON_FROM && key >= 1108 && key <= 1130) return { id: 'otono', start: y + '-11-08', pages: RETO_OTONO };
+  if (ds >= RETO_SEASON_FROM && (key >= 1201 || key <= 114)) {
+    const y0 = key >= 1201 ? y : y - 1;
+    return { id: 'navidad', start: y0 + '-12-01', pages: RETO_NAVIDAD };
+  }
+  return { id: 'general', start: RETO_V1_START, pages: RETO_PAGES };
 }
 function retoColorName(c) { const i = { es: 1, en: 2, fr: 3, 'pt-BR': 4 }[LANG] || 1; return c[i] || c[1]; }
 function retoFor(ds) {
-  const cal = retoCalendar(ds), n = cal.pages.length;
+  const cal = retoSeason(ds), n = cal.pages.length;
   const i = dayNum(ds) - dayNum(cal.start);
   const page = cal.pages[((i % n) + n) % n];
   const t = TEMPLATES.find((x) => x.id === page.tpl);
-  return { date: ds, id: page.tpl, level: page.level || 1, tpl: page.tpl, cov: page.cov, colors: page.colors.map((c) => ({ h: c[0], name: retoColorName(c) })), title: 'reto.n.' + page.tpl, prompt: 'reto.g.' + page.tpl, name: t ? t.name : page.tpl };
+  return { date: ds, id: page.tpl, season: cal.id, level: page.level || 1, tpl: page.tpl, cov: page.cov, colors: page.colors.map((c) => ({ h: c[0], name: retoColorName(c) })), title: 'reto.n.' + page.tpl, prompt: 'reto.g.' + page.tpl, name: t ? t.name : page.tpl };
 }
 function retoData() { try { const s = JSON.parse(localStorage.getItem(RETO_KEY) || 'null'); if (s && Array.isArray(s.done)) return s; } catch (_) {} return { done: [] }; }
 function retoSave(s) { try { localStorage.setItem(RETO_KEY, JSON.stringify(s)); } catch (_) {} }
@@ -9381,6 +9403,7 @@ function retoOnTemplate(id) {
 function retoStart(ds = dayStr()) {
   const r = retoFor(ds), s = retoData();
   closeSheet('#menuSheet'); hidePanel();
+  if (PBN.on) { try { pbnExit(true); } catch (_) {} }
   const done = s.done.includes(r.date);
   const same = s.started === r.date && s.tpl === r.tpl && s.proc === procId && !done;
   s.started = r.date; s.tpl = r.tpl; retoSave(s);
