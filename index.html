@@ -1061,6 +1061,35 @@ body.ui-hidden.obj-mode #miniBar{display:none}
 #retoOk{font-weight:800;color:#15803d;font-size:14px}
 #retoStreak[hidden],#retoDone[hidden],#retoOk[hidden],#retoGoals[hidden]{display:none}
 #retoGoals{margin:4px 0 6px;padding:0;list-style:none;font-size:12.5px;line-height:1.35}#retoGoals li{display:flex;gap:6px;align-items:flex-start}#retoGoals li::before{content:'○';flex:none;color:#999}#retoGoals li.ok::before{content:'✓';color:#2E8B3E;font-weight:700}#retoGoals li.no::before{content:'✗';color:#D33}
+#retoPrompt{color:#1A1228;font-size:15px;font-weight:700}
+#retoTitle{color:#1A1228}
+.rbtns2 button{min-height:44px;min-width:44px}
+.rbtns2 button.primary{background:#0B3A82;color:#fff}
+.rcols{display:flex;flex-wrap:wrap;gap:6px}
+.reto-sw{display:flex;align-items:center;gap:6px;min-height:44px;min-width:44px;padding:4px 10px;border-radius:12px;border:2px solid #1A1228;background:#fff;color:#1A1228;font-weight:700;font-size:14px;flex:0 0 auto}
+.reto-sw i{width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 1px #1A1228;flex:0 0 auto}
+.reto-sw[aria-pressed="true"]{outline:3px solid #0B3A82;outline-offset:2px}
+#retoLive{position:absolute;z-index:4;left:8px;right:8px;top:6px;display:flex;flex-direction:column;gap:4px;background:#FFF6EC;color:#1A1228;border:2px solid #1A1228;border-radius:14px;padding:6px 8px}
+#retoLive[hidden]{display:none!important}
+.rl-row{display:flex;align-items:center;gap:8px;min-height:44px}
+.rl-row p{margin:0;flex:1;min-width:0;font-size:15px;font-weight:800;line-height:1.2}
+#retoLivePrompt{margin:0;font-size:14px;font-weight:700;line-height:1.25;color:#1A1228;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#retoLiveDone{min-height:44px;min-width:44px;padding:0 12px;border:0;border-radius:12px;background:#0B3A82;color:#fff;font-weight:800;font-size:15px}
+.rl-meter{display:flex;align-items:center;gap:8px;min-height:28px}
+.rl-track{position:relative;flex:1;height:14px;background:#E4D9CC;border-radius:7px;overflow:hidden}
+.rl-track i{display:block;height:100%;width:0;background:#0B3A82}
+#retoLivePct{font-size:14px;font-weight:800;white-space:nowrap}
+#retoLiveStatus{margin:0;font-size:14px;font-weight:700;color:#1A1228}
+#retoLiveCols{display:flex;flex-wrap:nowrap;gap:6px;overflow-x:auto;padding-bottom:2px}
+body.reto-on #stage{padding-top:200px}
+body.ui-hidden.reto-on #stage{padding-top:calc(env(safe-area-inset-top) + 192px)}
+#retoPop{position:fixed;inset:0;z-index:60;background:rgba(20,12,28,.5);display:flex;align-items:center;justify-content:center;padding:18px}
+#retoPop[hidden]{display:none!important}
+#retoPop .box{background:#fff;color:#1A1228;border-radius:18px;padding:20px;max-width:380px;width:100%;border:2px solid #1A1228}
+#retoPop h2{margin:0 0 8px;font-size:22px}
+#retoPop p{margin:0 0 16px;font-size:16px;line-height:1.35}
+#retoPop button{min-height:48px;width:100%;border:0;border-radius:12px;background:#0B3A82;color:#fff;font-weight:800;font-size:17px}
+
 .reto.done{background:linear-gradient(135deg,#e7f8ec,#f3e8ff)}
 #tplGrid .card{position:relative}
 .card .newb{position:absolute;top:4px;right:4px;background:#FF2D92;color:#fff;font-size:11px;font-weight:800;border-radius:8px;padding:2px 6px;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.2)}
@@ -1234,6 +1263,19 @@ input[type=text],input[type=search],input:not([type]),textarea,[contenteditable]
 </div>
 
 <main id="stage">
+  <div id="retoLive" hidden>
+    <div class="rl-row">
+      <p id="retoLiveTitle"></p>
+      <button type="button" id="retoLiveDone"></button>
+    </div>
+    <p id="retoLivePrompt"></p>
+    <div class="rl-meter">
+      <div class="rl-track" id="retoLiveBar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="retoLiveFill"></i></div>
+      <span id="retoLivePct"></span>
+    </div>
+    <p id="retoLiveStatus" aria-live="polite"></p>
+    <div id="retoLiveCols" role="group"></div>
+  </div>
   <div id="paper" class="c-pen">
     <canvas id="cvPhoto" hidden aria-hidden="true"></canvas>
     <canvas id="cvColor"></canvas>
@@ -1631,18 +1673,25 @@ input[type=text],input[type=search],input:not([type]),textarea,[contenteditable]
   </div>
 </div>
 
+<div id="retoPop" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="retoPopT">
+    <h2 id="retoPopT"></h2>
+    <p id="retoPopP"></p>
+    <button type="button" id="retoPopOk"></button>
+  </div>
+</div>
 <div class="overlay" id="menuSheet">
   <div class="sheet">
     <div class="sheet-head"><img class="brand" src="logo-badge-96.png" srcset="logo-badge-96.png 1x, logo-badge-192.png 2x" width="44" height="44" alt="ByBroken Coloring"><h2>Menú</h2><button class="ib close" aria-label="Cerrar"><svg><use href="#i-close"/></svg></button></div>
     <div class="scroll">
-      <div class="reto" id="retoCard">
+      <div class="reto" id="retoCard" role="region" aria-labelledby="retoHeading">
         <canvas id="retoThumb" width="120" height="160" aria-hidden="true"></canvas>
         <div class="rinfo">
-          <div class="rhead"><b><span aria-hidden="true">🎯</span> Reto del día</b><span id="retoStreak" hidden></span></div>
+          <div class="rhead"><b id="retoHeading"><span aria-hidden="true">🎯</span> Reto del día</b><span id="retoStreak" hidden></span></div>
           <div class="rtitle" id="retoTitle"></div>
           <div class="rmeta"><span class="rstars" id="retoStars"></span><span id="retoLvl"></span><span class="rdot" aria-hidden="true">·</span><span class="rname" id="retoName"></span></div>
           <p id="retoPrompt"></p><ul id="retoGoals" hidden></ul>
-          <div class="rcols" id="retoCols" aria-hidden="true"></div>
+          <div class="rcols" id="retoCols" role="group"></div>
           <div class="rbtns2"><button class="primary" id="retoStart">Empezar</button><button id="retoDone" hidden>¡Lo terminé!</button><span id="retoOk" hidden>✓ ¡Hecho hoy!</span></div>
         </div>
       </div>
@@ -2598,6 +2647,7 @@ function endSingle(cancelled) {
   } else if (cur.kind === 'obj') {
     objUp(cur, cancelled);
   }
+  if (!cancelled) { try { retoAfterPaint(); } catch (_) {} }
 }
 // Llega un segundo dedo: deshacer lo que el primero empezó (si fue un toque breve) para no dejar rayas sueltas
 /* ---------- v47: Firma (bolígrafo fino) ----------
@@ -3755,6 +3805,7 @@ function floodFill(fx, fy, hex, alpha = 1) {
   if (!changed) return false;
   cctx.putImageData(img, minX, minY);
   commit([capturePart(target, { x: minX, y: minY, w: bw, h: bh })]);
+  try { retoAfterPaint(); } catch (_) {}
   return true;
 }
 
@@ -4658,6 +4709,7 @@ function loadTemplate(id) {
   state.currentId = null;
   setMode(t ? 'color' : 'draw');
   toast(t ? tt('toast.tpl', { name: t.name }) : tt('toast.newsheet'));
+  try { retoOnTemplate(id); } catch (_) {}
 }
 
 /* ---------- modos y herramientas ---------- */
@@ -9195,201 +9247,201 @@ $('#vidClear').onclick = async () => {
   await deleteProc(procId); $('#vidInfo').textContent = tt('vid.none'); toast(tt('vid.cleared'));
 };
 
-/* ---------- 3.9: Reto del día: una plantilla, 3 a 5 colores y una idea (sale igual para todos ese día; funciona sin internet) ---------- */
-const RETO_KEY = 'colorear.reto';
-/* 3.10.3: retos de verdad. [id, dificultad 1-3, colores, plantillas (ids o 'cat:nombre'; null = cualquiera)]
-   Textos: reto.t.<id> (título) y reto.p.<id> (una línea). Cada día toca uno, en un orden fijo que no repite hasta dar la vuelta completa. */
-const RETO_DEFS = [
-  ['tres', 2, 'pal3', null],
-  ['calidos', 1, 'warm', null],
-  ['frios', 1, 'cool', null],
-  ['mono', 2, 'mono', null],
-  ['degradado', 3, 'pal3', null],
-  ['suave', 3, 'none', null],
-  ['atardecer', 1, 'sunset', null],
-  ['mandalagel', 2, 'gems', ["cat:mandalas"]],
-  ['mezclador', 2, 'pal3', null],
-  ['lapices', 2, 'pal4', null],
-  ['opuestos', 2, 'compl', null],
-  ['noche', 2, 'night', null],
-  ['espejo', 1, 'pal4', ["mariposa"]],
-  ['foto', 3, 'none', null],
-  ['arcoiris', 1, 'rainbow', null],
-  ['puntillismo', 3, 'pal4', null],
-  ['pastel', 1, 'pastel', null],
-  ['neon', 2, 'neon', null],
-  ['estaciones', 2, 'seasons', null],
-  ['sinblanco', 2, 'pal5', null],
-  ['patrones', 3, 'pal5', null],
-  ['luz', 3, 'mono', null],
-  ['naturaleza', 1, 'nature', null],
-  ['boricua', 1, 'boricua', ["cat:pr"]],
-  ['fondo', 1, 'pal3', null],
-  ['fantasia', 1, 'pal5', null],
-  ['acuarela', 2, 'pal4', null],
-  ['spray', 1, 'pal3', null],
-  ['gel', 2, 'pal4', null],
-  ['oscuroclaro', 2, 'mono', null],
-  ['contraste', 2, 'compl', null],
-  ['expres', 1, 'pal4', null],
-  ['gris', 3, 'gray', null],
-  ['mitad', 2, 'pal5', null],
-  ['vitral', 2, 'gems', null],
-  ['joyas', 1, 'gems', null],
-  ['playa', 1, 'beach', ["flamenco", "luquillo", "buye", "islaverde", "palmera", "bahia", "tortuga", "pez"]],
-  ['fiesta', 2, 'party', ["vejigante", "pava", "flamboyan", "coqui", "coqui2", "mariposa", "sol"]],
-  // 4.3: retos más difíciles y variados, con metas que la app revisa al tocar «¡Lo terminé!»
-  ['ocho', 3, 'none', ['cat:cozy'], { minC: 8, grad: 1, cov: 85 }],
-  ['otonocalido', 3, 'otono', ['cat:otono'], { warm: 1, cov: 90 }],
-  ['contrarreloj', 2, 'pal5', ['cat:cozy'], { time: 15, cov: 75 }],
-  ['completo', 3, 'none', ['cat:cozy', 'cat:otono'], { cov: 97, minC: 10 }],
-  ['trespasos', 3, 'otono', ['cat:otono'], { grad: 1, minC: 6, tool: 'gel', cov: 85 }],
-  ['gracias', 2, 'otono', ['cat:otono'], { minC: 6, cov: 90 }],
-  ['acogedor', 2, 'pastel', ['cat:cozy'], { minC: 7, cov: 90, tool: 'cpencil' }],
-  ['rapidito', 1, 'pal4', ['cat:cozy', 'cat:otono'], { time: 10, cov: 60 }]
+/* ---------- Reto del día (calendario v1, estable) ----------
+   La fecha es la del aparato (día local), igual en todo el mundo.
+   RETO_PAGES no se reordena ni se acorta: un dibujo nuevo entra en otra versión
+   con su fecha de inicio, para no cambiar el reto de los días ya pasados.
+   Cada página se midió en teléfono a 100 % (ancho útil 374 px sobre la hoja de 1200):
+   al menos el 75 % del área pintable está en zonas de 12 000 px o más (unos 34 px en pantalla). */
+const RETO_COV = 40;
+const RETO_V1_START = '2020-01-01';
+const RETO_PAGES = [
+  { tpl: 'casa', level: 1, cov: RETO_COV, colors: [['#5AC8FA', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu'], ['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho'], ['#34C759', 'Verde', 'Green', 'Vert', 'Verde'], ['#F4C095', 'Crema', 'Cream', 'Crème', 'Creme'], ['#8B5A3C', 'Marrón', 'Brown', 'Marron', 'Marrom']] },
+  { tpl: 'flor', level: 1, cov: RETO_COV, colors: [['#FF8AD0', 'Rosa', 'Pink', 'Rose', 'Rosa'], ['#FFD54A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo'], ['#34C759', 'Verde', 'Green', 'Vert', 'Verde'], ['#5AC8FA', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu']] },
+  { tpl: 'conejo', level: 1, cov: RETO_COV, colors: [['#F4C095', 'Crema', 'Cream', 'Crème', 'Creme'], ['#FF8AD0', 'Rosa', 'Pink', 'Rose', 'Rosa'], ['#34C759', 'Verde', 'Green', 'Vert', 'Verde'], ['#5AC8FA', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu']] },
+  { tpl: 'perro', level: 1, cov: RETO_COV, colors: [['#8B5A3C', 'Marrón', 'Brown', 'Marron', 'Marrom'], ['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho'], ['#34C759', 'Verde', 'Green', 'Vert', 'Verde'], ['#F4C095', 'Crema', 'Cream', 'Crème', 'Creme']] },
+  { tpl: 'mariposa', level: 1, cov: RETO_COV, colors: [['#FF8AD0', 'Rosa', 'Pink', 'Rose', 'Rosa'], ['#8E5BD9', 'Violeta', 'Violet', 'Violet', 'Violeta'], ['#8B5A3C', 'Marrón', 'Brown', 'Marron', 'Marrom'], ['#5AC8FA', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu']] },
+  { tpl: 'arbol', level: 1, cov: RETO_COV, colors: [['#2E8B3E', 'Verde oscuro', 'Dark green', 'Vert foncé', 'Verde-escuro'], ['#8B5A3C', 'Marrón', 'Brown', 'Marron', 'Marrom'], ['#5AC8FA', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu'], ['#FFD54A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo']] },
+  { tpl: 'palmera', level: 1, cov: RETO_COV, colors: [['#5AC8FA', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu'], ['#0077B6', 'Azul', 'Blue', 'Bleu', 'Azul'], ['#F2D49B', 'Arena', 'Sand', 'Sable', 'Areia'], ['#2E8B3E', 'Verde', 'Green', 'Vert', 'Verde']] },
+  { tpl: 'coqui2', level: 1, cov: RETO_COV, colors: [['#2E8B3E', 'Verde', 'Green', 'Vert', 'Verde'], ['#FF8AD0', 'Rosa', 'Pink', 'Rose', 'Rosa'], ['#5AC8FA', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu'], ['#F4C095', 'Crema', 'Cream', 'Crème', 'Creme']] },
+  { tpl: 'calabaza', level: 1, cov: RETO_COV, colors: [['#FF9A3D', 'Naranja', 'Orange', 'Orange', 'Laranja'], ['#2E8B3E', 'Verde', 'Green', 'Vert', 'Verde'], ['#1E3A8A', 'Azul noche', 'Night blue', 'Bleu nuit', 'Azul-noite'], ['#FFD54A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo']] },
+  { tpl: 'muneco', level: 1, cov: RETO_COV, colors: [['#9AD8FF', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu'], ['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho'], ['#8E5BD9', 'Violeta', 'Violet', 'Violet', 'Violeta'], ['#F4C095', 'Crema', 'Cream', 'Crème', 'Creme']] },
+  { tpl: 'cz-playa', level: 2, cov: RETO_COV, colors: [['#0077B6', 'Azul', 'Blue', 'Bleu', 'Azul'], ['#F2D49B', 'Arena', 'Sand', 'Sable', 'Areia'], ['#5AC8FA', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu'], ['#2E8B3E', 'Verde', 'Green', 'Vert', 'Verde']] },
+  { tpl: 'cz-picnic', level: 2, cov: RETO_COV, colors: [['#34C759', 'Verde', 'Green', 'Vert', 'Verde'], ['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho'], ['#5AC8FA', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu'], ['#F4C095', 'Crema', 'Cream', 'Crème', 'Creme']] },
+  { tpl: 'hw-fantasmas', level: 2, cov: RETO_COV, colors: [['#1E3A8A', 'Azul noche', 'Night blue', 'Bleu nuit', 'Azul-noite'], ['#FF9A3D', 'Naranja', 'Orange', 'Orange', 'Laranja'], ['#F4C095', 'Crema', 'Cream', 'Crème', 'Creme'], ['#34C759', 'Verde', 'Green', 'Vert', 'Verde']] },
+  { tpl: 'nv-pr-parranda', level: 2, cov: RETO_COV, colors: [['#5AC8FA', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu'], ['#F4D35A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo'], ['#2F7DE1', 'Azul', 'Blue', 'Bleu', 'Azul'], ['#E24B8A', 'Rosa', 'Pink', 'Rose', 'Rosa'], ['#7CBF4A', 'Verde', 'Green', 'Vert', 'Verde']] },
 ];
-const RETO_FIXED = {
-  warm: ['#B3001B', '#FF3B1F', '#FF7A00', '#FFB300', '#FFE259'],
-  cool: ['#1E6FD9', '#48C6EF', '#2E8B3E', '#7BC950', '#7B5CE0'],
-  sunset: ['#3D2C8D', '#B83B5E', '#FF7E67', '#F9A826', '#FFD56B'],
-  night: ['#0B1B4A', '#1F2F7A', '#3D2C8D', '#6A2C70', '#00BBF9'],
-  rainbow: ['#FF3B30', '#FF9500', '#FFCC00', '#34C759', '#00A6FF', '#5856D6', '#AF52DE'],
-  seasons: ['#7BC950', '#FFD100', '#DD6E1F', '#48C6EF'],
-  gems: ['#C2185B', '#00897B', '#1E56C8', '#7B2FFF', '#F2B705'],
-  beach: ['#F2D49B', '#48C6EF', '#FF7A59', '#2E8B3E', '#0077B6'],
-  party: ['#ED1C24', '#FFD100', '#00A651', '#0050F0', '#FF5A1F', '#AF52DE'],
-  nature: ['#2E8B3E', '#7BC950', '#8B5E3C', '#C9A66B', '#48C6EF'],
-};
-const RETO_PAL = { pastel: 'pastel', neon: 'neon', boricua: 'boricua', otono: 'otono' };
-const RETO_COMPL = [['#1E6FD9', '#FF8A1F'], ['#E53935', '#2E9B4E'], ['#7B2FFF', '#FFD100'], ['#00A6A6', '#E8505B']];
-function hslHex(h, s, l) {
-  s /= 100; l /= 100; const k = (n) => (n + h / 30) % 12, a = s * Math.min(l, 1 - l), f = (n) => l - a * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1));
-  return '#' + [f(0), f(8), f(4)].map((v) => Math.round(v * 255).toString(16).padStart(2, '0')).join('').toUpperCase();
-}
-function hashStr(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } h ^= h >>> 15; h = Math.imul(h, 2246822507); h ^= h >>> 13; return h >>> 0; }
+const RETO_KEY = 'colorear.reto';
+let retoWatch = null, retoPaintT = 0;
 function dayStr(d = new Date()) { const p = (n) => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`; }
 function dayNum(ds) { const [y, m, d] = ds.split('-').map(Number); return Math.floor(Date.UTC(y, m - 1, d) / 864e5); }
-let retoOrder = null;
-function retoOrderGet() {
-  if (retoOrder) return retoOrder;
-  const n = RETO_DEFS.length, a = Array.from({ length: n }, (_, i) => i); let h = hashStr('reto-orden-3.10.3');
-  for (let i = n - 1; i > 0; i--) { h = (Math.imul(h, 1664525) + 1013904223) >>> 0; const j = h % (i + 1); [a[i], a[j]] = [a[j], a[i]]; }
-  return (retoOrder = a);
+function dayShift(ds, n) { const [y, m, d] = ds.split('-').map(Number); return dayStr(new Date(y, m - 1, d + n)); }
+function retoCalendar(ds) {
+  const versions = [{ start: RETO_V1_START, pages: RETO_PAGES }];
+  let cal = versions[0];
+  for (const v of versions) if (ds >= v.start) cal = v;
+  return cal;
 }
-function retoPool(tokens) {
-  let pool = [];
-  if (tokens) for (const tk of tokens) { if (tk.startsWith('cat:')) pool.push(...TEMPLATES.filter((t) => t.cat === tk.slice(4))); else { const t = TEMPLATES.find((x) => x.id === tk); if (t) pool.push(t); } }
-  if (!pool.length) pool = TEMPLATES.filter((t) => t.id !== 'bandera' && t.cat !== 'personajes');   // 3.18: los Personajes (80–150 zonas) son para Por número, no para el reto del día
-  return pool;
-}
-function retoColors(mode, h2) {
-  const pick = (a, n) => a.slice(0, n);
-  if (RETO_FIXED[mode]) return RETO_FIXED[mode].slice();
-  if (mode === 'none') return [];
-  if (mode === 'compl') return RETO_COMPL[h2 % RETO_COMPL.length].slice();
-  if (mode === 'mono') { const hue = (h2 >>> 4) % 360; return [92, 80, 66, 52, 38].map((l) => hslHex(hue, 70, l)); }
-  if (mode === 'gray') return ['#2B2B2B', '#5C5C5C', '#8E8E8E', '#BDBDBD', '#E4E4E4', ['#E53935', '#FFB300', '#1E6FD9'][h2 % 3]];
-  if (RETO_PAL[mode]) { const pl = PALETTES.find((x) => x.id === RETO_PAL[mode]); return pl ? pl.c.filter((c) => c !== '#FFFFFF').slice(0, 6) : []; }
-  const k = mode === 'pal3' ? 3 : mode === 'pal4' ? 4 : 5;
-  const pals = PALETTES.filter((p) => !p.dyn && p.id !== 'piel'), pal = pals[h2 % pals.length], len = pal.c.length, start = (h2 >>> 12) % len, step = [1, 3, 5, 7][(h2 >>> 20) % 4];
-  const colors = [];
-  for (let i = 0; colors.length < k && i < len * 2; i++) { const c = pal.c[(start + i * step) % len]; if (!colors.includes(c) && c !== '#FFFFFF') colors.push(c); }
-  return colors;
-}
+function retoColorName(c) { const i = { es: 1, en: 2, fr: 3, 'pt-BR': 4 }[LANG] || 1; return c[i] || c[1]; }
 function retoFor(ds) {
-  const h = hashStr('reto:' + ds), h2 = hashStr(ds + ':colores');
-  const def = RETO_DEFS[retoOrderGet()[((dayNum(ds) % RETO_DEFS.length) + RETO_DEFS.length) % RETO_DEFS.length]];
-  const [id, level, mode, tokens, goals] = def;
-  const pool = retoPool(tokens), tpl = pool[h % pool.length];
-  return { date: ds, id, level, tpl: tpl.id, pal: mode, colors: retoColors(mode, h2), prompt: 'reto.p.' + id, title: 'reto.t.' + id, goals: goals || null };
+  const cal = retoCalendar(ds), n = cal.pages.length;
+  const i = dayNum(ds) - dayNum(cal.start);
+  const page = cal.pages[((i % n) + n) % n];
+  const t = TEMPLATES.find((x) => x.id === page.tpl);
+  return { date: ds, id: page.tpl, level: page.level || 1, tpl: page.tpl, cov: page.cov, colors: page.colors.map((c) => ({ h: c[0], name: retoColorName(c) })), title: 'reto.n.' + page.tpl, prompt: 'reto.g.' + page.tpl, name: t ? t.name : page.tpl };
 }
 function retoData() { try { const s = JSON.parse(localStorage.getItem(RETO_KEY) || 'null'); if (s && Array.isArray(s.done)) return s; } catch (_) {} return { done: [] }; }
 function retoSave(s) { try { localStorage.setItem(RETO_KEY, JSON.stringify(s)); } catch (_) {} }
-function dayShift(ds, n) { const [y, m, d] = ds.split('-').map(Number), t = new Date(y, m - 1, d + n); return dayStr(t); }
 function retoStreak(s = retoData(), today = dayStr()) {
   const set = new Set(s.done); let day = set.has(today) ? today : dayShift(today, -1), n = 0;
   while (set.has(day)) { n++; day = dayShift(day, -1); }
   return n;
 }
+function retoSwatch(c, onPick) {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'reto-sw';
+  b.setAttribute('aria-label', c.name);
+  const chip = document.createElement('i'); chip.style.background = c.h; chip.setAttribute('aria-hidden', 'true');
+  const lab = document.createElement('span'); lab.textContent = c.name;
+  b.append(chip, lab);
+  b.onclick = () => { setColor(c.h); setMode('color'); setColorTool('fill'); if (onPick) onPick(b); };
+  return b;
+}
+function retoGoalsRender(r, cov) {
+  const ul = $('#retoGoals'); if (!ul) return;
+  ul.hidden = false; ul.textContent = '';
+  const li = document.createElement('li');
+  li.textContent = tt('reto.goal', { n: r.cov }) + (cov == null ? '' : ' · ' + cov + '%');
+  if (cov != null) li.className = cov >= r.cov ? 'ok' : 'no';
+  ul.append(li);
+}
 function renderReto() {
-  const r = retoFor(dayStr()), s = retoData(), done = s.done.includes(r.date), started = s.started === r.date;
+  const r = retoFor(dayStr()), s = retoData(), done = s.done.includes(r.date), started = s.started === r.date && s.tpl === r.tpl;
   const t = TEMPLATES.find((x) => x.id === r.tpl);
   const cv = $('#retoThumb'), c = cv.getContext('2d'); c.fillStyle = '#fff'; c.fillRect(0, 0, cv.width, cv.height); if (t) renderTemplate(c, t, cv.width, cv.height);
   $('#retoTitle').textContent = tt(r.title);
-  $('#retoPrompt').textContent = tt(r.prompt, { name: t ? t.name : '' });
-  $('#retoName').textContent = t ? t.name : '';
-  retoGoalsRender(r, started && !done);
+  $('#retoPrompt').textContent = tt(r.prompt, { name: t ? t.name : r.name });
+  $('#retoName').textContent = t ? t.name : r.name;
+  retoGoalsRender(r, started && !done ? retoStats(3).cov : null);
   const lv = tt('reto.lvl.' + r.level), st = $('#retoStars');
   st.textContent = '★'.repeat(r.level) + '☆'.repeat(3 - r.level); st.title = tt('reto.diff') + ': ' + lv; st.setAttribute('aria-label', tt('reto.diff') + ': ' + lv);
   $('#retoLvl').textContent = lv;
-  const cols = $('#retoCols'); cols.textContent = '';
-  for (const col of r.colors) { const i = document.createElement('i'); i.style.background = col; i.title = COLOR_NAME[col] || col; cols.append(i); }
+  const cols = $('#retoCols'); cols.textContent = ''; cols.setAttribute('aria-label', tt('reto.colors'));
+  for (const col of r.colors) cols.append(retoSwatch(col));
   const n = retoStreak(s);
   $('#retoStreak').textContent = n ? tt('reto.streak', { n }) : '';
   $('#retoStreak').hidden = !n;
   $('#retoStart').textContent = done ? tt('reto.again') : started ? tt('reto.continue') : tt('reto.start');
-  $('#retoDone').hidden = done || !started;
+  $('#retoDone').hidden = true;
   $('#retoCard').classList.toggle('done', done);
   $('#retoOk').hidden = !done;
+  $('#retoOk').textContent = tt('reto.ok');
+}
+function retoLiveBuild(r) {
+  $('#retoLiveTitle').textContent = tt(r.title);
+  $('#retoLivePrompt').textContent = tt(r.prompt, { name: r.name });
+  const cols = $('#retoLiveCols'); cols.textContent = '';
+  cols.setAttribute('aria-label', tt('reto.colors'));
+  const mark = (b) => { cols.querySelectorAll('.reto-sw').forEach((x) => x.setAttribute('aria-pressed', x === b ? 'true' : 'false')); };
+  r.colors.forEach((col, i) => { const b = retoSwatch(col, mark); if (i === 0) b.setAttribute('aria-pressed', 'true'); cols.append(b); });
+  $('#retoLiveDone').textContent = tt('reto.live.done');
+}
+function retoLiveRefresh(immediate, st) {
+  if ($('#retoLive').hidden) return;
+  const run = () => {
+    const r = retoFor(dayStr());
+    st = st || retoStats(3);
+    const pct = Math.max(0, Math.min(100, st.cov));
+    $('#retoLiveFill').style.width = pct + '%';
+    const bar = $('#retoLiveBar');
+    bar.setAttribute('aria-valuenow', String(pct));
+    bar.setAttribute('aria-valuemax', '100');
+    bar.setAttribute('aria-valuetext', tt('reto.progress', { cov: pct, need: r.cov }));
+    $('#retoLivePct').textContent = tt('reto.progress', { cov: pct, need: r.cov });
+    const ready = pct >= r.cov;
+    $('#retoLiveDone').disabled = false;
+    $('#retoLiveDone').setAttribute('aria-describedby', 'retoLiveStatus');
+    if (!$('#retoLiveStatus').dataset.lock) { $('#retoLiveStatus').textContent = ready ? tt('reto.ready') : ''; $('#retoLiveStatus').hidden = !ready; }
+  };
+  if (immediate) run(); else { clearTimeout(retoPaintT); retoPaintT = setTimeout(run, 80); }
+}
+function retoShow(on) {
+  document.body.classList.toggle('reto-on', !!on);
+  $('#retoLive').hidden = !on;
+  requestAnimationFrame(() => { try { layout(); } catch (_) {} });
+}
+function retoOnTemplate(id) {
+  const s = retoData(), r = retoFor(dayStr());
+  const active = s.started === r.date && s.tpl === r.tpl && id === r.tpl && !s.done.includes(r.date);
+  retoWatch = active ? id : null;
+  if (active) retoLiveBuild(r);
+  retoShow(active);
+  if (active) retoLiveRefresh(true);
 }
 function retoStart(ds = dayStr()) {
   const r = retoFor(ds), s = retoData();
   closeSheet('#menuSheet'); hidePanel();
-  const cont = s.started === r.date && s.proc === procId && !s.done.includes(r.date);
-  if (!cont) loadTemplate(r.tpl);          // se puede deshacer, como al elegir cualquier plantilla
-  if (!cont) { s.t0 = Date.now(); s.tools = []; s.grad = 0; }
-  s.started = r.date; s.proc = procId; retoSave(s);
-  if (r.colors.length) applyPalette({ id: 'reto', name: tt('reto.title'), c: r.colors }, { quiet: true });
-  setMode('color'); setColorTool('fill');
-  toast('🎯 ' + tt(r.title) + ' · ' + tt(r.prompt, { name: (TEMPLATES.find((x) => x.id === r.tpl) || {}).name || '' }), 4200);
+  const done = s.done.includes(r.date);
+  const same = s.started === r.date && s.tpl === r.tpl && s.proc === procId && !done;
+  s.started = r.date; s.tpl = r.tpl; retoSave(s);
+  if (!same || done) loadTemplate(r.tpl);
+  else retoOnTemplate(r.tpl);
+  s.proc = procId; retoSave(s);
+  if (r.colors.length) applyPalette({ id: 'reto', name: tt('reto.title'), c: r.colors.map((c) => c.h) }, { quiet: true });
+  setColor(r.colors[0].h); setMode('color'); setColorTool('fill');
+  retoOnTemplate(r.tpl);
   renderReto();
   return r;
 }
-// 4.3: metas que se revisan solas: % pintado, colores distintos, degradado, solo cálidos, herramienta, tiempo
-function retoTrackTool() { const s = retoData(); if (s.started !== dayStr() || s.done.includes(s.started)) return; const t = currentTool(); s.tools = s.tools || []; if (!s.tools.includes(t)) { s.tools.push(t); retoSave(s); } }
-function retoTrackGrad() { const s = retoData(); if (s.started !== dayStr() || s.grad) return; s.grad = 1; retoSave(s); }
-function retoStats() {
+function retoStats(step) {
+  step = step || 2;
   const lc = layers.line.ctx.getImageData(0, 0, W, H).data, cc = layers.color.ctx.getImageData(0, 0, W, H).data, oc = layers.over.ctx.getImageData(0, 0, W, H).data;
-  let free = 0, painted = 0; const hist = new Map(); let warmBad = 0;
-  for (let i = 0; i < W * H; i += 3) { const k = i * 4; if (lc[k + 3] >= LINE_T) continue; free++;
-    let r = cc[k], g = cc[k + 1], b = cc[k + 2], a = cc[k + 3]; if (oc[k + 3] > 128) { r = oc[k]; g = oc[k + 1]; b = oc[k + 2]; a = 255; }
-    if (a < 128 || (r > 242 && g > 242 && b > 242)) continue; painted++;
-    const q = (r >> 5) * 64 + (g >> 5) * 8 + (b >> 5); hist.set(q, (hist.get(q) || 0) + 1);
-    const mx = Math.max(r, g, b), mn = Math.min(r, g, b), sat = mx ? (mx - mn) / mx : 0;
-    if (sat > 0.22 && mx > 40) { let h = mx === r ? ((g - b) / (mx - mn)) * 60 : mx === g ? (2 + (b - r) / (mx - mn)) * 60 : (4 + (r - g) / (mx - mn)) * 60; if (h < 0) h += 360; if (h > 75 && h < 320) warmBad++; } }
-  const minPx = Math.max(40, painted * 0.004); let colors = 0; for (const v of hist.values()) if (v >= minPx) colors++;
-  return { cov: free ? Math.round(100 * painted / free) : 0, colors, warmBad: painted ? warmBad / painted : 0 };
+  let free = 0, painted = 0;
+  for (let i = 0; i < W * H; i += step) {
+    const k = i * 4; if (lc[k + 3] >= LINE_T) continue; free++;
+    let r = cc[k], g = cc[k + 1], b = cc[k + 2], a = cc[k + 3];
+    if (oc[k + 3] > 128) { r = oc[k]; g = oc[k + 1]; b = oc[k + 2]; a = 255; }
+    if (a < 128 || (r > 242 && g > 242 && b > 242)) continue;
+    painted++;
+  }
+  return { cov: free ? Math.round(100 * painted / free) : 0 };
 }
-function retoCheck(r, s) {
-  const g = r.goals, st = retoStats(), out = [];
-  if (g.cov) out.push({ ok: st.cov >= g.cov, txt: tt('reto.g.cov', { n: g.cov }) + ' (' + Math.min(st.cov, 100) + '%)' });
-  if (g.minC) out.push({ ok: st.colors >= g.minC, txt: tt('reto.g.minC', { n: g.minC }) + ' (' + st.colors + ')' });
-  if (g.grad) out.push({ ok: !!s.grad, txt: tt('reto.g.grad') });
-  if (g.warm) out.push({ ok: st.warmBad < 0.03, txt: tt('reto.g.warm') });
-  if (g.tool) out.push({ ok: (s.tools || []).includes(g.tool), txt: tt('reto.g.tool.' + g.tool) });
-  if (g.time) { const m = s.t0 ? (Date.now() - s.t0) / 60000 : 0; out.push({ ok: !!s.t0 && m <= g.time, txt: tt('reto.g.time', { n: g.time }) + (s.t0 ? ' (' + Math.ceil(m) + ' min)' : '') }); }
-  return out;
+function retoCheck(r) { const st = retoStats(1); return { ok: st.cov >= r.cov, cov: st.cov, need: r.cov }; }
+function retoPop(r, cov, n) {
+  $('#retoPopT').textContent = tt('reto.pop.title');
+  $('#retoPopP').textContent = tt('reto.pop.body', { cov, name: r.name, n });
+  $('#retoPopOk').textContent = tt('reto.pop.ok');
+  $('#retoPop').hidden = false;
+  $('#retoPopOk').focus();
 }
-function retoGoalsRender(r, live, res) {
-  const ul = $('#retoGoals'); if (!ul) return; ul.textContent = ''; ul.hidden = !r.goals; if (!r.goals) return;
-  const g = r.goals, items = res || [g.cov && { txt: tt('reto.g.cov', { n: g.cov }) }, g.minC && { txt: tt('reto.g.minC', { n: g.minC }) }, g.grad && { txt: tt('reto.g.grad') }, g.warm && { txt: tt('reto.g.warm') }, g.tool && { txt: tt('reto.g.tool.' + g.tool) }, g.time && { txt: tt('reto.g.time', { n: g.time }) }].filter(Boolean);
-  for (const it of items) { const li = document.createElement('li'); li.textContent = it.txt; if (res) li.className = it.ok ? 'ok' : 'no'; ul.append(li); }
-}
-function retoComplete(ds = dayStr(), force) {
-  const s = retoData(), r = retoFor(ds);
-  if (r.goals && !force) { const res = retoCheck(r, s); retoGoalsRender(r, true, res); if (res.some((x) => !x.ok)) { toast('🎯 ' + tt('reto.notyet') + ' ' + res.filter((x) => !x.ok).map((x) => x.txt).join(' · '), 5200); return 0; } }
+function retoComplete(ds = dayStr()) {
+  const s = retoData(), r = retoFor(ds), st = retoStats(1);
+  if (st.cov < r.cov) {
+    const msg = tt('reto.need', { cov: st.cov, need: r.cov });
+    const status = $('#retoLiveStatus');
+    if (status) { status.hidden = false; status.dataset.lock = '1'; status.textContent = msg; setTimeout(() => { delete status.dataset.lock; }, 4000); }
+    retoGoalsRender(r, st.cov);
+    if (!$('#retoLive').hidden) retoLiveRefresh(true, st);
+    toast(msg, 4200);
+    return 0;
+  }
   if (!s.done.includes(ds)) s.done.push(ds);
-  s.done = s.done.slice(-120); retoSave(s);
+  s.done = s.done.slice(-120);
+  retoSave(s);
+  retoWatch = null; retoShow(false); renderReto();
   const n = retoStreak(s);
-  renderReto();
-  toast('🏆 ' + tt('reto.done.toast', { n }), 3600);
+  retoPop(r, st.cov, n);
   return n;
 }
+function retoAfterPaint() { if (retoWatch) retoLiveRefresh(false); }
 $('#retoStart').onclick = () => retoStart();
-$('#retoDone').onclick = () => retoComplete();
-$('#moreReto').onclick = () => { hidePanel(); renderReto(); openSheet('#menuSheet'); };
+$('#retoLiveDone').onclick = () => retoComplete();
+$('#retoPopOk').onclick = () => { $('#retoPop').hidden = true; };
+$('#retoPop').addEventListener('keydown', (e) => { if (e.key === 'Escape') { $('#retoPop').hidden = true; e.preventDefault(); } });
+$('#moreReto').onclick = () => { hidePanel(); renderReto(); openSheet('#menuSheet'); const card = $('#retoCard'); if (card) card.scrollIntoView({ block: 'start' }); };
 $('#btnMenu').addEventListener('click', renderReto);
 $('#moreMenu').addEventListener('click', renderReto);
+
 
 
 $('#adjDetail').addEventListener('input', (e) => { adj.detail = +e.target.value; processPreview(); });
@@ -9910,7 +9962,7 @@ restore().then(async (restored) => {
 window.__colorear = {
   layers, state, view, floodFill, loadTemplate, undo, redo, saveToGallery, openGallery, exportPng, buildExport, shareDrawing, undoStack, redoStack, tx,
   processLineArt, importImageFile, choosePdfPage, isPdfLike, readPngText, addObject, flattenObjs, zoomAt, zoomFit, adj,
-  gradientFill, regionMask, sliverInfo, retoStats, retoCheck, RETO_DEFS, setColorTool, setColorSize, setColor, showNews, setMode, setDrawBrush, setPicking, colorAt, pickColorAt, thinLW, sizeLW, templates: TEMPLATES, COLOR_FAMILIES, ALL_COLORS, GRAD_PRESETS, gradStops, lighterOf,
+  gradientFill, regionMask, sliverInfo, retoStats, retoCheck, RETO_PAGES, setColorTool, setColorSize, setColor, showNews, setMode, setDrawBrush, setPicking, colorAt, pickColorAt, thinLW, sizeLW, templates: TEMPLATES, COLOR_FAMILIES, ALL_COLORS, GRAD_PRESETS, gradStops, lighterOf,
   get recentColors() { return recentColors.slice(); },
   paint, addLayer, deleteLayer, moveLayer, selectLayer, setLayerVisible, setLayerOpacity, composite, setUIHidden, openPicker, pk, pkSetHex, hsvToRgb, rgbToHsv, docPerScreenPx,
   get mySlots() { return mySlots.slice(); }, COLOR_CODE, placeMini, showPanel, hidePanel, get openPanel() { return openGrp; }, setMiniPos, setMiniFolded, get mini() { return { ...MINI }; }, setFamOpen, openColorsSheet, get activeLayer() { return paintTarget(); },
