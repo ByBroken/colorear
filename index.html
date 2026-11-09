@@ -9288,7 +9288,6 @@ const RETO_NAVIDAD = [
   { tpl: 'muneco', level: 1, cov: RETO_COV, colors: [['#9AD8FF', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu'], ['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho'], ['#FF9A3D', 'Naranja', 'Orange', 'Orange', 'Laranja'], ['#8B5A3C', 'Marrón', 'Brown', 'Marron', 'Marrom']] },
   { tpl: 'regalo', level: 1, cov: RETO_COV, colors: [['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho'], ['#FFD54A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo'], ['#2E8B3E', 'Verde', 'Green', 'Vert', 'Verde'], ['#F4C095', 'Crema', 'Cream', 'Crème', 'Creme']] },
   { tpl: 'bota', level: 1, cov: RETO_COV, colors: [['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho'], ['#F4C095', 'Crema', 'Cream', 'Crème', 'Creme'], ['#2E8B3E', 'Verde', 'Green', 'Vert', 'Verde'], ['#FFD54A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo']] },
-  { tpl: 'nv-pr-parranda', level: 2, cov: RETO_COV, colors: [['#5AC8FA', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu'], ['#F4D35A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo'], ['#2F7DE1', 'Azul', 'Blue', 'Bleu', 'Azul'], ['#E24B8A', 'Rosa', 'Pink', 'Rose', 'Rosa'], ['#7CBF4A', 'Verde', 'Green', 'Vert', 'Verde']] },
 ];
 const RETO_KEY = 'colorear.reto';
 let retoWatch = null, retoPaintT = 0;
@@ -9308,7 +9307,14 @@ function retoColorName(c) { const i = { es: 1, en: 2, fr: 3, 'pt-BR': 4 }[LANG] 
 function retoFor(ds) {
   const cal = retoSeason(ds), n = cal.pages.length;
   const i = dayNum(ds) - dayNum(cal.start);
-  const page = cal.pages[((i % n) + n) % n];
+  let idx = ((i % n) + n) % n, page = cal.pages[idx];
+  // A hidden page keeps its calendar slot. Until it returns, that day uses the previous drawing that is still in the catalog.
+  if (!TEMPLATES.some((x) => x.id === page.tpl)) {
+    for (let k = 1; k < n; k++) {
+      const alt = cal.pages[(idx - k + n) % n];
+      if (TEMPLATES.some((x) => x.id === alt.tpl)) { page = alt; break; }
+    }
+  }
   const t = TEMPLATES.find((x) => x.id === page.tpl);
   return { date: ds, id: page.tpl, season: cal.id, level: page.level || 1, tpl: page.tpl, cov: page.cov, colors: page.colors.map((c) => ({ h: c[0], name: retoColorName(c) })), title: 'reto.n.' + page.tpl, prompt: 'reto.g.' + page.tpl, name: t ? t.name : page.tpl };
 }
