@@ -125,6 +125,7 @@ header.top{
   touch-action:none;overflow:hidden;
 }
 #paper canvas{position:absolute;left:0;top:0;width:100%;height:100%;touch-action:none}
+#paper canvas#cvVec,#paper canvas#cvVecLo{pointer-events:none}
 #paper.c-pen,#paper.c-marker,#paper.c-line,#paper.c-ellipse,#paper.c-rect,#paper.c-star,#paper.c-heart{cursor:crosshair}
 #paper.c-fill,#paper.c-grad{cursor:cell}
 #paper.c-crayon,#paper.c-acrylic,#paper.c-water,#paper.c-alcohol,#paper.c-cerase,#paper.c-blend,#paper.c-blender0,#paper.c-cpencil,#paper.c-gel,#paper.c-agrad,#paper.c-mixb{cursor:crosshair}
@@ -1284,6 +1285,8 @@ input[type=text],input[type=search],input:not([type]),textarea,[contenteditable]
     <canvas id="cvPhoto" hidden aria-hidden="true"></canvas>
     <canvas id="cvColor"></canvas>
     <canvas id="cvLine"></canvas>
+    <canvas id="cvVecLo" hidden aria-hidden="true"></canvas>
+    <canvas id="cvVec" hidden aria-hidden="true"></canvas>
     <canvas id="cvOver" aria-hidden="true"></canvas>
     <canvas id="cvPbn" aria-hidden="true"></canvas>
     <canvas id="cvPbnHint" aria-hidden="true"></canvas>
@@ -2135,6 +2138,111 @@ for (const k in layers) {
   L.cv.width = W; L.cv.height = H;
   L.ctx = ctx2d(L.cv); L.bctx = ctx2d(L.bak);
 }
+/* 4.5 (v65): líneas nítidas a cualquier zoom. La capa de líneas (1200×1600) sigue igual para el bote, los toques y el progreso,
+   pero en Colorear lo que se VE es la plantilla dibujada en vector a la resolución de la pantalla (#cvVec, encima de la pintura y
+   debajo de «Detalles encima»). Lo que no es de la plantilla (sellos, trazos de Dibujar, borrones) sale de comparar la capa con la
+   plantilla y se dibuja encima tal cual. Sin datos de vector (fotos, PDF, hojas importadas) se ve la capa de siempre. */
+var lineVec = null, lineGen = 0, vecTimer = 0;
+var vecCv = document.getElementById('cvVec'), vecCtx = vecCv ? vecCv.getContext('2d') : null, vecLo = document.getElementById('cvVecLo');
+function vecBase(c) {
+  const d = c.getImageData(0, 0, W, H).data, n = W * H, a = new Uint8Array(n);
+  let col = false;
+  for (let i = 0, k = 3; i < n; i++, k += 4) { a[i] = d[k]; if (d[k] > 24 && d[k - 3] + d[k - 2] + d[k - 1] > 90) col = true; }
+  return { a, rgb: col ? new Uint8ClampedArray(d) : null };
+}
+function vecFromTemplate(t, eyes, c) { const b = vecBase(c); return { id: t.id, t, eyes: !!eyes, w: W, h: H, base: b.a, rgb: b.rgb, gen: -1, extra: null, erase: null, bad: false }; }
+function vecArrCanvas(arr) { const c = mkCanvas(W, H); c.getContext('2d').putImageData(new ImageData(arr, W, H), 0, 0); return c; }
+// compara la capa de líneas con la plantilla (solo cuando la capa cambió)
+function vecDiff(v) {
+  if (v.gen === lineGen) return v;
+  v.gen = lineGen; v.extra = v.erase = null; v.bad = false;
+  if (v.w !== W || v.h !== H || bgPhoto) { v.bad = true; return v; }
+  const d = layers.line.ctx.getImageData(0, 0, W, H).data, b = v.base, rgb = v.rgb, n = W * H;
+  let ink = 0, gone = 0, ex = null, er = null;
+  for (let i = 0, k = 0; i < n; i++, k += 4) {
+    const a = d[k + 3], q = b[i]; if (q > 128) ink++;
+    if (a <= 24 && q <= 24) continue;
+    const colored = a > 24 && d[k] + d[k + 1] + d[k + 2] > 90 && (!rgb || Math.abs(d[k] - rgb[k]) + Math.abs(d[k + 1] - rgb[k + 1]) + Math.abs(d[k + 2] - rgb[k + 2]) > 60);
+    if (a > q + 24 || colored) { if (!ex) ex = new Uint8ClampedArray(n * 4); ex[k] = d[k]; ex[k + 1] = d[k + 1]; ex[k + 2] = d[k + 2]; ex[k + 3] = a; }
+    else if (a + 24 < q) { if (!er) er = new Uint8ClampedArray(n * 4); er[k + 3] = q - a; if (q > 128 && a < 64) gone++; }
+  }
+  if (gone > ink * 0.02 + 50) { v.bad = true; return v; }   // la capa ya no es esta plantilla (p. ej. un dibujo guardado con líneas de otra versión)
+  if (ex) v.extra = vecArrCanvas(ex);
+  if (er) v.erase = vecArrCanvas(er);
+  return v;
+}
+// dibuja las líneas en coordenadas de la hoja (W×H) en un lienzo vacío
+function drawLineArt(c, v) {
+  const pe = window.__pbnEyes; window.__pbnEyes = !!v.eyes;
+  try { renderTemplate(c, v.t, W, H); } finally { window.__pbnEyes = pe; }
+  c.save(); c.imageSmoothingEnabled = true; c.imageSmoothingQuality = 'high';
+  if (v.erase) { c.globalCompositeOperation = 'destination-out'; c.drawImage(v.erase, 0, 0, W, H); c.globalCompositeOperation = 'source-over'; }
+  if (v.extra) c.drawImage(v.extra, 0, 0, W, H);
+  c.restore();
+}
+function vecOk(v) { return !!(v && !bgPhoto && !vecDiff(v).bad); }
+// líneas para exportar / video: en vector si se puede (a cualquier tamaño)
+function drawLinesTo(x, w, h) {
+  const v = lineVec;
+  if (v && !bgPhoto && (v.gen === lineGen || w * h > W * H * 1.05) && vecOk(v)) {
+    const t = mkCanvas(w, h), c = t.getContext('2d'); c.scale(w / W, h / H); drawLineArt(c, v); x.drawImage(t, 0, 0);
+  } else x.drawImage(layers.line.cv, 0, 0, w, h);
+}
+function lineChanged() { lineGen++; vecSchedule(30); }
+function vecSchedule(ms) { if (!vecCv) return; clearTimeout(vecTimer); vecTimer = setTimeout(vecDraw, ms); }
+function vecHide() { if (!vecCv) return; vecDraw.last = null; if (!vecCv.hidden) { vecCv.hidden = true; vecCv.width = vecCv.height = 1; } if (vecLo && !vecLo.hidden) { vecLo.hidden = true; vecLo.width = vecLo.height = 1; } layers.line.cv.style.clipPath = ''; }
+function vecDraw() {
+  vecTimer = 0;
+  if (!vecCv) return;
+  if (!(lineVec && state.mode === 'color' && layers.line.vis && view.bw && vecOk(lineVec))) { vecHide(); return; }
+  const dpr = Math.min(3, window.devicePixelRatio || 1), z = view.z, bw = view.bw, bh = view.bh, sw = stage.clientWidth, sh = stage.clientHeight;
+  // la parte de la hoja que se ve (en px de la hoja sin zoom), con margen para mover sin que falte nada
+  let x0 = -view.x / z, y0 = -view.y / z, x1 = (sw - view.x) / z, y1 = (sh - view.y) / z;
+  // solo se movió dentro de lo ya dibujado y al mismo zoom: no hace falta volver a dibujar
+  const L = vecDraw.last;
+  if (L && !vecCv.hidden && L.v === lineVec && L.gen === lineGen && L.z === z && L.dpr === dpr && L.bw === bw && L.bh === bh
+    && x0 >= L.x0 - 0.5 && y0 >= L.y0 - 0.5 && x1 <= L.x1 + 0.5 && y1 <= L.y1 + 0.5) return;
+  const mx = (x1 - x0) * 0.2, my = (y1 - y0) * 0.2;
+  x0 = Math.max(0, Math.floor(x0 - mx)); y0 = Math.max(0, Math.floor(y0 - my)); x1 = Math.min(bw, Math.ceil(x1 + mx)); y1 = Math.min(bh, Math.ceil(y1 + my));
+  if (x1 <= x0 || y1 <= y0) { vecHide(); return; }
+  let k = z * dpr; const MAXPX = 7e6, A = (x1 - x0) * (y1 - y0);
+  if (A * k * k > MAXPX) k = Math.sqrt(MAXPX / A);
+  const cw = Math.max(1, Math.round((x1 - x0) * k)), ch = Math.max(1, Math.round((y1 - y0) * k));
+  if (vecCv.width !== cw || vecCv.height !== ch) { vecCv.width = cw; vecCv.height = ch; }
+  const c = vecCtx; c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, cw, ch);
+  c.setTransform(cw / (x1 - x0) * bw / W, 0, 0, ch / (y1 - y0) * bh / H, -x0 * cw / (x1 - x0), -y0 * ch / (y1 - y0));
+  drawLineArt(c, lineVec);
+  const st = vecCv.style; st.left = x0 + 'px'; st.top = y0 + 'px'; st.width = (x1 - x0) + 'px'; st.height = (y1 - y0) + 'px';
+  vecCv.hidden = false;
+  vecDraw.last = { v: lineVec, gen: lineGen, z, dpr, bw, bh, x0: Math.max(0, x0) === 0 ? -1e9 : x0, y0: y0 === 0 ? -1e9 : y0, x1: x1 >= bw ? 1e9 : x1, y1: y1 >= bh ? 1e9 : y1 };
+  // fuera del recuadro nítido (mientras se mueve la hoja) se ve una copia de la capa de líneas con ese recuadro vacío;
+  // la capa misma queda oculta con un recorte fijo (un recorte con hueco hace lento el arrastre)
+  layers.line.cv.style.clipPath = 'inset(50%)';
+  if (vecLo) {
+    if (x0 <= 0 && y0 <= 0 && x1 >= bw && y1 >= bh) { if (!vecLo.hidden) { vecLo.hidden = true; vecLo.width = vecLo.height = 1; } }
+    else {
+      if (vecLo.width !== W || vecLo.height !== H) { vecLo.width = W; vecLo.height = H; }
+      const lc = vecLo.getContext('2d'), fx = W / bw, fy = H / bh;
+      lc.clearRect(0, 0, W, H); lc.drawImage(layers.line.cv, 0, 0);
+      const hx0 = x0 <= 0 ? 0 : Math.ceil(x0 * fx) + 1, hy0 = y0 <= 0 ? 0 : Math.ceil(y0 * fy) + 1, hx1 = x1 >= bw ? W : Math.floor(x1 * fx) - 1, hy1 = y1 >= bh ? H : Math.floor(y1 * fy) - 1;
+      if (hx1 > hx0 && hy1 > hy0) lc.clearRect(hx0, hy0, hx1 - hx0, hy1 - hy0);
+      vecLo.hidden = false;
+    }
+  }
+}
+function vecInfo() { return lineVec ? { id: lineVec.id, eyes: lineVec.eyes } : null; }
+// vuelve a unir la capa de líneas con su plantilla (dibujo guardado, autoguardado, PNG propio)
+function vecAttach(info, quiet) {
+  if (!info || !info.id || bgPhoto) return;
+  const t = TEMPLATES.find((x) => x.id === info.id);
+  if (!t || !!t.land !== W > H) return;
+  const tmp = mkCanvas(W, H), c = ctx2d(tmp), pe = window.__pbnEyes;
+  window.__pbnEyes = !!info.eyes;
+  try { renderTemplate(c, t, W, H); } finally { window.__pbnEyes = pe; }
+  lineVec = vecFromTemplate(t, info.eyes, c);
+  lineGen++;
+  if (!quiet) vecSchedule(0);
+}
 // Capas de pintura, de abajo hacia arriba. Empieza con una sola (la Capa 1): quien no abre "Capas" no nota nada.
 const paint = [layers.color];
 const MAX_LAYERS = 6;
@@ -2234,6 +2342,7 @@ function clampView() {
 }
 function applyView() {
   paper.style.transform = `translate(${view.x}px, ${view.y}px) scale(${view.z})`;
+  if (lineVec) vecSchedule(180);    // 4.5: las líneas nítidas se vuelven a dibujar al terminar de mover / acercar
   $('#zoomPct').textContent = Math.round(view.z * 100) + '%';
   $('#zoomOut').disabled = view.z <= 1.001; $('#zoomFit').disabled = view.z <= 1.001; $('#zoomIn').disabled = view.z >= ZMAX - 0.001;
   if (objs.length) renderObjs();
@@ -2277,7 +2386,9 @@ function entryBytes(e) {
   if (e.layerOp && e.layerOp.data) n += e.layerOp.data.data.length;
   return n + 1000;
 }
+const entryTouchesLine = (e) => !!(e && (e.resize || e.layerOp || (e.parts || []).some((p) => p && p.name === 'line')));
 function pushEntry(e) {
+  if (entryTouchesLine(e)) lineChanged();
   undoStack.push(e);
   redoStack.length = 0;
   let total = undoStack.reduce((a, x) => a + entryBytes(x), 0);
@@ -2294,7 +2405,7 @@ function commit(parts, extra) {
 function snapLayers() {
   const data = {};
   for (const L of [...paint, layers.line, layers.over]) data[L.id] = L.ctx.getImageData(0, 0, W, H);
-  return { photo: bgPhoto, w: W, h: H, meta: paint.map((L) => ({ id: L.id, vis: L.vis, op: L.op })), lineVis: layers.line.vis, active: state.activeLayer, data };
+  return { photo: bgPhoto, w: W, h: H, meta: paint.map((L) => ({ id: L.id, vis: L.vis, op: L.op })), lineVis: layers.line.vis, active: state.activeLayer, data, vec: lineVec };
 }
 function restoreSnap(sn) {
   setBgPhoto(sn.photo || null);
@@ -2304,6 +2415,7 @@ function restoreSnap(sn) {
   if (!paint.includes(layers.color)) paint.unshift(layers.color);
   layers.line.vis = sn.lineVis !== false;
   for (const id in sn.data) if (layers[id]) layers[id].ctx.putImageData(sn.data[id], 0, 0);
+  lineVec = sn.vec || null; lineChanged();
   state.activeLayer = sn.active && paint.some((L) => L.id === sn.active) ? sn.active : 'color';
   syncBackups(); mountLayers();
 }
@@ -2322,13 +2434,16 @@ function replaceSheet(nw, nh, drawFn, photo) {
   const lc = layers.line.ctx, cc = layers.color.ctx;
   lc.clearRect(0, 0, W, H); layers.over.ctx.clearRect(0, 0, W, H);
   if (photo) cc.clearRect(0, 0, W, H); else { cc.fillStyle = '#fff'; cc.fillRect(0, 0, W, H); }
+  lineVec = null;
   if (drawFn) drawFn(lc, cc);
+  lineGen++;
   const after = snapLayers();
   syncBackups(); mountLayers();
   try { procNew(); } catch (_) {}            // 3.9: hoja nueva = video del proceso nuevo
   pushEntry({ parts: [], resize: { before, after } });
 }
 function applyEntry(entry, which) {
+  if (entryTouchesLine(entry)) lineChanged();
   if (entry.resize) restoreSnap(entry.resize[which]);
   if (entry.layerOp) applyLayerOp(entry.layerOp, which);
   for (const p of entry.parts) {
@@ -4710,7 +4825,7 @@ function loadTemplate(id) {
   const t = TEMPLATES.find((x) => x.id === id);
   if (id && id !== 'blank' && !t) { toast(tt('toast.tplgone')); return; }
   if (t) markTplSeen(t.id);
-  { const sz = t && t.land ? LANDSCAPE : PORTRAIT; replaceSheet(sz[0], sz[1], (lc) => { if (t) renderTemplate(lc, t, W, H); }); }
+  { const sz = t && t.land ? LANDSCAPE : PORTRAIT; replaceSheet(sz[0], sz[1], (lc) => { if (t) { renderTemplate(lc, t, W, H); lineVec = vecFromTemplate(t, window.__pbnEyes, lc); } }); }
   state.currentId = null;
   setMode(t ? 'color' : 'draw');
   toast(t ? tt('toast.tpl', { name: t.name }) : tt('toast.newsheet'));
@@ -4734,6 +4849,7 @@ function setMode(m) {
   updateCursor();
   layout();
   requestAnimationFrame(layout);
+  vecSchedule(0);
 }
 function updateCursor() { paper.className = 'c-' + (objMode ? 'obj' : state.picking ? 'pick' : currentTool()); refreshMini(); if (window.stampRefresh) window.stampRefresh(); }
 $('#tabDraw').onclick = () => { flattenObjs(); setMode('draw'); };
@@ -5476,6 +5592,7 @@ function mountLayers() {
   for (const L of [...paint, layers.line, layers.over]) { L.cv.style.visibility = L.vis ? '' : 'hidden'; L.cv.style.opacity = L.op < 0.999 ? String(L.op) : ''; }
   if (!isLiveLayer(state.activeLayer)) state.activeLayer = 'color';
   refreshLayersUI();
+  vecSchedule(0);
 }
 function applyLayerOp(op, which) {
   const L = layers[op.id]; if (!L) return;
@@ -7637,7 +7754,7 @@ async function importOwn(blob, meta) {
     const [li, ci, oi, pi] = await Promise.all([loadImage(b64ToBlob(meta.ColorearLineas)), meta.ColorearColores ? loadImage(b64ToBlob(meta.ColorearColores)) : null, meta.ColorearArriba ? loadImage(b64ToBlob(meta.ColorearArriba)).catch(() => null) : null, meta.ColorearFoto ? loadImage(b64ToBlob(meta.ColorearFoto)).catch(() => null) : null]);
     let pcv = null; if (pi) { pcv = mkCanvas(pi.width, pi.height); pcv.getContext('2d').drawImage(pi, 0, 0); }
     const [nw, nh] = pcv ? [pcv.width, pcv.height] : sizeForImage(li.width, li.height);
-    replaceSheet(nw, nh, (lc, cc) => { lc.drawImage(li, 0, 0, nw, nh); if (ci) cc.drawImage(ci, 0, 0, nw, nh); if (oi) layers.over.ctx.drawImage(oi, 0, 0, nw, nh); }, pcv);
+    replaceSheet(nw, nh, (lc, cc) => { lc.drawImage(li, 0, 0, nw, nh); if (ci) cc.drawImage(ci, 0, 0, nw, nh); if (oi) layers.over.ctx.drawImage(oi, 0, 0, nw, nh); vecAttach(info.vec, true); }, pcv);
   } else {
     const img = await loadImage(blob), [nw, nh] = sizeForImage(img.width, img.height);
     const tmp = mkCanvas(nw, nh), tc = ctx2d(tmp);
@@ -7850,7 +7967,7 @@ function composite(w = W, h = H, onlyLine = false, withLines = true, withOver = 
   if (bgPhoto && !onlyLine) { x.imageSmoothingQuality = 'high'; x.drawImage(bgPhoto, 0, 0, w, h); }
   if (!onlyLine) for (const L of paint) if (L.vis && L.op > 0) { x.globalAlpha = L.op; x.drawImage(L.cv, 0, 0, w, h); }
   x.globalAlpha = 1;
-  if (onlyLine || (withLines && layers.line.vis)) x.drawImage(layers.line.cv, 0, 0, w, h);
+  if (onlyLine || (withLines && layers.line.vis)) drawLinesTo(x, w, h);   // 4.5: en vector cuando la hoja es una plantilla
   if (!onlyLine && withOver && layers.over.vis) x.drawImage(layers.over.cv, 0, 0, w, h);   // 3.16: detalles de gel / acrílico encima de las líneas
   return c;
 }
@@ -7880,6 +7997,7 @@ async function setLayersFrom(lineBlob, colorBlob, extras, meta, photoBlob) {
   lc.clearRect(0, 0, W, H); layers.over.ctx.clearRect(0, 0, W, H); if (oi) layers.over.ctx.drawImage(oi, 0, 0, W, H);
   if (pcv) cc.clearRect(0, 0, W, H); else { cc.fillStyle = '#fff'; cc.fillRect(0, 0, W, H); }
   if (li) lc.drawImage(li, 0, 0, W, H);
+  lineVec = null; lineChanged();
   if (ci) cc.drawImage(ci, 0, 0, W, H);
   extras.forEach((x, i) => {
     if (!xi[i]) return;
@@ -7949,13 +8067,15 @@ function b64ToBlob(b64) { const s = atob(b64), u = new Uint8Array(s.length); for
 async function buildExport(kind) {        // 'outline' = solo líneas; 'color' = con colores (y capas guardadas dentro)
   cancelGesture(); flattenObjs();
   const info = { app: 'colorear', v: 2, tipo: kind === 'outline' ? 'contorno' : 'color', w: W, h: H, capas: paint.length };
+  const hi = lineVec && vecOk(lineVec) ? 2 : 1;    // 4.5: con líneas en vector la imagen sale al doble (2400×3200) y las líneas nítidas
+  if (hi > 1) info.vec = vecInfo();
   if (kind === 'outline') {
-    const blob = await toBlob(composite(W, H, true));
+    const blob = await toBlob(composite(W * hi, H * hi, true));
     return pngWithText(blob, [['Software', 'Colorear'], ['Colorear', JSON.stringify(info)]]);
   }
   // la imagen es el dibujo aplanado (capas visibles); adentro van las líneas y los colores aplanados para abrirlo otra vez en Colorear
   const pb = bgPhoto;
-  const [comp, line, color, ov, ph] = await Promise.all([toBlob(composite()), toBlob(layers.line.cv), toBlob(pb ? flatPaint() : composite(W, H, false, false, false)), overBlob(), photoBlob()]);
+  const [comp, line, color, ov, ph] = await Promise.all([toBlob(composite(W * hi, H * hi)), toBlob(layers.line.cv), toBlob(pb ? flatPaint() : composite(W, H, false, false, false)), overBlob(), photoBlob()]);
   const [l64, c64, o64, p64] = await Promise.all([blobToB64(line), blobToB64(color), ov ? blobToB64(ov) : '', ph ? blobToB64(ph) : '']);
   const chunks = [['Software', 'Colorear'], ['Colorear', JSON.stringify(info)], ['ColorearLineas', l64], ['ColorearColores', c64]];
   if (o64) chunks.push(['ColorearArriba', o64]);
@@ -8037,6 +8157,7 @@ async function doSave() {
     if (extra.length || ov || !layers.line.vis || !layers.color.vis || layers.color.op < 1) { rec.capas = extra; rec.capasInfo = Object.assign(layerMeta(), ov ? { over: ov } : {}); }
     if (ref.blob) rec.ref = refRecord();
     if (PBN.on) rec.pbn = { id: PBN.id, sel: PBN.sel };      // 3.15: seguir Por número al abrirlo
+    if (lineVec) rec.vec = vecInfo();                         // 4.5: de qué plantilla son las líneas (para verlas nítidas al abrirlo)
     rec.proc = procId;                          // 3.9: el video del proceso va con el dibujo      // 3.7: la foto de referencia va con el dibujo (aparte: nunca dentro de la imagen)
     if (state.currentId != null) {
       const old = await tx('dibujos', 'readonly', (s) => s.get(state.currentId));
@@ -8092,6 +8213,7 @@ $('#galleryGrid').addEventListener('click', async (e) => {
   cancelGesture();
   objs = []; exitObjMode(); renderObjs();
   await setLayersFrom(it.line, act === 'open' ? it.color : null, act === 'open' ? it.capas : null, act === 'open' ? it.capasInfo : null, it.photo || null);
+  vecAttach(it.vec || (it.pbn && it.pbn.id ? { id: it.pbn.id, eyes: true } : null));
   await setRef(it.ref || null);
   setProc(act === 'open' && it.proc ? it.proc : null);   // 3.9
   resetHistory();
@@ -8113,7 +8235,7 @@ async function autosave() {
   autoBusy = true;
   try {
     const [line, color, capas, ov, photo] = await Promise.all([toBlob(layers.line.cv), toBlob(layers.color.cv), extraLayersData(), overBlob(), photoBlob()]);
-    await tx('estado', 'readwrite', (s) => s.put({ line, color, photo, capas, capasInfo: Object.assign(layerMeta(), ov ? { over: ov } : {}), w: W, h: H, objs: snapshotObjs(), currentId: state.currentId, dirty: state.dirty, mode: state.mode, proc: procId, pbn: PBN.on ? { id: PBN.id, sel: PBN.sel } : null, t: Date.now() }, 'actual'));
+    await tx('estado', 'readwrite', (s) => s.put({ line, color, photo, capas, capasInfo: Object.assign(layerMeta(), ov ? { over: ov } : {}), w: W, h: H, vec: vecInfo(), objs: snapshotObjs(), currentId: state.currentId, dirty: state.dirty, mode: state.mode, proc: procId, pbn: PBN.on ? { id: PBN.id, sel: PBN.sel } : null, t: Date.now() }, 'actual'));
   } catch (e) { console.warn('autoguardado', e); }
   autoBusy = false;
 }
@@ -8123,6 +8245,7 @@ async function restore() {
     const s = await tx('estado', 'readonly', (st) => st.get('actual'));
     if (s && s.line) {
       await setLayersFrom(s.line, s.color, s.capas, s.capasInfo, s.photo || null);
+      vecAttach(s.vec || (s.pbn && s.pbn.id ? { id: s.pbn.id, eyes: true } : null));
       state.currentId = s.currentId ?? null; state.dirty = !!s.dirty;
       if (s.proc) setProc(s.proc);                // 3.9
       setMode(s.mode === 'color' ? 'color' : 'draw');
