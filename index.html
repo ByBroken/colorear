@@ -1070,7 +1070,7 @@ body.ui-hidden.obj-mode #miniBar{display:none}
 .reto-sw{display:flex;align-items:center;gap:6px;min-height:44px;min-width:44px;padding:4px 10px;border-radius:12px;border:2px solid #1A1228;background:#fff;color:#1A1228;font-weight:700;font-size:14px;flex:0 0 auto}
 .reto-sw i{width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 1px #1A1228;flex:0 0 auto}
 .reto-sw[aria-pressed="true"]{outline:3px solid #0B3A82;outline-offset:2px}
-#retoLive{position:absolute;z-index:4;left:8px;right:8px;top:6px;display:flex;flex-direction:column;gap:4px;background:#FFF6EC;color:#1A1228;border:2px solid #1A1228;border-radius:14px;padding:6px 8px}
+#retoLive{grid-row:4;grid-column:1;align-self:start;position:relative;z-index:4;margin:6px calc(env(safe-area-inset-right) + 8px) 0 calc(env(safe-area-inset-left) + 8px);min-width:0;display:flex;flex-direction:column;gap:4px;background:#FFF6EC;color:#1A1228;border:2px solid #1A1228;border-radius:14px;padding:6px 8px}
 #retoLive[hidden]{display:none!important}
 .rl-row{display:flex;align-items:center;gap:8px;min-height:44px}
 .rl-row p{margin:0;flex:1;min-width:0;font-size:15px;font-weight:800;line-height:1.2}
@@ -1082,8 +1082,11 @@ body.ui-hidden.obj-mode #miniBar{display:none}
 #retoLivePct{font-size:14px;font-weight:800;white-space:nowrap}
 #retoLiveStatus{margin:0;font-size:14px;font-weight:700;color:#1A1228}
 #retoLiveCols{display:flex;flex-wrap:nowrap;gap:6px;overflow-x:auto;padding-bottom:2px}
-body.reto-on #stage{padding-top:200px}
-body.ui-hidden.reto-on #stage{padding-top:calc(env(safe-area-inset-top) + 192px)}
+/* El panel del reto va ENCIMA de la hoja, fuera de #stage: la zona de dibujo se achica a lo que queda debajo (nunca lo tapa, ni con zoom) */
+body.reto-on #stage{margin-top:var(--reto-h,0px)}
+@media (orientation:landscape) and (max-height:560px){ #retoLive{grid-column:1;grid-row:1 / span 4} }
+body.ui-hidden #retoLive{position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top) + 4px)}
+body.ui-hidden.reto-on #stage{margin-top:0;top:var(--reto-h,0px)}
 #retoPop{position:fixed;inset:0;z-index:60;background:rgba(20,12,28,.5);display:flex;align-items:center;justify-content:center;padding:18px}
 #retoPop[hidden]{display:none!important}
 #retoPop .box{background:#fff;color:#1A1228;border-radius:18px;padding:20px;max-width:380px;width:100%;border:2px solid #1A1228}
@@ -1263,7 +1266,6 @@ input[type=text],input[type=search],input:not([type]),textarea,[contenteditable]
   <button id="qsMore" title="Más colores: 400+ colores" aria-label="Más colores (400+ colores)"></button>
 </div>
 
-<main id="stage">
   <div id="retoLive" hidden>
     <div class="rl-row">
       <p id="retoLiveTitle"></p>
@@ -1277,6 +1279,7 @@ input[type=text],input[type=search],input:not([type]),textarea,[contenteditable]
     <p id="retoLiveStatus" aria-live="polite"></p>
     <div id="retoLiveCols" role="group"></div>
   </div>
+<main id="stage">
   <div id="paper" class="c-pen">
     <canvas id="cvPhoto" hidden aria-hidden="true"></canvas>
     <canvas id="cvColor"></canvas>
@@ -9380,7 +9383,7 @@ function retoLiveRefresh(immediate, st) {
   if ($('#retoLive').hidden) return;
   const run = () => {
     const r = retoFor(dayStr());
-    st = st || retoStats(3);
+    st = st || retoStats(1);   // el mismo cálculo que usa «Terminar»: si dice «Ya puedes terminarlo», Terminar lo acepta
     const pct = Math.max(0, Math.min(100, st.cov));
     $('#retoLiveFill').style.width = pct + '%';
     const bar = $('#retoLiveBar');
@@ -9395,10 +9398,18 @@ function retoLiveRefresh(immediate, st) {
   };
   if (immediate) run(); else { clearTimeout(retoPaintT); retoPaintT = setTimeout(run, 80); }
 }
+function retoMeasure() {
+  const L = $('#retoLive');
+  const h = L.hidden ? 0 : Math.ceil(L.offsetHeight + (parseFloat(getComputedStyle(L).marginTop) || 0) + 4);
+  const v = h + 'px';
+  if (document.body.style.getPropertyValue('--reto-h') !== v) { document.body.style.setProperty('--reto-h', v); try { layout(); } catch (_) {} }
+}
+if (window.ResizeObserver) new ResizeObserver(() => retoMeasure()).observe($('#retoLive'));
 function retoShow(on) {
   document.body.classList.toggle('reto-on', !!on);
   $('#retoLive').hidden = !on;
-  requestAnimationFrame(() => { try { layout(); } catch (_) {} });
+  retoMeasure();
+  requestAnimationFrame(() => { try { retoMeasure(); layout(); } catch (_) {} });
 }
 function retoOnTemplate(id) {
   const s = retoData(), r = retoFor(dayStr());
