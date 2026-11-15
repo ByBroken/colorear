@@ -57,8 +57,6 @@
 <script src="templates-data.js"></script>
 <script src="pbn-data.js"></script>
 <script src="il-data.js"></script>
-<script src="cozy2-data.js"></script>
-<script src="plantillas-rev-data.js"></script>
 <script src="navidad-data.js"></script>
 <script src="stamps-data.js"></script>
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
@@ -4081,7 +4079,7 @@ function petalRing(c, cx, cy, r1, r2, n, rot = 0, fat = 1) {   // pétalos entre
   }
 }
 const grassLine = (c, y) => { c.moveTo(0, y); c.lineTo(300, y); };
-const TEMPLATE_CATS = [['halloween', 'Halloween'], ['otono', 'Otoño y Acción de Gracias'], ['cozy', 'Cozy'], ['personajes', 'Personajes'], ['animales', 'Animales'], ['naturaleza', 'Naturaleza'], ['pr', 'Puerto Rico'], ['monumentos', 'Monumentos del mundo'], ['mandalas', 'Mandalas'], ['navidad', 'Navidad'], ['cosas', 'Cosas']];
+const TEMPLATE_CATS = [['navidad', 'Navidad'], ['personajes', 'Personajes'], ['animales', 'Animales'], ['naturaleza', 'Naturaleza'], ['pr', 'Puerto Rico'], ['monumentos', 'Monumentos del mundo'], ['mandalas', 'Mandalas'], ['cosas', 'Cosas']];
 const TEMPLATES = [
   { id: 'casa', name: 'Casa', cat: 'cosas', probe: [90, 300], draw(c) {
     c.beginPath();
@@ -4757,6 +4755,8 @@ const TPL_UPG_DATE = '2026-10-15';
 // 4.0: en Por número, los ojos que eran tinta sólida se dibujan como ojo de verdad: blanco, iris de color, pupila chiquita y brillo
 function pbnEyeDraw(c, ex, lw) { const arc = (x, y, r) => { c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); }; for (const [x, y, r, rx, xe] of ex) { const ry = r, rr = rx || r, e = xe || 0.5; c.save(); c.globalCompositeOperation = 'destination-out'; c.beginPath(); c.rect(x - rr * 0.3, y - ry - lw * 3, rr * 1.3 + lw * 3, ry * 2 + lw * 6); c.clip(); c.beginPath(); c.ellipse(x, y, rr + lw * e, ry + lw * e, 0, 0, Math.PI * 2); c.fill(); c.restore(); c.lineWidth = lw * 0.9; c.beginPath(); c.ellipse(x, y, rr, ry, 0, 0, Math.PI * 2); c.stroke(); const ir = Math.min(rr, ry) * 0.55; c.lineWidth = lw * 0.5; arc(x, y, ir); c.stroke(); arc(x, y, ir * 0.36); c.fill(); arc(x - ir * 0.42, y - ir * 0.38, ir * 0.24); c.stroke(); } }
   // rayitas de tinta que cierran rendijas angostas (cuellos de menos de 4 unidades) para que cada zona se pinte por separado
+  // v66: fuera las páginas de Halloween y de otoño (también las de personajes); los dibujos guardados se siguen abriendo
+  { const OFF = new Set(['halloween', 'otono', 'cozy']), OFF_ID = new Set(['il-bruja', 'il-otono']); for (let i = TEMPLATES.length; i--;) if (OFF.has(TEMPLATES[i].cat) || OFF_ID.has(TEMPLATES[i].id)) TEMPLATES.splice(i, 1); }
   const PR = window.TPL_PROBE || {}; for (const t of TEMPLATES) if (PR[t.id]) t.probe = PR[t.id];   // punto de prueba dentro de la zona principal (para las pruebas)
   const FIX = window.TPL_FIX || {};
   // 3.20: arreglos de líneas: las rendijas blancas finas (terminan en Z) se rellenan de tinta; las rayitas abiertas cierran huecos con el grosor de la línea
@@ -9384,8 +9384,8 @@ $('#vidClear').onclick = async () => {
    solo en una versión futura, para no cambiar los días ya definidos.
    Medición en teléfono a 100 % (374 px de ancho sobre la hoja de 1200):
    zona cómoda = 12 000 px o más. Navidad: todas superan el 75 % del área.
-   Otoño publicado y sin Acción de Gracias: ninguna llega al 75 %; se usan
-   las dos que sí son otoño claro y más se acercan (70 % y 69 %). */
+   v66: otoño sin las plantillas de otoño (quitadas): árbol y casa de siempre
+   con colores de otoño (key = textos propios). */
 const RETO_COV = 40;
 const RETO_V1_START = '2020-01-01';
 const RETO_SEASON_FROM = '2026-11-08';
@@ -9399,16 +9399,16 @@ const RETO_PAGES = [
   { tpl: 'arbol', level: 1, cov: RETO_COV, colors: [['#2E8B3E', 'Verde oscuro', 'Dark green', 'Vert foncé', 'Verde-escuro'], ['#8B5A3C', 'Marrón', 'Brown', 'Marron', 'Marrom'], ['#5AC8FA', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu'], ['#FFD54A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo']] },
   { tpl: 'palmera', level: 1, cov: RETO_COV, colors: [['#5AC8FA', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu'], ['#0077B6', 'Azul', 'Blue', 'Bleu', 'Azul'], ['#F2D49B', 'Arena', 'Sand', 'Sable', 'Areia'], ['#2E8B3E', 'Verde', 'Green', 'Vert', 'Verde']] },
   { tpl: 'coqui2', level: 1, cov: RETO_COV, colors: [['#2E8B3E', 'Verde', 'Green', 'Vert', 'Verde'], ['#FF8AD0', 'Rosa', 'Pink', 'Rose', 'Rosa'], ['#5AC8FA', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu'], ['#F4C095', 'Crema', 'Cream', 'Crème', 'Creme']] },
-  { tpl: 'calabaza', level: 1, cov: RETO_COV, colors: [['#FF9A3D', 'Naranja', 'Orange', 'Orange', 'Laranja'], ['#2E8B3E', 'Verde', 'Green', 'Vert', 'Verde'], ['#1E3A8A', 'Azul noche', 'Night blue', 'Bleu nuit', 'Azul-noite'], ['#FFD54A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo']] },
+  { tpl: 'pez', level: 1, cov: RETO_COV, colors: [['#FF9A3D', 'Naranja', 'Orange', 'Orange', 'Laranja'], ['#0077B6', 'Azul', 'Blue', 'Bleu', 'Azul'], ['#34C759', 'Verde', 'Green', 'Vert', 'Verde'], ['#FFD54A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo']] },
   { tpl: 'muneco', level: 1, cov: RETO_COV, colors: [['#9AD8FF', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu'], ['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho'], ['#8E5BD9', 'Violeta', 'Violet', 'Violet', 'Violeta'], ['#F4C095', 'Crema', 'Cream', 'Crème', 'Creme']] },
-  { tpl: 'cz-playa', level: 2, cov: RETO_COV, colors: [['#0077B6', 'Azul', 'Blue', 'Bleu', 'Azul'], ['#F2D49B', 'Arena', 'Sand', 'Sable', 'Areia'], ['#5AC8FA', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu'], ['#2E8B3E', 'Verde', 'Green', 'Vert', 'Verde']] },
-  { tpl: 'cz-picnic', level: 2, cov: RETO_COV, colors: [['#34C759', 'Verde', 'Green', 'Vert', 'Verde'], ['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho'], ['#5AC8FA', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu'], ['#F4C095', 'Crema', 'Cream', 'Crème', 'Creme']] },
-  { tpl: 'hw-fantasmas', level: 2, cov: RETO_COV, colors: [['#1E3A8A', 'Azul noche', 'Night blue', 'Bleu nuit', 'Azul-noite'], ['#FF9A3D', 'Naranja', 'Orange', 'Orange', 'Laranja'], ['#F4C095', 'Crema', 'Cream', 'Crème', 'Creme'], ['#34C759', 'Verde', 'Green', 'Vert', 'Verde']] },
+  { tpl: 'tortuga', level: 1, cov: RETO_COV, colors: [['#0077B6', 'Azul', 'Blue', 'Bleu', 'Azul'], ['#2E8B3E', 'Verde', 'Green', 'Vert', 'Verde'], ['#F2D49B', 'Arena', 'Sand', 'Sable', 'Areia'], ['#5AC8FA', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu']] },
+  { tpl: 'sol', level: 1, cov: RETO_COV, colors: [['#FFD54A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo'], ['#5AC8FA', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu'], ['#FF8AD0', 'Rosa', 'Pink', 'Rose', 'Rosa'], ['#34C759', 'Verde', 'Green', 'Vert', 'Verde']] },
+  { tpl: 'carro', level: 1, cov: RETO_COV, colors: [['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho'], ['#5AC8FA', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu'], ['#9AA3AD', 'Gris', 'Gray', 'Gris', 'Cinza'], ['#34C759', 'Verde', 'Green', 'Vert', 'Verde']] },
   { tpl: 'nv-pr-parranda', level: 2, cov: RETO_COV, colors: [['#5AC8FA', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu'], ['#F4D35A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo'], ['#2F7DE1', 'Azul', 'Blue', 'Bleu', 'Azul'], ['#E24B8A', 'Rosa', 'Pink', 'Rose', 'Rosa'], ['#7CBF4A', 'Verde', 'Green', 'Vert', 'Verde']] },
 ];
 const RETO_OTONO = [
-  { tpl: 'ot-chocolate', level: 1, cov: RETO_COV, colors: [['#8B5A3C', 'Marrón', 'Brown', 'Marron', 'Marrom'], ['#F4C095', 'Crema', 'Cream', 'Crème', 'Creme'], ['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho'], ['#FF9A3D', 'Naranja', 'Orange', 'Orange', 'Laranja']] },
-  { tpl: 'ot-hojas', level: 1, cov: RETO_COV, colors: [['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho'], ['#FF9A3D', 'Naranja', 'Orange', 'Orange', 'Laranja'], ['#FFD54A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo'], ['#8B5A3C', 'Marrón', 'Brown', 'Marron', 'Marrom']] },
+  { tpl: 'arbol', key: 'ot-arbol', level: 1, cov: RETO_COV, colors: [['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho'], ['#FF9A3D', 'Naranja', 'Orange', 'Orange', 'Laranja'], ['#FFD54A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo'], ['#8B5A3C', 'Marrón', 'Brown', 'Marron', 'Marrom']] },
+  { tpl: 'casa', key: 'ot-casa', level: 1, cov: RETO_COV, colors: [['#FF9A3D', 'Naranja', 'Orange', 'Orange', 'Laranja'], ['#8B5A3C', 'Marrón', 'Brown', 'Marron', 'Marrom'], ['#FFD54A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo'], ['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho']] },
 ];
 const RETO_NAVIDAD = [
   { tpl: 'arbolnav', level: 1, cov: RETO_COV, colors: [['#2E8B3E', 'Verde', 'Green', 'Vert', 'Verde'], ['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho'], ['#FFD54A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo'], ['#8B5A3C', 'Marrón', 'Brown', 'Marron', 'Marrom']] },
@@ -9444,7 +9444,7 @@ function retoFor(ds) {
     }
   }
   const t = TEMPLATES.find((x) => x.id === page.tpl);
-  return { date: ds, id: page.tpl, season: cal.id, level: page.level || 1, tpl: page.tpl, cov: page.cov, colors: page.colors.map((c) => ({ h: c[0], name: retoColorName(c) })), title: 'reto.n.' + page.tpl, prompt: 'reto.g.' + page.tpl, name: t ? t.name : page.tpl };
+  return { date: ds, id: page.tpl, season: cal.id, level: page.level || 1, tpl: page.tpl, cov: page.cov, colors: page.colors.map((c) => ({ h: c[0], name: retoColorName(c) })), title: 'reto.n.' + (page.key || page.tpl), prompt: 'reto.g.' + (page.key || page.tpl), name: t ? t.name : page.tpl };
 }
 function retoData() { try { const s = JSON.parse(localStorage.getItem(RETO_KEY) || 'null'); if (s && Array.isArray(s.done)) return s; } catch (_) {} return { done: [] }; }
 function retoSave(s) { try { localStorage.setItem(RETO_KEY, JSON.stringify(s)); } catch (_) {} }
