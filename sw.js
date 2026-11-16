@@ -1,6 +1,6 @@
 /* Service worker de Colorear: guarda todo en caché para funcionar sin internet
    y recibe imágenes compartidas desde otras apps (Web Share Target). */
-const CACHE = 'colorear-v66';
+const CACHE = 'colorear-v67';
 const CACHE_COMPARTIDO = 'colorear-compartido';
 const ARCHIVOS = [
   './',
@@ -19,6 +19,7 @@ const ARCHIVOS = [
   'fonts/Allura-Regular.woff2',
   'fonts/DancingScript.woff2',
   'navidad-data.js',
+  'cozy-data.js',
   'icon-48.png',
   'icon-72.png',
   'icon-96.png',
@@ -43,9 +44,9 @@ self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(CACHE)
       .then((c) => c.addAll(ARCHIVOS.map((u) => new Request(u, { cache: 'reload' }))))
-      // Primera instalación: activar enseguida. Si ya hay una versión anterior,
-      // esperar a que la persona toque "Actualizar" (así no se pierde nada a medio dibujar).
-      .then(() => { if (!self.registration.active) return self.skipWaiting(); })
+      // v67: activar siempre enseguida. La app guarda el dibujo y se recarga sola (antes esperaba a que
+      // tocaran «Actualizar» y en Android seguía saliendo la versión vieja).
+      .then(() => self.skipWaiting())
   );
 });
 
@@ -85,23 +86,24 @@ self.addEventListener('fetch', (e) => {
   }
   if (req.method !== 'GET') return;
 
-  // Navegación: devolver la app (index.html) desde caché, aunque no haya red.
-  if (req.mode === 'navigate') {
-    if (url.pathname.endsWith('/privacidad.html')) {
-      e.respondWith(fetch(req).catch(() => caches.match('privacidad.html')));
-      return;
-    }
-    e.respondWith(
-      caches.match('index.html', { ignoreSearch: true })
-        .then((r) => r || fetch(req))
-        .catch(() => caches.match('./'))
-    );
-    // Actualizar en segundo plano
-    e.waitUntil(
-      fetch(new Request('index.html', { cache: 'no-cache' }))
-        .then((r) => r && r.ok ? caches.open(CACHE).then((c) => c.put('index.html', r)) : null)
-        .catch(() => {})
-    );
+  // v67: la app y sus datos (html, js, json, manifest) van primero a la red, con la copia guardada si no hay internet.
+  // Así una versión nueva sale en la próxima apertura. Imágenes, fuentes y pdf.js: caché primero.
+  const app = req.mode === 'navigate' || /\.(html|js|mjs|json|webmanifest)$/.test(url.pathname) || url.pathname.endsWith('/');
+  if (app && !url.pathname.includes('/pdfjs/')) {
+    const key = req.mode === 'navigate' && !url.pathname.endsWith('/privacidad.html') && !url.pathname.endsWith('/soporte.html') ? 'index.html' : req;
+    e.respondWith((async () => {
+      try {
+        const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 6000);
+        const res = await fetch(req.mode === 'navigate' ? new Request(key === 'index.html' ? 'index.html' : req.url, { cache: 'no-cache', signal: ctl.signal }) : new Request(req, { cache: 'no-cache', signal: ctl.signal }));
+        clearTimeout(t);
+        if (res && res.ok && res.type === 'basic') { const copia = res.clone(); caches.open(CACHE).then((c) => c.put(key, copia)); }
+        return res;
+      } catch (err) {
+        const hit = await caches.match(key, { ignoreSearch: true }) || (req.mode === 'navigate' ? await caches.match('./') : null);
+        if (hit) return hit;
+        throw err;
+      }
+    })());
     return;
   }
 

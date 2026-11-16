@@ -58,6 +58,7 @@
 <script src="pbn-data.js"></script>
 <script src="il-data.js"></script>
 <script src="navidad-data.js"></script>
+<script src="cozy-data.js"></script>
 <script src="stamps-data.js"></script>
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -664,6 +665,7 @@ body.ts-phone #tsCats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr))
 #updBar{position:fixed;left:10px;right:10px;top:calc(env(safe-area-inset-top) + 8px);z-index:35;display:none;max-width:520px;margin:0 auto;
   border:0;border-radius:16px;background:var(--accent2);color:#fff;font-weight:800;font-size:16px;min-height:54px;padding:10px 16px;box-shadow:0 6px 24px rgba(40,20,90,.35)}
 #updBar.show{display:block}
+#tplSheet:not(.pbn-mode) .tpl-old{display:none!important}
 #hint{
   position:fixed;left:10px;right:10px;top:calc(env(safe-area-inset-top) + 66px);z-index:15;
   background:#fff;border-radius:18px;padding:14px 14px 12px;box-shadow:0 8px 30px rgba(60,30,90,.25);
@@ -4079,7 +4081,9 @@ function petalRing(c, cx, cy, r1, r2, n, rot = 0, fat = 1) {   // pétalos entre
   }
 }
 const grassLine = (c, y) => { c.moveTo(0, y); c.lineTo(300, y); };
-const TEMPLATE_CATS = [['navidad', 'Navidad'], ['personajes', 'Personajes'], ['animales', 'Animales'], ['naturaleza', 'Naturaleza'], ['pr', 'Puerto Rico'], ['monumentos', 'Monumentos del mundo'], ['mandalas', 'Mandalas'], ['cosas', 'Cosas']];
+const TPL_FREE_CATS = new Set(['navidad', 'cozy3']);
+const TPL_HIDE_IDS = new Set(['arbolnav', 'muneco', 'regalo', 'bota']);   // dibujos de Navidad sencillos: fuera del catálogo, el reto los sigue abriendo
+const TEMPLATE_CATS = [['navidad', 'Navidad'], ['cozy3', 'Cozy'], ['personajes', 'Personajes'], ['animales', 'Animales'], ['naturaleza', 'Naturaleza'], ['pr', 'Puerto Rico'], ['monumentos', 'Monumentos del mundo'], ['mandalas', 'Mandalas'], ['cosas', 'Cosas']];
 const TEMPLATES = [
   { id: 'casa', name: 'Casa', cat: 'cosas', probe: [90, 300], draw(c) {
     c.beginPath();
@@ -4792,9 +4796,11 @@ function buildTemplateGrid() {
   const ph = document.createElement('button'); ph.className = 'card tplPhoto'; ph.id = 'tplPhoto'; ph.style.border = '0'; ph.style.padding = '8px';
   ph.innerHTML = '<div class="ph"><svg><use href="#i-camera"/></svg><span></span></div><div class="name"></div>'; ph.querySelector('span').textContent = tt('tpl.photo.card'); ph.querySelector('.name').textContent = tt('menu.photo');
   grid.append(ph);
-  const head = (key, label) => { const h = document.createElement('h3'); h.className = 'tplcat'; h.dataset.cat = key; h.textContent = label; grid.append(h); };
+  // v67: en Libre solo salen Navidad y Cozy (líneas gruesas, zonas grandes). Las demás páginas quedan para Por número y los dibujos guardados.
+  const isOld = (key) => !TPL_FREE_CATS.has(key);
+  const head = (key, label) => { const h = document.createElement('h3'); h.className = 'tplcat'; h.dataset.cat = key; h.textContent = label; if (isOld(key)) h.classList.add('tpl-old'); grid.append(h); };
   const mk = (id, name, t) => {
-    const b = document.createElement('button'); b.className = 'card tpl'; b.dataset.tpl = id; b.dataset.cat = t ? t.cat : 'cosas';
+    const b = document.createElement('button'); b.className = 'card tpl'; b.dataset.tpl = id; b.dataset.cat = t ? t.cat : 'top'; if (t && (isOld(t.cat) || TPL_HIDE_IDS.has(t.id))) b.classList.add('tpl-old');
     const cv = mkCanvas(240, 320); const c = cv.getContext('2d'); c.fillStyle = '#fff'; c.fillRect(0, 0, 240, 320);
     if (t) renderTemplate(c, t, 240, 320);
     const n = document.createElement('div'); n.className = 'name'; n.textContent = name;
@@ -4805,11 +4811,11 @@ function buildTemplateGrid() {
   for (const [key] of TEMPLATE_CATS) {
     head(key, tt('tplcat.' + key));
     for (const t of TEMPLATES) if (t.cat === key) mk(t.id, t.name, t);
-    if (key === 'cosas') mk('blank', tt('tpl.blank'), null);
   }
+  { const bl = grid.querySelector('[data-tpl="blank"]'); if (!bl) { mk('blank', tt('tpl.blank'), null); ph.after(grid.lastElementChild); } }
   const tabs = $('#tplTabs'); tabs.innerHTML = '';
   for (const [key] of [['all'], ...TEMPLATE_CATS]) {
-    const b = document.createElement('button'); b.dataset.tcat = key; b.textContent = key === 'all' ? tt('tpl.all') : tt('tplcat.' + key); b.classList.toggle('on', key === 'all');
+    const b = document.createElement('button'); b.dataset.tcat = key; b.textContent = key === 'all' ? tt('tpl.all') : tt('tplcat.' + key); b.classList.toggle('on', key === 'all'); if (key !== 'all' && isOld(key)) b.classList.add('tpl-old');
     b.onclick = () => {
       $$('#tplTabs button').forEach((x) => x.classList.toggle('on', x === b));
       $$('#tplGrid [data-cat]').forEach((el) => { el.hidden = key !== 'all' && el.dataset.cat !== key; });
@@ -6859,7 +6865,7 @@ function pbnApplyMode() {
   const ph = $('#tplPhoto'), at = $('#tplTabs .on'); if (ph) ph.hidden = num || (at && at.dataset.tcat !== 'all');
   $$('#tplGrid [data-tpl]').forEach((b) => { b.classList.toggle('pbn-off', num && (b.dataset.tpl === 'blank' || !pbnData(b.dataset.tpl))); });
 }
-function pbnSetMode(m) { PBN.mode = m === 'num' ? 'num' : 'free'; pbnApplyMode(); }
+function pbnSetMode(m) { PBN.mode = m === 'num' ? 'num' : 'free'; const at = $('#tplTabs .on'); if (PBN.mode === 'free' && at && at.classList.contains('tpl-old')) { const all = $('#tplTabs [data-tcat="all"]'); if (all) all.click(); } pbnApplyMode(); }
 
 // Eventos
 $('#tplMode').addEventListener('click', (e) => { const b = e.target.closest('[data-m]'); if (b) { e.stopPropagation(); pbnSetMode(b.dataset.m); } });
@@ -8346,8 +8352,13 @@ function showUpdate(reg) {
 }
 if ('serviceWorker' in navigator) {
   let reloading = false;
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (updateRequested && !reloading) { reloading = true; location.reload(); }
+  const hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange', async () => {
+    // v67: la versión nueva se activa sola; se guarda el dibujo y se recarga una vez (antes esperaba a que tocaran «Actualizar»)
+    if (reloading || (!hadController && !updateRequested)) return;
+    reloading = true;
+    try { await autosave(); } catch (_) {}
+    location.reload();
   });
   window.addEventListener('load', async () => {
     try {
@@ -9407,8 +9418,9 @@ const RETO_PAGES = [
   { tpl: 'nv-pr-parranda', level: 2, cov: RETO_COV, colors: [['#5AC8FA', 'Celeste', 'Sky blue', 'Bleu ciel', 'Azul-céu'], ['#F4D35A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo'], ['#2F7DE1', 'Azul', 'Blue', 'Bleu', 'Azul'], ['#E24B8A', 'Rosa', 'Pink', 'Rose', 'Rosa'], ['#7CBF4A', 'Verde', 'Green', 'Vert', 'Verde']] },
 ];
 const RETO_OTONO = [
-  { tpl: 'arbol', key: 'ot-arbol', level: 1, cov: RETO_COV, colors: [['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho'], ['#FF9A3D', 'Naranja', 'Orange', 'Orange', 'Laranja'], ['#FFD54A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo'], ['#8B5A3C', 'Marrón', 'Brown', 'Marron', 'Marrom']] },
-  { tpl: 'casa', key: 'ot-casa', level: 1, cov: RETO_COV, colors: [['#FF9A3D', 'Naranja', 'Orange', 'Orange', 'Laranja'], ['#8B5A3C', 'Marrón', 'Brown', 'Marron', 'Marrom'], ['#FFD54A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo'], ['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho']] },
+  // v67: otoño con las páginas Cozy nuevas (las de siempre siguen guardadas para los dibujos viejos)
+  { tpl: 'cz-lectura', key: 'ot-lectura', level: 1, cov: RETO_COV, colors: [['#FF9A3D', 'Naranja', 'Orange', 'Orange', 'Laranja'], ['#8B5A3C', 'Marrón', 'Brown', 'Marron', 'Marrom'], ['#FFD54A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo'], ['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho']] },
+  { tpl: 'cz-chocolate', key: 'ot-chocolate', level: 1, cov: RETO_COV, colors: [['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho'], ['#8B5A3C', 'Marrón', 'Brown', 'Marron', 'Marrom'], ['#FF9A3D', 'Naranja', 'Orange', 'Orange', 'Laranja'], ['#F4C095', 'Crema', 'Cream', 'Crème', 'Creme']] },
 ];
 const RETO_NAVIDAD = [
   { tpl: 'arbolnav', level: 1, cov: RETO_COV, colors: [['#2E8B3E', 'Verde', 'Green', 'Vert', 'Verde'], ['#E8483F', 'Rojo', 'Red', 'Rouge', 'Vermelho'], ['#FFD54A', 'Amarillo', 'Yellow', 'Jaune', 'Amarelo'], ['#8B5A3C', 'Marrón', 'Brown', 'Marron', 'Marrom']] },
