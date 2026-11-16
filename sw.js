@@ -1,6 +1,8 @@
 /* Service worker de Colorear: guarda todo en caché para funcionar sin internet
    y recibe imágenes compartidas desde otras apps (Web Share Target). */
-const CACHE = 'colorear-v67';
+const CACHE = 'colorear-v68';
+// fetch con tiempo límite: si la red no contesta pronto se usa la copia guardada
+const conTiempo = (req, ms = 5000) => new Promise((ok, mal) => { const t = setTimeout(() => mal(new Error('timeout')), ms); fetch(req).then((r) => { clearTimeout(t); ok(r); }, (e) => { clearTimeout(t); mal(e); }); });
 const CACHE_COMPARTIDO = 'colorear-compartido';
 const ARCHIVOS = [
   './',
@@ -44,8 +46,8 @@ self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(CACHE)
       .then((c) => c.addAll(ARCHIVOS.map((u) => new Request(u, { cache: 'reload' }))))
-      // v67: activar siempre enseguida. La app guarda el dibujo y se recarga sola (antes esperaba a que
-      // tocaran «Actualizar» y en Android seguía saliendo la versión vieja).
+      // v68: activar enseguida también cuando hay una versión anterior. Todo sale de la caché de esta versión
+      // (completa y del mismo momento), así que la app abre sin esperar a la red. La página recarga como mucho una vez.
       .then(() => self.skipWaiting())
   );
 });
@@ -86,24 +88,17 @@ self.addEventListener('fetch', (e) => {
   }
   if (req.method !== 'GET') return;
 
-  // v67: la app y sus datos (html, js, json, manifest) van primero a la red, con la copia guardada si no hay internet.
-  // Así una versión nueva sale en la próxima apertura. Imágenes, fuentes y pdf.js: caché primero.
-  const app = req.mode === 'navigate' || /\.(html|js|mjs|json|webmanifest)$/.test(url.pathname) || url.pathname.endsWith('/');
-  if (app && !url.pathname.includes('/pdfjs/')) {
-    const key = req.mode === 'navigate' && !url.pathname.endsWith('/privacidad.html') && !url.pathname.endsWith('/soporte.html') ? 'index.html' : req;
-    e.respondWith((async () => {
-      try {
-        const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 6000);
-        const res = await fetch(req.mode === 'navigate' ? new Request(key === 'index.html' ? 'index.html' : req.url, { cache: 'no-cache', signal: ctl.signal }) : new Request(req, { cache: 'no-cache', signal: ctl.signal }));
-        clearTimeout(t);
-        if (res && res.ok && res.type === 'basic') { const copia = res.clone(); caches.open(CACHE).then((c) => c.put(key, copia)); }
-        return res;
-      } catch (err) {
-        const hit = await caches.match(key, { ignoreSearch: true }) || (req.mode === 'navigate' ? await caches.match('./') : null);
-        if (hit) return hit;
-        throw err;
-      }
-    })());
+  // Navegación: devolver la app (index.html) desde caché, aunque no haya red.
+  if (req.mode === 'navigate') {
+    if (url.pathname.endsWith('/privacidad.html')) {
+      e.respondWith(conTiempo(req).catch(() => caches.match('privacidad.html')));
+      return;
+    }
+    e.respondWith(
+      caches.match('index.html', { ignoreSearch: true })
+        .then((r) => r || conTiempo(req, 8000))
+        .catch(() => caches.match('./'))
+    );
     return;
   }
 

@@ -8354,10 +8354,12 @@ if ('serviceWorker' in navigator) {
   let reloading = false;
   const hadController = !!navigator.serviceWorker.controller;
   navigator.serviceWorker.addEventListener('controllerchange', async () => {
-    // v67: la versión nueva se activa sola; se guarda el dibujo y se recarga una vez (antes esperaba a que tocaran «Actualizar»)
+    // v68: la versión nueva se activa sola. Se guarda el dibujo y se recarga UNA sola vez por sesión (nunca en bucle).
     if (reloading || (!hadController && !updateRequested)) return;
+    let ya = false; try { ya = sessionStorage.getItem('colorear.swRecarga') === '1'; sessionStorage.setItem('colorear.swRecarga', '1'); } catch (_) { ya = true; }
+    if (ya && !updateRequested) return;
     reloading = true;
-    try { await autosave(); } catch (_) {}
+    try { await Promise.race([autosave(), new Promise((r) => setTimeout(r, 1500))]); } catch (_) {}
     location.reload();
   });
   window.addEventListener('load', async () => {
