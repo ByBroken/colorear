@@ -1,6 +1,6 @@
 /* Service worker de Colorear: guarda todo en caché para funcionar sin internet
    y recibe imágenes compartidas desde otras apps (Web Share Target). */
-const CACHE = 'colorear-v71';
+const CACHE = 'colorear-v72';
 // fetch con tiempo límite: si la red no contesta pronto se usa la copia guardada
 const conTiempo = (req, ms = 5000) => new Promise((ok, mal) => { const t = setTimeout(() => mal(new Error('timeout')), ms); fetch(req).then((r) => { clearTimeout(t); ok(r); }, (e) => { clearTimeout(t); mal(e); }); });
 const CACHE_COMPARTIDO = 'colorear-compartido';
